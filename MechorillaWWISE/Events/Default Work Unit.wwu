@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{0E6DDC47-9831-4C9F-9E50-5872B4A7E01C}" SchemaVersion="97">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{0E6DDC47-9831-4C9F-9E50-5872B4A7E01C}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="sfx_driver_pistol_shoot" ID="{1816E2A8-8E97-4D1A-A78F-60B643717851}">
+					<ChildrenList>
+						<Action Name="" ID="{FF3F0080-8D4C-41B7-ADEE-3BCD63770D55}" ShortID="165840822">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_pistol" ID="{7DDBA577-A085-4998-9473-088CED55AD47}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_pistol_shoot_critical" ID="{972D4892-77FA-47EF-8A2C-1E4D92306DA0}">
+					<ChildrenList>
+						<Action Name="" ID="{573BA6F6-F300-44C8-95A6-5E30A69245FD}" ShortID="396683772">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_pistol" ID="{BC121AB0-7154-4272-9D2F-CACC1A61DFF9}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_pistol_spin" ID="{472E5B97-5428-48BF-90E8-FFF462C476EA}">
+					<ChildrenList>
+						<Action Name="" ID="{0A6CEB4D-3A01-4AAB-98AE-8ED9F73DCCB5}" ShortID="886141948">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_pistol_spin" ID="{F3B6E103-0003-4F41-8F6B-C97157F53521}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_pistol_ready" ID="{46CE4B4E-5302-4E8F-A6F3-7FCDEB36E6B2}">
+					<ChildrenList>
+						<Action Name="" ID="{8F58B7EA-F7DD-4972-B7ED-E8F3F638ABFB}" ShortID="742623225">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_pistol_ready" ID="{336D4512-D32A-4C37-8737-47AFB1FFA926}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>
