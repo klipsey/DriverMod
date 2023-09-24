@@ -61,7 +61,7 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (this.shotCooldown <= 0f)
+            if (this.shotCooldown <= 0f && base.isAuthority)
             {
                 if (this.inputBank.skill1.down)
                 {
@@ -70,7 +70,7 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (this.cachedShots > 0)
+            if (this.cachedShots > 0 && base.isAuthority)
             {
                 if (this.cachedShotTimer <= 0f)
                 {
@@ -79,7 +79,7 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (!this.inputBank.skill2.down)
+            if (!this.inputBank.skill2.down && base.isAuthority)
             {
                 this.outer.SetNextStateToMain();
             }
@@ -182,19 +182,16 @@ namespace RobDriver.SkillStates.Driver
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
-                base.AddRecoil(-1f * SteadyAim.recoil, -2f * SteadyAim.recoil, -0.5f * SteadyAim.recoil, 0.5f * SteadyAim.recoil);
+                base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
 
                 float dmg = Shoot.damageCoefficient;
 
                 if (this.lastCharge)
                 {
                     dmg = SteadyAim.damageCoefficient;
-
-                    this.skillLocator.secondary.DeductStock(1);
                 }
 
-                GameObject tracerPrefab = Shoot.tracerEffectPrefab;
-                if (isCrit) tracerPrefab = Shoot.critTracerEffectPrefab;
+                GameObject tracerPrefab = Shoot.critTracerEffectPrefab;
 
                 new BulletAttack
                 {

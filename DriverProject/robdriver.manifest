@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1805785977
+CRC: 3896932528
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: a577d8a4de76385f15946a6b88dde018
+    Hash: 320c4c845721dd1da77c55e7592654f5
   TypeTreeHash:
     serializedVersion: 2
     Hash: 11f407b0593b9ea5467be969dc8e6103
@@ -57,7 +57,7 @@ Assets:
 - Assets/Driver/Animations/RunR.anim
 - Assets/Driver/Textures/texDriver.png
 - Assets/Driver/Animations/Idle.anim
-- Assets/Driver/FBX/meshJacket.mesh
+- Assets/Driver/FBX/meshJacketOld.mesh
 - Assets/Driver/Animations/AimYaw.anim
 - Assets/Driver/Animations/AimPitch.anim
 - Assets/Driver/Animations/animDriver.controller
@@ -67,10 +67,13 @@ Assets:
 - Assets/Driver/DriverDisplay.prefab
 - Assets/Driver/Animations/Descend.anim
 - Assets/Driver/Textures/texJacket.png
+- Assets/Driver/Textures/texPistolAlt.png
 - Assets/Driver/Animations/SteadyAimPitch.anim
+- Assets/Driver/Materials/matPistolAlt.mat
 - Assets/Driver/Animations/Sprint.anim
 - Assets/Driver/Icons/texDriverIcon.png
 - Assets/Driver/Animations/Ascend.anim
+- Assets/Driver/FBX/meshJacket.mesh
 - Assets/Driver/Animations/maskDriverImpact.mask
 - Assets/Driver/mdlDriver.prefab
 - Assets/Driver/Textures/texPistol.png

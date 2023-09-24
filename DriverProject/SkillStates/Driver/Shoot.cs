@@ -127,7 +127,7 @@ namespace RobDriver.SkillStates.Driver
         {
             base.FixedUpdate();
 
-            if (base.fixedAge >= this.fireTime)
+            if (base.fixedAge >= this.fireTime && base.isAuthority)
             {
                 if (!this.hasFired)
                 {
@@ -136,7 +136,7 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (this.isCrit && base.fixedAge >= this.fireTime2)
+            if (this.isCrit && base.fixedAge >= this.fireTime2 && base.isAuthority)
             {
                 if (!this.hasFired2)
                 {
