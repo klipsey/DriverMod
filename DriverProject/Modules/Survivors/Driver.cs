@@ -10,6 +10,7 @@ using RoR2.Navigation;
 using RoR2.Orbs;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
+using RoR2.UI;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -22,7 +23,10 @@ namespace RobDriver.Modules.Survivors
 
         internal static GameObject umbraMaster;
 
+        internal static ConfigEntry<bool> forceUnlock;
         internal static ConfigEntry<bool> characterEnabled;
+
+        public static Color characterColor = new Color(145f / 255f, 0f, 1f);
 
         public const string bodyName = "RobDriverBody";
 
@@ -33,7 +37,20 @@ namespace RobDriver.Modules.Survivors
         internal static ItemDisplayRuleSet itemDisplayRuleSet;
         internal static List<ItemDisplayRuleSet.KeyAssetRuleGroup> itemDisplayRules;
 
+        internal static UnlockableDef characterUnlockableDef;
         internal static UnlockableDef masteryUnlockableDef;
+
+        // skill overrides
+        internal static SkillDef shotgunPrimarySkillDef;
+        internal static SkillDef shotgunSecondarySkillDef;
+
+        internal static SkillDef machineGunPrimarySkillDef;
+        internal static SkillDef machineGunSecondarySkillDef;
+
+        internal static SkillDef rocketLauncherPrimarySkillDef;
+        internal static SkillDef rocketLauncherSecondarySkillDef;
+
+        internal static string bodyNameToken;
 
         internal void CreateCharacter()
         {
@@ -43,13 +60,18 @@ namespace RobDriver.Modules.Survivors
 
             if (characterEnabled.Value)
             {
-                //masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.MasteryAchievement>();
+                forceUnlock = Modules.Config.ForceUnlockConfig("Driver");
+
+                masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.MasteryAchievement>();
+
+                if (!forceUnlock.Value) characterUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverUnlockAchievement>();
 
                 characterPrefab = CreateBodyPrefab(true);
 
                 displayPrefab = Modules.Prefabs.CreateDisplayPrefab("DriverDisplay", characterPrefab);
 
-                Modules.Prefabs.RegisterNewSurvivor(characterPrefab, displayPrefab, "DRIVER");
+                if (forceUnlock.Value) Modules.Prefabs.RegisterNewSurvivor(characterPrefab, displayPrefab, "DRIVER");
+                else Modules.Prefabs.RegisterNewSurvivor(characterPrefab, displayPrefab, "DRIVER", characterUnlockableDef);
 
                 umbraMaster = CreateMaster(characterPrefab, "RobDriverMonsterMaster");
             }
@@ -59,31 +81,35 @@ namespace RobDriver.Modules.Survivors
 
         private static GameObject CreateBodyPrefab(bool isPlayer)
         {
-            Color charColor = new Color(145f / 255f, 0f, 1f);
+            bodyNameToken = DriverPlugin.developerPrefix + "_DRIVER_BODY_NAME";
+
             #region Body
             GameObject newPrefab = Modules.Prefabs.CreatePrefab("RobDriverBody", "mdlDriver", new BodyInfo
             {
-                armor = 0f,
-                armorGrowth = 0f,
+                armor = Config.baseArmor.Value,
+                armorGrowth = Config.armorGrowth.Value,
                 bodyName = "RobDriverBody",
-                bodyNameToken = DriverPlugin.developerPrefix + "_DRIVER_BODY_NAME",
-                bodyColor = charColor,
+                bodyNameToken = bodyNameToken,
+                bodyColor = characterColor,
                 characterPortrait = Modules.Assets.LoadCharacterIcon("Driver"),
                 crosshair = Modules.Assets.LoadCrosshair("Standard"),
-                damage = 12f,
-                healthGrowth = 33f,
-                healthRegen = 1.5f,
+                damage = Config.baseDamage.Value,
+                healthGrowth = Config.healthGrowth.Value,
+                healthRegen = Config.baseRegen.Value,
                 jumpCount = 1,
-                maxHealth = 110f,
+                maxHealth = Config.baseHealth.Value,
                 subtitleNameToken = DriverPlugin.developerPrefix + "_DRIVER_BODY_SUBTITLE",
                 podPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
-                moveSpeed = 7f,
+                moveSpeed = Config.baseMovementSpeed.Value,
                 acceleration = 60f,
                 jumpPower = 15f,
-                attackSpeed = 1f
+                attackSpeed = 1f,
+                crit = Config.baseCrit.Value
             });
 
-            //ChildLocator childLocator = newPrefab.GetComponentInChildren<ChildLocator>();
+            ChildLocator childLocator = newPrefab.GetComponentInChildren<ChildLocator>();
+
+            childLocator.gameObject.AddComponent<Modules.Components.DriverAnimationEvents>();
 
             //CharacterBody body = newPrefab.GetComponent<CharacterBody>();
             //body.preferredInitialStateType = new EntityStates.SerializableEntityStateType(typeof(SpawnState));
@@ -123,14 +149,21 @@ namespace RobDriver.Modules.Survivors
             //var state = isPlayer ? typeof(EntityStates.SpawnTeleporterState) : typeof(SpawnState);
             //newPrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType(state);
 
-            newPrefab.GetComponent<CharacterDeathBehavior>().deathState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Commando.DeathState));
+            // this should be the default, no?
+            //newPrefab.GetComponent<CharacterDeathBehavior>().deathState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Commando.DeathState));
+            // so why doesn't the ragdoll work? inspector and code both tell me everything is as it should be
+            // is there some niche override in the state that's fucking it?
+            // 
+            // no,i just checked and there is no such thing.
+            // what the fuck?
+
+            newPrefab.AddComponent<Modules.Components.DriverController>();
 
             //MechorillaPlugin.Destroy(newPrefab.GetComponent<SetStateOnHurt>());
             #endregion
 
             #region Model
             Material mainMat = Modules.Assets.CreateMaterial("matDriver", 1f, Color.white);
-            Material pistolMat = Modules.Assets.CreateMaterial("matPistol", 0f, Color.white);
 
             bodyRendererIndex = 0;
 
@@ -143,7 +176,7 @@ namespace RobDriver.Modules.Survivors
                 new CustomRendererInfo
                 {
                     childName = "PistolModel",
-                    material = pistolMat
+                    material = Modules.Assets.pistolMat
                 } }, bodyRendererIndex);
             #endregion
 
@@ -320,14 +353,31 @@ namespace RobDriver.Modules.Survivors
             string prefix = DriverPlugin.developerPrefix;
             SkillLocator skillLocator = prefab.GetComponent<SkillLocator>();
 
-            skillLocator.passiveSkill.enabled = false;
-            //skillLocator.passiveSkill.skillNameToken = prefix + "_MECHORILLA_BODY_PASSIVE_NAME";
-            //skillLocator.passiveSkill.skillDescriptionToken = prefix + "_MECHORILLA_BODY_PASSIVE_DESCRIPTION";
+            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.skillNameToken = prefix + "_DRIVER_BODY_PASSIVE_NAME";
+            skillLocator.passiveSkill.skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE_DESCRIPTION";
+            skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
 
             #region Primary
             Modules.Skills.AddPrimarySkills(prefab,
                 Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false),
                 Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));
+
+            Driver.shotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+                new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Shoot)),
+                "Weapon",
+                prefix + "_DRIVER_BODY_PRIMARY_SHOTGUN_NAME",
+                prefix + "_DRIVER_BODY_PRIMARY_SHOTGUN_DESCRIPTION",
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+                false);
+
+            Driver.machineGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+                new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MachineGun.Shoot)),
+                "Weapon",
+                prefix + "_DRIVER_BODY_PRIMARY_MACHINEGUN_NAME",
+                prefix + "_DRIVER_BODY_PRIMARY_MACHINEGUN_DESCRIPTION",
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+                false);
             #endregion
 
             #region Secondary
@@ -379,6 +429,30 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 0,
             });
 
+            shotgunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
             Modules.Skills.AddSecondarySkills(prefab, groundSmashSkillDef, pissSkillDef);
             #endregion
 
@@ -420,12 +494,12 @@ namespace RobDriver.Modules.Survivors
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ThrowGrenade)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
-                baseRechargeInterval = 12f,
+                baseRechargeInterval = 8f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
-                interruptPriority = EntityStates.InterruptPriority.Skill,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -474,7 +548,7 @@ namespace RobDriver.Modules.Survivors
 
             #region MasterySkin
             SkinDef masterySkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MONSOON_SKIN_NAME",
-                Assets.mainAssetBundle.LoadAsset<Sprite>("texMainSkin"),
+                Assets.mainAssetBundle.LoadAsset<Sprite>("texMonsoonSkin"),
                 SkinRendererInfos(defaultRenderers, new Material[]
                 {
                     Modules.Assets.CreateMaterial("matJacket", 1f, Color.white)
@@ -3208,6 +3282,109 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
 
         private static void Hook()
         {
+            RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+
+            RoR2.UI.HUD.onHudTargetChangedGlobal += HUDSetup;
+        }
+
+        private static void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
+        {
+            if (damageReport.attackerBody && damageReport.attackerMaster && damageReport.victim)
+            {
+                if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                {
+                    // 12 + 2(player level)%
+                    float chance = Modules.Config.baseDropRate.Value + ((1 + damageReport.attackerBody.level) * 2f);
+                    bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
+
+                    // test
+                    //droppedWeapon = true;
+
+                    if (droppedWeapon)
+                    {
+                        Vector3 position = Vector3.zero;
+                        Transform transform = damageReport.victim.transform;
+                        if (transform)
+                        {
+                            position = damageReport.victim.transform.position;
+                        }
+
+                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.weaponPickup, position, UnityEngine.Random.rotation);
+                        
+                        TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
+                        if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+
+                        NetworkServer.Spawn(weaponPickup);
+                    }
+                }
+            }
+        }
+
+        internal static void HUDSetup(RoR2.UI.HUD hud)
+        {
+            if (hud.targetBodyObject && hud.targetMaster.bodyPrefab == Driver.characterPrefab)
+            {
+                var skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
+
+                // no one will notice these missing
+                skillsContainer.Find("SprintCluster").gameObject.SetActive(false);
+                skillsContainer.Find("InventoryCluster").gameObject.SetActive(false);
+
+                GameObject weaponSlot = GameObject.Instantiate(skillsContainer.Find("EquipmentSlot").gameObject, skillsContainer);
+                weaponSlot.name = "WeaponSlot";
+
+                EquipmentIcon equipmentIconComponent = weaponSlot.GetComponent<EquipmentIcon>();
+                Components.WeaponIcon weaponIconComponent = weaponSlot.AddComponent<Components.WeaponIcon>();
+
+                weaponIconComponent.iconImage = equipmentIconComponent.iconImage;
+                weaponIconComponent.displayRoot = equipmentIconComponent.displayRoot;
+                weaponIconComponent.flashPanelObject = equipmentIconComponent.stockFlashPanelObject;
+                weaponIconComponent.reminderFlashPanelObject = equipmentIconComponent.reminderFlashPanelObject;
+                weaponIconComponent.isReadyPanelObject = equipmentIconComponent.isReadyPanelObject;
+                weaponIconComponent.tooltipProvider = equipmentIconComponent.tooltipProvider;
+                weaponIconComponent.targetHUD = hud;
+
+                weaponSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(-480f, -17.1797f);
+
+                HGTextMeshProUGUI keyText = weaponSlot.transform.Find("DisplayRoot").Find("EquipmentTextBackgroundPanel").Find("EquipmentKeyText").gameObject.GetComponent<HGTextMeshProUGUI>();
+                keyText.gameObject.GetComponent<InputBindingDisplayController>().enabled = false;
+                keyText.text = "Weapon";
+
+                weaponSlot.transform.Find("DisplayRoot").Find("EquipmentStack").gameObject.SetActive(false);
+                weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject.SetActive(false);
+
+                // duration bar
+                GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+                chargeBar.transform.SetParent(weaponSlot.transform.Find("DisplayRoot"));
+
+                RectTransform rect = chargeBar.GetComponent<RectTransform>();
+
+                rect.localScale = new Vector3(0.75f, 0.1f, 1f);
+                rect.anchorMin = new Vector2(0f, 0f);
+                rect.anchorMax = new Vector2(0f, 0f);
+                rect.pivot = new Vector2(0.5f, 0f);
+                rect.anchoredPosition = new Vector2(-10f, 13f);
+                rect.localPosition = new Vector3(-33f, -10f, 0f);
+                rect.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
+
+                weaponIconComponent.durationDisplay = chargeBar;
+                weaponIconComponent.durationBar = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
+
+                MonoBehaviour.Destroy(equipmentIconComponent);
+            }
+
+            /*var energyHud = self.gameObject.AddComponent<EnergyHUD>();
+
+            GameObject energyGauge = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("EnergyGauge"), self.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+            Debug.Log(energyGauge.name);
+            energyGauge.GetComponent<RectTransform>().localPosition = Vector3.zero;
+            energyGauge.GetComponent<RectTransform>().anchoredPosition = new Vector3(-8f, -154f);
+            energyGauge.GetComponent<RectTransform>().localScale = new Vector3(0.7f, 0.3f, 1f);
+            Debug.Log(energyGauge.transform.parent.name);
+
+            energyHud.energyGauge = energyGauge;
+            energyHud.energyFill = energyGauge.transform.Find("GaugeFill").gameObject.GetComponent<Image>();*/
+            // this was nemesis henry's energy gauge- code may come in handy at some point
         }
     }
 }

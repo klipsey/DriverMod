@@ -69,6 +69,10 @@ AvatarMask:
     m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/thumb.l.01/thumb.l.02
     m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/weapon.l
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/weapon.l/weaponhead.l
+    m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r
     m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r
@@ -99,6 +103,8 @@ AvatarMask:
     m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/weapon.r
     m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/weapon.r/shotgun.barrel
+    m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/weapon.r/weaponhead.r
     m_Weight: 1
   - m_Path: Armature/ROOT/ik.elbow.l
@@ -126,4 +132,6 @@ AvatarMask:
   - m_Path: meshJacket
     m_Weight: 0
   - m_Path: meshPistol
+    m_Weight: 0
+  - m_Path: meshSuperShotgun
     m_Weight: 0

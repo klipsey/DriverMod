@@ -41,6 +41,9 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <Reference Include="RiskOfOptions">
+      <HintPath>libs\RiskOfOptions.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>E:\Abbas's stuff VII I think\1337 haxx\ror2lol\Chikara ga minegitte kuru\AmpV2\libs\Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>

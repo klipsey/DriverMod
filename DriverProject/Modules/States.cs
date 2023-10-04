@@ -9,18 +9,24 @@ namespace RobDriver.Modules
 
         internal static void AddSkill(Type t)
         {
+            entityStates.Add(t);
+        }
+
+        public static void RegisterStates()
+        {
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.MainState));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Slide));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SteadyAim));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ThrowGrenade));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.JammedGun));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.SteadyAim));
-        }
 
-        public static void RegisterStates()
-        {
-            //AddSkill(typeof(BaseRegiSkillState));
+            entityStates.Add(typeof(RobDriver.SkillStates.Emote.BaseEmote));
+            entityStates.Add(typeof(RobDriver.SkillStates.Emote.Rest));
+            entityStates.Add(typeof(RobDriver.SkillStates.Emote.Taunt));
+            entityStates.Add(typeof(RobDriver.SkillStates.Emote.Dance));
         }
     }
 }

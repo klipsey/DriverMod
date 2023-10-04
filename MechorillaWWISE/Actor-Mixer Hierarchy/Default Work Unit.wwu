@@ -89,6 +89,13 @@
 							<ChildrenList>
 								<RandomSequenceContainer Name="sfx_driver_pistol" ID="{7DDBA577-A085-4998-9473-088CED55AD47}" ShortID="729911983">
 									<PropertyList>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{5154E198-AB25-4691-AACC-9EBCC4FD37CE}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
 												<Value>-3</Value>
@@ -386,6 +393,120 @@
 										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="charge_shot" ID="{1369B0BA-0DB7-4812-B2A5-22FDAC9E73F6}" ShortID="1040603989">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{33D925DE-AA96-44BA-AB68-3C55538D4672}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_driver_pistol_charged_03" ID="{84158BCC-75F1-4F26-93DD-6779717F5A3A}" ShortID="242383403">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pistol_charged_03" ID="{17640B30-FA14-432D-A9F5-2B3EC47E1593}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pistol_charged_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="36339121"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pistol_charged_03" ID="{17640B30-FA14-432D-A9F5-2B3EC47E1593}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_pistol_charged_01" ID="{1792A7E2-7593-47A2-86D0-2C1E06DFDBCE}" ShortID="920702906">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pistol_charged_01" ID="{DDC9C4CD-E943-4B9D-8A24-2A76D07FA5EC}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pistol_charged_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="684026597"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pistol_charged_01" ID="{DDC9C4CD-E943-4B9D-8A24-2A76D07FA5EC}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_pistol_charged_02" ID="{4E721537-65B3-4723-93EB-9AF85BF30D4E}" ShortID="748192300">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pistol_charged_02" ID="{C11526E0-C0AD-4F66-A0AE-1CE425E0F28D}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pistol_charged_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="976648469"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pistol_charged_02" ID="{C11526E0-C0AD-4F66-A0AE-1CE425E0F28D}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
 							</ChildrenList>
 						</ActorMixer>
 						<ActorMixer Name="Shoot_Critical" ID="{915E6569-BAEB-490F-8D2C-A4116A58241B}" ShortID="292000240">
@@ -420,10 +541,12 @@
 							<ChildrenList>
 								<RandomSequenceContainer Name="sfx_driver_pistol" ID="{BC121AB0-7154-4272-9D2F-CACC1A61DFF9}" ShortID="486743585">
 									<PropertyList>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-1</Value>
-											</ValueList>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{311C6357-3516-465E-AE1C-DDE8EF657BF0}"/>
+												</ModifierInfo>
+											</ModifierList>
 										</Property>
 									</PropertyList>
 									<ReferenceList>
@@ -717,28 +840,1042 @@
 										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="charge_shot_01" ID="{3BEA8919-938B-4103-B22B-E1FC27FEF823}" ShortID="247535271">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{D44748A3-10B2-41CD-B9AC-F5A7B65F4DD7}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_driver_pistol_charged_03" ID="{BEF8A7EE-2C7D-4B0B-AFEA-E22707C21440}" ShortID="854313677">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pistol_charged_03" ID="{6E5C68C0-9305-4262-BB48-1A0529C60F58}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pistol_charged_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="36339121"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pistol_charged_03" ID="{6E5C68C0-9305-4262-BB48-1A0529C60F58}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_pistol_charged_01" ID="{D9E01062-012D-4BDE-A6C8-6F56104DE946}" ShortID="893008928">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pistol_charged_01" ID="{7F7E720B-6EC4-4A2B-AD8C-D2095F82149F}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pistol_charged_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="684026597"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pistol_charged_01" ID="{7F7E720B-6EC4-4A2B-AD8C-D2095F82149F}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_pistol_charged_02" ID="{5F01AB68-206F-4D62-A5F4-EE400C57EA8D}" ShortID="356263190">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pistol_charged_02" ID="{A3EBF30F-32F7-487E-8CAB-371D85FEAD2E}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pistol_charged_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="976648469"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pistol_charged_02" ID="{A3EBF30F-32F7-487E-8CAB-371D85FEAD2E}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
 							</ChildrenList>
 						</ActorMixer>
-						<Sound Name="sfx_driver_pistol_ready" ID="{336D4512-D32A-4C37-8737-47AFB1FFA926}" ShortID="41721189">
+						<ActorMixer Name="RandomPitch" ID="{C31AD483-1BC0-479D-A832-3A1F151C35B9}" ShortID="109788207">
 							<PropertyList>
 								<Property Name="3DSpatialization" Type="int16" Value="1"/>
 								<Property Name="OverridePositioning" Type="bool" Value="True"/>
 								<Property Name="Pitch" Type="int32">
 									<ModifierList>
 										<ModifierInfo>
-											<Modifier Name="" ID="{D17D908D-7590-40F4-A92C-C928FD8B522F}">
+											<Modifier Name="" ID="{CD587375-F973-4D3B-B153-ECD23A50B4D8}">
 												<PropertyList>
 													<Property Name="Enabled" Type="bool" Value="True"/>
-													<Property Name="Max" Type="Real64" Value="100"/>
-													<Property Name="Min" Type="Real64" Value="-100"/>
+													<Property Name="Max" Type="Real64" Value="177"/>
+													<Property Name="Min" Type="Real64" Value="-152"/>
 												</PropertyList>
 											</Modifier>
 										</ModifierInfo>
 									</ModifierList>
 								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="sfx_driver_gun_catch" ID="{C3723B93-4D51-4585-A93E-1E4ED0F0C013}" ShortID="744740279">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-8</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_gun_catch" ID="{928AF90B-A6DC-402F-9588-E6C212C86C3B}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_gun_catch.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="613263205"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_gun_catch" ID="{928AF90B-A6DC-402F-9588-E6C212C86C3B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_gun_drop" ID="{BDDDEAF2-F60D-4186-AC44-F8AD2CEF456C}" ShortID="93369599">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_gun_drop" ID="{9FA16810-A6C6-489F-96D1-1B25A4879A67}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_gun_drop.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="12565096"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_gun_drop" ID="{9FA16810-A6C6-489F-96D1-1B25A4879A67}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_gun_throw" ID="{7105B6CB-2207-4B8D-87C4-50081EB471FE}" ShortID="1036988895">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_gun_throw" ID="{DBB071A5-A8EE-46FA-8508-993C52FF9FAE}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_gun_throw.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="114186865"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_gun_throw" ID="{DBB071A5-A8EE-46FA-8508-993C52FF9FAE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_pistol_spin" ID="{F3B6E103-0003-4F41-8F6B-C97157F53521}" ShortID="548130887">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{D7EFD5FC-7C97-434B-91D1-088168F05B1E}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="200"/>
+															<Property Name="Min" Type="Real64" Value="-200"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_pistol_spin" ID="{DD784A1B-6FC1-4882-9E7D-EB48E3274888}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_pistol_spin.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="144334770"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_pistol_spin" ID="{DD784A1B-6FC1-4882-9E7D-EB48E3274888}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_gun_jammed" ID="{5C9A5251-3139-422F-8BA5-A6325AC36FE3}" ShortID="404687804">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_gun_jammed" ID="{1A72284B-62FC-4CC4-88B2-39CBA12BFAC8}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_gun_jammed.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="727414514"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_gun_jammed" ID="{1A72284B-62FC-4CC4-88B2-39CBA12BFAC8}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_stun_grenade" ID="{F900C440-CE45-4E58-9E05-26E09CAA5E97}" ShortID="273619478">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_stun_grenade" ID="{A5B2D732-20DA-493E-A9AA-AB5B9081F125}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_stun_grenade.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="581957993"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_stun_grenade" ID="{A5B2D732-20DA-493E-A9AA-AB5B9081F125}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_pistol_ready" ID="{336D4512-D32A-4C37-8737-47AFB1FFA926}" ShortID="41721189">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{D17D908D-7590-40F4-A92C-C928FD8B522F}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="100"/>
+															<Property Name="Min" Type="Real64" Value="-100"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_pistol_ready" ID="{38928FDE-A103-4ED5-9288-E8DACB461E22}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_pistol_ready.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="93948657"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_pistol_ready" ID="{38928FDE-A103-4ED5-9288-E8DACB461E22}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_shotgun_close" ID="{328911D7-88C9-4FF9-9324-A90E9635AE3A}" ShortID="737550171">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_shotgun_close" ID="{4DBD6289-F872-4A77-AC20-A38065F266D7}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_shotgun_close.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="399305832"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_shotgun_close" ID="{4DBD6289-F872-4A77-AC20-A38065F266D7}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_shotgun_critical" ID="{95B00990-0AD2-4885-84C4-634A7B3CDB09}" ShortID="1017248490">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_shotgun_critical" ID="{4C6E1142-94B1-4D9D-B28A-193264C612A2}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_shotgun_critical.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="394643428"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_shotgun_critical" ID="{4C6E1142-94B1-4D9D-B28A-193264C612A2}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_shotgun_load" ID="{95E26CB9-B70A-4919-8A4D-97FC75C2B54F}" ShortID="933609362">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_shotgun_load" ID="{1E1266F4-C5DB-4B0E-80AE-1EAF605A6BBB}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_shotgun_load.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="236788315"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_shotgun_load" ID="{1E1266F4-C5DB-4B0E-80AE-1EAF605A6BBB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_shotgun_open" ID="{25754351-C64F-473B-BD86-28FD507F5BC7}" ShortID="705103095">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_shotgun_open" ID="{26235914-B06A-4ED8-B3D6-1F48AF47BA5E}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_shotgun_open.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="629932395"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_shotgun_open" ID="{26235914-B06A-4ED8-B3D6-1F48AF47BA5E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<RandomSequenceContainer Name="sfx_driver_shotgun" ID="{F7F63684-8998-4AF9-9421-11D3A38E4355}" ShortID="980965575">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_driver_shotgun_03" ID="{1C7FDF78-D49F-41D4-AFB4-DC5AD522CA2E}" ShortID="179161750">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shotgun_03" ID="{0739E0E7-F3C4-4051-ACA5-69D5FFD1E6DA}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shotgun_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="545301630"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shotgun_03" ID="{0739E0E7-F3C4-4051-ACA5-69D5FFD1E6DA}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shotgun_04" ID="{E843130A-37E3-42C7-A2A2-A6549B79753B}" ShortID="99678094">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shotgun_04" ID="{0777C296-3FA0-4DE7-BCEB-E70809269F53}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shotgun_04.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="152399576"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shotgun_04" ID="{0777C296-3FA0-4DE7-BCEB-E70809269F53}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shotgun_02" ID="{5A56007F-3CD8-44BC-B06B-D393E1A440AF}" ShortID="447623311">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shotgun_02" ID="{F0A80703-D908-4948-B24F-A32B122C4719}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shotgun_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="978442170"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shotgun_02" ID="{F0A80703-D908-4948-B24F-A32B122C4719}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shotgun_01" ID="{4DFBFD09-25DF-4105-BF0C-5EFD51F995E2}" ShortID="884187059">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shotgun_01" ID="{FE04D77E-151B-4659-89F2-3499E2CBF89C}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shotgun_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="541050718"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shotgun_01" ID="{FE04D77E-151B-4659-89F2-3499E2CBF89C}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<Sound Name="sfx_driver_bash_prep" ID="{CE0A9D66-4EE0-4FB5-88A6-BA4BDC667F90}" ShortID="873164735">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_bash_prep" ID="{702B96ED-C490-40B3-9E5F-945A59C4F40A}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_bash_prep.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="460898076"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_bash_prep" ID="{702B96ED-C490-40B3-9E5F-945A59C4F40A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_driver_swing" ID="{6678C5D7-6C20-4A8E-A2A9-5EC17318B411}" ShortID="873293265">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_driver_swing" ID="{C62FF07F-91DB-4B59-A900-07045F504B30}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_driver_swing.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="279150818"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_driver_swing" ID="{C62FF07F-91DB-4B59-A900-07045F504B30}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<RandomSequenceContainer Name="sfx_driver_bash" ID="{7EE66EDB-9332-4EDF-A97D-11386E09CF79}" ShortID="337031488">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_driver_bash_01" ID="{DA8EEEAF-EFA7-41D7-A377-30A06CCCFB52}" ShortID="86160302">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_bash_01" ID="{C8202AE7-D8D0-4A4F-8E3B-FB6405F5F8E8}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_bash_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="506867828"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_bash_01" ID="{C8202AE7-D8D0-4A4F-8E3B-FB6405F5F8E8}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_bash_02" ID="{96A19789-E8B0-42FA-8B13-651B78777416}" ShortID="690795983">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_bash_02" ID="{1C39C23A-04AC-4E03-B3B5-FFFEC57F84E8}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_bash_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="76251330"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_bash_02" ID="{1C39C23A-04AC-4E03-B3B5-FFFEC57F84E8}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_bash_03" ID="{107B8A90-A95C-4F24-A552-36AA28AA0674}" ShortID="1042970812">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_bash_03" ID="{2D9F0C52-2B34-49EA-B28B-9506622B9792}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_bash_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="176245099"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_bash_03" ID="{2D9F0C52-2B34-49EA-B28B-9506622B9792}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="sfx_driver_pickup" ID="{9501E5DD-FFB6-4DD7-B359-565252ABDFE0}" ShortID="336990573">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_driver_pickup_01" ID="{5C6AB5FA-1FA1-47D2-B3D2-34E69C45991A}" ShortID="723668184">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pickup_01" ID="{32136D96-E43E-496C-A3EE-83ECE5048A00}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pickup_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="250046579"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pickup_01" ID="{32136D96-E43E-496C-A3EE-83ECE5048A00}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_pickup_02" ID="{C910C3C2-2D36-4B95-A91D-DD72AC7BF187}" ShortID="196100292">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_pickup_02" ID="{8846680B-07C1-4EA0-95CB-C59A4FBC83C5}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_pickup_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="886308071"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_pickup_02" ID="{8846680B-07C1-4EA0-95CB-C59A4FBC83C5}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="sfx_driver_shell" ID="{338DC4A2-34EA-4EDE-9058-FA0DADD8A61F}" ShortID="562373325">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-12</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_driver_shell_01" ID="{CC91FB14-26B1-478F-9B26-34CC9337B37F}" ShortID="13197311">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shell_01" ID="{2DD79AAD-05CD-4B2C-820C-DBDD83AA6DFF}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shell_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="246644603"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shell_01" ID="{2DD79AAD-05CD-4B2C-820C-DBDD83AA6DFF}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shell_02" ID="{C46557EE-62FE-4237-940D-5674D2BD20E4}" ShortID="939829984">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shell_02" ID="{47ADFED3-69A5-4BAC-BA9B-96FEAF61F79E}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shell_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="621113539"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shell_02" ID="{47ADFED3-69A5-4BAC-BA9B-96FEAF61F79E}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shell_03" ID="{B3F99923-935B-4112-B9F2-B01399EC6089}" ShortID="574318419">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shell_03" ID="{A9CDFB2B-30B3-4F22-B8C3-DFA1C5691B8A}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shell_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="914707721"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shell_03" ID="{A9CDFB2B-30B3-4F22-B8C3-DFA1C5691B8A}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shell_06" ID="{B82C5798-FE65-44E4-90F1-354AA0AF6920}" ShortID="73278428">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shell_06" ID="{F20937F1-7BFC-4C7D-ADF8-6B18C31719FE}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shell_06.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="383720595"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shell_06" ID="{F20937F1-7BFC-4C7D-ADF8-6B18C31719FE}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shell_05" ID="{05A00B18-F00D-4908-8B07-5E1109530EFD}" ShortID="333021144">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shell_05" ID="{88F24CCF-7314-4254-AB7C-A39F00F56045}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shell_05.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="787533323"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shell_05" ID="{88F24CCF-7314-4254-AB7C-A39F00F56045}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_driver_shell_04" ID="{642B82DD-36AF-40CF-B3EE-CEF8DFB9F6EF}" ShortID="839549093">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_driver_shell_04" ID="{E6A8318E-B28B-40A0-ABC8-B92851828443}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_driver_shell_04.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="275430983"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_driver_shell_04" ID="{E6A8318E-B28B-40A0-ABC8-B92851828443}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+							</ChildrenList>
+						</ActorMixer>
+						<RandomSequenceContainer Name="driver_dance" ID="{35F41E1A-3D9D-4772-8675-4C1ABAFFE078}" ShortID="116409879">
+							<PropertyList>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{52AACC42-63D3-42A1-A256-CEDFD0164532}"/>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="PlayMechanismLoop" Type="bool" Value="True"/>
+								<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>4</Value>
+										<Value>-6</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -754,61 +1891,52 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<AudioFileSource Name="sfx_driver_pistol_ready" ID="{38928FDE-A103-4ED5-9288-E8DACB461E22}">
-									<Language>SFX</Language>
-									<AudioFile>sfx_driver_pistol_ready.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="93948657"/>
-									</MediaIDList>
-								</AudioFileSource>
+								<Sound Name="driver_a_real_hero" ID="{784D49BC-6FF6-43DC-B8EF-ED685D2C62AC}" ShortID="677310594">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="driver_a_real_hero" ID="{7D8DF2F9-A300-429B-B493-44C2A341DC7B}">
+											<Language>SFX</Language>
+											<AudioFile>driver_a_real_hero.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="918021308"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="driver_a_real_hero" ID="{7D8DF2F9-A300-429B-B493-44C2A341DC7B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="driver_nightcall" ID="{C87A6DAD-A0FB-4552-B1FC-39C33161C7B5}" ShortID="341245122">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="driver_nightcall" ID="{445E1F01-34FF-456F-9D7E-7423CD0E1A35}">
+											<Language>SFX</Language>
+											<AudioFile>driver_nightcall.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="158038505"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="driver_nightcall" ID="{445E1F01-34FF-456F-9D7E-7423CD0E1A35}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
 							</ChildrenList>
-							<ActiveSourceList>
-								<ActiveSource Name="sfx_driver_pistol_ready" ID="{38928FDE-A103-4ED5-9288-E8DACB461E22}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
-						<Sound Name="sfx_driver_pistol_spin" ID="{F3B6E103-0003-4F41-8F6B-C97157F53521}" ShortID="548130887">
-							<PropertyList>
-								<Property Name="3DSpatialization" Type="int16" Value="1"/>
-								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-								<Property Name="OverridePositioning" Type="bool" Value="True"/>
-								<Property Name="Pitch" Type="int32">
-									<ModifierList>
-										<ModifierInfo>
-											<Modifier Name="" ID="{D7EFD5FC-7C97-434B-91D1-088168F05B1E}">
-												<PropertyList>
-													<Property Name="Enabled" Type="bool" Value="True"/>
-													<Property Name="Max" Type="Real64" Value="200"/>
-													<Property Name="Min" Type="Real64" Value="-200"/>
-												</PropertyList>
-											</Modifier>
-										</ModifierInfo>
-									</ModifierList>
-								</Property>
-							</PropertyList>
-							<ReferenceList>
-								<Reference Name="Attenuation">
-									<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
-								</Reference>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="sfx_driver_pistol_spin" ID="{DD784A1B-6FC1-4882-9E7D-EB48E3274888}">
-									<Language>SFX</Language>
-									<AudioFile>sfx_driver_pistol_spin.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="144334770"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ActiveSourceList>
-								<ActiveSource Name="sfx_driver_pistol_spin" ID="{DD784A1B-6FC1-4882-9E7D-EB48E3274888}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
+						</RandomSequenceContainer>
 					</ChildrenList>
 				</ActorMixer>
 			</ChildrenList>

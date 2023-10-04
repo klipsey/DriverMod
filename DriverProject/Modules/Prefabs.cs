@@ -48,6 +48,7 @@ namespace RobDriver.Modules
             Transform modelBaseTransform = SetupModel(newPrefab, model.transform);
 
             model.AddComponent<CharacterModel>().baseRendererInfos = prefab.GetComponentInChildren<CharacterModel>().baseRendererInfos;
+            model.AddComponent<Modules.Components.DriverCSS>();
 
             return model.gameObject;
         }
@@ -154,7 +155,7 @@ namespace RobDriver.Modules
 
             GameObject aimOrigin = new GameObject("AimOrigin");
             aimOrigin.transform.parent = modelBase.transform;
-            aimOrigin.transform.localPosition = new Vector3(0f, 0.5f, 0f);
+            aimOrigin.transform.localPosition = new Vector3(0f, 1.4f, 0f);
             aimOrigin.transform.localRotation = Quaternion.identity;
             aimOrigin.transform.localScale = Vector3.one;
             prefab.GetComponent<CharacterBody>().aimOriginTransform = aimOrigin.transform;

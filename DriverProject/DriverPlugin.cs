@@ -30,7 +30,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "0.0.1";
+        public const string MODVERSION = "1.0.0";
 
         public const string developerPrefix = "ROB";
 
@@ -40,10 +40,11 @@ namespace RobDriver
         {
             instance = this;
 
+            Modules.Config.myConfig = Config;
+
             Log.Init(Logger);
             Modules.Config.ReadConfig();
             Modules.Assets.PopulateAssets();
-            //Modules.Config.ReadConfig();
             Modules.CameraParams.InitializeParams();
             Modules.States.RegisterStates();
             Modules.Buffs.RegisterBuffs();

@@ -18,15 +18,15 @@ namespace RobDriver.SkillStates.Driver
             //base.effectPrefab = Modules.Assets.SomeMuzzleEffect;
             //targetmuzzle = "muzzleThrow"
 
-            base.attackSoundString = "";
+            base.attackSoundString = "sfx_driver_gun_throw";
 
             base.baseDuration = baseDuration;
             base.baseDelayBeforeFiringProjectile = baseDelayDuration;
 
             base.damageCoefficient = damageCoefficient;
-            base.force = 80f;
+            base.force = 120f;
 
-            //base.projectilePitchBonus = 0;
+            base.projectilePitchBonus = -7.5f;
             //base.minSpread = 0;
             //base.maxSpread = 0;
 
@@ -43,7 +43,7 @@ namespace RobDriver.SkillStates.Driver
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Skill;
+            return InterruptPriority.Pain;
         }
 
         public override void PlayAnimation(float duration)

@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using R2API;
+using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,18 @@ namespace RobDriver.Modules
         {
             PopulateFromBody("Commando");
             PopulateFromBody("Croco");
+
+            GameObject fuckYou = Assets.mainAssetBundle.LoadAsset<GameObject>("DriverStunGrenadeGhost").InstantiateClone("DriverStunGrenadeGhost", true);//ItemDisplays.LoadDisplay("DisplayStunGrenade").InstantiateClone("DriverStunGrenadeGhost", true);
+            fuckYou.AddComponent<RoR2.Projectile.ProjectileGhostController>();
+
+            GameObject model = GameObject.Instantiate(ItemDisplays.LoadDisplay("DisplayStunGrenade"));
+            model.transform.parent = fuckYou.transform;
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+            model.transform.localScale = Vector3.one * 3f;
+
+            Assets.stunGrenadeModelPrefab = fuckYou;
+            Modules.Projectiles.stunGrenadeProjectilePrefab.GetComponent<RoR2.Projectile.ProjectileController>().ghostPrefab = Assets.stunGrenadeModelPrefab;
         }
 
         private static void PopulateFromBody(string bodyName)

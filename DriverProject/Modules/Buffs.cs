@@ -11,9 +11,11 @@ namespace RobDriver.Modules
     {
         internal static List<BuffDef> buffDefs = new List<BuffDef>();
 
+        internal static BuffDef dazedDebuff;
+
         internal static void RegisterBuffs()
         {
-            //armorBuff = AddNewBuff("RegigigasArmorBuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.grey, false, false);
+            dazedDebuff = AddNewBuff("RobDriverDazedDebuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.grey, false, false);
             //slowStartBuff = AddNewBuff("RegigigasSlowStartDebuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffSlow50Icon"), Color.grey, true, false);
         }
 

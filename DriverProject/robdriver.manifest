@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3896932528
+CRC: 191788860
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 320c4c845721dd1da77c55e7592654f5
+    Hash: b685a4fc35e7b2796dfde86d935e2936
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 11f407b0593b9ea5467be969dc8e6103
+    Hash: bfb747528b9de32254fbd4eff1f7d5ce
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -15,7 +15,11 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 21
   Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
 - Class: 28
+  Script: {instanceID: 0}
+- Class: 33
   Script: {instanceID: 0}
 - Class: 43
   Script: {instanceID: 0}
@@ -31,11 +35,19 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
+- Class: 96
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 67079b849227b734694872d8810229b8, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: db294d07add6b364f99a346939dd2a8a, type: 3}
 - Class: 115
+  Script: {instanceID: 0}
+- Class: 120
   Script: {instanceID: 0}
 - Class: 136
   Script: {instanceID: 0}
@@ -43,53 +55,100 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 144
   Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
 - Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
   Script: {instanceID: 0}
 - Class: 319
   Script: {instanceID: 0}
 Assets:
 - Assets/Driver/Animations/animDriverCSS.controller
 - Assets/Driver/Icons/texPistolIcon.png
-- Assets/Driver/Animations/JumpSprint.anim
-- Assets/Driver/Animations/CSSIdle.anim
-- Assets/Driver/Animations/SprintFast.anim
-- Assets/Driver/Animations/RunB.anim
-- Assets/Driver/Animations/RunR.anim
+- Assets/Driver/Materials/matShotgun.mat
+- Assets/Driver/Animations/Shotgun/RunR.anim
+- Assets/Driver/HUD/ChargeBar.prefab
+- Assets/Driver/Animations/Default/RestEmoteLoop.anim
+- Assets/Driver/Animations/Default/JumpSprint.anim
+- Assets/Driver/VFX/matShockwave.mat
+- Assets/Driver/Animations/Default/CSSIdle.anim
+- Assets/Driver/VFX/ShotgunShell.prefab
+- Assets/Driver/Animations/Default/SprintFast.anim
+- Assets/Driver/Animations/Default/RunB.anim
+- Assets/Driver/Animations/Default/RunR.anim
 - Assets/Driver/Textures/texDriver.png
-- Assets/Driver/Animations/Idle.anim
-- Assets/Driver/FBX/meshJacketOld.mesh
-- Assets/Driver/Animations/AimYaw.anim
-- Assets/Driver/Animations/AimPitch.anim
+- Assets/Driver/Animations/Shotgun/Descend.anim
+- Assets/Driver/VFX/matShockwave2.mat
+- Assets/Driver/Animations/Default/Idle.anim
+- Assets/Driver/Animations/Shotgun/Idle.anim
+- Assets/Driver/Animations/Default/AimYaw.anim
+- Assets/Driver/FBX/Boombox.fbx
+- Assets/Driver/Animations/Default/CSSIdleIn.anim
+- Assets/Driver/Animations/Default/AimPitch.anim
 - Assets/Driver/Animations/animDriver.controller
-- Assets/Driver/Animations/LightImpact.anim
+- Assets/Driver/Animations/Default/LightImpact.anim
 - Assets/Driver/Materials/matPistol.mat
+- Assets/Driver/Materials/matShotgunShell.mat
 - Assets/Driver/FBX/meshDriver.mesh
+- Assets/Driver/Icons/texMonsoonSkin.png
+- Assets/Driver/VFX/texShockwave.png
 - Assets/Driver/DriverDisplay.prefab
-- Assets/Driver/Animations/Descend.anim
+- Assets/Driver/Animations/Default/Descend.anim
+- Assets/Driver/Animations/Shotgun/Ascend.anim
+- Assets/Driver/Animations/Shotgun/RunL.anim
 - Assets/Driver/Textures/texJacket.png
 - Assets/Driver/Textures/texPistolAlt.png
-- Assets/Driver/Animations/SteadyAimPitch.anim
+- Assets/Driver/Animations/Default/SteadyAimPitch.anim
+- Assets/Driver/Icons/texDriverAchievement.png
 - Assets/Driver/Materials/matPistolAlt.mat
-- Assets/Driver/Animations/Sprint.anim
+- Assets/Driver/Icons/texShotgunWeaponIcon.png
+- Assets/Driver/Animations/Default/Sprint.anim
+- Assets/Driver/Icons/texMainSkin.png
+- Assets/Driver/Animations/Shotgun/RunF.anim
+- Assets/Driver/Animations/Shotgun/Sprint.anim
 - Assets/Driver/Icons/texDriverIcon.png
-- Assets/Driver/Animations/Ascend.anim
+- Assets/Driver/Animations/Default/Ascend.anim
+- Assets/Driver/FBX/meshPistol.mesh
 - Assets/Driver/FBX/meshJacket.mesh
-- Assets/Driver/Animations/maskDriverImpact.mask
+- Assets/Driver/Animations/Default/maskDriverImpact.mask
+- Assets/Driver/Icons/texMachineGunIcon.png
 - Assets/Driver/mdlDriver.prefab
 - Assets/Driver/Textures/texPistol.png
+- Assets/Driver/Animations/Shotgun/CSSIdle.anim
 - Assets/Driver/Icons/texStunGrenadeIcon.png
-- Assets/Driver/Animations/RunL.anim
+- Assets/Driver/Animations/Default/RunL.anim
+- Assets/Driver/Icons/texPassiveIcon.png
 - Assets/Driver/Textures/texDriverEmission.png
+- Assets/Driver/Animations/Shotgun/SprintFast.anim
+- Assets/Driver/Animations/Shotgun/Reload.anim
 - Assets/Driver/Animations/maskDriverAim 1.mask
 - Assets/Driver/Icons/texPistolSecondaryIcon.png
 - Assets/Driver/Animations/maskDriverGesture.mask
-- Assets/Driver/Animations/RunF.anim
+- Assets/Driver/Animations/Default/RunF.anim
 - Assets/Driver/Textures/texJacketEmission.png
-- Assets/Driver/Animations/DefaultPose.anim
+- Assets/Driver/Animations/Default/DefaultPose.anim
+- Assets/Driver/FBX/meshSuperShotgun.mesh
+- Assets/Driver/Projectiles/DriverStunGrenadeImpact.prefab
 - Assets/Driver/FBX/animDriver.fbx
 - Assets/Driver/Materials/matDriver.mat
+- Assets/Driver/Projectiles/DriverStunGrenadeGhost.prefab
+- Assets/Driver/Icons/texPistolWeaponIcon.png
 - Assets/Driver/Icons/texSlideIcon.png
-- Assets/Driver/Animations/SteadyAim.anim
+- Assets/Driver/FBX/animDriverShotgun.fbx
+- Assets/Driver/Icons/texShotgunIcon.png
+- Assets/Driver/Animations/Default/Dance.anim
+- Assets/Driver/Animations/Default/SteadyAim.anim
+- Assets/Driver/Icons/texShotgunSecondaryIcon.png
 - Assets/Driver/Animations/maskDriverAim.mask
+- Assets/Driver/FBX/Shell.dae
+- Assets/Driver/Textures/texShotgun.png
 - Assets/Driver/Materials/matJacket.mat
+- Assets/Driver/Textures/texShell.png
+- Assets/Driver/Animations/Shotgun/RunB.anim
+- Assets/Driver/HUD/Textures/texWhite.png
 Dependencies: []

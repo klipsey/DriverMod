@@ -1,32 +1,88 @@
 ﻿using UnityEngine;
 using RoR2;
 using EntityStates;
+using RobDriver.Modules;
+using RobDriver.SkillStates.Emote;
+using BepInEx.Configuration;
 
 namespace RobDriver.SkillStates.Driver
 {
     public class MainState : GenericCharacterMain
     {
 		private Animator animator;
-        public override void OnEnter()
+		public LocalUser localUser;
+
+		public override void OnEnter()
         {
             base.OnEnter();
 			this.animator = this.modelAnimator;
+			this.FindLocalUser();
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
 
-			if (this.animator)
+            if (this.animator)
             {
-				bool cock = false;
-				if (!this.characterBody.outOfDanger || !this.characterBody.outOfCombat) cock = true;
+                bool cock = false;
+                if (!this.characterBody.outOfDanger || !this.characterBody.outOfCombat) cock = true;
 
-				this.animator.SetBool("inCombat", cock);
+                this.animator.SetBool("inCombat", cock);
             }
-        }
 
-        public override void ProcessJump()
+			//emotes
+			if (base.isAuthority && base.characterMotor.isGrounded)
+			{
+				this.CheckEmote<Rest>(Config.restKey);
+				this.CheckEmote<Taunt>(Config.tauntKey);
+				this.CheckEmote<Dance>(Config.danceKey);
+			}
+		}
+
+		private void CheckEmote(KeyCode keybind, EntityState state)
+		{
+			if (Input.GetKeyDown(keybind))
+			{
+				if (!localUser.isUIFocused)
+				{
+					outer.SetInterruptState(state, InterruptPriority.Any);
+				}
+			}
+		}
+
+		private void CheckEmote<T>(ConfigEntry<KeyboardShortcut> keybind) where T : EntityState, new()
+		{
+			if (Modules.Config.GetKeyPressed(keybind))
+			{
+				FindLocalUser();
+
+				if (localUser != null && !localUser.isUIFocused)
+				{
+					outer.SetInterruptState(new T(), InterruptPriority.Any);
+				}
+			}
+		}
+
+		private void FindLocalUser()
+		{
+			if (localUser == null)
+			{
+				if (base.characterBody)
+				{
+					foreach (LocalUser lu in LocalUserManager.readOnlyLocalUsersList)
+					{
+						if (lu.cachedBody == base.characterBody)
+						{
+							this.localUser = lu;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		public override void ProcessJump()
         {
 			if (this.hasCharacterMotor)
 			{
@@ -109,6 +165,45 @@ namespace RobDriver.SkillStates.Driver
 					}
 
 					base.characterMotor.jumpCount++;
+
+					// set up double jump anim
+					if (this.animator)
+					{
+						float x = this.animatorWalkParamCalculator.animatorWalkSpeed.y;
+						float y = this.animatorWalkParamCalculator.animatorWalkSpeed.x;
+
+						// neutral jump
+						if (Mathf.Abs(x) <= 0.45f && Mathf.Abs(y) <= 0.45f || this.inputBank.moveVector == Vector3.zero)
+						{
+							x = 0f;
+							y = 0f;
+						}
+
+						if (Mathf.Abs(x) > Mathf.Abs(y))
+						{
+							// side flip
+							if (x > 0f) x = 1f;
+							else x = -1f;
+							y = 0f;
+						}
+						else if (Mathf.Abs(x) < Mathf.Abs(y))
+						{
+							// forward/backflips
+							if (y > 0f) y = 1f;
+							else y = -1f;
+							x = 0f;
+						}
+						// eh this feels less dynamic. ignore the slight anim clipping issues ig and just blend them
+						//  actualyl don't because the clipping issues are nightmarish
+
+						// have to cache it at time of jump otherwise you can fuck up the jump anim in weird ways by turning during it
+						this.animator.SetFloat("forwardSpeedCached", y);
+						this.animator.SetFloat("rightSpeedCached", x);
+						// turns out this wasn't even used in the end. the animation didn't break at all in practice, only in theory
+						// Fuck You rob you fucking moron
+
+						//  update: this was actually used. what the hell are you doing?
+					}
 				}
 			}
 		}

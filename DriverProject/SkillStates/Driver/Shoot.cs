@@ -56,6 +56,14 @@ namespace RobDriver.SkillStates.Driver
 
                 this.spinPlayID = Util.PlaySound("sfx_driver_pistol_spin", this.gameObject);
             }
+            else
+            {
+                if (base.isAuthority)
+                {
+                    this.hasFired = true;
+                    this.Fire();
+                }
+            }
 
             base.PlayAnimation("Gesture, Override", animString, "Shoot.playbackRate", this.duration);
         }
@@ -94,7 +102,7 @@ namespace RobDriver.SkillStates.Driver
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,
                     minSpread = 0f,
-                    maxSpread = 0f,
+                    maxSpread = this.characterBody.spreadBloomAngle,
                     isCrit = this.isCrit,
                     owner = base.gameObject,
                     muzzleName = muzzleString,
@@ -171,7 +179,7 @@ namespace RobDriver.SkillStates.Driver
                 return InterruptPriority.Any;
             }
 
-            if (this.isCrit) return InterruptPriority.PrioritySkill;
+            if (this.isCrit && !this.hasFired2) return InterruptPriority.PrioritySkill;
 
             return InterruptPriority.Skill;
         }
