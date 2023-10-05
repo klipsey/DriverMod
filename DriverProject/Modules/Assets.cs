@@ -29,9 +29,11 @@ namespace RobDriver.Modules
 
         public static Mesh pistolMesh;
         public static Mesh shotgunMesh;
+        public static Mesh machineGunMesh;
 
         public static Material pistolMat;
         public static Material shotgunMat;
+        public static Material machineGunMat;
 
         public static GameObject shotgunShell;
 
@@ -92,9 +94,11 @@ namespace RobDriver.Modules
 
             pistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshPistol");
             shotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSuperShotgun");
+            machineGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshMachineGun");
 
             pistolMat = CreateMaterial("matPistol");
             shotgunMat = CreateMaterial("matShotgun");
+            machineGunMat = CreateMaterial("matMachineGun");
 
             shotgunShell = mainAssetBundle.LoadAsset<GameObject>("ShotgunShell");
             shotgunShell.GetComponentInChildren<MeshRenderer>().material = CreateMaterial("matShotgunShell");

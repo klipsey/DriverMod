@@ -9,7 +9,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
     {
         public static float damageCoefficient = 1.8f;
         public static float procCoefficient = 1f;
-        public static float baseDuration = 0.4f;
+        public static float baseDuration = 0.22f;
         public static float force = 20f;
         public static float recoil = 1f;
         public static float range = 256f;
@@ -33,15 +33,13 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
             this.isCrit = base.RollCrit();
 
-            string animString = "Shoot";
-
             if (base.isAuthority)
             {
                 this.hasFired = true;
                 this.Fire();
             }
 
-            base.PlayAnimation("Gesture, Override", animString, "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
         }
 
         public override void OnExit()
@@ -74,10 +72,10 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                     maxDistance = Shoot.range,
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,
-                    minSpread = 0f,
-                    maxSpread = this.characterBody.spreadBloomAngle,
+                    minSpread = 0.25f,
+                    maxSpread = 5f,
                     isCrit = this.isCrit,
-                    owner = base.gameObject,
+                    owner = this.gameObject,
                     muzzleName = muzzleString,
                     smartCollision = true,
                     procChainMask = default(ProcChainMask),
@@ -87,8 +85,8 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                     stopperMask = LayerIndex.CommonMasks.bullet,
                     weapon = null,
                     tracerEffectPrefab = this.tracerPrefab,
-                    spreadPitchScale = 0f,
-                    spreadYawScale = 0f,
+                    spreadPitchScale = 1f,
+                    spreadYawScale = 1f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 }.Fire();

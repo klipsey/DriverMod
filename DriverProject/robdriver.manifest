@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 191788860
+CRC: 1289183901
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b685a4fc35e7b2796dfde86d935e2936
+    Hash: 26d8c5038bb3af290a0d3c02015d91b4
   TypeTreeHash:
     serializedVersion: 2
     Hash: bfb747528b9de32254fbd4eff1f7d5ce
@@ -85,6 +85,7 @@ Assets:
 - Assets/Driver/Animations/Shotgun/Descend.anim
 - Assets/Driver/VFX/matShockwave2.mat
 - Assets/Driver/Animations/Default/Idle.anim
+- Assets/Driver/FBX/meshMachineGun.mesh
 - Assets/Driver/Animations/Shotgun/Idle.anim
 - Assets/Driver/Animations/Default/AimYaw.anim
 - Assets/Driver/FBX/Boombox.fbx
@@ -106,6 +107,7 @@ Assets:
 - Assets/Driver/Animations/Default/SteadyAimPitch.anim
 - Assets/Driver/Icons/texDriverAchievement.png
 - Assets/Driver/Materials/matPistolAlt.mat
+- Assets/Driver/Materials/matMachineGun.mat
 - Assets/Driver/Icons/texShotgunWeaponIcon.png
 - Assets/Driver/Animations/Default/Sprint.anim
 - Assets/Driver/Icons/texMainSkin.png
@@ -118,6 +120,7 @@ Assets:
 - Assets/Driver/Animations/Default/maskDriverImpact.mask
 - Assets/Driver/Icons/texMachineGunIcon.png
 - Assets/Driver/mdlDriver.prefab
+- Assets/Driver/Materials/matKnife.mat
 - Assets/Driver/Textures/texPistol.png
 - Assets/Driver/Animations/Shotgun/CSSIdle.anim
 - Assets/Driver/Icons/texStunGrenadeIcon.png
@@ -144,6 +147,7 @@ Assets:
 - Assets/Driver/Animations/Default/Dance.anim
 - Assets/Driver/Animations/Default/SteadyAim.anim
 - Assets/Driver/Icons/texShotgunSecondaryIcon.png
+- Assets/Driver/Textures/texMachineGun.png
 - Assets/Driver/Animations/maskDriverAim.mask
 - Assets/Driver/FBX/Shell.dae
 - Assets/Driver/Textures/texShotgun.png

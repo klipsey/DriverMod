@@ -104,6 +104,14 @@ namespace RobDriver.Modules.Components
 
         private void EquipWeapon()
         {
+            // overrides....
+            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.shotgunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.shotgunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+
+            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.machineGunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.machineGunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            // fuck this
+
             switch (this.weapon)
             {
                 case DriverWeapon.Default:
@@ -112,9 +120,6 @@ namespace RobDriver.Modules.Components
                     this.EnableLayer("");
 
                     this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("Standard");
-
-                    this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.shotgunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-                    this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.shotgunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
 
                     this.maxWeaponTimer = 0f;
                     this.weaponTimer = 0f;
@@ -133,14 +138,14 @@ namespace RobDriver.Modules.Components
                     this.weaponTimer = Modules.Config.shotgunDuration.Value;
                     break;
                 case DriverWeapon.MachineGun:
-                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.shotgunMat;
-                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.shotgunMesh;
+                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.machineGunMat;
+                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.machineGunMesh;
                     this.EnableLayer("Body, Shotgun");
 
                     this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("Standard");
 
-                    this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.shotgunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-                    this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.shotgunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.machineGunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.machineGunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
 
                     this.maxWeaponTimer = Modules.Config.shotgunDuration.Value;
                     this.weaponTimer = Modules.Config.shotgunDuration.Value;

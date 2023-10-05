@@ -107,7 +107,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                         spreadYawScale = 1f,
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
-                        HitEffectNormal = false
+                        HitEffectNormal = false,
                     };
 
                     bulletAttack.minSpread = 0;
