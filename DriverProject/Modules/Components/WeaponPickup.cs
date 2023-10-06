@@ -63,7 +63,8 @@ namespace RobDriver.Modules.Components
 
 		private void OnTriggerStay(Collider collider)
 		{
-			if (NetworkServer.active && this.alive && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex)
+			// can this run on every client? i don't know but let's find out
+			if (/*NetworkServer.active && */this.alive && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex)
 			{
 				DriverController iDrive = collider.GetComponent<DriverController>();
 				if (iDrive)

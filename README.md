@@ -67,10 +67,14 @@ Bog - Code for Shuriken interaction fix
 - Ancient Scepter support
 - Better item displays
 - Other things 100% decided on pure whimsy
+- Proper skill icons?
 
 ___
 
 ## Changelog
+
+`1.0.1`
+- Fixed gun pickups being permanent- when commenting out the gun test code for release, I accidentally hit the code that swaps back to the pistol as well, whoops
 
 `1.0.0`
 - Initial release

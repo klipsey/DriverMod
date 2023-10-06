@@ -86,12 +86,12 @@ namespace RobDriver.Modules.Components
             if (Input.GetKeyDown("v"))
             {
                 this.PickUpWeapon(DriverWeapon.RocketLauncher);
-            }
+            }*/
 
             if (this.weaponTimer <= 0f && this.weapon != DriverWeapon.Default)
             {
                 this.PickUpWeapon(DriverWeapon.Default);
-            }*/
+            }
         }
 
         public void PickUpWeapon(DriverWeapon newWeapon)
