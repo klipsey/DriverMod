@@ -34,7 +34,7 @@ Slide
 ## Special
 Stun grenade
 
-[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/special.gif?raw=true]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/special.gif?raw=true)]()
 
 ___
 
