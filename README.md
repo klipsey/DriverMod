@@ -14,7 +14,7 @@ ___
 ## Passive
 Enemies drop weapon crates that change your skills for a short time
 
-[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/passive.gif?raw=true]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/passive.gif?raw=true)]()
 
 ## Primary
 Shoot gun
