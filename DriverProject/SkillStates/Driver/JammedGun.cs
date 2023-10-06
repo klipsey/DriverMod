@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RobDriver.SkillStates.Driver
 {
-    public class JammedGun : BaseState
+    public class JammedGun : BaseDriverSkillState
     {
         public float duration = 5f;
 
@@ -27,6 +27,13 @@ namespace RobDriver.SkillStates.Driver
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+
+            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Default)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                this.outer.SetNextStateToMain();
+                return;
+            }
 
             if (base.fixedAge >= this.duration)
             {

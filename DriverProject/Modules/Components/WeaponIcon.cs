@@ -88,7 +88,7 @@ namespace RobDriver.Modules.Components
 						texture = Modules.Assets.shotgunWeaponIcon;
 						break;
 					case DriverWeapon.MachineGun:
-						texture = Modules.Assets.shotgunWeaponIcon;
+						texture = Modules.Assets.machineGunWeaponIcon;
 						break;
 				}
 

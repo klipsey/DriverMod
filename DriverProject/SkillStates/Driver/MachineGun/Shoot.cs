@@ -7,7 +7,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 {
     public class Shoot : BaseSkillState
     {
-        public static float damageCoefficient = 1.8f;
+        public static float damageCoefficient = 1.9f;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.22f;
         public static float force = 20f;
@@ -39,7 +39,8 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                 this.Fire();
             }
 
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
+            if (this.isCrit) base.PlayAnimation("Gesture, Override", "FireMachineGunCritical", "Shoot.playbackRate", this.duration * 2f);
+            else base.PlayAnimation("Gesture, Override", "FireMachineGun", "Shoot.playbackRate", this.duration * 2f);
         }
 
         public override void OnExit()
@@ -52,8 +53,8 @@ namespace RobDriver.SkillStates.Driver.MachineGun
             base.characterBody.AddSpreadBloom(1.25f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, this.muzzleString, false);
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_pistol_shoot_charged_critical", base.gameObject);
-            else Util.PlaySound("sfx_driver_pistol_shoot_charged", base.gameObject);
+            if (this.isCrit) Util.PlaySound("sfx_driver_machinegun_shoot_critical", base.gameObject);
+            else Util.PlaySound("sfx_driver_machinegun_shoot", base.gameObject);
 
             if (base.isAuthority)
             {

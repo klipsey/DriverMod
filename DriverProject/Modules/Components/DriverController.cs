@@ -67,7 +67,8 @@ namespace RobDriver.Modules.Components
             this.weaponTimer -= Time.fixedDeltaTime;
             this.jamTimer = Mathf.Clamp(this.jamTimer - (2f * Time.fixedDeltaTime), 0f, Mathf.Infinity);
 
-            if (Input.GetKeyDown("z"))
+            // test
+            /*if (Input.GetKeyDown("z"))
             {
                 this.PickUpWeapon(DriverWeapon.Default);
             }
@@ -90,7 +91,7 @@ namespace RobDriver.Modules.Components
             if (this.weaponTimer <= 0f && this.weapon != DriverWeapon.Default)
             {
                 this.PickUpWeapon(DriverWeapon.Default);
-            }
+            }*/
         }
 
         public void PickUpWeapon(DriverWeapon newWeapon)

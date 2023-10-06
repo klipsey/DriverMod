@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1289183901
+CRC: 3003241339
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 26d8c5038bb3af290a0d3c02015d91b4
+    Hash: edff90663990f993d9040e026e8317e5
   TypeTreeHash:
     serializedVersion: 2
     Hash: bfb747528b9de32254fbd4eff1f7d5ce
@@ -86,16 +86,20 @@ Assets:
 - Assets/Driver/VFX/matShockwave2.mat
 - Assets/Driver/Animations/Default/Idle.anim
 - Assets/Driver/FBX/meshMachineGun.mesh
+- Assets/Driver/FBX/WeaponCrate.fbx
+- Assets/Driver/Icons/texMachineGunWeaponIcon.png
 - Assets/Driver/Animations/Shotgun/Idle.anim
 - Assets/Driver/Animations/Default/AimYaw.anim
 - Assets/Driver/FBX/Boombox.fbx
 - Assets/Driver/Animations/Default/CSSIdleIn.anim
 - Assets/Driver/Animations/Default/AimPitch.anim
+- Assets/Driver/Textures/texCrate1.png
 - Assets/Driver/Animations/animDriver.controller
 - Assets/Driver/Animations/Default/LightImpact.anim
 - Assets/Driver/Materials/matPistol.mat
 - Assets/Driver/Materials/matShotgunShell.mat
 - Assets/Driver/FBX/meshDriver.mesh
+- Assets/Driver/Textures/texCrate2.png
 - Assets/Driver/Icons/texMonsoonSkin.png
 - Assets/Driver/VFX/texShockwave.png
 - Assets/Driver/DriverDisplay.prefab
@@ -119,6 +123,7 @@ Assets:
 - Assets/Driver/FBX/meshJacket.mesh
 - Assets/Driver/Animations/Default/maskDriverImpact.mask
 - Assets/Driver/Icons/texMachineGunIcon.png
+- Assets/Driver/WeaponPickup.prefab
 - Assets/Driver/mdlDriver.prefab
 - Assets/Driver/Materials/matKnife.mat
 - Assets/Driver/Textures/texPistol.png
@@ -129,15 +134,19 @@ Assets:
 - Assets/Driver/Textures/texDriverEmission.png
 - Assets/Driver/Animations/Shotgun/SprintFast.anim
 - Assets/Driver/Animations/Shotgun/Reload.anim
+- Assets/Driver/Materials/matCrate1.mat
 - Assets/Driver/Animations/maskDriverAim 1.mask
 - Assets/Driver/Icons/texPistolSecondaryIcon.png
+- Assets/Driver/FBX/animDriverMachineGun.fbx
 - Assets/Driver/Animations/maskDriverGesture.mask
 - Assets/Driver/Animations/Default/RunF.anim
+- Assets/Driver/Icons/texZapIcon.png
 - Assets/Driver/Textures/texJacketEmission.png
 - Assets/Driver/Animations/Default/DefaultPose.anim
 - Assets/Driver/FBX/meshSuperShotgun.mesh
 - Assets/Driver/Projectiles/DriverStunGrenadeImpact.prefab
 - Assets/Driver/FBX/animDriver.fbx
+- Assets/Driver/Materials/matCrate2.mat
 - Assets/Driver/Materials/matDriver.mat
 - Assets/Driver/Projectiles/DriverStunGrenadeGhost.prefab
 - Assets/Driver/Icons/texPistolWeaponIcon.png

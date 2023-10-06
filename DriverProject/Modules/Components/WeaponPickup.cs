@@ -19,7 +19,47 @@ namespace RobDriver.Modules.Components
         {
 			if (Random.value > 0.5f) this.weapon = DriverWeapon.Shotgun;
 			else this.weapon = DriverWeapon.MachineGun;
-        }
+
+			// wow this is awful!
+			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
+			if (textComponent)
+            {
+				switch (this.weapon)
+                {
+					case DriverWeapon.Default:
+						textComponent.token = "ROB_DRIVER_PISTOL_NAME";
+						break;
+					case DriverWeapon.Shotgun:
+						textComponent.token = "ROB_DRIVER_SHOTGUN_NAME";
+						break;
+					case DriverWeapon.MachineGun:
+						textComponent.token = "ROB_DRIVER_MACHINEGUN_NAME";
+						break;
+				}
+            }
+
+			// disable visuals for non driver
+			if (!Modules.Config.sharedPickupVisuals.Value)
+            {
+				BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+				if (blinker)
+				{
+					bool isDriver = false;
+
+					var localPlayers = LocalUserManager.readOnlyLocalUsersList;
+					foreach (LocalUser i in localPlayers)
+					{
+						if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken) isDriver = true;
+					}
+
+					if (!isDriver)
+					{
+						blinker.blinkingRootObject.SetActive(false);
+						Destroy(blinker);
+					}
+				}
+			}
+		}
 
 		private void OnTriggerStay(Collider collider)
 		{

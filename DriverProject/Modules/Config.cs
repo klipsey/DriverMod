@@ -14,6 +14,8 @@ namespace RobDriver.Modules
         public static ConfigFile myConfig;
 
         public static ConfigEntry<bool> autoFocus;
+        public static ConfigEntry<bool> sharedPickupVisuals;
+        public static ConfigEntry<float> baseDropRate;
 
         public static ConfigEntry<float> baseHealth;
         public static ConfigEntry<float> healthGrowth;
@@ -24,8 +26,6 @@ namespace RobDriver.Modules
         public static ConfigEntry<float> baseMovementSpeed;
         public static ConfigEntry<float> baseCrit;
         public static ConfigEntry<float> baseRegen;
-
-        public static ConfigEntry<float> baseDropRate;
 
         public static ConfigEntry<float> shotgunDuration;
 
@@ -42,10 +42,17 @@ namespace RobDriver.Modules
              false,
              "If set to true, Focus will always charge up before firing a shot. Take control of your runs with the illusion of skill!");
 
+            sharedPickupVisuals
+ = Config.BindAndOptions("01 - General",
+ "Shared Pickup Visuals",
+ true,
+ "If set to false, weaapon pickups will only be visible for those playing Driver. Setting this to true lets everyone see them.");
+
+
             baseDropRate
 = Config.BindAndOptionsSlider("01 - General",
 "Base Drop Rate",
-12f,
+7f,
 "Base chance for weapons to drop on kill", 0f, 100f);
             #endregion
 
@@ -123,6 +130,15 @@ namespace RobDriver.Modules
              8f,
              "How long shotgun lasts, in seconds", 1f, 20f);
             #endregion
+        }
+
+        public static void InitROO(Sprite modSprite, string modDescription)
+        {
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions"))
+            {
+                ModSettingsManager.SetModIcon(modSprite);
+                ModSettingsManager.SetModDescription(modDescription);
+            }
         }
 
         public static ConfigEntry<T> BindAndOptions<T>(string section, string name, T defaultValue, string description = "", bool restartRequired = false)

@@ -360,8 +360,8 @@ namespace RobDriver.Modules.Survivors
 
             #region Primary
             Modules.Skills.AddPrimarySkills(prefab,
-                Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false),
-                Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));
+                Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));//,
+                //Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));
 
             Driver.shotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
                 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Shoot)),
@@ -376,12 +376,12 @@ namespace RobDriver.Modules.Survivors
                 "Weapon",
                 prefix + "_DRIVER_BODY_PRIMARY_MACHINEGUN_NAME",
                 prefix + "_DRIVER_BODY_PRIMARY_MACHINEGUN_DESCRIPTION",
-                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMachineGunIcon"),
                 false);
             #endregion
 
             #region Secondary
-            SkillDef groundSmashSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef steadyAimSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SECONDARY_PISTOL_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_PISTOL_NAME",
@@ -458,7 +458,7 @@ namespace RobDriver.Modules.Survivors
                 skillName = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMachineGunSecondaryIcon"),
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texZapIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MachineGun.Zap)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -477,7 +477,7 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1,
             });
 
-            Modules.Skills.AddSecondarySkills(prefab, groundSmashSkillDef, pissSkillDef);
+            Modules.Skills.AddSecondarySkills(prefab, steadyAimSkillDef/*, pissSkillDef*/);
             #endregion
 
             #region Utility
@@ -3317,9 +3317,12 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
             {
                 if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
                 {
-                    // 12 + 2(player level)%
-                    float chance = Modules.Config.baseDropRate.Value + ((1 + damageReport.attackerBody.level) * 2f);
+                    // 7 + 0.75(player level)%
+                    float chance = Modules.Config.baseDropRate.Value + ((1 + damageReport.attackerBody.level) * 0.75f);
                     bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
+
+                    // halved on swarms, fuck You
+                    if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Sacrifice)) chance *= 0.75f;
 
                     // test
                     //droppedWeapon = true;

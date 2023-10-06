@@ -38,9 +38,12 @@ namespace RobDriver.Modules
         public static GameObject shotgunShell;
 
         public static GameObject weaponPickup;
+        public static GameObject weaponPickupEffect;
 
         internal static Texture pistolWeaponIcon;
         internal static Texture shotgunWeaponIcon;
+        internal static Texture machineGunWeaponIcon;
+        internal static Texture rocketLauncherWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
@@ -66,14 +69,7 @@ namespace RobDriver.Modules
 
             //punchSoundDef = CreateNetworkSoundEventDef("RegigigasPunchImpact");
 
-            jammedEffectPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc").InstantiateClone("DriverGunJammedEffect", true);
-
-            jammedEffectPrefab.GetComponent<EffectComponent>().soundName = "";
-            if (!jammedEffectPrefab.GetComponent<NetworkIdentity>()) jammedEffectPrefab.AddComponent<NetworkIdentity>();
-
-            jammedEffectPrefab.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>().token = "ROB_DRIVER_JAMMED_POPUP";
-
-            Assets.AddNewEffectDef(jammedEffectPrefab);
+            jammedEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ROB_DRIVER_JAMMED_POPUP");
 
             pistolAimCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverPistolAimCrosshair", false);
 
@@ -107,6 +103,7 @@ namespace RobDriver.Modules
 
             weaponPickup = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandolier/AmmoPack.prefab").WaitForCompletion().InstantiateClone("DriverWeaponPickup", true);
 
+            weaponPickup.GetComponent<BeginRapidlyActivatingAndDeactivating>().delayBeforeBeginningBlinking = 55f;
             weaponPickup.GetComponent<DestroyOnTimer>().duration = 60f;
 
             AmmoPickup ammoPickupComponent = weaponPickup.GetComponentInChildren<AmmoPickup>();
@@ -119,18 +116,53 @@ namespace RobDriver.Modules
             Material uncommonPickupMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Bandolier/matPickups.mat").WaitForCompletion());
             uncommonPickupMat.SetColor("_TintColor", new Color(0f, 80f / 255f, 0f, 1f));
 
-            weaponPickup.GetComponentInChildren<MeshRenderer>().materials = new Material[]
+            weaponPickup.GetComponentInChildren<MeshRenderer>().enabled = false;/*.materials = new Material[]
             {
                 Assets.shotgunMat,
                 uncommonPickupMat
+            };*/
+
+            GameObject pickupModel = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickup"));
+            pickupModel.transform.parent = weaponPickup.transform.Find("Visuals");
+            pickupModel.transform.localPosition = new Vector3(0f, -0.35f, 0f);
+            pickupModel.transform.localRotation = Quaternion.identity;
+
+            MeshRenderer pickupMesh = pickupModel.GetComponentInChildren<MeshRenderer>();
+            pickupMesh.materials = new Material[]
+            {
+                CreateMaterial("matCrate1"),
+                CreateMaterial("matCrate2")//,
+                //uncommonPickupMat
             };
+
+            GameObject textShit = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
+            MonoBehaviour.Destroy(textShit.GetComponent<EffectComponent>());
+            textShit.transform.parent = pickupModel.transform;
+            textShit.transform.localPosition = Vector3.zero;
+            textShit.transform.localRotation = Quaternion.identity;
+
+            textShit.GetComponent<DestroyOnTimer>().enabled = false;
+
+            ObjectScaleCurve whatTheFuckIsThis = textShit.GetComponentInChildren<ObjectScaleCurve>();
+            //whatTheFuckIsThis.enabled = false;
+            //whatTheFuckIsThis.transform.localScale = Vector3.one * 2;
+            //whatTheFuckIsThis.timeMax = 60f;
+            Transform helpMe = whatTheFuckIsThis.transform;
+            MonoBehaviour.DestroyImmediate(whatTheFuckIsThis);
+            helpMe.transform.localScale = Vector3.one * 1.25f;
 
             MonoBehaviour.Destroy(ammoPickupComponent);
             MonoBehaviour.Destroy(weaponPickup.GetComponentInChildren<RoR2.GravitatePickup>());
 
+            weaponPickupEffect = weaponPickupComponent.pickupEffect.InstantiateClone("RobDriverWeaponPickupEffect", true);
+            AddNewEffectDef(weaponPickupEffect, "sfx_driver_pickup");
+            weaponPickupComponent.pickupEffect = weaponPickupEffect;
+
 
             pistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
             shotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texShotgunWeaponIcon");
+            machineGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texMachineGunWeaponIcon");
+            rocketLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texShotgunWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -173,6 +205,22 @@ namespace RobDriver.Modules
 
             AddNewEffectDef(shotgunTracer);
             AddNewEffectDef(shotgunTracerCrit);
+
+            Modules.Config.InitROO(Assets.mainAssetBundle.LoadAsset<Sprite>("texDriverIcon"), "Literally me");
+        }
+
+        internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")
+        {
+            GameObject i = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc").InstantiateClone(prefabName, true);
+
+            i.GetComponent<EffectComponent>().soundName = soundName;
+            if (!i.GetComponent<NetworkIdentity>()) i.AddComponent<NetworkIdentity>();
+
+            i.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>().token = token;
+
+            Assets.AddNewEffectDef(i);
+
+            return i;
         }
 
         internal static NetworkSoundEventDef CreateNetworkSoundEventDef(string eventName)

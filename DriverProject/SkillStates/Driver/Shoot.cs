@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver
 {
-    public class Shoot : BaseSkillState
+    public class Shoot : BaseDriverSkillState
     {
         public static float damageCoefficient = 2.2f;
         public static float procCoefficient = 1f;
@@ -134,6 +134,13 @@ namespace RobDriver.SkillStates.Driver
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+
+            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Default)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                this.outer.SetNextStateToMain();
+                return;
+            }
 
             if (base.fixedAge >= this.fireTime && base.isAuthority)
             {

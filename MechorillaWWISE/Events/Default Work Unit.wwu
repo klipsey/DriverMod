@@ -245,6 +245,50 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_zap_prep" ID="{DC1A1201-A089-43E2-9C47-795A33043C20}">
+					<ChildrenList>
+						<Action Name="" ID="{7BCB1DDC-BC62-4312-B535-614EBF5F8100}" ShortID="320781165">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_zap_prep" ID="{9239C96F-E192-4D1E-B5C2-73EB0BC7096A}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_zap" ID="{4D404FC7-968B-4C6D-8081-08B1988858B1}">
+					<ChildrenList>
+						<Action Name="" ID="{870A6938-4C11-492B-96EB-E0DBB181AB44}" ShortID="852354305">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_zap" ID="{2A88AA40-EAFB-4EA1-9A34-466702A1C63F}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_machinegun_shoot" ID="{CB4EB4B9-3D6E-42EA-9B0F-FC5362DFC086}">
+					<ChildrenList>
+						<Action Name="" ID="{44EF90E1-9DF1-4890-81B9-E885FA2570EF}" ShortID="774977245">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_machinegun_shoot" ID="{0B55D85E-35D9-48A3-9A47-04DB9CC58FDA}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_machinegun_shoot_critical" ID="{D7B9BDD7-3B3F-445B-98F2-5C71E090FE7C}">
+					<ChildrenList>
+						<Action Name="" ID="{93EE158D-0481-47D8-9024-72528E3ED5A4}" ShortID="592166890">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_machinegun_shoot_critical" ID="{9EB187B5-B23F-4D4B-9B9B-9DABC3469198}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

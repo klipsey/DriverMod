@@ -5,8 +5,7 @@ using RobDriver.Modules.Components;
 
 namespace RobDriver.SkillStates.Driver.Shotgun
 {
-
-    public class Shoot : BaseSkillState
+    public class Shoot : BaseDriverSkillState
     {
         public const float RAD2 = 1.414f;//for area calculation
         //public const float RAD3 = 1.732f;//for area calculation
@@ -27,12 +26,10 @@ namespace RobDriver.SkillStates.Driver.Shotgun
         private Animator animator;
         private bool isCrit;
         protected string muzzleString;
-        private DriverController iDrive;
 
         public override void OnEnter()
         {
             base.OnEnter();
-            this.iDrive = this.GetComponent<DriverController>();
             this.characterBody.SetAimTimer(5f);
             this.animator = GetModelAnimator();
             this.muzzleString = "ShotgunMuzzle";
@@ -136,6 +133,13 @@ namespace RobDriver.SkillStates.Driver.Shotgun
             if (base.fixedAge >= this.fireDuration)
             {
                 this.FireBullet();
+            }
+
+            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Shotgun)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                this.outer.SetNextStateToMain();
+                return;
             }
 
             if (base.fixedAge >= this.duration && base.isAuthority)

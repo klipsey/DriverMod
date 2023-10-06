@@ -7,10 +7,12 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 {
     public class Zap : GenericProjectileBaseState
     {
-        public static float baseDuration = 0.65f;
-        public static float baseDelayDuration = 0.1f * baseDuration;
+        public static float baseDuration = 0.8f;
+        public static float baseDelayDuration = 0.5f * baseDuration;
 
-        public static float damageCoefficient = 1.2f;
+        public static float damageCoefficient = 3.8f;
+
+        private uint playID;
 
         public override void OnEnter()
         {
@@ -34,6 +36,8 @@ namespace RobDriver.SkillStates.Driver.MachineGun
             base.bloom = 10;
 
             base.OnEnter();
+
+            this.playID = Util.PlaySound("sfx_driver_zap_prep", this.gameObject);
         }
 
         public override void FixedUpdate()
@@ -41,8 +45,25 @@ namespace RobDriver.SkillStates.Driver.MachineGun
             base.FixedUpdate();
         }
 
+        public override void FireProjectile()
+        {
+            base.FireProjectile();
+
+            Util.PlaySound("sfx_driver_zap", this.gameObject);
+
+            AkSoundEngine.StopPlayingID(this.playID);
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+
+            AkSoundEngine.StopPlayingID(this.playID);
+        }
+
         public override InterruptPriority GetMinimumInterruptPriority()
         {
+            if (base.fixedAge >= (this.duration * this.delayBeforeFiringProjectile) + 0.1f) return InterruptPriority.Any;
             return InterruptPriority.Pain;
         }
 
@@ -50,7 +71,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
         {
             if (base.GetModelAnimator())
             {
-                base.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration);
+                base.PlayAnimation("Gesture, Override", "Zap", "Action.playbackRate", this.duration);
             }
         }
     }
