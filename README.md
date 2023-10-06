@@ -9,13 +9,6 @@ To share feedback, report bugs, or offer suggestions feel free to DM @braindead_
 
 ___
 
-## Credits
-rob - Pretty much everything  
-TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
-Swuff - Code help, feedback
-
-___
-
 # Skills
 
 ## Passive
@@ -43,9 +36,16 @@ Stun grenade
 
 [![](https://i.gyazo.com/8f6a28aaaead0b58aa17225abf5a7778.gif]()
 
+___
+
+## Credits
+rob - Pretty much everything  
+TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
+Swuff - Code help, feedback
+
 
 ## Future Plans
-- Many more weapons
+- Many more weapons (rocket launcher, dual uzis, railgun, minigun, etc.)
 - Alternate skills
 - Ancient Scepter support
 - Better item displays
