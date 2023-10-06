@@ -226,7 +226,7 @@ namespace RobDriver.Modules
         {
             return Config.BindAndOptions("01 - General",
                          "Force Unlock",
-                         true,
+                         false,
                          "Makes this character unlocked by default", true);
         }
 
@@ -244,7 +244,8 @@ namespace RobDriver.Modules
     }
 
 
-    public class StageSpawnInfo {
+    public class StageSpawnInfo 
+    {
         private string stageName;
         private int minStages;
 

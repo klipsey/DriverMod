@@ -15,7 +15,7 @@ namespace RobDriver.Modules
             desc = desc + "< ! > Combat Slide while shooting to make sure your damage has no downtime." + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Flashbang can be used to make a clean getaway in a pinch." + Environment.NewLine + Environment.NewLine;
 
-            string outro = "..and so he left, in search of a new purpose.";
+            string outro = "..and so he left, still the same as he was when he began.";
             string outroFailure = "..and so he vanished, never to become a real human being.";
 
             string lore = "Back against the wall and odds\n";

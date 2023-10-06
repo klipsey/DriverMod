@@ -1,11 +1,23 @@
 # Driver
 - Adds the Driver, an original character based on the Driver from the film Drive (2011)
 - Fully functional base kit with several weapon pickups that give him new attacks
-- Has item displays, an unlockable mastery skin and full compatibility with multiplayer
+- Has item displays, an unlockable mastery skin and is multiplayer friendly
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen1.png)]()
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen2.png)]()
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen3.png)]()
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/DriverUnityProject/Assets/Driver/Icons/texDriverIcon.png)]()
 
 To share feedback, report bugs, or offer suggestions feel free to DM @braindead_ape on Discord
+
+___
+
+# Unlock
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/DriverUnityProject/Assets/Driver/Icons/texDriverIcon.png)]()
 
 ___
 
