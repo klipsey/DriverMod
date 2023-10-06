@@ -38,6 +38,9 @@ Stun grenade
 
 ___
 
+## Donations
+If you enjoy my work and would like to support me, you can donate to my Ko-fi: https://ko-fi.com/robdev
+
 ## Credits
 rob - Pretty much everything  
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback

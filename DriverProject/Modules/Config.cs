@@ -134,11 +134,10 @@ namespace RobDriver.Modules
 
         public static void InitROO(Sprite modSprite, string modDescription)
         {
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions"))
-            {
-                ModSettingsManager.SetModIcon(modSprite);
-                ModSettingsManager.SetModDescription(modDescription);
-            }
+            if (!BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions")) return;
+
+            ModSettingsManager.SetModIcon(modSprite);
+            ModSettingsManager.SetModDescription(modDescription);
         }
 
         public static ConfigEntry<T> BindAndOptions<T>(string section, string name, T defaultValue, string description = "", bool restartRequired = false)
