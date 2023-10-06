@@ -15,10 +15,9 @@ To share feedback, report bugs, or offer suggestions feel free to DM @braindead_
 
 ___
 
-## Credits
-rob - Pretty much everything  
-TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
-Swuff - Code help, feedback
+# Unlock
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
 
 ___
 
@@ -27,31 +26,41 @@ ___
 ## Passive
 Enemies drop weapon crates that change your skills for a short time
 
-[![](https://i.gyazo.com/f0dbf580fd959de35d8129d069fcb074.gif]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/passive.gif?raw=true)]()
 
 ## Primary
 Shoot gun
 
-[![](https://i.gyazo.com/0bc5c50c0bae98dea7a55486ef2c9eac.gif)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/primary.gif?raw=true)]()
 
 ## Secondary
 Aim gun and charge a high damage shot
 
-[![](https://i.gyazo.com/22befe7019e39f9f10b515981917798c.gif)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/secondary.gif?raw=true)]()
 
 ## Utility
 Slide
 
-[![](https://i.gyazo.com/4a556489fc94135301fa3ae515784796.gif)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/utility.gif?raw=true)]()
 
 ## Special
 Stun grenade
 
-[![](https://i.gyazo.com/8f6a28aaaead0b58aa17225abf5a7778.gif]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/special.gif?raw=true)]()
+
+___
+
+## Donations
+If you enjoy my work and would like to support me, you can donate to my Ko-fi: https://ko-fi.com/robdev
+
+## Credits
+rob - Pretty much everything  
+TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
+Swuff - Code help, feedback
 
 
 ## Future Plans
-- Many more weapons
+- Many more weapons (rocket launcher, dual uzis, railgun, minigun, etc.)
 - Alternate skills
 - Ancient Scepter support
 - Better item displays
