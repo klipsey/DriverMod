@@ -133,7 +133,7 @@ namespace RobDriver.SkillStates.Emote
             if (this.duration > 0 && base.fixedAge >= this.duration)
                 endEmote = true;
 
-            if (endEmote)
+            if (endEmote && base.isAuthority)
             {
                 this.outer.SetNextStateToMain();
             }

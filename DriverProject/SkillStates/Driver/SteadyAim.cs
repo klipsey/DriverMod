@@ -4,6 +4,7 @@ using EntityStates;
 using static RoR2.CameraTargetParams;
 using RobDriver.Modules.Components;
 using RoR2.UI;
+using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -43,7 +44,7 @@ namespace RobDriver.SkillStates.Driver
             base.PlayAnimation("Gesture, Override", "SteadyAim", "Action.playbackRate", 0.25f);
             base.PlayAnimation("AimPitch", "SteadyAimPitch");
 
-            this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
+            if (NetworkServer.active) this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             this.shurikenComponent = this.GetComponent<PrimarySkillShurikenBehavior>();
 
@@ -324,7 +325,8 @@ namespace RobDriver.SkillStates.Driver
         {
             base.OnExit();
 
-            this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+            if (NetworkServer.active) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+
             base.PlayAnimation("Gesture, Override", "SteadyAimEnd", "Action.playbackRate", 0.2f);
             base.PlayAnimation("AimPitch", "AimPitch");
             this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);

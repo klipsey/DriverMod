@@ -1,7 +1,7 @@
 # Driver
 - Adds the Driver, an original character based on the Driver from the film Drive (2011)
 - Fully functional base kit with several weapon pickups that give him new attacks
-- Has item displays, an unlockable mastery skin and is multiplayer friendly
+- Has item displays, an unlockable mastery skin and is fully multiplayer compatible
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen1.png)]()
 
@@ -72,6 +72,11 @@ Bog - Code for Shuriken interaction fix
 ___
 
 ## Changelog
+
+`1.0.2`
+- Synced gun pickups, but for now only the host is able to see what's in the crate (until i can figure out this stupid code)
+- Fixed non host players being unable to pick up guns
+- Fixed non host players throwing a Captain airstrike instead of a flashbang
 
 `1.0.1`
 - Fixed gun pickups being permanent- when commenting out the gun test code for release, I accidentally hit the code that swaps back to the pistol as well, whoops

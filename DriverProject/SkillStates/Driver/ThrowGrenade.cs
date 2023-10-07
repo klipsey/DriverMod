@@ -2,6 +2,7 @@
 using RoR2;
 using EntityStates;
 using UnityEngine.AddressableAssets;
+using RoR2.Projectile;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -14,10 +15,6 @@ namespace RobDriver.SkillStates.Driver
 
         public override void OnEnter()
         {
-            base.projectilePrefab = Modules.Projectiles.stunGrenadeProjectilePrefab;
-            //base.effectPrefab = Modules.Assets.SomeMuzzleEffect;
-            //targetmuzzle = "muzzleThrow"
-
             base.attackSoundString = "sfx_driver_gun_throw";
 
             base.baseDuration = baseDuration;
@@ -34,6 +31,18 @@ namespace RobDriver.SkillStates.Driver
             base.bloom = 10;
 
             base.OnEnter();
+        }
+
+        public override void FireProjectile()
+        {
+            // if i just rewrite it surely it can't break right?
+            if (base.isAuthority)
+            {
+                Ray aimRay = base.GetAimRay();
+                aimRay = this.ModifyProjectileAimRay(aimRay);
+                aimRay.direction = Util.ApplySpread(aimRay.direction, this.minSpread, this.maxSpread, 1f, 1f, 0f, this.projectilePitchBonus);
+                ProjectileManager.instance.FireProjectile(Modules.Projectiles.stunGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), base.gameObject, this.damageStat * ThrowGrenade.damageCoefficient, this.force, this.RollCrit(), DamageColorIndex.Default, null, -1f);
+            }
         }
 
         public override void FixedUpdate()

@@ -3341,6 +3341,10 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
+                        // this is gross but it should work
+                        if (Random.value > 0.5f) weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = DriverWeapon.MachineGun;
+                        else weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = DriverWeapon.Shotgun;
+
                         NetworkServer.Spawn(weaponPickup);
                     }
                 }

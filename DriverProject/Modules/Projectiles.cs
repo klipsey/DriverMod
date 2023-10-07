@@ -36,6 +36,9 @@ namespace RobDriver.Modules
 
             //grenadeController.ghostPrefab = grenadeModel;
 
+            // whoops, forgor
+            Prefabs.projectilePrefabs.Add(stunGrenadeProjectilePrefab);
+
             stunGrenadeImpactEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/StunChanceOnHit/ImpactStunGrenade.prefab").WaitForCompletion().InstantiateClone("DriverStunGrenadeImpact", true);
 
             stunGrenadeImpactEffectPrefab.GetComponent<EffectComponent>().soundName = "";

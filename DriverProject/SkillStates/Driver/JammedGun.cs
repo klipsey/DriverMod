@@ -19,7 +19,7 @@ namespace RobDriver.SkillStates.Driver
                 origin = this.FindModelChild("PistolMuzzle").position,
                 rotation = Quaternion.identity
             };
-            EffectManager.SpawnEffect(Modules.Assets.jammedEffectPrefab, effectData, true);
+            EffectManager.SpawnEffect(Modules.Assets.jammedEffectPrefab, effectData, false);
 
             Util.PlaySound("sfx_driver_gun_jammed", this.gameObject);
         }

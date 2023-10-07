@@ -5,6 +5,7 @@ using RoR2;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
+using R2API.Networking;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -30,7 +31,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.0.1";
+        public const string MODVERSION = "1.0.2";
 
         public const string developerPrefix = "ROB";
 
@@ -55,6 +56,10 @@ namespace RobDriver
 
             new Modules.Survivors.Driver().CreateCharacter();
 
+            NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeapon>();
+            //NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeaponPickup>();
+            // kill me
+
             Hook();
 
             new Modules.ContentPacks().Initialize();
@@ -70,6 +75,7 @@ namespace RobDriver
         private void Hook()
         {
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+            //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
         }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, R2API.RecalculateStatsAPI.StatHookEventArgs args) {

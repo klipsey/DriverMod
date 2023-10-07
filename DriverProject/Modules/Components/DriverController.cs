@@ -1,6 +1,9 @@
-﻿using RoR2;
+﻿using R2API.Networking;
+using R2API.Networking.Interfaces;
+using RoR2;
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 
 // this is definitely the worst way to do this
 // please make a system for this eventually
@@ -17,6 +20,9 @@ namespace RobDriver.Modules.Components
 {
     public class DriverController : MonoBehaviour
     {
+        public ushort syncedWeapon;
+        public NetworkInstanceId netId;
+
         public DriverWeapon weapon;
 
         public float chargeValue;
@@ -92,6 +98,28 @@ namespace RobDriver.Modules.Components
             {
                 this.PickUpWeapon(DriverWeapon.Default);
             }
+        }
+
+        public void ServerPickUpWeapon(DriverWeapon newWeapon, DriverController driverController)
+        {
+            ushort augh = 0;
+            switch (newWeapon)
+            {
+                case DriverWeapon.Default:
+                    augh = 0;
+                    break;
+                case DriverWeapon.Shotgun:
+                    augh = 1;
+                    break;
+                case DriverWeapon.MachineGun:
+                    augh = 2;
+                    break;
+            }
+
+            NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
+            if (!identity) return;
+
+            new SyncWeapon(identity.netId, augh).Send(NetworkDestination.Clients);
         }
 
         public void PickUpWeapon(DriverWeapon newWeapon)
