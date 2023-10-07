@@ -45,6 +45,8 @@ namespace RobDriver.SkillStates.Driver.Shotgun
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
 
             this.fireDuration = 0;
+
+            if (this.iDrive) this.iDrive.StartTimer();
         }
 
         public virtual void FireBullet()

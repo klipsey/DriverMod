@@ -2,6 +2,7 @@
 - Adds the Driver, an original character based on the Driver from the film Drive (2011)
 - Fully functional base kit with several weapon pickups that give him new attacks
 - Has item displays, an unlockable mastery skin and is fully multiplayer compatible
+- Configurable stats and a few other things to mess around with
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen1.png)]()
 
@@ -24,7 +25,7 @@ ___
 # Skills
 
 ## Passive
-Enemies drop weapon crates that change your skills for a short time
+Enemies drop weapon crates that change your skills for 8 seconds, starting when you first attack with it
 
 [![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/passive.gif?raw=true)]()
 
@@ -55,13 +56,9 @@ If you enjoy my work and would like to support me, you can donate to my Ko-fi: h
 
 ## Credits
 rob - Pretty much everything  
-
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
-
 Moffein - Also maintained things :-)
-
-Swuff - Code help, feedback, networking help
-
+Swuff - Code help, feedback
 Bog - Code for Shuriken interaction fix
 
 
@@ -76,6 +73,14 @@ Bog - Code for Shuriken interaction fix
 ___
 
 ## Changelog
+
+`1.0.3`
+- Weapon timer won't start until your first attack with the weapon now
+- Tweaked weapon drop rates
+-- Champions (beetle guard, templar, etc. big guys) now have double the chance to drop a weapon
+-- Elites have 50% minimum chance to drop one, and can still scale up past that threshold
+-- Bosses are guaranteed to drop one- when higher tier weapons are added, they will drop these as well
+-- Drop chance is halved when playing on Swarms
 
 `1.0.2`
 - Synced gun pickups, but for now only the host is able to see what's in the crate (until i can figure out this stupid code)

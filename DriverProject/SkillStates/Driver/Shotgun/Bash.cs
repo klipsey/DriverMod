@@ -7,7 +7,7 @@ using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver.Shotgun
 {
-    public class Bash : BaseSkillState
+    public class Bash : BaseDriverSkillState
     {
         public static string hitboxString = "BashHitbox"; //transform where the hitbox is fired
         public static float baseDuration = 0.8f;
@@ -36,6 +36,8 @@ namespace RobDriver.SkillStates.Driver.Shotgun
             base.PlayCrossfade("Gesture, Override", "Bash", "Action.playbackRate", this.duration, 0.05f);
 
             Util.PlaySound("sfx_driver_bash_prep", this.gameObject);
+
+            if (this.iDrive) this.iDrive.StartTimer();
         }
 
         private void Fire()

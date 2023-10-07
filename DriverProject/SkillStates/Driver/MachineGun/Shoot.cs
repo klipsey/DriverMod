@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver.MachineGun
 {
-    public class Shoot : BaseSkillState
+    public class Shoot : BaseDriverSkillState
     {
         public static float damageCoefficient = 1.9f;
         public static float procCoefficient = 1f;
@@ -41,6 +41,8 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
             if (this.isCrit) base.PlayAnimation("Gesture, Override", "FireMachineGunCritical", "Shoot.playbackRate", this.duration * 2f);
             else base.PlayAnimation("Gesture, Override", "FireMachineGun", "Shoot.playbackRate", this.duration * 2f);
+
+            if (this.iDrive) this.iDrive.StartTimer();
         }
 
         public override void OnExit()

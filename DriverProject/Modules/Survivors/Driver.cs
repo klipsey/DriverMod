@@ -3319,10 +3319,20 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                 {
                     // 7 + 0.75(player level)%
                     float chance = Modules.Config.baseDropRate.Value + ((1 + damageReport.attackerBody.level) * 0.75f);
-                    bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
+
+                    // double chance if it's a champion
+                    if (damageReport.attackerBody.isChampion) chance = Mathf.Clamp(2f * chance, 0f, 100f);
+
+                    // minimum 50% chance if the slain enemy is an elite
+                    if (damageReport.attackerBody.isElite) chance = Mathf.Clamp(chance, 50f, 100f);
 
                     // halved on swarms, fuck You
                     if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Sacrifice)) chance *= 0.75f;
+
+                    // guaranteed if the slain enemy is a boss
+                    if (damageReport.attackerBody.isElite) chance = 100f;
+
+                    bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
 
                     // test
                     //droppedWeapon = true;

@@ -26,7 +26,8 @@ namespace RobDriver.Modules.Components
         public DriverWeapon weapon;
 
         public float chargeValue;
-
+        
+        private bool timerStarted;
         private float jamTimer;
         //private EntityStateMachine weaponStateMachine;
         private CharacterBody characterBody;
@@ -68,9 +69,14 @@ namespace RobDriver.Modules.Components
             this.InitShells();
         }
 
+        public void StartTimer()
+        {
+            this.timerStarted = true;
+        }
+
         private void FixedUpdate()
         {
-            this.weaponTimer -= Time.fixedDeltaTime;
+            if (this.timerStarted) this.weaponTimer -= Time.fixedDeltaTime;
             this.jamTimer = Mathf.Clamp(this.jamTimer - (2f * Time.fixedDeltaTime), 0f, Mathf.Infinity);
 
             // test
@@ -124,6 +130,7 @@ namespace RobDriver.Modules.Components
 
         public void PickUpWeapon(DriverWeapon newWeapon)
         {
+            this.timerStarted = false;
             this.weapon = newWeapon;
             this.EquipWeapon();
 

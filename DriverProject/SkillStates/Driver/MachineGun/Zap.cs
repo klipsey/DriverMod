@@ -2,6 +2,7 @@
 using RoR2;
 using EntityStates;
 using UnityEngine.AddressableAssets;
+using RobDriver.Modules.Components;
 
 namespace RobDriver.SkillStates.Driver.MachineGun
 {
@@ -38,6 +39,9 @@ namespace RobDriver.SkillStates.Driver.MachineGun
             base.OnEnter();
 
             this.playID = Util.PlaySound("sfx_driver_zap_prep", this.gameObject);
+
+            DriverController iDrive = this.GetComponent<DriverController>();
+            if (iDrive) iDrive.StartTimer();
         }
 
         public override void FixedUpdate()
