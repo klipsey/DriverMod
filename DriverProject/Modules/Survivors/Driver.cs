@@ -26,6 +26,8 @@ namespace RobDriver.Modules.Survivors
         internal static ConfigEntry<bool> forceUnlock;
         internal static ConfigEntry<bool> characterEnabled;
 
+        internal float pityMultiplier = 1f;
+
         public static Color characterColor = new Color(145f / 255f, 0f, 1f);
 
         public const string bodyName = "RobDriverBody";
@@ -150,7 +152,7 @@ namespace RobDriver.Modules.Survivors
             //newPrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType(state);
 
             // this should be the default, no?
-            //newPrefab.GetComponent<CharacterDeathBehavior>().deathState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Commando.DeathState));
+            newPrefab.GetComponent<CharacterDeathBehavior>().deathState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.FuckMyAss));
             // so why doesn't the ragdoll work? inspector and code both tell me everything is as it should be
             // is there some niche override in the state that's fucking it?
             // 
@@ -495,7 +497,7 @@ namespace RobDriver.Modules.Survivors
                 canceledFromSprinting = false,
                 forceSprintDuringState = true,
                 fullRestockOnAssign = true,
-                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = true,
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -3315,7 +3317,18 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
         {
             if (damageReport.attackerBody && damageReport.attackerMaster && damageReport.victim)
             {
-                if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                bool isDriverOnPlayerTeam = false;
+                foreach (CharacterBody i in CharacterBody.readOnlyInstancesList)
+                {
+                    if (i && i.teamComponent && i.teamComponent.teamIndex == TeamIndex.Player && i.baseNameToken == Driver.bodyNameToken)
+                    {
+                        isDriverOnPlayerTeam = true;
+                        break;
+                    }
+                }
+
+                // weapon drops
+                if (isDriverOnPlayerTeam)
                 {
                     // 7 + 0.75(player level)%
                     float chance = Modules.Config.baseDropRate.Value + ((1 + damageReport.attackerBody.level) * 0.75f);
@@ -3327,7 +3340,9 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                     if (damageReport.attackerBody.isElite) chance = Mathf.Clamp(chance, 50f, 100f);
 
                     // halved on swarms, fuck You
-                    if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Sacrifice)) chance *= 0.75f;
+                    if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms)) chance *= 0.75f;
+
+                    chance *= Driver.instance.pityMultiplier;
 
                     // guaranteed if the slain enemy is a boss
                     if (damageReport.attackerBody.isElite) chance = 100f;
@@ -3339,6 +3354,8 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
 
                     if (droppedWeapon)
                     {
+                        Driver.instance.pityMultiplier = 1f;
+
                         Vector3 position = Vector3.zero;
                         Transform transform = damageReport.victim.transform;
                         if (transform)
@@ -3354,10 +3371,23 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                         // this is gross but it should work
                         if (Random.value > 0.5f) weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = DriverWeapon.MachineGun;
                         else weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = DriverWeapon.Shotgun;
+                        // it didn't
 
                         NetworkServer.Spawn(weaponPickup);
                     }
+                    else
+                    {
+                        // add pity
+                        Driver.instance.pityMultiplier += 0.2f;
+                    }
                 }
+
+                /*if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                {
+                    // combo extension
+                    Components.DriverController iDrive = damageReport.attackerBody.gameObject.GetComponent<Components.DriverController>();
+                    if (iDrive) iDrive.ExtendTimer();
+                }*/
             }
         }
 

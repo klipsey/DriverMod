@@ -10,8 +10,8 @@ namespace RobDriver.SkillStates.Driver
 {
     public class SteadyAim : BaseSkillState
     {
-        public float baseShotDuration = 0.4f;
-        public float baseChargeDuration = 0.2f;
+        public float baseShotDuration = 0.3f;
+        public float baseChargeDuration = 0.15f;
 
         public static float damageCoefficient = 5f;
         public static float recoil = 1f;
@@ -239,7 +239,7 @@ namespace RobDriver.SkillStates.Driver
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
                     damageType = DamageType.Generic,
-                    falloffModel = BulletAttack.FalloffModel.DefaultBullet,
+                    falloffModel = BulletAttack.FalloffModel.None,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,

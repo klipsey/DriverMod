@@ -12,8 +12,6 @@ namespace RobDriver.Modules.Components
 		public GameObject baseObject;
 		[Tooltip("The team filter object which determines who can pick up this pack.")]
 		public TeamFilter teamFilter;
-
-		[SyncVar]
 		public DriverWeapon weapon = DriverWeapon.Shotgun;
 
 		public GameObject pickupEffect;
@@ -43,6 +41,16 @@ namespace RobDriver.Modules.Components
 					}
 				}
 			}
+
+			// uh will this work?
+			/*if (Run.instance)
+			{
+				float rng = Run.instance.stageRng.nextNormalizedFloat;
+
+				if (rng > 0.5f) this.SetWeapon(DriverWeapon.MachineGun);
+				else this.SetWeapon(DriverWeapon.Shotgun);
+			}*/
+			// no it doesn't, clients don't have the rng
 		}
 
 		private void Start()

@@ -44,6 +44,7 @@ namespace RobDriver.Modules.Components
 
         public float maxWeaponTimer;
         public float weaponTimer;
+        private float comboDecay = 1f;
 
         private void Awake()
         {
@@ -263,6 +264,20 @@ namespace RobDriver.Modules.Components
                 {
                     if (this.shellObjects[i]) Destroy(this.shellObjects[i]);
                 }
+            }
+        }
+
+        public void ExtendTimer()
+        {
+            return;
+            // fuck, i have to network this before adding it actually
+            if (this.weaponTimer > 0f && this.maxWeaponTimer > 0f)
+            {
+                float amount = 1f * this.comboDecay;
+
+                this.comboDecay = Mathf.Clamp(this.comboDecay - 0.1f, 0f, 1f);
+
+                this.weaponTimer = Mathf.Clamp(this.weaponTimer + amount, 0f, this.maxWeaponTimer);
             }
         }
     }

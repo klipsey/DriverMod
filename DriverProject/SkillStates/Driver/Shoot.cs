@@ -9,8 +9,8 @@ namespace RobDriver.SkillStates.Driver
     {
         public static float damageCoefficient = 2.2f;
         public static float procCoefficient = 1f;
-        public static float baseDuration = 0.95f;
-        public static float baseCritDuration = 1.1f;
+        public static float baseDuration = 0.7f;
+        public static float baseCritDuration = 0.9f;
         public static float force = 200f;
         public static float recoil = 2f;
         public static float range = 256f;

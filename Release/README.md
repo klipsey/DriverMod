@@ -3,6 +3,7 @@
 - Fully functional base kit with several weapon pickups that give him new attacks
 - Has item displays, an unlockable mastery skin and is fully multiplayer compatible
 - Configurable stats and a few other things to mess around with
+- Many more weapons planned!!!!
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen1.png)]()
 
@@ -55,10 +56,14 @@ ___
 If you enjoy my work and would like to support me, you can donate to my Ko-fi: https://ko-fi.com/robdev
 
 ## Credits
-rob - Pretty much everything  
+rob - Pretty much everything
+
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
+
 Moffein - Also maintained things :-)
-Swuff - Code help, feedback
+
+Swuff - Code help, feedback, networking help
+
 Bog - Code for Shuriken interaction fix
 
 
@@ -69,10 +74,23 @@ Bog - Code for Shuriken interaction fix
 - Better item displays
 - Other things 100% decided on pure whimsy
 - Proper skill icons?
+- More skins
 
 ___
 
 ## Changelog
+
+`1.0.5`
+- Fixed ragdoll; the incredibly handsome developer of this mod never dies and so never realized it was broken
+
+`1.0.4`
+- Buffed Pistol's fire rate
+- Shooting with Focus no longer has damage falloff
+- Machine Gun no longer has falloff
+- Shotgun now has falloff
+- Weapon drops now have a pity system, chance goes up with each kill until one drops and then the pity modifier resets
+- Weapon drops no longer require a Driver to land the killing blow- the only requirement now is a Driver on the player team
+- Fixed Combat Slide consuming all charges of Hardlight Afterburner instantly
 
 `1.0.3`
 - Weapon timer won't start until your first attack with the weapon now

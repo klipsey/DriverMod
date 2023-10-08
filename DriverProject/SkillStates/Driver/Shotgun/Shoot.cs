@@ -87,7 +87,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Default,
                         damageType = DamageType.Generic,
-                        falloffModel = BulletAttack.FalloffModel.None,
+                        falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                         maxDistance = bulletRange,
                         force = force,// RiotShotgun.bulletForce,
                         hitMask = LayerIndex.CommonMasks.bullet,
