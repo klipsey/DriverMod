@@ -54,11 +54,8 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_MACHINEGUN_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_MACHINEGUN_DESCRIPTION", $"Fire a rapid spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.MachineGun.Shoot.damageCoefficient}% damage</style>.");
 
-            //LanguageAPI.Add(prefix + "PRIMARY_PUNCH_NAME", "Brick Break");
-            //LanguageAPI.Add(prefix + "PRIMARY_PUNCH_DESCRIPTION", $"Punch for <style=cIsDamage>{SkillStates.Regigigas.PunchCombo.damageCoefficientOverride * 100f}% damage</style>.");
-
-            //LanguageAPI.Add(prefix + "PRIMARY_DRAINPUNCH_NAME", "Drain Punch");
-            //LanguageAPI.Add(prefix + "PRIMARY_DRAINPUNCH_DESCRIPTION", $"Punch for <style=cIsDamage>{SkillStates.Regigigas.DrainPunch.damageCoefficientOverride * 100f}% damage</style>, <style=cIsHealing>healing for 50% of damage dealt</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Shoot.damageCoefficient}% damage</style>.");
             #endregion
 
             #region Secondary
@@ -70,6 +67,10 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "SECONDARY_MACHINEGUN_NAME", "Zap");
             LanguageAPI.Add(prefix + "SECONDARY_MACHINEGUN_DESCRIPTION", $"<style=cIsDamage>Shocking.</style> Fire a quick laser for <style=cIsDamage>{100f * SkillStates.Driver.MachineGun.Zap.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_NAME", "Bash");
+            LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_DESCRIPTION", $"<style=cIsDamage>Stun</style> and <style=cIsUtility>knock back</style> nearby enemies for <style=cIsDamage>{100f * SkillStates.Driver.Shotgun.Bash.damageCoefficient}% damage</style>.");
+
             #endregion
 
             #region Utility
@@ -107,7 +108,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "A gun that excels at something, I'm not really sure what.");
 
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_NAME", "Rocket Launcher");
-            LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_DESC", "");
+            LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_DESC", "KABOOOM");
             #endregion
         }
     }

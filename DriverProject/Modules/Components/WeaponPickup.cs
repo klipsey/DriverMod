@@ -101,6 +101,9 @@ namespace RobDriver.Modules.Components
 					case DriverWeapon.MachineGun:
 						textComponent.token = "ROB_DRIVER_MACHINEGUN_NAME";
 						break;
+					case DriverWeapon.RocketLauncher:
+						textComponent.token = "ROB_DRIVER_ROCKETLAUNCHER_NAME";
+						break;
 				}
 			}
 		}

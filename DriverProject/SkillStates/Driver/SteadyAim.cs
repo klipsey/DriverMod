@@ -14,7 +14,7 @@ namespace RobDriver.SkillStates.Driver
         public float baseChargeDuration = 0.15f;
 
         public static float damageCoefficient = 5f;
-        public static float recoil = 1f;
+        public static float recoil = 0.5f;
 
         private bool lastCharge;
 
@@ -185,7 +185,7 @@ namespace RobDriver.SkillStates.Driver
             this.chargeTimer = 0f;
             this.isCharged = false;
 
-            base.characterBody.AddSpreadBloom(1f);
+            base.characterBody.AddSpreadBloom(0.25f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "PistolMuzzle", false);
 
             string soundString = "sfx_driver_pistol_shoot";

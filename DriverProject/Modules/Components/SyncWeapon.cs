@@ -44,6 +44,9 @@ namespace RobDriver.Modules.Components
                 case 2:
                     newWeapon = DriverWeapon.MachineGun;
                     break;
+                case 3:
+                    newWeapon = DriverWeapon.RocketLauncher;
+                    break;
             }
 
             DriverController iDrive = bodyObject.GetComponent<DriverController>();

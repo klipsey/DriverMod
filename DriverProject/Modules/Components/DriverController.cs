@@ -147,6 +147,9 @@ namespace RobDriver.Modules.Components
 
             this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.machineGunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
             this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.machineGunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+
+            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.rocketLauncherPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.rocketLauncherSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
             // fuck this
 
             switch (this.weapon)
@@ -183,6 +186,19 @@ namespace RobDriver.Modules.Components
 
                     this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.machineGunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
                     this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.machineGunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+
+                    this.maxWeaponTimer = Modules.Config.shotgunDuration.Value;
+                    this.weaponTimer = Modules.Config.shotgunDuration.Value;
+                    break;
+                case DriverWeapon.RocketLauncher:
+                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.machineGunMat;
+                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.machineGunMesh;
+                    this.EnableLayer("Body, Shotgun");
+
+                    this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("Standard");
+
+                    this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.rocketLauncherPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.rocketLauncherSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
 
                     this.maxWeaponTimer = Modules.Config.shotgunDuration.Value;
                     this.weaponTimer = Modules.Config.shotgunDuration.Value;

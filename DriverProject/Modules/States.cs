@@ -34,6 +34,8 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Emote.Rest));
             entityStates.Add(typeof(RobDriver.SkillStates.Emote.Taunt));
             entityStates.Add(typeof(RobDriver.SkillStates.Emote.Dance));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.FuckMyAss));
         }
     }
 }

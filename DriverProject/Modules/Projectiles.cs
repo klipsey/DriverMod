@@ -17,32 +17,26 @@ namespace RobDriver.Modules
         public static GameObject stunGrenadeProjectilePrefab;
         public static GameObject stunGrenadeImpactEffectPrefab;
 
+        public static GameObject rocketProjectilePrefab;
+
         internal static void RegisterProjectiles()
         {
+            #region Stun Grenade
             stunGrenadeProjectilePrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/CommandoGrenadeProjectile").InstantiateClone("RobDriverStunGrenade", true);
 
             ProjectileController grenadeController = stunGrenadeProjectilePrefab.GetComponent<ProjectileController>();
-
-            // ghost
-            //grenadeController.ghostPrefab = ItemDisplays.LoadDisplay("DisplayStunGrenade");
 
             ProjectileDamage grenadeDamage = stunGrenadeProjectilePrefab.GetComponent<ProjectileDamage>();
             ProjectileSimple simple = stunGrenadeProjectilePrefab.GetComponent<ProjectileSimple>();
             ProjectileImpactExplosion grenadeImpact = stunGrenadeProjectilePrefab.GetComponent<ProjectileImpactExplosion>();
 
-            //GameObject grenadeModel = Assets.tearGasGrenadeModel.InstantiateClone("TearGasGhost", true);
-            //grenadeModel.AddComponent<NetworkIdentity>();
-            //grenadeModel.AddComponent<ProjectileGhostController>();
-
-            //grenadeController.ghostPrefab = grenadeModel;
-
-            // whoops, forgor
             Prefabs.projectilePrefabs.Add(stunGrenadeProjectilePrefab);
 
             stunGrenadeImpactEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/StunChanceOnHit/ImpactStunGrenade.prefab").WaitForCompletion().InstantiateClone("DriverStunGrenadeImpact", true);
 
             stunGrenadeImpactEffectPrefab.GetComponent<EffectComponent>().soundName = "";
 
+            #region Ghost
             GameObject fcuk = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("DriverStunGrenadeImpact"));
             fcuk.transform.parent = stunGrenadeImpactEffectPrefab.transform;
             fcuk.transform.localScale = Vector3.one;
@@ -50,7 +44,9 @@ namespace RobDriver.Modules
             fcuk.transform.localRotation = Quaternion.identity;
 
             Assets.AddNewEffectDef(stunGrenadeImpactEffectPrefab, "sfx_driver_stun_grenade");
+            #endregion
 
+            #region ImpactExplosion
             grenadeImpact.lifetimeExpiredSoundString = "";
             grenadeImpact.explosionSoundString = "sfx_driver_stun_grenade";// Sounds.GasExplosion;
             grenadeImpact.offsetForLifetimeExpiredSound = 1;
@@ -78,6 +74,10 @@ namespace RobDriver.Modules
             grenadeDamage.damageColorIndex = DamageColorIndex.Default;
             grenadeDamage.damageType = DamageType.Stun1s;
             grenadeDamage.force = 1500f;
+            #endregion
+            #endregion
+
+            //rocketProjectilePrefab = stunGrenadeProjectilePrefab;
         }
 
         private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion)

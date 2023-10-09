@@ -90,6 +90,9 @@ namespace RobDriver.Modules.Components
 					case DriverWeapon.MachineGun:
 						texture = Modules.Assets.machineGunWeaponIcon;
 						break;
+					case DriverWeapon.RocketLauncher:
+						texture = Modules.Assets.machineGunWeaponIcon;
+						break;
 				}
 
 				this.iconImage.texture = texture;
@@ -116,6 +119,11 @@ namespace RobDriver.Modules.Components
 				case DriverWeapon.MachineGun:
 					titleToken = "ROB_DRIVER_MACHINEGUN_NAME";
 					bodyToken = "ROB_DRIVER_MACHINEGUN_DESC";
+					titleColor = Modules.Survivors.Driver.characterColor;
+					break;
+				case DriverWeapon.RocketLauncher:
+					titleToken = "ROB_DRIVER_ROCKETLAUNCHER_NAME";
+					bodyToken = "ROB_DRIVER_ROCKETLAUNCHER_DESC";
 					titleColor = Modules.Survivors.Driver.characterColor;
 					break;
 			}

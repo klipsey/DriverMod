@@ -44,14 +44,17 @@ namespace RobDriver.Modules.Components
                 case 2:
                     newWeapon = DriverWeapon.MachineGun;
                     break;
+                case 3:
+                    newWeapon = DriverWeapon.RocketLauncher;
+                    break;
             }
 
-            WeaponPickup pickupComponent = pickupObject.GetComponentInChildren<WeaponPickup>();
+            /*WeaponPickup pickupComponent = pickupObject.GetComponentInChildren<WeaponPickup>();
             if (pickupComponent)
             {
                 // w h y
                 //pickupComponent.SetWeapon(newWeapon);
-            }
+            }*/
         }
 
         public void Serialize(NetworkWriter writer)

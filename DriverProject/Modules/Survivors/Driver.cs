@@ -380,6 +380,14 @@ namespace RobDriver.Modules.Survivors
                 prefix + "_DRIVER_BODY_PRIMARY_MACHINEGUN_DESCRIPTION",
                 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMachineGunIcon"),
                 false);
+
+            Driver.machineGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+                new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.RocketLauncher.Shoot)),
+                "Weapon",
+                prefix + "_DRIVER_BODY_PRIMARY_ROCKETLAUNCHER_NAME",
+                prefix + "_DRIVER_BODY_PRIMARY_ROCKETLAUNCHER_DESCRIPTION",
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
+                false);
             #endregion
 
             #region Secondary
@@ -462,6 +470,30 @@ namespace RobDriver.Modules.Survivors
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texZapIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MachineGun.Zap)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.rocketLauncherSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
                 baseRechargeInterval = 6f,
@@ -3340,12 +3372,13 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                     if (damageReport.attackerBody.isElite) chance = Mathf.Clamp(chance, 50f, 100f);
 
                     // halved on swarms, fuck You
-                    if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms)) chance *= 0.75f;
+                    if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms)) chance *= 0.5f;
 
                     chance *= Driver.instance.pityMultiplier;
 
                     // guaranteed if the slain enemy is a boss
-                    if (damageReport.attackerBody.isElite) chance = 100f;
+                    bool isBoss = damageReport.attackerBody.isBoss;
+                    if (isBoss) chance = 1000f;
 
                     bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
 
@@ -3368,10 +3401,15 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
+                        DriverWeapon weapon = DriverWeapon.Default;
                         // this is gross but it should work
-                        if (Random.value > 0.5f) weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = DriverWeapon.MachineGun;
-                        else weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = DriverWeapon.Shotgun;
+                        if (Random.value > 0.5f) weapon = DriverWeapon.MachineGun;
+                        else weapon = DriverWeapon.Shotgun;
                         // it didn't
+
+                        if (isBoss) weapon = DriverWeapon.RocketLauncher;
+
+                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = weapon;
 
                         NetworkServer.Spawn(weaponPickup);
                     }
