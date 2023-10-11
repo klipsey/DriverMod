@@ -11,7 +11,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.22f;
         public static float force = 20f;
-        public static float recoil = 1f;
+        public static float recoil = 0.5f;
         public static float range = 256f;
         public static GameObject tracerEffectPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoDefault");
 
@@ -52,7 +52,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
         private void Fire()
         {
-            base.characterBody.AddSpreadBloom(1.25f);
+            base.characterBody.AddSpreadBloom(0.3f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, this.muzzleString, false);
 
             if (this.isCrit) Util.PlaySound("sfx_driver_machinegun_shoot_critical", base.gameObject);
@@ -75,8 +75,8 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                     maxDistance = Shoot.range,
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,
-                    minSpread = 0.25f,
-                    maxSpread = 3.5f,
+                    minSpread = 0f,
+                    maxSpread = 2.5f,
                     isCrit = this.isCrit,
                     owner = this.gameObject,
                     muzzleName = muzzleString,

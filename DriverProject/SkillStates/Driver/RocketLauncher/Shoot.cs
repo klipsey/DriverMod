@@ -49,22 +49,16 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             {
                 this.hasFired = true;
 
-                if (this.iDrive)
-                {
-                    this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
-                    this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
-                }
-
                 float recoilAmplitude = Shoot.recoil / this.attackSpeedStat;
 
                 base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
-                characterBody.AddSpreadBloom(4f);
-                EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FireBarrage.effectPrefab, gameObject, muzzleString, false);
+                this.characterBody.AddSpreadBloom(4f);
+                EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FireBarrage.effectPrefab, this.gameObject, this.muzzleString, false);
 
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
-                    ProjectileManager.instance.FireProjectile(Modules.Projectiles.stunGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), base.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit());
+                    ProjectileManager.instance.FireProjectile(Modules.Projectiles.stunGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit());
                 }
             }
         }

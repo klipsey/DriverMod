@@ -30,10 +30,14 @@ namespace RobDriver.Modules
         public static Mesh pistolMesh;
         public static Mesh shotgunMesh;
         public static Mesh machineGunMesh;
+        public static Mesh rocketLauncherMesh;
 
         public static Material pistolMat;
         public static Material shotgunMat;
         public static Material machineGunMat;
+        public static Material rocketLauncherMat;
+
+        public static Material knifeMat;
 
         public static GameObject shotgunShell;
 
@@ -47,6 +51,11 @@ namespace RobDriver.Modules
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
+
+        internal static DriverWeaponDef pistolWeaponDef;
+        internal static DriverWeaponDef shotgunWeaponDef;
+        internal static DriverWeaponDef machineGunWeaponDef;
+        internal static DriverWeaponDef rocketLauncherWeaponDef;
 
         internal static void PopulateAssets()
         {
@@ -91,10 +100,14 @@ namespace RobDriver.Modules
             pistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshPistol");
             shotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSuperShotgun");
             machineGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshMachineGun");
+            rocketLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshBazooka");
 
             pistolMat = CreateMaterial("matPistol");
             shotgunMat = CreateMaterial("matShotgun");
             machineGunMat = CreateMaterial("matMachineGun");
+            rocketLauncherMat = CreateMaterial("matBazooka");
+
+            knifeMat = CreateMaterial("matKnife");
 
             shotgunShell = mainAssetBundle.LoadAsset<GameObject>("ShotgunShell");
             shotgunShell.GetComponentInChildren<MeshRenderer>().material = CreateMaterial("matShotgunShell");
@@ -207,6 +220,46 @@ namespace RobDriver.Modules
             AddNewEffectDef(shotgunTracerCrit);
 
             Modules.Config.InitROO(Assets.mainAssetBundle.LoadAsset<Sprite>("texDriverIcon"), "Literally me");
+
+            // actually i have to run this in driver's script, so the skilldefs can be created first
+            //InitWeaponDefs();
+            // kinda jank kinda not impactful enough to care about changing
+        }
+
+        internal static void InitWeaponDefs()
+        {
+            // ignore this one, this is the default
+            pistolWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_PISTOL_NAME",
+                descriptionToken = "ROB_DRIVER_PISTOL_DESC",
+                icon = Assets.pistolWeaponIcon,
+                tier = DriverWeaponTier.Common,
+                baseDuration = -1f,
+                primarySkillDef = null,
+                secondarySkillDef = null,
+                mesh = Assets.pistolMesh,
+                material = Assets.pistolMat
+            });
+
+            // example of creating a WeaponDef through code and adding it to the catalog for driver to obtain
+            shotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_SHOTGUN_NAME",
+                descriptionToken = "ROB_DRIVER_SHOTGUN_DESC",
+                icon = Assets.shotgunWeaponIcon,
+                tier = DriverWeaponTier.Uncommon,
+                baseDuration = Config.shotgunDuration.Value,
+                primarySkillDef = Survivors.Driver.shotgunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.shotgunSecondarySkillDef,
+                mesh = Assets.shotgunMesh,
+                material = Assets.shotgunMat
+            });
+
+            // now add it to the catalog here; catalog is necessary for networking
+            // --work in progress--
+            // it would be DriverWeaponCatalog.AddWeapon(shotgunWeaponDef);
+            // but the catalog has to be coded first and i'm out of fuel rn
         }
 
         internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")

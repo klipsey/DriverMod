@@ -191,8 +191,8 @@ namespace RobDriver.Modules.Components
                     this.weaponTimer = Modules.Config.shotgunDuration.Value;
                     break;
                 case DriverWeapon.RocketLauncher:
-                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.machineGunMat;
-                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.machineGunMesh;
+                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.rocketLauncherMat;
+                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.rocketLauncherMesh;
                     this.EnableLayer("Body, Shotgun");
 
                     this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("Standard");

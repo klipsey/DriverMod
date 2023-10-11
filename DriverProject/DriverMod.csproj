@@ -49,8 +49,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Modules\Misc\" />
-  </ItemGroup>
-
 </Project>

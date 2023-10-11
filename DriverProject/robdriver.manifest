@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3003241339
+CRC: 457442392
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: edff90663990f993d9040e026e8317e5
+    Hash: 890a5a3d0ec2e051c148f83abd8465f9
   TypeTreeHash:
     serializedVersion: 2
     Hash: bfb747528b9de32254fbd4eff1f7d5ce
@@ -92,6 +92,7 @@ Assets:
 - Assets/Driver/Animations/Default/AimYaw.anim
 - Assets/Driver/FBX/Boombox.fbx
 - Assets/Driver/Animations/Default/CSSIdleIn.anim
+- Assets/Driver/FBX/meshDualShotgun.mesh
 - Assets/Driver/Animations/Default/AimPitch.anim
 - Assets/Driver/Textures/texCrate1.png
 - Assets/Driver/Animations/animDriver.controller
@@ -118,6 +119,7 @@ Assets:
 - Assets/Driver/Animations/Shotgun/RunF.anim
 - Assets/Driver/Animations/Shotgun/Sprint.anim
 - Assets/Driver/Icons/texDriverIcon.png
+- Assets/Driver/Textures/texKnife.png
 - Assets/Driver/Animations/Default/Ascend.anim
 - Assets/Driver/FBX/meshPistol.mesh
 - Assets/Driver/FBX/meshJacket.mesh
@@ -125,6 +127,7 @@ Assets:
 - Assets/Driver/Icons/texMachineGunIcon.png
 - Assets/Driver/WeaponPickup.prefab
 - Assets/Driver/mdlDriver.prefab
+- Assets/Driver/FBX/meshBazooka.mesh
 - Assets/Driver/Materials/matKnife.mat
 - Assets/Driver/Textures/texPistol.png
 - Assets/Driver/Animations/Shotgun/CSSIdle.anim
@@ -143,6 +146,7 @@ Assets:
 - Assets/Driver/Icons/texZapIcon.png
 - Assets/Driver/Textures/texJacketEmission.png
 - Assets/Driver/Animations/Default/DefaultPose.anim
+- Assets/Driver/Textures/texKnifeNormal.png
 - Assets/Driver/FBX/meshSuperShotgun.mesh
 - Assets/Driver/Projectiles/DriverStunGrenadeImpact.prefab
 - Assets/Driver/FBX/animDriver.fbx

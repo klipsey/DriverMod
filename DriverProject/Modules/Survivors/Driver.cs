@@ -151,17 +151,10 @@ namespace RobDriver.Modules.Survivors
             //var state = isPlayer ? typeof(EntityStates.SpawnTeleporterState) : typeof(SpawnState);
             //newPrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType(state);
 
-            // this should be the default, no?
+            // schizophrenia
             newPrefab.GetComponent<CharacterDeathBehavior>().deathState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.FuckMyAss));
-            // so why doesn't the ragdoll work? inspector and code both tell me everything is as it should be
-            // is there some niche override in the state that's fucking it?
-            // 
-            // no,i just checked and there is no such thing.
-            // what the fuck?
 
             newPrefab.AddComponent<Modules.Components.DriverController>();
-
-            //MechorillaPlugin.Destroy(newPrefab.GetComponent<SetStateOnHurt>());
             #endregion
 
             #region Model
@@ -177,9 +170,17 @@ namespace RobDriver.Modules.Survivors
                 },
                 new CustomRendererInfo
                 {
+                    childName = "KnifeModel",
+                    material = Modules.Assets.knifeMat
+                },
+                new CustomRendererInfo
+                {
                     childName = "PistolModel",
                     material = Modules.Assets.pistolMat
                 } }, bodyRendererIndex);
+
+            // hide the knife
+            childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
             #endregion
 
             CreateHitboxes(newPrefab);
@@ -569,6 +570,8 @@ namespace RobDriver.Modules.Survivors
 
             Modules.Skills.AddSpecialSkills(prefab, impactSkillDef);
             #endregion
+
+            Modules.Assets.InitWeaponDefs();
         }
 
         private static void CreateSkins(GameObject prefab)
