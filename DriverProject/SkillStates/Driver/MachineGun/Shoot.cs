@@ -52,7 +52,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
         private void Fire()
         {
-            base.characterBody.AddSpreadBloom(0.3f);
+            base.characterBody.AddSpreadBloom(0.224f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, this.muzzleString, false);
 
             if (this.isCrit) Util.PlaySound("sfx_driver_machinegun_shoot_critical", base.gameObject);
@@ -76,7 +76,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,
                     minSpread = 0f,
-                    maxSpread = 2.5f,
+                    maxSpread = 4f,
                     isCrit = this.isCrit,
                     owner = this.gameObject,
                     muzzleName = muzzleString,

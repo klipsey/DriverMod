@@ -47,7 +47,7 @@ namespace RobDriver.Modules.Components
 		public void SetTarget(DriverController driver)
         {
 			this.iDrive = driver;
-			this.iDrive.onWeaponUpdate += SetDisplay;
+			this.iDrive.onWeaponUpdate += this.SetDisplay;
 			this.SetDisplay(this.iDrive);
         }
 
@@ -77,62 +77,16 @@ namespace RobDriver.Modules.Components
 
 			if (this.iconImage)
 			{
-				Texture texture = null;
-
-				switch (this.iDrive.weapon)
-                {
-					case DriverWeapon.Default:
-						texture = Modules.Assets.pistolWeaponIcon;
-						break;
-					case DriverWeapon.Shotgun:
-						texture = Modules.Assets.shotgunWeaponIcon;
-						break;
-					case DriverWeapon.MachineGun:
-						texture = Modules.Assets.machineGunWeaponIcon;
-						break;
-					case DriverWeapon.RocketLauncher:
-						texture = Modules.Assets.machineGunWeaponIcon;
-						break;
-				}
-
-				this.iconImage.texture = texture;
+				this.iconImage.texture = this.iDrive.weaponDef.icon;
 				this.iconImage.color = Color.white;
 				this.iconImage.enabled = true;
 			}
 
-			string titleToken = null;
-			string bodyToken = null;
-			Color titleColor = Color.white;
-
-			switch (this.iDrive.weapon)
-            {
-				case DriverWeapon.Default:
-					titleToken = "ROB_DRIVER_PISTOL_NAME";
-					bodyToken = "ROB_DRIVER_PISTOL_DESC";
-					titleColor = Modules.Survivors.Driver.characterColor;
-					break;
-				case DriverWeapon.Shotgun:
-					titleToken = "ROB_DRIVER_SHOTGUN_NAME";
-					bodyToken = "ROB_DRIVER_SHOTGUN_DESC";
-					titleColor = Modules.Survivors.Driver.characterColor;
-					break;
-				case DriverWeapon.MachineGun:
-					titleToken = "ROB_DRIVER_MACHINEGUN_NAME";
-					bodyToken = "ROB_DRIVER_MACHINEGUN_DESC";
-					titleColor = Modules.Survivors.Driver.characterColor;
-					break;
-				case DriverWeapon.RocketLauncher:
-					titleToken = "ROB_DRIVER_ROCKETLAUNCHER_NAME";
-					bodyToken = "ROB_DRIVER_ROCKETLAUNCHER_DESC";
-					titleColor = Modules.Survivors.Driver.characterColor;
-					break;
-			}
-
 			if (this.tooltipProvider)
 			{
-				this.tooltipProvider.titleToken = titleToken;
-				this.tooltipProvider.titleColor = titleColor;
-				this.tooltipProvider.bodyToken = bodyToken;
+				this.tooltipProvider.titleToken = this.iDrive.weaponDef.nameToken;
+				this.tooltipProvider.bodyToken = this.iDrive.weaponDef.descriptionToken;
+				this.tooltipProvider.titleColor = Modules.Survivors.Driver.characterColor;
 				this.tooltipProvider.bodyColor = Color.gray;
 			}
 		}

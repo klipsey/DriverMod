@@ -77,7 +77,44 @@ namespace RobDriver.Modules
             #endregion
             #endregion
 
-            //rocketProjectilePrefab = stunGrenadeProjectilePrefab;
+            CreateRocket();
+        }
+
+        private static void CreateRocket()
+        {
+            rocketProjectilePrefab = CloneProjectilePrefab("CommandoGrenadeProjectile", "DriverRocketProjectile");
+            rocketProjectilePrefab.AddComponent<Modules.Components.RocketRotation>();
+            rocketProjectilePrefab.transform.localScale *= 2f;
+
+            ProjectileImpactExplosion impactExplosion = rocketProjectilePrefab.GetComponent<ProjectileImpactExplosion>();
+            InitializeImpactExplosion(impactExplosion);
+
+            GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
+            Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_explosion");
+
+            impactExplosion.blastRadius = 10f;
+            impactExplosion.destroyOnEnemy = true;
+            impactExplosion.lifetime = 12f;
+            impactExplosion.impactEffect = fuckMyLife;
+            //impactExplosion.lifetimeExpiredSound = Modules.Assets.CreateNetworkSoundEventDef("sfx_driver_explosion");
+            impactExplosion.timerAfterImpact = true;
+            impactExplosion.lifetimeAfterImpact = 0f;
+
+            ProjectileController rocketController = rocketProjectilePrefab.GetComponent<ProjectileController>();
+
+            GameObject ghost = CreateGhostPrefab("DriverRocketGhost");
+            ghost.transform.Find("model").Find("Smoke").gameObject.AddComponent<Modules.Components.DetachOnDestroy>();
+            ghost.transform.Find("model").Find("Smoke").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matDustDirectional.mat").WaitForCompletion();
+            ghost.transform.Find("model").Find("Flame").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Golem/matVFXFlame1.mat").WaitForCompletion();
+
+            ghost.GetComponentInChildren<MeshRenderer>().material = Assets.rocketLauncherMat;
+
+            rocketController.ghostPrefab = ghost;
+            rocketController.startSound = "";
+
+            rocketProjectilePrefab.GetComponent<Rigidbody>().useGravity = false;
+
+            Prefabs.projectilePrefabs.Add(rocketProjectilePrefab);
         }
 
         private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion)

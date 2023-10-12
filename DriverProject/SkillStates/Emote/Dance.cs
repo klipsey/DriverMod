@@ -6,7 +6,10 @@
         {
             base.OnEnter();
 
-            this.PlayEmote("Dance", "sfx_driver_dance");
+            // hardcoded, fix at some point
+            if (this.characterBody.skinIndex != 0) this.PlayEmote("Dance", "sfx_jacket_dance");
+            else this.PlayEmote("Dance", "sfx_driver_dance");
+
             this.FindModelChild("Boombox").gameObject.SetActive(true);
         }
 

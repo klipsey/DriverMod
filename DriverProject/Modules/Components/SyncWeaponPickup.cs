@@ -32,7 +32,8 @@ namespace RobDriver.Modules.Components
             GameObject pickupObject = Util.FindNetworkObject(this.netId);
             if (!pickupObject) return;
 
-            DriverWeapon newWeapon = DriverWeapon.Default;
+            // this needs to be rewritten if i decide to network it this way
+            /*DriverWeapon newWeapon = DriverWeapon.Default;
             switch (this.weapon)
             {
                 case 0:
@@ -47,7 +48,7 @@ namespace RobDriver.Modules.Components
                 case 3:
                     newWeapon = DriverWeapon.RocketLauncher;
                     break;
-            }
+            }*/
 
             /*WeaponPickup pickupComponent = pickupObject.GetComponentInChildren<WeaponPickup>();
             if (pickupComponent)

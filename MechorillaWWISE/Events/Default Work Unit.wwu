@@ -289,6 +289,39 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_rocket_launcher_shoot" ID="{3C6733D2-0799-4592-88B6-8F095A6489E0}">
+					<ChildrenList>
+						<Action Name="" ID="{485AC4E0-F24A-44FF-BFBC-8669C7E5789F}" ShortID="585695755">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_rocket_launcher_shoot" ID="{66E4FB18-EDAE-4171-8147-D2A586EAF994}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_explosion" ID="{1A7BCA36-D445-43E6-A9CB-7CED6482C07F}">
+					<ChildrenList>
+						<Action Name="" ID="{5B48D1E2-08D4-45FE-A0B2-42B5F7B1D8CB}" ShortID="818591962">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_explosion" ID="{FD8D7F5F-8FF7-41A0-BC29-86BDA8782570}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_jacket_dance" ID="{BB09B936-629D-4AB3-B879-07539118FC33}">
+					<ChildrenList>
+						<Action Name="" ID="{8D374D0D-ECCD-4F3B-A7F9-076591A894E1}" ShortID="1053599919">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="jacket_dance" ID="{FE1B0FD1-62CE-4798-BA9C-470A6740F896}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

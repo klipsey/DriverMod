@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver
 {
-    public class SteadyAim : BaseSkillState
+    public class SteadyAim : BaseDriverSkillState
     {
         public float baseShotDuration = 0.3f;
         public float baseChargeDuration = 0.15f;
@@ -27,8 +27,6 @@ namespace RobDriver.SkillStates.Driver
         private int cachedShots;
         private float cachedShotTimer;
         private PrimarySkillShurikenBehavior shurikenComponent;
-        private GameObject cachedCrosshair;
-        private DriverController iDrive;
         private bool autoFocus;
         private bool cancelling;
 
@@ -53,9 +51,6 @@ namespace RobDriver.SkillStates.Driver
                 this.characterBody.master.inventory.onInventoryChanged += Inventory_onInventoryChanged;
             }
 
-            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Default) return;
-
-            this.cachedCrosshair = this.characterBody.defaultCrosshairPrefab;
             this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
             this.autoFocus = Modules.Config.autoFocus.Value;
 
@@ -76,7 +71,7 @@ namespace RobDriver.SkillStates.Driver
             this.characterBody.isSprinting = false;
             base.characterBody.SetAimTimer(0.2f);
 
-            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Default)
+            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
                 this.cancelling = true;
                 this.outer.SetNextStateToMain();
@@ -185,7 +180,6 @@ namespace RobDriver.SkillStates.Driver
             this.chargeTimer = 0f;
             this.isCharged = false;
 
-            base.characterBody.AddSpreadBloom(0.25f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "PistolMuzzle", false);
 
             string soundString = "sfx_driver_pistol_shoot";
@@ -203,10 +197,14 @@ namespace RobDriver.SkillStates.Driver
                 soundString = "sfx_driver_pistol_shoot_charged";
                 if (this.isCrit) animString = "SteadyAimFireChargedCritical";
                 else animString = "SteadyAimFireCharged";
+
+                base.characterBody.AddSpreadBloom(1.5f);
             }
             else
             {
                 if (this.isCrit) animString = "SteadyAimFireCritical";
+
+                base.characterBody.AddSpreadBloom(0.35f);
             }
 
             Util.PlaySound(soundString, this.gameObject);
@@ -269,7 +267,7 @@ namespace RobDriver.SkillStates.Driver
             // this is literally the worst POSSIBLE way to do this.
             // FUCK!!
 
-            base.characterBody.AddSpreadBloom(1f);
+            base.characterBody.AddSpreadBloom(1.15f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "PistolMuzzle", false);
 
             Util.PlaySound("sfx_driver_pistol_shoot_critical", base.gameObject);
@@ -336,7 +334,7 @@ namespace RobDriver.SkillStates.Driver
                 this.characterBody.master.inventory.onInventoryChanged -= Inventory_onInventoryChanged;
             }
 
-            if (!this.cancelling) this.characterBody._defaultCrosshairPrefab = this.cachedCrosshair;
+            if (!this.cancelling) this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;
 
             this.FindModelChild("PistolSight").gameObject.SetActive(false);
         }

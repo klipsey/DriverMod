@@ -66,6 +66,8 @@ Swuff - Code help, feedback, networking help
 
 Bog - Code for Shuriken interaction fix
 
+Hyperinvox - Briefcase model
+
 
 ## Future Plans
 - Many more weapons (rocket launcher, dual uzis, railgun, minigun, etc.)
@@ -79,6 +81,17 @@ Bog - Code for Shuriken interaction fix
 ___
 
 ## Changelog
+
+`1.1.0`
+- Added weapon: Rocket Launcher, guaranteed drop from bosses
+- Picking up Bandolier drops now resets your weapon timer
+- Replaced goofy weapon drop crates with a cool looking briefcase (old ones will be a config at some point)
+- Pistol now has some spread when firing without Focus
+- Machine Gun spread reworked for better accuracy when burst firing
+- Rewrote entire weapon backend, allowing new weapons to be easily added (even from external mods) and streamlining the whole development process
+- Made mastery skin 3% more epic
+- Fixed the big guy, elite, boss drop rate tweaks from 1.0.3 not working, please don't ask why this wasn't working
+- Fixed Machine Gun's secondary cancelling before the projectile was fired if you had some attack speed
 
 `1.0.5`
 - Fixed ragdoll; the incredibly handsome developer of this mod never dies and so never realized it was broken

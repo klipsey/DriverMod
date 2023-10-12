@@ -137,7 +137,7 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
                 this.FireBullet();
             }
 
-            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Shotgun)
+            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();

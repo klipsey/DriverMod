@@ -102,7 +102,7 @@ namespace RobDriver.SkillStates.Driver
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,
                     minSpread = 0f,
-                    maxSpread = this.characterBody.spreadBloomAngle,
+                    maxSpread = 5f,
                     isCrit = this.isCrit,
                     owner = base.gameObject,
                     muzzleName = muzzleString,
@@ -114,8 +114,8 @@ namespace RobDriver.SkillStates.Driver
                     stopperMask = LayerIndex.CommonMasks.bullet,
                     weapon = null,
                     tracerEffectPrefab = this.tracerPrefab,
-                    spreadPitchScale = 0f,
-                    spreadYawScale = 0f,
+                    spreadPitchScale = 1f,
+                    spreadYawScale = 1f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 }.Fire();
@@ -135,7 +135,7 @@ namespace RobDriver.SkillStates.Driver
         {
             base.FixedUpdate();
 
-            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Default)
+            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();

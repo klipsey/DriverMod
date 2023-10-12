@@ -382,7 +382,7 @@ namespace RobDriver.Modules.Survivors
                 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMachineGunIcon"),
                 false);
 
-            Driver.machineGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+            Driver.rocketLauncherPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
                 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.RocketLauncher.Shoot)),
                 "Weapon",
                 prefix + "_DRIVER_BODY_PRIMARY_ROCKETLAUNCHER_NAME",
@@ -516,7 +516,7 @@ namespace RobDriver.Modules.Survivors
             #endregion
 
             #region Utility
-            SkillDef sweepingBeamSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef slideSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_UTILITY_SLIDE_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_UTILITY_SLIDE_NAME",
@@ -540,11 +540,11 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
-            Modules.Skills.AddUtilitySkills(prefab, sweepingBeamSkillDef);
+            Modules.Skills.AddUtilitySkills(prefab, slideSkillDef);
             #endregion
 
             #region Special
-            SkillDef impactSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef stunGrenadeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_NAME",
@@ -568,7 +568,31 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
-            Modules.Skills.AddSpecialSkills(prefab, impactSkillDef);
+            SkillDef knifeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texStunGrenadeIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SwingKnife)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 18f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef/*, knifeSkillDef*/);
             #endregion
 
             Modules.Assets.InitWeaponDefs();
@@ -3346,6 +3370,24 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
             RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
 
             RoR2.UI.HUD.onHudTargetChangedGlobal += HUDSetup;
+
+            On.RoR2.SkillLocator.ApplyAmmoPack += SkillLocator_ApplyAmmoPack;
+        }
+
+        private static void SkillLocator_ApplyAmmoPack(On.RoR2.SkillLocator.orig_ApplyAmmoPack orig, SkillLocator self)
+        {
+            orig(self);
+
+            // this is terribly hardcoded and not future proof
+            // but more performant than doing something like a getcomponent every time a bandolier drop is picked up on anyone
+            if (self && self.special.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_GRENADE_NAME")
+            {
+                Components.DriverController iDrive = self.GetComponent<Components.DriverController>();
+                if (iDrive)
+                {
+                    iDrive.ServerResetTimer();
+                }
+            }
         }
 
         private static void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
@@ -3368,22 +3410,26 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                     // 7 + 0.75(player level)%
                     float chance = Modules.Config.baseDropRate.Value + ((1 + damageReport.attackerBody.level) * 0.75f);
 
-                    // double chance if it's a champion
-                    if (damageReport.attackerBody.isChampion) chance = Mathf.Clamp(2f * chance, 0f, 100f);
+                    // double chance if it's a big guy
+                    if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(2f * chance, 0f, 100f);
 
                     // minimum 50% chance if the slain enemy is an elite
-                    if (damageReport.attackerBody.isElite) chance = Mathf.Clamp(chance, 50f, 100f);
+                    if (damageReport.victimBody.isElite) chance = Mathf.Clamp(chance, 50f, 100f);
 
                     // halved on swarms, fuck You
                     if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms)) chance *= 0.5f;
 
                     chance *= Driver.instance.pityMultiplier;
 
-                    // guaranteed if the slain enemy is a boss
-                    bool isBoss = damageReport.attackerBody.isBoss;
-                    if (isBoss) chance = 1000f;
-
                     bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
+
+                    // guaranteed if the slain enemy is a boss
+                    bool isBoss = damageReport.victimBody.isBoss || damageReport.victimBody.isChampion;
+                    if (isBoss) droppedWeapon = true;
+
+                    // all the above checks were originally checking the ATTACKER body
+                    // not the fucking victim
+                    // how
 
                     // test
                     //droppedWeapon = true;
@@ -3404,22 +3450,22 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
-                        DriverWeapon weapon = DriverWeapon.Default;
+                        DriverWeaponDef weapon = DriverWeaponCatalog.GetWeaponFromIndex(0);
                         // this is gross but it should work
-                        if (Random.value > 0.5f) weapon = DriverWeapon.MachineGun;
-                        else weapon = DriverWeapon.Shotgun;
+                        if (Random.value > 0.5f) weapon = DriverWeaponCatalog.GetWeaponFromIndex(1);
+                        else weapon = DriverWeaponCatalog.GetWeaponFromIndex(2);
                         // it didn't
 
-                        if (isBoss) weapon = DriverWeapon.RocketLauncher;
+                        if (isBoss) weapon = DriverWeaponCatalog.GetWeaponFromIndex(3);
 
-                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weapon = weapon;
+                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = weapon;
 
                         NetworkServer.Spawn(weaponPickup);
                     }
                     else
                     {
                         // add pity
-                        Driver.instance.pityMultiplier += 0.2f;
+                        Driver.instance.pityMultiplier += 0.1f;
                     }
                 }
 

@@ -9,6 +9,7 @@ public class DriverWeaponDef : ScriptableObject
     public string nameToken = "";
     public string descriptionToken = "";
     public Texture icon = null;
+    public GameObject crosshairPrefab = null;
     public DriverWeaponTier tier = DriverWeaponTier.Common;
     public float baseDuration = 8f;
 
@@ -19,6 +20,10 @@ public class DriverWeaponDef : ScriptableObject
     [Header("Visuals")]
     public Mesh mesh;
     public Material material;
+    public string animLayer;
+
+    [HideInInspector]
+    public ushort index; // assigned at runtime
 
     public static DriverWeaponDef CreateWeaponDefFromInfo(DriverWeaponDefInfo weaponDefInfo)
     {
@@ -27,6 +32,7 @@ public class DriverWeaponDef : ScriptableObject
         weaponDef.nameToken = weaponDefInfo.nameToken;
         weaponDef.descriptionToken = weaponDefInfo.descriptionToken;
         weaponDef.icon = weaponDefInfo.icon;
+        weaponDef.crosshairPrefab = weaponDefInfo.crosshairPrefab;
         weaponDef.tier = weaponDefInfo.tier;
         weaponDef.baseDuration = weaponDefInfo.baseDuration;
 
@@ -35,6 +41,7 @@ public class DriverWeaponDef : ScriptableObject
 
         weaponDef.mesh = weaponDefInfo.mesh;
         weaponDef.material = weaponDefInfo.material;
+        weaponDef.animLayer = weaponDefInfo.animLayer;
 
         return weaponDef;
     }
@@ -46,6 +53,7 @@ public struct DriverWeaponDefInfo
     public string nameToken;
     public string descriptionToken;
     public Texture icon;
+    public GameObject crosshairPrefab;
     public DriverWeaponTier tier;
     public float baseDuration;
 
@@ -54,6 +62,7 @@ public struct DriverWeaponDefInfo
 
     public Mesh mesh;
     public Material material;
+    public string animLayer;
 }
 
 public enum DriverWeaponTier

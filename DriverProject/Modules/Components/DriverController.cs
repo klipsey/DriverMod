@@ -1,20 +1,23 @@
 ﻿using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
+using RoR2.Skills;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
 // this is definitely the worst way to do this
 // please make a system for this eventually
 // don't just stack on a thousand entries in this fucking enum
-public enum DriverWeapon
+/*public enum DriverWeapon
 {
     Default,
     Shotgun,
     MachineGun,
     RocketLauncher
-}
+}*/
+// my wrongs have finally been righted
 
 namespace RobDriver.Modules.Components
 {
@@ -23,7 +26,7 @@ namespace RobDriver.Modules.Components
         public ushort syncedWeapon;
         public NetworkInstanceId netId;
 
-        public DriverWeapon weapon;
+        public DriverWeaponDef weaponDef;
 
         public float chargeValue;
         
@@ -45,6 +48,14 @@ namespace RobDriver.Modules.Components
         public float maxWeaponTimer;
         public float weaponTimer;
         private float comboDecay = 1f;
+        private DriverWeaponDef pistolWeaponDef;
+        private SkinnedMeshRenderer weaponRenderer;
+
+        // ooooAAAAAUGHHHHHGAHEM,67TKM
+        private SkillDef[] primarySkillOverrides;
+        private SkillDef[] secondarySkillOverrides;
+
+        public GameObject crosshairPrefab;
 
         private void Awake()
         {
@@ -62,7 +73,32 @@ namespace RobDriver.Modules.Components
             this.characterModel = modelLocator.modelBaseTransform.GetComponentInChildren<CharacterModel>();
             this.skillLocator = this.GetComponent<SkillLocator>();
 
-            this.PickUpWeapon(DriverWeapon.Default);
+            // really gotta cache this instead of calling a getcomponent on every single weapon pickup
+            this.weaponRenderer = this.childLocator.FindChild("PistolModel").GetComponent<SkinnedMeshRenderer>();
+
+            this.GetSkillOverrides();
+
+            this.pistolWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(0);
+            this.PickUpWeapon(this.pistolWeaponDef);
+        }
+
+        private void GetSkillOverrides()
+        {
+            // get each skilldef from each weapondef in the catalog...... i hate you
+            List<SkillDef> primary = new List<SkillDef>();
+            List<SkillDef> secondary = new List<SkillDef>();
+
+            for (int i = 0; i < DriverWeaponCatalog.weaponDefs.Length; i++)
+            {
+                if (DriverWeaponCatalog.weaponDefs[i])
+                {
+                    if (DriverWeaponCatalog.weaponDefs[i].primarySkillDef) primary.Add(DriverWeaponCatalog.weaponDefs[i].primarySkillDef);
+                    if (DriverWeaponCatalog.weaponDefs[i].secondarySkillDef) secondary.Add(DriverWeaponCatalog.weaponDefs[i].secondarySkillDef);
+                }
+            }
+
+            this.primarySkillOverrides = primary.ToArray();
+            this.secondarySkillOverrides = secondary.ToArray();
         }
 
         private void Start()
@@ -80,59 +116,30 @@ namespace RobDriver.Modules.Components
             if (this.timerStarted) this.weaponTimer -= Time.fixedDeltaTime;
             this.jamTimer = Mathf.Clamp(this.jamTimer - (2f * Time.fixedDeltaTime), 0f, Mathf.Infinity);
 
-            // test
-            /*if (Input.GetKeyDown("z"))
+            if (this.weaponTimer <= 0f && this.weaponDef != this.pistolWeaponDef)
             {
-                this.PickUpWeapon(DriverWeapon.Default);
-            }
-
-            if (Input.GetKeyDown("x"))
-            {
-                this.PickUpWeapon(DriverWeapon.Shotgun);
-            }
-
-            if (Input.GetKeyDown("c"))
-            {
-                this.PickUpWeapon(DriverWeapon.MachineGun);
-            }
-
-            if (Input.GetKeyDown("v"))
-            {
-                this.PickUpWeapon(DriverWeapon.RocketLauncher);
-            }*/
-
-            if (this.weaponTimer <= 0f && this.weapon != DriverWeapon.Default)
-            {
-                this.PickUpWeapon(DriverWeapon.Default);
+                this.PickUpWeapon(this.pistolWeaponDef);
             }
         }
 
-        public void ServerPickUpWeapon(DriverWeapon newWeapon, DriverController driverController)
+        public void ServerResetTimer()
         {
-            ushort augh = 0;
-            switch (newWeapon)
-            {
-                case DriverWeapon.Default:
-                    augh = 0;
-                    break;
-                case DriverWeapon.Shotgun:
-                    augh = 1;
-                    break;
-                case DriverWeapon.MachineGun:
-                    augh = 2;
-                    break;
-            }
+            // just pick up the same weapon again cuz i don't feel like writing even more netcode to sync this
+            this.ServerPickUpWeapon(this.weaponDef, this);
+        }
 
+        public void ServerPickUpWeapon(DriverWeaponDef newWeapon, DriverController driverController)
+        {
             NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
             if (!identity) return;
 
-            new SyncWeapon(identity.netId, augh).Send(NetworkDestination.Clients);
+            new SyncWeapon(identity.netId, newWeapon.index).Send(NetworkDestination.Clients);
         }
 
-        public void PickUpWeapon(DriverWeapon newWeapon)
+        public void PickUpWeapon(DriverWeaponDef newWeapon)
         {
             this.timerStarted = false;
-            this.weapon = newWeapon;
+            this.weaponDef = newWeapon;
             this.EquipWeapon();
 
             if (this.onWeaponUpdate == null) return;
@@ -141,69 +148,42 @@ namespace RobDriver.Modules.Components
 
         private void EquipWeapon()
         {
-            // overrides....
-            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.shotgunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.shotgunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-
-            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.machineGunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.machineGunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-
-            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.rocketLauncherPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.rocketLauncherSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-            // fuck this
-
-            switch (this.weapon)
+            // unset all the overrides....
+            for (int i = 0; i < this.primarySkillOverrides.Length; i++)
             {
-                case DriverWeapon.Default:
-                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.pistolMat;
-                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.pistolMesh;
-                    this.EnableLayer("");
-
-                    this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("Standard");
-
-                    this.maxWeaponTimer = 0f;
-                    this.weaponTimer = 0f;
-                    break;
-                case DriverWeapon.Shotgun:
-                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.shotgunMat;
-                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.shotgunMesh;
-                    this.EnableLayer("Body, Shotgun");
-
-                    this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("SMG");
-
-                    this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.shotgunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-                    this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.shotgunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-
-                    this.maxWeaponTimer = Modules.Config.shotgunDuration.Value;
-                    this.weaponTimer = Modules.Config.shotgunDuration.Value;
-                    break;
-                case DriverWeapon.MachineGun:
-                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.machineGunMat;
-                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.machineGunMesh;
-                    this.EnableLayer("Body, Shotgun");
-
-                    this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("Standard");
-
-                    this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.machineGunPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-                    this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.machineGunSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-
-                    this.maxWeaponTimer = Modules.Config.shotgunDuration.Value;
-                    this.weaponTimer = Modules.Config.shotgunDuration.Value;
-                    break;
-                case DriverWeapon.RocketLauncher:
-                    this.characterModel.baseRendererInfos[1].defaultMaterial = Modules.Assets.rocketLauncherMat;
-                    this.characterModel.baseRendererInfos[1].renderer.gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.rocketLauncherMesh;
-                    this.EnableLayer("Body, Shotgun");
-
-                    this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("Standard");
-
-                    this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.rocketLauncherPrimarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-                    this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.rocketLauncherSecondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-
-                    this.maxWeaponTimer = Modules.Config.shotgunDuration.Value;
-                    this.weaponTimer = Modules.Config.shotgunDuration.Value;
-                    break;
+                if (this.primarySkillOverrides[i])
+                {
+                    this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, this.primarySkillOverrides[i], GenericSkill.SkillOverridePriority.Upgrade);
+                }
             }
+
+            for (int i = 0; i < this.secondarySkillOverrides.Length; i++)
+            {
+                if (this.secondarySkillOverrides[i])
+                {
+                    this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, this.secondarySkillOverrides[i], GenericSkill.SkillOverridePriority.Upgrade);
+                }
+            }
+            // fuck this, seriously
+
+            // set new overrides
+            if (this.weaponDef.primarySkillDef) this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, this.weaponDef.primarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            if (this.weaponDef.secondarySkillDef) this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, this.weaponDef.secondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+
+            // model swap
+            this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
+            this.characterModel.baseRendererInfos[2].defaultMaterial = this.weaponDef.material;
+
+            // timer
+            this.maxWeaponTimer = this.weaponDef.baseDuration;
+            this.weaponTimer = this.weaponDef.baseDuration;
+
+            // crosshair
+            this.crosshairPrefab = this.weaponDef.crosshairPrefab;
+            this.characterBody._defaultCrosshairPrefab = this.crosshairPrefab;
+
+            // animator layer
+            this.EnableLayer(this.weaponDef.animLayer);
         }
 
         private void EnableLayer(string layerName)

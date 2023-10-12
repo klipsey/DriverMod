@@ -32,25 +32,8 @@ namespace RobDriver.Modules.Components
             GameObject bodyObject = Util.FindNetworkObject(this.netId);
             if (!bodyObject) return;
 
-            DriverWeapon newWeapon = DriverWeapon.Default;
-            switch (this.weapon)
-            {
-                case 0:
-                    newWeapon = DriverWeapon.Default;
-                    break;
-                case 1:
-                    newWeapon = DriverWeapon.Shotgun;
-                    break;
-                case 2:
-                    newWeapon = DriverWeapon.MachineGun;
-                    break;
-                case 3:
-                    newWeapon = DriverWeapon.RocketLauncher;
-                    break;
-            }
-
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
-            if (iDrive) iDrive.PickUpWeapon(newWeapon);
+            if (iDrive) iDrive.PickUpWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon));
         }
 
         public void Serialize(NetworkWriter writer)

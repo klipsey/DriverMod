@@ -1,10 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using UnityEngine;
 
-namespace DriverMod.Modules.Misc
+namespace RobDriver
 {
-    class DriverWeaponCatalog
+    internal static class DriverWeaponCatalog
     {
+        internal static DriverWeaponDef[] weaponDefs = new DriverWeaponDef[0];
+
+        internal static void AddWeapon(DriverWeaponDef weaponDef)
+        {
+            Array.Resize(ref weaponDefs, weaponDefs.Length + 1);
+
+            int index = weaponDefs.Length - 1;
+            weaponDef.index = (ushort)index;
+
+            weaponDefs[index] = weaponDef;
+        }
+
+        internal static DriverWeaponDef GetWeaponFromIndex(int index)
+        {
+            return weaponDefs[index];
+        }
     }
 }

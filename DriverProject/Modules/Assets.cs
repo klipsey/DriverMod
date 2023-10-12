@@ -141,12 +141,13 @@ namespace RobDriver.Modules
             pickupModel.transform.localRotation = Quaternion.identity;
 
             MeshRenderer pickupMesh = pickupModel.GetComponentInChildren<MeshRenderer>();
-            pickupMesh.materials = new Material[]
+            /*pickupMesh.materials = new Material[]
             {
                 CreateMaterial("matCrate1"),
                 CreateMaterial("matCrate2")//,
                 //uncommonPickupMat
-            };
+            };*/
+            pickupMesh.material = CreateMaterial("matBriefcase");
 
             GameObject textShit = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
             MonoBehaviour.Destroy(textShit.GetComponent<EffectComponent>());
@@ -175,7 +176,7 @@ namespace RobDriver.Modules
             pistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
             shotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texShotgunWeaponIcon");
             machineGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texMachineGunWeaponIcon");
-            rocketLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texShotgunWeaponIcon");
+            rocketLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRocketLauncherWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -234,13 +235,16 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_PISTOL_NAME",
                 descriptionToken = "ROB_DRIVER_PISTOL_DESC",
                 icon = Assets.pistolWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Common,
-                baseDuration = -1f,
+                baseDuration = 0f,
                 primarySkillDef = null,
                 secondarySkillDef = null,
                 mesh = Assets.pistolMesh,
-                material = Assets.pistolMat
+                material = Assets.pistolMat,
+                animLayer = ""
             });
+            DriverWeaponCatalog.AddWeapon(pistolWeaponDef);
 
             // example of creating a WeaponDef through code and adding it to the catalog for driver to obtain
             shotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
@@ -248,18 +252,48 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_SHOTGUN_NAME",
                 descriptionToken = "ROB_DRIVER_SHOTGUN_DESC",
                 icon = Assets.shotgunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("SMG"),
                 tier = DriverWeaponTier.Uncommon,
                 baseDuration = Config.shotgunDuration.Value,
                 primarySkillDef = Survivors.Driver.shotgunPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.shotgunSecondarySkillDef,
                 mesh = Assets.shotgunMesh,
-                material = Assets.shotgunMat
-            });
+                material = Assets.shotgunMat,
+                animLayer = "Body, Shotgun"
+            });// now add it to the catalog here; catalog is necessary for networking
+            DriverWeaponCatalog.AddWeapon(shotgunWeaponDef);
 
-            // now add it to the catalog here; catalog is necessary for networking
-            // --work in progress--
-            // it would be DriverWeaponCatalog.AddWeapon(shotgunWeaponDef);
-            // but the catalog has to be coded first and i'm out of fuel rn
+            machineGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_MACHINEGUN_NAME",
+                descriptionToken = "ROB_DRIVER_MACHINEGUN_DESC",
+                icon = Assets.machineGunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Uncommon,
+                baseDuration = Config.shotgunDuration.Value,
+                primarySkillDef = Survivors.Driver.machineGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.machineGunSecondarySkillDef,
+                mesh = Assets.machineGunMesh,
+                material = Assets.machineGunMat,
+                animLayer = "Body, Shotgun"
+            });
+            DriverWeaponCatalog.AddWeapon(machineGunWeaponDef);
+
+            rocketLauncherWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_ROCKETLAUNCHER_NAME",
+                descriptionToken = "ROB_DRIVER_ROCKETLAUNCHER_DESC",
+                icon = Assets.rocketLauncherWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                tier = DriverWeaponTier.Legendary,
+                baseDuration = Config.shotgunDuration.Value,
+                primarySkillDef = Survivors.Driver.rocketLauncherPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.rocketLauncherSecondarySkillDef,
+                mesh = Assets.rocketLauncherMesh,
+                material = Assets.rocketLauncherMat,
+                animLayer = "Body, Shotgun"
+            });
+            DriverWeaponCatalog.AddWeapon(rocketLauncherWeaponDef);
         }
 
         internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")

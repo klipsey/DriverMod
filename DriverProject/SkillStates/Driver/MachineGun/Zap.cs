@@ -67,7 +67,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            if (base.fixedAge >= (this.duration * this.delayBeforeFiringProjectile) + 0.1f) return InterruptPriority.Any;
+            if (base.fixedAge >= (this.duration * this.delayBeforeFiringProjectile) + 0.1f && this.firedProjectile) return InterruptPriority.Any;
             return InterruptPriority.Pain;
         }
 

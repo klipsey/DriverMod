@@ -7,14 +7,13 @@ using RoR2.UI;
 
 namespace RobDriver.SkillStates.Driver.Revolver
 {
-    public class SteadyAim : BaseSkillState
+    public class SteadyAim : BaseDriverSkillState
     {
         public float baseShotDuration = 0.4f;
         public float baseChargeDuration = 0.2f;
 
         public static float damageCoefficient = 5f;
         public static float recoil = 1f;
-
 
         private CameraParamsOverrideHandle camParamsOverrideHandle;
         private float shotCooldown;
@@ -23,8 +22,6 @@ namespace RobDriver.SkillStates.Driver.Revolver
         private bool isCharged;
         private bool isCrit;
         private PrimarySkillShurikenBehavior shurikenComponent;
-        private GameObject cachedCrosshair;
-        private DriverController iDrive;
         private bool autoFocus;
         private bool cancelling;
 
@@ -49,9 +46,6 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 this.characterBody.master.inventory.onInventoryChanged += Inventory_onInventoryChanged;
             }
 
-            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Default) return;
-
-            this.cachedCrosshair = this.characterBody.defaultCrosshairPrefab;
             this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
             this.autoFocus = Modules.Config.autoFocus.Value;
         }
@@ -69,7 +63,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
             this.characterBody.isSprinting = false;
             base.characterBody.SetAimTimer(0.2f);
 
-            if (this.iDrive && this.iDrive.weapon != DriverWeapon.Default)
+            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
                 this.cancelling = true;
                 this.outer.SetNextStateToMain();
@@ -259,7 +253,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 this.characterBody.master.inventory.onInventoryChanged -= Inventory_onInventoryChanged;
             }
 
-            if (!this.cancelling) this.characterBody._defaultCrosshairPrefab = this.cachedCrosshair;
+            if (!this.cancelling) this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

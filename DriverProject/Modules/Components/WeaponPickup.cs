@@ -12,7 +12,7 @@ namespace RobDriver.Modules.Components
 		public GameObject baseObject;
 		[Tooltip("The team filter object which determines who can pick up this pack.")]
 		public TeamFilter teamFilter;
-		public DriverWeapon weapon = DriverWeapon.Shotgun;
+		public DriverWeaponDef weaponDef;
 
 		public GameObject pickupEffect;
 
@@ -55,7 +55,7 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weapon);
+			this.SetWeapon(this.weaponDef);
 
 			/*if (NetworkServer.active)
 			{
@@ -75,9 +75,9 @@ namespace RobDriver.Modules.Components
 			// no fuck my life bro no way this is real
 		}
 
-		public void SetWeapon(DriverWeapon newWeapon)
+		public void SetWeapon(DriverWeaponDef newWeapon)
         {
-			this.weapon = newWeapon;
+			this.weaponDef = newWeapon;
 
 			// wow this is awful!
 			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
@@ -90,21 +90,20 @@ namespace RobDriver.Modules.Components
 					return;
 				}
 
-				switch (this.weapon)
-				{
-					case DriverWeapon.Default:
-						textComponent.token = "ROB_DRIVER_PISTOL_NAME";
+				textComponent.token = this.weaponDef.nameToken;
+
+				switch (this.weaponDef.tier)
+                {
+					case DriverWeaponTier.Uncommon:
+						textComponent.textMeshPro.color = Color.green;
 						break;
-					case DriverWeapon.Shotgun:
-						textComponent.token = "ROB_DRIVER_SHOTGUN_NAME";
+					case DriverWeaponTier.Legendary:
+						textComponent.textMeshPro.color = Color.red;
 						break;
-					case DriverWeapon.MachineGun:
-						textComponent.token = "ROB_DRIVER_MACHINEGUN_NAME";
+					case DriverWeaponTier.Unique:
+						textComponent.textMeshPro.color = Color.yellow;
 						break;
-					case DriverWeapon.RocketLauncher:
-						textComponent.token = "ROB_DRIVER_ROCKETLAUNCHER_NAME";
-						break;
-				}
+                }
 			}
 		}
 
@@ -118,7 +117,7 @@ namespace RobDriver.Modules.Components
 				if (iDrive)
 				{
 					this.alive = false;
-					iDrive.ServerPickUpWeapon(this.weapon, iDrive);
+					iDrive.ServerPickUpWeapon(this.weaponDef, iDrive);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}
