@@ -3,6 +3,7 @@
 - Fully functional base kit with several weapon pickups that give him new attacks
 - Has item displays, an unlockable mastery skin and is fully multiplayer compatible
 - Configurable stats and a few other things to mess around with
+- Full Risk of Options support for all configuration options
 - Many more weapons planned!!!!
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen1.png)]()
@@ -68,6 +69,8 @@ Bog - Code for Shuriken interaction fix
 
 Hyperinvox - Briefcase model
 
+Bruh - Riot Shotgun model
+
 
 ## Future Plans
 - Many more weapons (rocket launcher, dual uzis, railgun, minigun, etc.)
@@ -81,6 +84,26 @@ Hyperinvox - Briefcase model
 ___
 
 ## Changelog
+
+`1.1.2`
+- Pocket ICBM now works on Rocket Launcher. This has to be hardcoded into the skill state apparently
+- Rocket Launcher primary damage: 800% > 1000%
+- Rocket Launcher duration: 8s > 20s - Considering it only drops from bosses, at the end of the teleporter event for pretty much the whole first loop, it can get away with lasting a while
+- Added weapon: Slug Shotgun
+- Added weapon: Heavy Machine Gun
+- Added config options to enable or disable weapons
+- Fixed weapon pickups dropping for the enemy teams, preventing player Drivers from picking them up
+- Fixed Pistol and Machine Gun spread patterns
+
+`1.1.1`
+- Rocket Launcher primary damage: 600% > 800%, fire rate increased
+- Shotgun primary damage: 6x190% > 8x190%, removed pierce
+- Added weapon: Riot Shotgun, deals 6x140% with 0.75 proc coefficient but pierces (thanks bruh for the model =))
+- Removed level scaling and nerfed weapon drop pity modifier a little, last update made them drop just a bit too frequently
+- Added a custom pickup model for legendary tier weapons
+- Added a config option to make Driver call out his weapon pickups- enable this in multiplayer to make people mad
+- Added a config option to use the old crate pickups if you for some reason liked those more
+- Added cursed config
 
 `1.1.0`
 - Added weapon: Rocket Launcher, guaranteed drop from bosses

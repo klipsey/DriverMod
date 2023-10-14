@@ -20,7 +20,8 @@ public class DriverWeaponDef : ScriptableObject
     [Header("Visuals")]
     public Mesh mesh;
     public Material material;
-    public string animLayer;
+    public string animLayer = "";
+    public string calloutSoundString = "";
 
     [HideInInspector]
     public ushort index; // assigned at runtime
@@ -42,6 +43,7 @@ public class DriverWeaponDef : ScriptableObject
         weaponDef.mesh = weaponDefInfo.mesh;
         weaponDef.material = weaponDefInfo.material;
         weaponDef.animLayer = weaponDefInfo.animLayer;
+        weaponDef.calloutSoundString = weaponDefInfo.calloutSoundString;
 
         return weaponDef;
     }
@@ -63,6 +65,7 @@ public struct DriverWeaponDefInfo
     public Mesh mesh;
     public Material material;
     public string animLayer;
+    public string calloutSoundString;
 }
 
 public enum DriverWeaponTier

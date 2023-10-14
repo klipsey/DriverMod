@@ -15,7 +15,10 @@ namespace RobDriver.Modules
 
         public static ConfigEntry<bool> autoFocus;
         public static ConfigEntry<bool> sharedPickupVisuals;
+        public static ConfigEntry<bool> oldPickupModel;
         public static ConfigEntry<float> baseDropRate;
+        public static ConfigEntry<bool> weaponCallouts;
+        public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
         public static ConfigEntry<float> healthGrowth;
@@ -28,6 +31,17 @@ namespace RobDriver.Modules
         public static ConfigEntry<float> baseRegen;
 
         public static ConfigEntry<float> shotgunDuration;
+        public static ConfigEntry<bool> shotgunEnabled;
+        public static ConfigEntry<float> riotShotgunDuration;
+        public static ConfigEntry<bool> riotShotgunEnabled;
+        public static ConfigEntry<float> slugShotgunDuration;
+        public static ConfigEntry<bool> slugShotgunEnabled;
+        public static ConfigEntry<float> machineGunDuration;
+        public static ConfigEntry<bool> machineGunEnabled;
+        public static ConfigEntry<float> heavyMachineGunDuration;
+        public static ConfigEntry<bool> heavyMachineGunEnabled;
+        public static ConfigEntry<float> rocketLauncherDuration;
+        public static ConfigEntry<bool> rocketLauncherEnabled;
 
         public static ConfigEntry<KeyboardShortcut> restKey;
         public static ConfigEntry<KeyboardShortcut> tauntKey;
@@ -40,20 +54,37 @@ namespace RobDriver.Modules
              = Config.BindAndOptions("01 - General",
              "Focus Auto Charge",
              false,
-             "If set to true, Focus will always charge up before firing a shot. Take control of your runs with the illusion of skill!");
+             "If set to true, Focus will always charge up before firing a shot. Take control of your runs with the illusion of skill! (Client-side)");
 
             sharedPickupVisuals
  = Config.BindAndOptions("01 - General",
  "Shared Pickup Visuals",
  true,
- "If set to false, weaapon pickups will only be visible for those playing Driver. Setting this to true lets everyone see them.");
+ "If set to false, weapon pickups will only be visible while playing Driver. Setting this to true lets every character see them. (Client-side)");
 
+            oldPickupModel
+= Config.BindAndOptions("01 - General",
+"Old Weapon Pickup Model",
+false,
+"If set to true, uses the old goofy crate pickups instead of briefcases. (Client-side)");
 
             baseDropRate
 = Config.BindAndOptionsSlider("01 - General",
 "Base Drop Rate",
 7f,
 "Base chance for weapons to drop on kill", 0f, 100f);
+
+            weaponCallouts
+= Config.BindAndOptions("01 - General",
+"Weapon Pickup Callouts",
+false,
+"If set to true, Driver will call out the weapons he picks up.");
+
+            cursed
+= Config.BindAndOptions("01 - General",
+"Cursed",
+false,
+"Enables unstable and stupid content", true);
             #endregion
 
             #region Emotes
@@ -125,10 +156,76 @@ namespace RobDriver.Modules
 
             #region Guns
             shotgunDuration
-    = Config.BindAndOptionsSlider("04A - Weapons - Shotgun",
+    = Config.BindAndOptionsSlider("04 - Weapons - Shotgun",
              "Duration",
              8f,
-             "How long shotgun lasts, in seconds", 1f, 20f);
+             "How long this weapon lasts, in seconds", 1f, 20f);
+
+            shotgunEnabled
+= Config.BindAndOptions("04 - Weapons - Shotgun",
+ "Enabled",
+ true,
+ "Set to false to remove this weapon from the drop pool.", true);
+
+            riotShotgunDuration
+= Config.BindAndOptionsSlider("04 - Weapons - Riot Shotgun",
+ "Duration",
+ 8f,
+ "How long this weapon lasts, in seconds", 1f, 20f);
+
+            riotShotgunEnabled
+= Config.BindAndOptions("04 - Weapons - Riot Shotgun",
+"Enabled",
+true,
+"Set to false to remove this weapon from the drop pool.", true);
+
+            slugShotgunDuration
+= Config.BindAndOptionsSlider("04 - Weapons - Slug Shotgun",
+"Duration",
+8f,
+"How long this weapon lasts, in seconds", 1f, 20f);
+
+            slugShotgunEnabled
+= Config.BindAndOptions("04 - Weapons - Slug Shotgun",
+"Enabled",
+true,
+"Set to false to remove this weapon from the drop pool.", true);
+
+            machineGunDuration
+= Config.BindAndOptionsSlider("04 - Weapons - Machine Gun",
+ "Duration",
+ 8f,
+ "How long this weapon lasts, in seconds", 1f, 20f);
+
+            machineGunEnabled
+= Config.BindAndOptions("04 - Weapons - Machine Gun",
+"Enabled",
+true,
+"Set to false to remove this weapon from the drop pool.", true);
+
+            heavyMachineGunDuration
+= Config.BindAndOptionsSlider("04 - Weapons - Heavy Machine Gun",
+"Duration",
+8f,
+"How long this weapon lasts, in seconds", 1f, 20f);
+
+            heavyMachineGunEnabled
+= Config.BindAndOptions("04 - Weapons - Heavy Machine Gun",
+"Enabled",
+true,
+"Set to false to remove this weapon from the drop pool.", true);
+
+            rocketLauncherDuration
+= Config.BindAndOptionsSlider("04 - Weapons - Rocket Launcher",
+ "Duration",
+ 20f,
+ "How long this weapon lasts, in seconds", 1f, 20f);
+
+            rocketLauncherEnabled
+= Config.BindAndOptions("04 - Weapons - Rocket Launcher",
+"Enabled",
+true,
+"Set to false to remove this weapon from the drop pool.", true);
             #endregion
         }
 

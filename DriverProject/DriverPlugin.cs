@@ -31,7 +31,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.1.0";
+        public const string MODVERSION = "1.1.2";
 
         public const string developerPrefix = "ROB";
 
@@ -92,6 +92,18 @@ namespace RobDriver
                 args.attackSpeedMultAdd -= 0.5f; //attackSpeed *= 0.5f;
                 args.damageMultAdd -= 0.5f; //damage *= 0.5f;
             }*/
+        }
+
+        public static float GetICBMDamageMult(CharacterBody body)
+        {
+            float mult = 1f;
+            if (body && body.inventory)
+            {
+                int itemcount = body.inventory.GetItemCount(DLC1Content.Items.MoreMissile);
+                int stack = itemcount - 1;
+                if (stack > 0) mult += stack * 0.5f;
+            }
+            return mult;
         }
     }
 }

@@ -142,8 +142,21 @@ namespace RobDriver.Modules.Components
             this.weaponDef = newWeapon;
             this.EquipWeapon();
 
+            this.TryCallout();
+
             if (this.onWeaponUpdate == null) return;
             this.onWeaponUpdate(this);
+        }
+
+        private void TryCallout()
+        {
+            if (this.weaponDef && this.weaponDef.calloutSoundString != "")
+            {
+                if (Modules.Config.weaponCallouts.Value)
+                {
+                    Util.PlaySound(this.weaponDef.calloutSoundString, this.gameObject);
+                }
+            }
         }
 
         private void EquipWeapon()

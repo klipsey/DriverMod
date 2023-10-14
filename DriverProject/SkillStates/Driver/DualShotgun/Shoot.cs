@@ -94,7 +94,7 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
                         isCrit = this.isCrit,
                         owner = gameObject,
                         muzzleName = muzzleString,
-                        smartCollision = false,
+                        smartCollision = true,
                         procChainMask = default,
                         procCoefficient = procCoefficient,
                         radius = thiccness,

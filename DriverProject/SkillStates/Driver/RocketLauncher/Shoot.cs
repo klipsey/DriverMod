@@ -9,10 +9,10 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 6f;
+        public static float damageCoefficient = 10f;
         public static float procCoefficient = 1f;
-        public float baseDuration = 1.4f; // the base skill duration. i.e. attack speed
-        public static float recoil = 8f;
+        public float baseDuration = 1.2f; // the base skill duration. i.e. attack speed
+        public static float recoil = 16f;
 
         private float earlyExitTime;
         protected float duration;
@@ -59,7 +59,35 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
-                    ProjectileManager.instance.FireProjectile(Modules.Projectiles.rocketProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
+
+                    // copied from moff's rocket
+                    // the fact that this item literally has to be hardcoded into character skillstates makes me so fucking angry you have no idea
+                    if (this.characterBody.inventory && this.characterBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile) > 0)
+                    {
+                        float damageMult = DriverPlugin.GetICBMDamageMult(this.characterBody);
+
+                        Vector3 rhs = Vector3.Cross(Vector3.up, aimRay.direction);
+                        Vector3 axis = Vector3.Cross(aimRay.direction, rhs);
+
+                        float currentSpread = 0f;
+                        float angle = 0f;
+                        float num2 = 0f;
+                        num2 = UnityEngine.Random.Range(1f + currentSpread, 1f + currentSpread) * 3f;   //Bandit is x2
+                        angle = num2 / 2f;  //3 - 1 rockets
+
+                        Vector3 direction = Quaternion.AngleAxis(-num2 * 0.5f, axis) * aimRay.direction;
+                        Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+                        Ray aimRay2 = new Ray(aimRay.origin, direction);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.rocketProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
+                            aimRay2.direction = rotation * aimRay2.direction;
+                        }
+                    }
+                    else
+                    {
+                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.rocketProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
+                    }
                 }
             }
         }

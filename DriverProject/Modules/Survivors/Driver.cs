@@ -46,8 +46,17 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef shotgunPrimarySkillDef;
         internal static SkillDef shotgunSecondarySkillDef;
 
+        internal static SkillDef riotShotgunPrimarySkillDef;
+        internal static SkillDef riotShotgunSecondarySkillDef;
+
+        internal static SkillDef slugShotgunPrimarySkillDef;
+        internal static SkillDef slugShotgunSecondarySkillDef;
+
         internal static SkillDef machineGunPrimarySkillDef;
         internal static SkillDef machineGunSecondarySkillDef;
+
+        internal static SkillDef heavyMachineGunPrimarySkillDef;
+        internal static SkillDef heavyMachineGunSecondarySkillDef;
 
         internal static SkillDef rocketLauncherPrimarySkillDef;
         internal static SkillDef rocketLauncherSecondarySkillDef;
@@ -374,6 +383,22 @@ namespace RobDriver.Modules.Survivors
                 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
                 false);
 
+            Driver.riotShotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+                new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.RiotShotgun.Shoot)),
+                "Weapon",
+                prefix + "_DRIVER_BODY_PRIMARY_RIOT_SHOTGUN_NAME",
+                prefix + "_DRIVER_BODY_PRIMARY_RIOT_SHOTGUN_DESCRIPTION",
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+                false);
+
+            Driver.slugShotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SlugShotgun.Shoot)),
+    "Weapon",
+    prefix + "_DRIVER_BODY_PRIMARY_SLUG_SHOTGUN_NAME",
+    prefix + "_DRIVER_BODY_PRIMARY_SLUG_SHOTGUN_DESCRIPTION",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+    false);
+
             Driver.machineGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
                 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MachineGun.Shoot)),
                 "Weapon",
@@ -381,6 +406,14 @@ namespace RobDriver.Modules.Survivors
                 prefix + "_DRIVER_BODY_PRIMARY_MACHINEGUN_DESCRIPTION",
                 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMachineGunIcon"),
                 false);
+
+            Driver.heavyMachineGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.HeavyMachineGun.Shoot)),
+    "Weapon",
+    prefix + "_DRIVER_BODY_PRIMARY_HEAVY_MACHINEGUN_NAME",
+    prefix + "_DRIVER_BODY_PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMachineGunIcon"),
+    false);
 
             Driver.rocketLauncherPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
                 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.RocketLauncher.Shoot)),
@@ -464,7 +497,79 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1,
             });
 
+            Driver.riotShotgunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.slugShotgunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
             Driver.machineGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texZapIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MachineGun.Zap)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.heavyMachineGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_NAME",
@@ -652,6 +757,31 @@ namespace RobDriver.Modules.Survivors
             };
 
             skins.Add(masterySkin);
+            #endregion
+
+            #region MinecraftSkin
+            if (Modules.Config.cursed.Value)
+            {
+                SkinDef minecraftSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MINECRAFT_SKIN_NAME",
+    Assets.mainAssetBundle.LoadAsset<Sprite>("texMinecraftSkin"),
+    SkinRendererInfos(defaultRenderers, new Material[]
+    {
+                    Modules.Assets.CreateMaterial("matMinecraftDriver", 1f, Color.white)
+    }),
+    mainRenderer,
+    model);
+
+                minecraftSkin.meshReplacements = new SkinDef.MeshReplacement[]
+                {
+                new SkinDef.MeshReplacement
+                {
+                    renderer = mainRenderer,
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
+                }
+                };
+
+                skins.Add(minecraftSkin);
+            }
             #endregion
 
             skinController.skins = skins.ToArray();
@@ -3407,11 +3537,11 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                 // weapon drops
                 if (isDriverOnPlayerTeam)
                 {
-                    // 7 + 0.75(player level)%
-                    float chance = Modules.Config.baseDropRate.Value + ((1 + damageReport.attackerBody.level) * 0.75f);
+                    // 7
+                    float chance = Modules.Config.baseDropRate.Value;
 
-                    // double chance if it's a big guy
-                    if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(2f * chance, 0f, 100f);
+                    // higher chance if it's a big guy
+                    if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(1.5f * chance, 0f, 100f);
 
                     // minimum 50% chance if the slain enemy is an elite
                     if (damageReport.victimBody.isElite) chance = Mathf.Clamp(chance, 50f, 100f);
@@ -3434,6 +3564,9 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                     // test
                     //droppedWeapon = true;
 
+                    // stop dropping weapons when void monsters kill each other plz this is an annoying bug
+                    if (damageReport.attackerTeamIndex != TeamIndex.Player) droppedWeapon = false;
+
                     if (droppedWeapon)
                     {
                         Driver.instance.pityMultiplier = 1f;
@@ -3445,27 +3578,28 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                             position = damageReport.victim.transform.position;
                         }
 
-                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.weaponPickup, position, UnityEngine.Random.rotation);
+                        GameObject pickupPrefab = Modules.Assets.weaponPickup;
+
+                        if (isBoss) pickupPrefab = Modules.Assets.weaponPickupLegendary;
+
+                        if (Modules.Config.oldPickupModel.Value) pickupPrefab = Modules.Assets.weaponPickupOld;
+
+                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(pickupPrefab, position, UnityEngine.Random.rotation);
                         
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
-                        DriverWeaponDef weapon = DriverWeaponCatalog.GetWeaponFromIndex(0);
-                        // this is gross but it should work
-                        if (Random.value > 0.5f) weapon = DriverWeaponCatalog.GetWeaponFromIndex(1);
-                        else weapon = DriverWeaponCatalog.GetWeaponFromIndex(2);
-                        // it didn't
+                        DriverWeaponTier weaponTier = DriverWeaponTier.Uncommon;
+                        if (isBoss) weaponTier = DriverWeaponTier.Legendary;
 
-                        if (isBoss) weapon = DriverWeaponCatalog.GetWeaponFromIndex(3);
-
-                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = weapon;
+                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
 
                         NetworkServer.Spawn(weaponPickup);
                     }
                     else
                     {
                         // add pity
-                        Driver.instance.pityMultiplier += 0.1f;
+                        Driver.instance.pityMultiplier += 0.02f;
                     }
                 }
 

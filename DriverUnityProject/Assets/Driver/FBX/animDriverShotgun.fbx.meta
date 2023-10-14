@@ -65,6 +65,7 @@ ModelImporter:
     100118: upperarm.r
     100120: weapon.r
     100122: weaponhead.r
+    100124: meshRiotShotgun
     400000: //RootNode
     400002: Armature
     400004: base
@@ -127,14 +128,17 @@ ModelImporter:
     400118: upperarm.r
     400120: weapon.r
     400122: weaponhead.r
+    400124: meshRiotShotgun
     2100000: matDriver
     2100002: matDefault
     2100004: matJacket
     2100006: MatClassicGunSuper.001
+    2100008: matDriver.001
     4300000: meshDriver
     4300002: meshPistol
     4300004: meshJacket
     4300006: meshSuperShotgun
+    4300008: meshRiotShotgun
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|Ascend
@@ -170,6 +174,7 @@ ModelImporter:
     7400064: Armature|ThrowGrenade
     7400066: Armature|Reload
     7400068: Armature|Bash
+    7400070: Armature|ShootRiot
     9500000: //RootNode
     10800000: Light
     10800002: Light.001
@@ -177,6 +182,7 @@ ModelImporter:
     13700002: meshJacket
     13700004: meshPistol
     13700006: meshSuperShotgun
+    13700008: meshRiotShotgun
   externalObjects: {}
   materials:
     importMaterials: 1

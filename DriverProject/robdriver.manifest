@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 925374507
+CRC: 1716632385
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 833702c4a5e8df352a3d708ed781a513
+    Hash: c9bb4f8961b2dd7f3f2b6ab16767aecc
   TypeTreeHash:
     serializedVersion: 2
     Hash: bfb747528b9de32254fbd4eff1f7d5ce
@@ -72,6 +72,7 @@ Assets:
 - Assets/Driver/Icons/texPistolIcon.png
 - Assets/Driver/Materials/matShotgun.mat
 - Assets/Driver/Animations/Shotgun/RunR.anim
+- Assets/Driver/WeaponPickupOld.prefab
 - Assets/Driver/HUD/ChargeBar.prefab
 - Assets/Driver/Animations/Default/RestEmoteLoop.anim
 - Assets/Driver/Animations/Default/JumpSprint.anim
@@ -92,6 +93,7 @@ Assets:
 - Assets/Driver/Animations/Shotgun/Idle.anim
 - Assets/Driver/Animations/Default/AimYaw.anim
 - Assets/Driver/FBX/Boombox.fbx
+- Assets/Driver/FBX/meshRiotShotgun.mesh
 - Assets/Driver/Animations/Default/CSSIdleIn.anim
 - Assets/Driver/Textures/texBazooka.png
 - Assets/Driver/FBX/meshDualShotgun.mesh
@@ -103,11 +105,14 @@ Assets:
 - Assets/Driver/Animations/Default/LightImpact.anim
 - Assets/Driver/Materials/matPistol.mat
 - Assets/Driver/Materials/matShotgunShell.mat
+- Assets/Driver/Textures/texRiotShotgun.png
 - Assets/Driver/FBX/meshDriver.mesh
 - Assets/Driver/Textures/texCrate2.png
 - Assets/Driver/Icons/texMonsoonSkin.png
+- Assets/Driver/Icons/texRiotShotgunWeaponIcon.png
 - Assets/Driver/VFX/texShockwave.png
 - Assets/Driver/DriverDisplay.prefab
+- Assets/Driver/Icons/texMinecraftSkin.png
 - Assets/Driver/Animations/Default/Descend.anim
 - Assets/Driver/Animations/Shotgun/Ascend.anim
 - Assets/Driver/Animations/Shotgun/RunL.anim
@@ -128,6 +133,7 @@ Assets:
 - Assets/Driver/FBX/meshPistol.mesh
 - Assets/Driver/FBX/meshJacket.mesh
 - Assets/Driver/Animations/Default/maskDriverImpact.mask
+- Assets/Driver/Textures/texMinecraftDriver.png
 - Assets/Driver/Icons/texMachineGunIcon.png
 - Assets/Driver/Textures/texBriefcase.png
 - Assets/Driver/WeaponPickup.prefab
@@ -146,10 +152,13 @@ Assets:
 - Assets/Driver/Materials/matCrate1.mat
 - Assets/Driver/Animations/maskDriverAim 1.mask
 - Assets/Driver/Icons/texPistolSecondaryIcon.png
+- Assets/Driver/Animations/Shotgun/ShootRiot.anim
 - Assets/Driver/FBX/animDriverMachineGun.fbx
+- Assets/Driver/WeaponPickupLegendary.prefab
 - Assets/Driver/Animations/maskDriverGesture.mask
 - Assets/Driver/FBX/briefcase.fbx
 - Assets/Driver/Animations/Default/RunF.anim
+- Assets/Driver/FBX/meshMinecraftDriver.mesh
 - Assets/Driver/Icons/texZapIcon.png
 - Assets/Driver/Textures/texJacketEmission.png
 - Assets/Driver/VFX/DriverRocketGhost.prefab
@@ -157,14 +166,19 @@ Assets:
 - Assets/Driver/Textures/texKnifeNormal.png
 - Assets/Driver/FBX/meshSuperShotgun.mesh
 - Assets/Driver/Projectiles/DriverStunGrenadeImpact.prefab
+- Assets/Driver/Materials/matRiotShotgun.mat
+- Assets/Driver/Textures/texBriefcaseGold.png
 - Assets/Driver/FBX/animDriver.fbx
+- Assets/Driver/Materials/matBriefcaseGold.mat
 - Assets/Driver/Materials/matCrate2.mat
 - Assets/Driver/Materials/matDriver.mat
 - Assets/Driver/Projectiles/DriverStunGrenadeGhost.prefab
+- Assets/Driver/Materials/matMinecraftDriver.mat
 - Assets/Driver/Icons/texPistolWeaponIcon.png
 - Assets/Driver/Icons/texSlideIcon.png
 - Assets/Driver/FBX/animDriverShotgun.fbx
 - Assets/Driver/Icons/texRocketLauncherIcon.png
+- Assets/Driver/Textures/texMinecraftDriverEmission.png
 - Assets/Driver/Icons/texShotgunIcon.png
 - Assets/Driver/Animations/Default/Dance.anim
 - Assets/Driver/Animations/Default/SteadyAim.anim

@@ -13,8 +13,8 @@ namespace RobDriver.SkillStates.Driver.Shotgun
         public static float damageCoefficient = 1.9f;
         public static float procCoefficient = 1f;
         public float baseDuration = 2.2f; // the base skill duration. i.e. attack speed
-        public static int bulletCount = 6;
-        public static float bulletSpread = 4f;
+        public static int bulletCount = 8;
+        public static float bulletSpread = 7f;
         public static float bulletRecoil = 8f;
         public static float bulletRange = 100f;
         public static float bulletThiccness = 0.7f;
@@ -94,12 +94,12 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                         isCrit = this.isCrit,
                         owner = gameObject,
                         muzzleName = muzzleString,
-                        smartCollision = false,
+                        smartCollision = true,
                         procChainMask = default,
                         procCoefficient = procCoefficient,
                         radius = thiccness,
                         sniper = false,
-                        stopperMask = LayerIndex.world.collisionMask,
+                        stopperMask = LayerIndex.CommonMasks.bullet,
                         weapon = null,
                         tracerEffectPrefab = tracer,
                         spreadPitchScale = 1f,

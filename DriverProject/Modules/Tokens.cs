@@ -37,6 +37,8 @@ namespace RobDriver.Modules
             #region Skins
             LanguageAPI.Add(prefix + "DEFAULT_SKIN_NAME", "Default");
             LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "Jacket");
+            LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "");
+            LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion
 
             #region Passive
@@ -51,8 +53,17 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_SHOTGUN_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_SHOTGUN_DESCRIPTION", $"Fire a short-range blast for <style=cIsDamage>{SkillStates.Driver.Shotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.Shotgun.Shoot.damageCoefficient}% damage</style>.");
 
+            LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_DESCRIPTION", $"Fire a short-range piercing blast for <style=cIsDamage>{SkillStates.Driver.RiotShotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.RiotShotgun.Shoot.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_SLUG_SHOTGUN_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_SLUG_SHOTGUN_DESCRIPTION", $"Fire a short-range slug for <style=cIsDamage>{100f * SkillStates.Driver.SlugShotgun.Shoot.damageCoefficient}% damage</style>.");
+
             LanguageAPI.Add(prefix + "PRIMARY_MACHINEGUN_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_MACHINEGUN_DESCRIPTION", $"Fire a rapid spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.MachineGun.Shoot.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION", $"Fire an accurate spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.HeavyMachineGun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Shoot.damageCoefficient}% damage</style>.");
@@ -102,10 +113,25 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_PISTOL_DESC", "A reliable handgun that excels at nothing.");
 
             LanguageAPI.Add("ROB_DRIVER_SHOTGUN_NAME", "Shotgun");
-            LanguageAPI.Add("ROB_DRIVER_SHOTGUN_DESC", "A powerhouse that excels at crowd control and heavy damage.");
+            LanguageAPI.Add("ROB_DRIVER_SHOTGUN_DESC", "A close-range powerhouse that excels at overwhelming damage.");
+
+            LanguageAPI.Add("ROB_DRIVER_RIOT_SHOTGUN_NAME", "Riot Shotgun");
+            LanguageAPI.Add("ROB_DRIVER_RIOT_SHOTGUN_DESC", "A piercing shotgun that excels at crowd control and heavy damage.");
+
+            LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_NAME", "Slug Shotgun");
+            LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_DESC", "A shotgun loaded with slugs that excels at powerful single hits.");
 
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_NAME", "Machine Gun");
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "A gun that excels at something, I'm not really sure what.");
+
+            LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_NAME", "Heavy Machine Gun");
+            LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_DESC", "A machine gun with slower shots, higher damage and more consistent aim.");
+
+            LanguageAPI.Add("ROB_DRIVER_UZIS_NAME", "Dual Uzis");
+            LanguageAPI.Add("ROB_DRIVER_UZIS_DESC", "A pair of uzis with high recoil but ridiculous damage.");
+
+            LanguageAPI.Add("ROB_DRIVER_BAZOOKA_NAME", "Bazooka");
+            LanguageAPI.Add("ROB_DRIVER_BAZOOKA_DESC", "A chargeable bazooka good for clearing out crowds.");
 
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_NAME", "Rocket Launcher");
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_DESC", "KABOOOM");
