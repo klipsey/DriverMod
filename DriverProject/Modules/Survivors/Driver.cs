@@ -3554,7 +3554,14 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                     bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
 
                     // guaranteed if the slain enemy is a boss
-                    bool isBoss = damageReport.victimBody.isBoss || damageReport.victimBody.isChampion;
+                    bool isBoss = damageReport.victimBody.isChampion;
+
+                    // simulacrum boss wave fix
+                    if (!InfiniteTowerRun.instance)
+                    {
+                        if (damageReport.victimBody.isBoss) isBoss = true;
+                    }
+
                     if (isBoss) droppedWeapon = true;
 
                     // all the above checks were originally checking the ATTACKER body

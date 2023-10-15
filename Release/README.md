@@ -57,11 +57,11 @@ ___
 If you enjoy my work and would like to support me, you can donate to my Ko-fi: https://ko-fi.com/robdev
 
 ## Credits
-rob - Pretty much everything
+rob - Mostly everything
 
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
 
-Moffein - Also maintained things :-)
+Moffein - Also maintained things :-) Riot Shotgun SFX
 
 Swuff - Code help, feedback, networking help
 
@@ -84,6 +84,17 @@ Bruh - Riot Shotgun model
 ___
 
 ## Changelog
+
+`1.1.2`
+- Pocket ICBM now works on Rocket Launcher. This has to be hardcoded into the skill state apparently
+- Rocket Launcher primary damage: 800% > 1000%
+- Rocket Launcher duration: 8s > 20s - Considering it only drops from bosses, at the end of the teleporter event for pretty much the whole first loop, it can get away with lasting a while
+- Added weapon: Slug Shotgun
+- Added weapon: Heavy Machine Gun
+- Added config options to enable or disable weapons
+- Fixed weapon pickups dropping for the enemy teams, preventing player Drivers from picking them up
+- Fixed Pistol and Machine Gun spread patterns
+- Fixed Simulacrum boss waves dropping Rocket Launchers from every enemy
 
 `1.1.1`
 - Rocket Launcher primary damage: 600% > 800%, fire rate increased

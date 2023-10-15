@@ -57,11 +57,11 @@ ___
 If you enjoy my work and would like to support me, you can donate to my Ko-fi: https://ko-fi.com/robdev
 
 ## Credits
-rob - Pretty much everything
+rob - Mostly everything
 
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
 
-Moffein - Also maintained things :-)
+Moffein - Also maintained things :-) Riot Shotgun SFX
 
 Swuff - Code help, feedback, networking help
 
@@ -94,6 +94,7 @@ ___
 - Added config options to enable or disable weapons
 - Fixed weapon pickups dropping for the enemy teams, preventing player Drivers from picking them up
 - Fixed Pistol and Machine Gun spread patterns
+- Fixed Simulacrum boss waves dropping Rocket Launchers from every enemy
 
 `1.1.1`
 - Rocket Launcher primary damage: 600% > 800%, fire rate increased
