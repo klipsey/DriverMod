@@ -3562,6 +3562,9 @@ localScale = new Vector3(0.1233F, 0.1233F, 0.1233F),
                         if (damageReport.victimBody.isBoss) isBoss = true;
                     }
 
+                    // terminal enemies from starstorm's relic of termination
+                    if (DriverPlugin.CheckIfBodyIsTerminal(damageReport.victimBody)) isBoss = true;
+
                     if (isBoss) droppedWeapon = true;
 
                     // all the above checks were originally checking the ATTACKER body

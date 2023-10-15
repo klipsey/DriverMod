@@ -231,7 +231,7 @@ true,
 
         public static void InitROO(Sprite modSprite, string modDescription)
         {
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions")) _InitROO(modSprite, modDescription);
+            if (DriverPlugin.rooInstalled) _InitROO(modSprite, modDescription);
         }
 
         public static void _InitROO(Sprite modSprite, string modDescription)

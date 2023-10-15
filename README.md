@@ -85,6 +85,9 @@ ___
 
 ## Changelog
 
+`1.1.3`
+- Enemies marked by Starstorm 2's Relic of Termination are now guaranteed to drop a Rocket Launcher
+
 `1.1.2`
 - Pocket ICBM now works on Rocket Launcher. This has to be hardcoded into the skill state apparently
 - Rocket Launcher primary damage: 800% > 1000%

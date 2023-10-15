@@ -12,6 +12,8 @@ using R2API.Networking;
 
 namespace RobDriver
 {
+    [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.TeamMoonstorm.Starstorm2", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(MODUID, MODNAME, MODVERSION)]
@@ -31,17 +33,25 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.1.2";
+        public const string MODVERSION = "1.1.3";
 
         public const string developerPrefix = "ROB";
 
         public static DriverPlugin instance;
+
+        public static bool starstormInstalled;
+        public static bool scepterInstalled;
+        public static bool rooInstalled;
 
         private void Awake()
         {
             instance = this;
 
             Modules.Config.myConfig = Config;
+
+            starstormInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TeamMoonstorm.Starstorm2");
+            scepterInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter");
+            rooInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions");
 
             Log.Init(Logger);
             Modules.Config.ReadConfig();
@@ -104,6 +114,17 @@ namespace RobDriver
                 if (stack > 0) mult += stack * 0.5f;
             }
             return mult;
+        }
+
+        public static bool CheckIfBodyIsTerminal(CharacterBody body)
+        {
+            if (DriverPlugin.starstormInstalled) return _CheckIfBodyIsTerminal(body);
+            return false;
+        }
+
+        public static bool _CheckIfBodyIsTerminal(CharacterBody body)
+        {
+            return body.HasBuff(Moonstorm.Starstorm2.SS2Content.Buffs.BuffTerminationReady);
         }
     }
 }
