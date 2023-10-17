@@ -201,8 +201,9 @@ namespace RobDriver.Modules.Survivors
                     material = Modules.Assets.pistolMat
                 } }, bodyRendererIndex);
 
-            // hide the knife
+            // hide the knife and slugger cloth
             childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
+            childLocator.FindChild("SluggerCloth").gameObject.SetActive(false);
             #endregion
 
             CreateHitboxes(newPrefab);
