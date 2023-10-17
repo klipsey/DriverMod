@@ -17,12 +17,12 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
         public static float bulletRecoil = 8f;
         public static float bulletRange = 64;
         public static float bulletThiccness = 0.7f;
+        public float selfForce = 800f;
 
         private float earlyExitTime;
         protected float duration;
         protected float fireDuration;
         protected bool hasFired;
-        private Animator animator;
         private bool isCrit;
         protected string muzzleString;
 
@@ -30,7 +30,6 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
         {
             base.OnEnter();
             this.characterBody.SetAimTimer(5f);
-            this.animator = GetModelAnimator();
             this.muzzleString = "ShotgunMuzzle";
             this.hasFired = false;
             this.duration = this.baseDuration / this.attackSpeedStat;
@@ -55,6 +54,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
 
                 if (this.iDrive)
                 {
+                    this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
                     this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
                 }
 
@@ -121,6 +121,8 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                     bulletAttack.maxSpread = spread;
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
                     bulletAttack.Fire();
+
+                    this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
                 }
             }
         }

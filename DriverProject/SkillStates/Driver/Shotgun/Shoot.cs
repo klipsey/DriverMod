@@ -18,12 +18,12 @@ namespace RobDriver.SkillStates.Driver.Shotgun
         public static float bulletRecoil = 8f;
         public static float bulletRange = 100f;
         public static float bulletThiccness = 0.7f;
+        public float selfForce = 1600f;
 
         private float earlyExitTime;
         protected float duration;
         protected float fireDuration;
         protected bool hasFired;
-        private Animator animator;
         private bool isCrit;
         protected string muzzleString;
 
@@ -31,7 +31,6 @@ namespace RobDriver.SkillStates.Driver.Shotgun
         {
             base.OnEnter();
             this.characterBody.SetAimTimer(5f);
-            this.animator = GetModelAnimator();
             this.muzzleString = "ShotgunMuzzle";
             this.hasFired = false;
             this.duration = this.baseDuration / this.attackSpeedStat;
@@ -64,7 +63,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                 float recoilAmplitude = Shoot.bulletRecoil / this.attackSpeedStat;
 
                 base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
-                characterBody.AddSpreadBloom(4f);
+                this.characterBody.AddSpreadBloom(4f);
                 EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FireBarrage.effectPrefab, gameObject, muzzleString, false);
 
                 GameObject tracer = Modules.Assets.shotgunTracer;
@@ -124,6 +123,8 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                     bulletAttack.maxSpread = spread;
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
                     bulletAttack.Fire();
+
+                    this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
                 }
             }
         }

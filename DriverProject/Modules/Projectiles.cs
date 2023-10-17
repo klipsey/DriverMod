@@ -38,6 +38,7 @@ namespace RobDriver.Modules
 
             #region Ghost
             GameObject fcuk = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("DriverStunGrenadeImpact"));
+            fcuk.AddComponent<NetworkIdentity>();
             fcuk.transform.parent = stunGrenadeImpactEffectPrefab.transform;
             fcuk.transform.localScale = Vector3.one;
             fcuk.transform.localPosition = Vector3.zero;
@@ -90,6 +91,7 @@ namespace RobDriver.Modules
             InitializeImpactExplosion(impactExplosion);
 
             GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
+            fuckMyLife.AddComponent<NetworkIdentity>();
             Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_explosion");
 
             impactExplosion.blastRadius = 10f;

@@ -23,7 +23,6 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
         protected float duration;
         protected float fireDuration;
         protected bool hasFired;
-        private Animator animator;
         private bool isCrit;
         protected string muzzleString;
 
@@ -31,100 +30,97 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
         {
             base.OnEnter();
             this.characterBody.SetAimTimer(5f);
-            this.animator = GetModelAnimator();
             this.muzzleString = "ShotgunMuzzle";
             this.hasFired = false;
             this.duration = this.baseDuration / this.attackSpeedStat;
             this.isCrit = base.RollCrit();
-            this.earlyExitTime = 0.4f * this.duration;
-
-            if (this.isCrit) Util.PlaySound("sfx_driver_shotgun_shoot_critical", base.gameObject);
-            else Util.PlaySound("sfx_driver_shotgun_shoot", base.gameObject);
+            this.earlyExitTime = 0.75f * this.duration;
+            this.fireDuration = this.duration * 0.1f;
 
             //this.PlayCrossfade("Gesture, Override", "FireShotgun", "Shoot.playbackRate", Mathf.Max(0.05f, 1.75f * duration), 0.06f);
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
 
-            this.fireDuration = 0;
-
             if (this.iDrive) this.iDrive.StartTimer();
+
+            this.Fire();
+
+            this.muzzleString = "ShotgunMuzzle2";
         }
 
-        public virtual void FireBullet()
+        public virtual void Fire()
         {
-            if (!this.hasFired)
+            if (this.isCrit) Util.PlaySound("sfx_driver_shotgun_shoot_critical", base.gameObject);
+            else Util.PlaySound("sfx_driver_shotgun_shoot", base.gameObject);
+
+            if (this.iDrive)
             {
-                this.hasFired = true;
+                this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
+                this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
+            }
 
-                if (this.iDrive)
+            float recoilAmplitude = Shoot.bulletRecoil / this.attackSpeedStat;
+
+            base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
+            this.characterBody.AddSpreadBloom(4f);
+            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FireBarrage.effectPrefab, gameObject, muzzleString, false);
+
+            GameObject tracer = Modules.Assets.shotgunTracer;
+            if (this.isCrit) tracer = Modules.Assets.shotgunTracerCrit;
+
+            if (base.isAuthority)
+            {
+                float damage = Shoot.damageCoefficient * this.damageStat;
+
+                Ray aimRay = GetAimRay();
+
+                float spread = Shoot.bulletSpread;
+                float thiccness = Shoot.bulletThiccness;
+                float force = 50;
+
+                BulletAttack bulletAttack = new BulletAttack
                 {
-                    this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
-                    this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
-                }
+                    aimVector = aimRay.direction,
+                    origin = aimRay.origin,
+                    damage = damage,
+                    damageColorIndex = DamageColorIndex.Default,
+                    damageType = DamageType.Generic,
+                    falloffModel = BulletAttack.FalloffModel.DefaultBullet,
+                    maxDistance = bulletRange,
+                    force = force,// RiotShotgun.bulletForce,
+                    hitMask = LayerIndex.CommonMasks.bullet,
+                    isCrit = this.isCrit,
+                    owner = gameObject,
+                    muzzleName = muzzleString,
+                    smartCollision = true,
+                    procChainMask = default,
+                    procCoefficient = procCoefficient,
+                    radius = thiccness,
+                    sniper = false,
+                    stopperMask = LayerIndex.world.collisionMask,
+                    weapon = null,
+                    tracerEffectPrefab = tracer,
+                    spreadPitchScale = 1f,
+                    spreadYawScale = 1f,
+                    queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
+                    hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
+                    HitEffectNormal = false,
+                };
 
-                float recoilAmplitude = Shoot.bulletRecoil / this.attackSpeedStat;
+                bulletAttack.minSpread = 0;
+                bulletAttack.maxSpread = 0;
+                bulletAttack.bulletCount = 1;
+                bulletAttack.Fire();
 
-                base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
-                characterBody.AddSpreadBloom(4f);
-                EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FireBarrage.effectPrefab, gameObject, muzzleString, false);
+                uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
+                bulletAttack.minSpread = 0;
+                bulletAttack.maxSpread = spread / 1.45f;
+                bulletAttack.bulletCount = secondShot;
+                bulletAttack.Fire();
 
-                GameObject tracer = Modules.Assets.shotgunTracer;
-                if (this.isCrit) tracer = Modules.Assets.shotgunTracerCrit;
-
-                if (base.isAuthority)
-                {
-                    float damage = Shoot.damageCoefficient * this.damageStat;
-
-                    Ray aimRay = GetAimRay();
-
-                    float spread = Shoot.bulletSpread;
-                    float thiccness = Shoot.bulletThiccness;
-                    float force = 50;
-
-                    BulletAttack bulletAttack = new BulletAttack
-                    {
-                        aimVector = aimRay.direction,
-                        origin = aimRay.origin,
-                        damage = damage,
-                        damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
-                        falloffModel = BulletAttack.FalloffModel.DefaultBullet,
-                        maxDistance = bulletRange,
-                        force = force,// RiotShotgun.bulletForce,
-                        hitMask = LayerIndex.CommonMasks.bullet,
-                        isCrit = this.isCrit,
-                        owner = gameObject,
-                        muzzleName = muzzleString,
-                        smartCollision = true,
-                        procChainMask = default,
-                        procCoefficient = procCoefficient,
-                        radius = thiccness,
-                        sniper = false,
-                        stopperMask = LayerIndex.world.collisionMask,
-                        weapon = null,
-                        tracerEffectPrefab = tracer,
-                        spreadPitchScale = 1f,
-                        spreadYawScale = 1f,
-                        queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
-                        hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
-                        HitEffectNormal = false,
-                    };
-
-                    bulletAttack.minSpread = 0;
-                    bulletAttack.maxSpread = 0;
-                    bulletAttack.bulletCount = 1;
-                    bulletAttack.Fire();
-
-                    uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
-                    bulletAttack.minSpread = 0;
-                    bulletAttack.maxSpread = spread / 1.45f;
-                    bulletAttack.bulletCount = secondShot;
-                    bulletAttack.Fire();
-
-                    bulletAttack.minSpread = spread / 1.45f;
-                    bulletAttack.maxSpread = spread;
-                    bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
-                    bulletAttack.Fire();
-                }
+                bulletAttack.minSpread = spread / 1.45f;
+                bulletAttack.maxSpread = spread;
+                bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
+                bulletAttack.Fire();
             }
         }
 
@@ -132,9 +128,13 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
         {
             base.FixedUpdate();
 
-            if (base.fixedAge >= this.fireDuration)
+            if (!this.hasFired)
             {
-                this.FireBullet();
+                if (base.fixedAge >= this.fireDuration)
+                {
+                    this.hasFired = true;
+                    this.Fire();
+                }
             }
 
             if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
@@ -146,8 +146,8 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                //this.outer.SetNextStateToMain();
-                this.outer.SetNextState(new Shotgun.Reload());
+                this.outer.SetNextStateToMain();
+                //this.outer.SetNextState(new Shotgun.Reload());
             }
         }
 

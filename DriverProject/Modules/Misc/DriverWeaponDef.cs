@@ -28,7 +28,7 @@ public class DriverWeaponDef : ScriptableObject
 
     public static DriverWeaponDef CreateWeaponDefFromInfo(DriverWeaponDefInfo weaponDefInfo)
     {
-        DriverWeaponDef weaponDef = new DriverWeaponDef();
+        DriverWeaponDef weaponDef = (DriverWeaponDef)ScriptableObject.CreateInstance(typeof(DriverWeaponDef));
 
         weaponDef.nameToken = weaponDefInfo.nameToken;
         weaponDef.descriptionToken = weaponDefInfo.descriptionToken;

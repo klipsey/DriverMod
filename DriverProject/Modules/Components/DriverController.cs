@@ -185,7 +185,7 @@ namespace RobDriver.Modules.Components
 
             // model swap
             this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
-            this.characterModel.baseRendererInfos[2].defaultMaterial = this.weaponDef.material;
+            this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = this.weaponDef.material;
 
             // timer
             this.maxWeaponTimer = this.weaponDef.baseDuration;

@@ -87,6 +87,8 @@ ___
 
 `1.1.3`
 - Enemies marked by Starstorm 2's Relic of Termination are now guaranteed to drop a Rocket Launcher
+- Changed a handful of item displays
+- Added item displays for a couple of items from Lost in Transit
 
 `1.1.2`
 - Pocket ICBM now works on Rocket Launcher. This has to be hardcoded into the skill state apparently

@@ -17,12 +17,12 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
         public static float bulletRecoil = 8f;
         public static float bulletRange = 80f;
         public static float bulletThiccness = 1f;
+        public float selfForce = 2000f;
 
         private float earlyExitTime;
         protected float duration;
         protected float fireDuration;
         protected bool hasFired;
-        private Animator animator;
         private bool isCrit;
         protected string muzzleString;
 
@@ -30,7 +30,6 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
         {
             base.OnEnter();
             this.characterBody.SetAimTimer(5f);
-            this.animator = GetModelAnimator();
             this.muzzleString = "ShotgunMuzzle";
             this.hasFired = false;
             this.duration = this.baseDuration / this.attackSpeedStat;
@@ -121,6 +120,8 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
                     bulletAttack.maxSpread = spread;
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
                     bulletAttack.Fire();
+
+                    this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
                 }
             }
         }

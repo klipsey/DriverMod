@@ -18,7 +18,6 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         protected float duration;
         protected float fireDuration;
         protected bool hasFired;
-        private Animator animator;
         private bool isCrit;
         protected string muzzleString;
 
@@ -26,7 +25,6 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         {
             base.OnEnter();
             this.characterBody.SetAimTimer(5f);
-            this.animator = GetModelAnimator();
             this.muzzleString = "ShotgunMuzzle";
             this.hasFired = false;
             this.duration = this.baseDuration / this.attackSpeedStat;

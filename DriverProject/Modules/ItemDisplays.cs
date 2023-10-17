@@ -60,6 +60,8 @@ namespace RobDriver.Modules
                 if (itemDisplayPrefabs[name.ToLower()]) return itemDisplayPrefabs[name.ToLower()];
             }
 
+            Debug.LogError("Could not find display prefab " + name);
+
             return null;
         }
     }

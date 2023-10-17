@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1716632385
+CRC: 550854046
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c9bb4f8961b2dd7f3f2b6ab16767aecc
+    Hash: 380a1243e0050e1882bec11ce28b0936
   TypeTreeHash:
     serializedVersion: 2
-    Hash: bfb747528b9de32254fbd4eff1f7d5ce
+    Hash: 668637f38589cec50a7b1ffa4c183564
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -44,6 +44,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 67079b849227b734694872d8810229b8, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 2334069450a65d042a95a873e5229b20, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: db294d07add6b364f99a346939dd2a8a, type: 3}
 - Class: 115
   Script: {instanceID: 0}
@@ -78,6 +80,7 @@ Assets:
 - Assets/Driver/Animations/Default/JumpSprint.anim
 - Assets/Driver/VFX/matShockwave.mat
 - Assets/Driver/Materials/matBriefcase.mat
+- Assets/Driver/FBX/Slugger.fbx
 - Assets/Driver/Animations/Default/CSSIdle.anim
 - Assets/Driver/VFX/ShotgunShell.prefab
 - Assets/Driver/Animations/Default/SprintFast.anim
@@ -99,6 +102,8 @@ Assets:
 - Assets/Driver/FBX/meshDualShotgun.mesh
 - Assets/Driver/Icons/texRocketLauncherWeaponIcon.png
 - Assets/Driver/Animations/Default/AimPitch.anim
+- Assets/Driver/FBX/meshSlugger.mesh
+- Assets/Driver/Textures/texSlugger.png
 - Assets/Driver/Textures/texDualShotgun.png
 - Assets/Driver/Textures/texCrate1.png
 - Assets/Driver/Animations/animDriver.controller
@@ -145,6 +150,7 @@ Assets:
 - Assets/Driver/Animations/Shotgun/CSSIdle.anim
 - Assets/Driver/Icons/texStunGrenadeIcon.png
 - Assets/Driver/Animations/Default/RunL.anim
+- Assets/Driver/Icons/texTyphoonSkin.png
 - Assets/Driver/Icons/texPassiveIcon.png
 - Assets/Driver/Textures/texDriverEmission.png
 - Assets/Driver/Animations/Shotgun/SprintFast.anim
@@ -156,6 +162,7 @@ Assets:
 - Assets/Driver/FBX/animDriverMachineGun.fbx
 - Assets/Driver/WeaponPickupLegendary.prefab
 - Assets/Driver/Animations/maskDriverGesture.mask
+- Assets/Driver/Textures/texSluggerEmission.png
 - Assets/Driver/FBX/briefcase.fbx
 - Assets/Driver/Animations/Default/RunF.anim
 - Assets/Driver/FBX/meshMinecraftDriver.mesh
@@ -181,6 +188,7 @@ Assets:
 - Assets/Driver/Textures/texMinecraftDriverEmission.png
 - Assets/Driver/Icons/texShotgunIcon.png
 - Assets/Driver/Animations/Default/Dance.anim
+- Assets/Driver/Materials/matSlugger.mat
 - Assets/Driver/Animations/Default/SteadyAim.anim
 - Assets/Driver/Icons/texShotgunSecondaryIcon.png
 - Assets/Driver/Textures/texMachineGun.png

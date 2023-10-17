@@ -11,3 +11,5 @@ C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\obj\Debug\netst
 C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\obj\Debug\netstandard2.0\DriverMod.dll
 C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\obj\Debug\netstandard2.0\DriverMod.pdb
 C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netstandard2.0\RiskOfOptions.dll
+C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netstandard2.0\Starstorm2.dll
+C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netstandard2.0\LostInTransit.dll

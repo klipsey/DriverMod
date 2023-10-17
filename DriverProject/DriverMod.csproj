@@ -41,8 +41,14 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <Reference Include="LostInTransit">
+      <HintPath>libs\LostInTransit.dll</HintPath>
+    </Reference>
     <Reference Include="RiskOfOptions">
       <HintPath>libs\RiskOfOptions.dll</HintPath>
+    </Reference>
+    <Reference Include="Starstorm2">
+      <HintPath>libs\Starstorm2.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>E:\Abbas's stuff VII I think\1337 haxx\ror2lol\Chikara ga minegitte kuru\AmpV2\libs\Unity.Postprocessing.Runtime.dll</HintPath>

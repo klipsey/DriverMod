@@ -272,6 +272,7 @@ namespace RobDriver.Modules
             #endregion
 
             weaponPickupEffect = weaponPickupComponent.pickupEffect.InstantiateClone("RobDriverWeaponPickupEffect", true);
+            weaponPickupEffect.AddComponent<NetworkIdentity>();
             AddNewEffectDef(weaponPickupEffect, "sfx_driver_pickup");
 
 
