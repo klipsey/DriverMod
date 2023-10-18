@@ -87,6 +87,9 @@ ___
 
 ## Changelog
 
+`1.2.1`
+- Fixed weapon duration meter being visible with no weapon equipped
+
 `1.2.0`
 - Added Grand Mastery skin!! huge thanks to Glasus for the design
 - Added weapon: Bazooka

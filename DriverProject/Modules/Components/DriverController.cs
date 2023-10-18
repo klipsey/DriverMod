@@ -211,6 +211,7 @@ namespace RobDriver.Modules.Components
 
             // timer
             float duration = 8f;
+            if (this.weaponDef.tier == DriverWeaponTier.Common) duration = 0f;
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;
 

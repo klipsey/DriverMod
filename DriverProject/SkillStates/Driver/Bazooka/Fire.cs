@@ -2,6 +2,7 @@
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver.Bazooka
@@ -46,7 +47,10 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             if (!this.hasFired)
             {
                 this.hasFired = true;
-                //EffectManager.SimpleMuzzleFlash(Modules.Assets.bazookaMuzzleFlash, base.gameObject, "BazookaMuzzle", false);
+
+                this.characterBody.AddSpreadBloom(4f);
+                EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/MuzzleflashSmokeRing.prefab").WaitForCompletion(), this.gameObject, "ShotgunMuzzle", false);
+
                 bool isCrit = this.RollCrit();
 
                 if (isCrit) Util.PlaySound("sfx_driver_bazooka_shoot_critical", this.gameObject);
