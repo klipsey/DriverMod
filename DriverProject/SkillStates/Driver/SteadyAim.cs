@@ -35,7 +35,6 @@ namespace RobDriver.SkillStates.Driver
         public override void OnEnter()
         {
             base.OnEnter();
-            this.iDrive = this.GetComponent<DriverController>();
             this.chargeDuration = this.baseChargeDuration / this.attackSpeedStat;
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.5f);
 

@@ -71,6 +71,8 @@ Hyperinvox - Briefcase model
 
 Bruh - Riot Shotgun model
 
+Glasus - Grand Mastery skin concept
+
 
 ## Future Plans
 - Many more weapons (rocket launcher, dual uzis, railgun, minigun, etc.)
@@ -86,9 +88,13 @@ ___
 ## Changelog
 
 `1.1.3`
-- Enemies marked by Starstorm 2's Relic of Termination are now guaranteed to drop a Rocket Launcher
+- Added Grand Mastery skin!! huge thanks to Glasus for the design
+- Added weapon: Bazooka
 - Changed a handful of item displays
-- Added item displays for a couple of items from Lost in Transit
+- Enemies marked by Starstorm 2's Relic of Termination are now guaranteed to drop a Rocket Launcher
+- All shotguns now have varying degrees of backwards force when fired
+- Added alternate special: Supply Drop- Call down a Rocket Launcher once per stage
+- Updated models for Slug Shotgun and Rocket Launcher
 
 `1.1.2`
 - Pocket ICBM now works on Rocket Launcher. This has to be hardcoded into the skill state apparently

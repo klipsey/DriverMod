@@ -42,6 +42,7 @@ namespace RobDriver.Modules.Survivors
 
         internal static UnlockableDef characterUnlockableDef;
         internal static UnlockableDef masteryUnlockableDef;
+        internal static UnlockableDef grandMasteryUnlockableDef;
 
         // skill overrides
         internal static SkillDef shotgunPrimarySkillDef;
@@ -59,6 +60,9 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef heavyMachineGunPrimarySkillDef;
         internal static SkillDef heavyMachineGunSecondarySkillDef;
 
+        internal static SkillDef bazookaPrimarySkillDef;
+        internal static SkillDef bazookaSecondarySkillDef;
+
         internal static SkillDef rocketLauncherPrimarySkillDef;
         internal static SkillDef rocketLauncherSecondarySkillDef;
 
@@ -75,6 +79,7 @@ namespace RobDriver.Modules.Survivors
                 forceUnlock = Modules.Config.ForceUnlockConfig("Driver");
 
                 masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.MasteryAchievement>();
+                grandMasteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.GrandMasteryAchievement>();
 
                 if (!forceUnlock.Value) characterUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverUnlockAchievement>();
 
@@ -187,6 +192,11 @@ namespace RobDriver.Modules.Survivors
                 },
                 new CustomRendererInfo
                 {
+                    childName = "ButtonModel",
+                    material = Modules.Assets.CreateMaterial("matButton")
+                },
+                new CustomRendererInfo
+                {
                     childName = "SluggerClothModelL",
                     material = clothMat
                 },
@@ -201,8 +211,9 @@ namespace RobDriver.Modules.Survivors
                     material = Modules.Assets.pistolMat
                 } }, bodyRendererIndex);
 
-            // hide the knife and slugger cloth
+            // hide the extra stuff
             childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
+            childLocator.FindChild("ButtonModel").gameObject.SetActive(false);
             childLocator.FindChild("SluggerCloth").gameObject.SetActive(false);
             #endregion
 
@@ -402,7 +413,7 @@ namespace RobDriver.Modules.Survivors
                 "Weapon",
                 prefix + "_DRIVER_BODY_PRIMARY_RIOT_SHOTGUN_NAME",
                 prefix + "_DRIVER_BODY_PRIMARY_RIOT_SHOTGUN_DESCRIPTION",
-                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRiotShotgunIcon"),
                 false);
 
             Driver.slugShotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
@@ -410,7 +421,7 @@ namespace RobDriver.Modules.Survivors
     "Weapon",
     prefix + "_DRIVER_BODY_PRIMARY_SLUG_SHOTGUN_NAME",
     prefix + "_DRIVER_BODY_PRIMARY_SLUG_SHOTGUN_DESCRIPTION",
-    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlugShotgunIcon"),
     false);
 
             Driver.machineGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
@@ -427,6 +438,14 @@ namespace RobDriver.Modules.Survivors
     prefix + "_DRIVER_BODY_PRIMARY_HEAVY_MACHINEGUN_NAME",
     prefix + "_DRIVER_BODY_PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION",
     Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMachineGunIcon"),
+    false);
+
+            Driver.bazookaPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Bazooka.Charge)),
+    "Weapon",
+    prefix + "_DRIVER_BODY_PRIMARY_BAZOOKA_NAME",
+    prefix + "_DRIVER_BODY_PRIMARY_BAZOOKA_DESCRIPTION",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
     false);
 
             Driver.rocketLauncherPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
@@ -631,6 +650,30 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1,
             });
 
+            Driver.bazookaSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
             Modules.Skills.AddSecondarySkills(prefab, steadyAimSkillDef/*, pissSkillDef*/);
             #endregion
 
@@ -711,7 +754,31 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
-            Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef/*, knifeSkillDef*/);
+            SkillDef supplyDropSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SupplyDrop.AimSupplyDrop)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 0,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef/*, knifeSkillDef*/);
             #endregion
 
             Modules.Assets.InitWeaponDefs();
@@ -802,7 +869,7 @@ namespace RobDriver.Modules.Survivors
                 }),
                 mainRenderer,
                 model,
-                masteryUnlockableDef);
+                grandMasteryUnlockableDef);
 
             grandMasterySkin.meshReplacements = new SkinDef.MeshReplacement[]
             {

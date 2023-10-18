@@ -57,6 +57,8 @@ namespace RobDriver.Modules.Components
 
         public GameObject crosshairPrefab;
 
+        private int availableSupplyDrops;
+
         private void Awake()
         {
             // this was originally used for gun jamming
@@ -80,6 +82,8 @@ namespace RobDriver.Modules.Components
 
             this.pistolWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(0);
             this.PickUpWeapon(this.pistolWeaponDef);
+
+            this.availableSupplyDrops = 1;
         }
 
         private void GetSkillOverrides()
@@ -120,6 +124,24 @@ namespace RobDriver.Modules.Components
             {
                 this.PickUpWeapon(this.pistolWeaponDef);
             }
+
+            this.CheckSupplyDrop();
+        }
+
+        private void CheckSupplyDrop()
+        {
+            if (this.skillLocator)
+            {
+                if (this.skillLocator.special.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME")
+                {
+                    this.skillLocator.special.stock = this.availableSupplyDrops;
+                }
+            }
+        }
+
+        public void ConsumeSupplyDrop()
+        {
+            this.availableSupplyDrops--;
         }
 
         public void ServerResetTimer()

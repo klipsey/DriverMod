@@ -77,6 +77,10 @@ ModelImporter:
     100142: meshDummyGun
     100144: meshMinecraftDriver
     100146: meshRiotShotgun
+    100148: meshButton
+    100150: meshSlugger
+    100152: meshRocketLauncher
+    100154: meshSlugShotgun
     400000: //RootNode
     400002: Armature
     400004: base
@@ -151,6 +155,10 @@ ModelImporter:
     400142: meshDummyGun
     400144: meshMinecraftDriver
     400146: meshRiotShotgun
+    400148: meshButton
+    400150: meshSlugger
+    400152: meshRocketLauncher
+    400154: meshSlugShotgun
     2100000: matDriver
     2100002: matDefault
     2100004: matJacket
@@ -161,6 +169,10 @@ ModelImporter:
     2100014: matShotgun
     2100016: matDriver.001
     2100018: matFuckingSteve2
+    2100020: matSlugger
+    2100022: matButton
+    2100024: M_RocketLauncher
+    2100026: ACM_360_WEA_PUM_SHO_B
     2300000: meshSuperShotgun.001
     2300002: meshBazookaRocket
     2300004: meshDummyGun
@@ -180,6 +192,10 @@ ModelImporter:
     4300020: meshDualShotgun
     4300022: meshRiotShotgun
     4300024: meshMinecraftDriver
+    4300026: meshSlugger
+    4300028: meshButton
+    4300030: meshRocketLauncher
+    4300032: meshSlugShotgun
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|Ascend
@@ -224,6 +240,9 @@ ModelImporter:
     7400082: Armature|BonusJumpN
     7400084: Armature|BonusJumpR
     7400086: Armature|SwingKnife
+    7400088: Armature|PressButton
+    7400090: Armature|ReadyButton
+    7400092: Armature|ReadyButtonLoop
     9500000: //RootNode
     10800000: Light
     10800002: Light.001
@@ -237,6 +256,10 @@ ModelImporter:
     13700014: meshDualShotgun
     13700016: meshMinecraftDriver
     13700018: meshRiotShotgun
+    13700020: meshButton
+    13700022: meshSlugger
+    13700024: meshRocketLauncher
+    13700026: meshSlugShotgun
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

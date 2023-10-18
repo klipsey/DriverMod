@@ -54,8 +54,8 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
         {
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, this.muzzleString, false);
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_machinegun_shoot_critical", base.gameObject);
-            else Util.PlaySound("sfx_driver_machinegun_shoot", base.gameObject);
+            if (this.isCrit) Util.PlaySound("sfx_driver_heavy_machinegun_shoot_critical", base.gameObject);
+            else Util.PlaySound("sfx_driver_heavy_machinegun_shoot", base.gameObject);
 
             if (base.isAuthority)
             {

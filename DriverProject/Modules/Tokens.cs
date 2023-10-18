@@ -65,6 +65,9 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION", $"Fire an accurate spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.HeavyMachineGun.Shoot.damageCoefficient}% damage</style>.");
 
+            LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_DESCRIPTION", $"Charge and fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.Bazooka.Fire.minDamageCoefficient}-{100f * SkillStates.Driver.Bazooka.Fire.minDamageCoefficient}% damage</style>.");
+
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Shoot.damageCoefficient}% damage</style>.");
             #endregion
@@ -92,6 +95,9 @@ namespace RobDriver.Modules
             #region Special
             LanguageAPI.Add(prefix + "SPECIAL_GRENADE_NAME", "Flashbang");
             LanguageAPI.Add(prefix + "SPECIAL_GRENADE_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>stuns</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_NAME", "Supply Drop");
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_DESCRIPTION", $"Call down a briefcase containing a <color=#F85B4E>legendary weapon</color>. <style=cIsUtility>You can only request one per stage.</style>");
             #endregion
 
             #region Achievements
@@ -102,6 +108,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "MONSOONUNLOCKABLE_UNLOCKABLE_NAME", "Driver: Mastery");
             LanguageAPI.Add(prefix + "MONSOONUNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Mastery");
             LanguageAPI.Add(prefix + "MONSOONUNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Monsoon.");
+
+            LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Grand Mastery");
+            LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Grand Mastery");
+            LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Typhoon or Eclipse.\n<color=#8888>(Counts any difficulty Typhoon or higher)</color>");
             #endregion
 
 

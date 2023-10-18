@@ -30,14 +30,18 @@ namespace RobDriver.Modules
         public static Mesh pistolMesh;
         public static Mesh shotgunMesh;
         public static Mesh riotShotgunMesh;
+        public static Mesh slugShotgunMesh;
         public static Mesh machineGunMesh;
+        public static Mesh bazookaMesh;
         public static Mesh rocketLauncherMesh;
 
         public static Material pistolMat;
         public static Material shotgunMat;
         public static Material riotShotgunMat;
+        public static Material slugShotgunMat;
         public static Material machineGunMat;
         public static Material rocketLauncherMat;
+        public static Material bazookaMat;
 
         public static Material knifeMat;
 
@@ -52,7 +56,9 @@ namespace RobDriver.Modules
         internal static Texture pistolWeaponIcon;
         internal static Texture shotgunWeaponIcon;
         internal static Texture riotShotgunWeaponIcon;
+        internal static Texture slugShotgunWeaponIcon;
         internal static Texture machineGunWeaponIcon;
+        internal static Texture bazookaWeaponIcon;
         internal static Texture rocketLauncherWeaponIcon;
 
         public static GameObject shotgunTracer;
@@ -64,6 +70,7 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef slugShotgunWeaponDef;
         internal static DriverWeaponDef machineGunWeaponDef;
         internal static DriverWeaponDef heavyMachineGunWeaponDef;
+        internal static DriverWeaponDef bazookaWeaponDef;
         internal static DriverWeaponDef rocketLauncherWeaponDef;
 
         internal static void PopulateAssets()
@@ -109,14 +116,18 @@ namespace RobDriver.Modules
             pistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshPistol");
             shotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSuperShotgun");
             riotShotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshRiotShotgun");
+            slugShotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSlugShotgun");
             machineGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshMachineGun");
-            rocketLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshBazooka");
+            bazookaMesh = mainAssetBundle.LoadAsset<Mesh>("meshBazooka");
+            rocketLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshRocketLauncher");
 
             pistolMat = CreateMaterial("matPistol");
             shotgunMat = CreateMaterial("matShotgun");
             riotShotgunMat = CreateMaterial("matRiotShotgun");
+            slugShotgunMat = CreateMaterial("matSlugShotgun");
             machineGunMat = CreateMaterial("matMachineGun");
-            rocketLauncherMat = CreateMaterial("matBazooka");
+            bazookaMat = CreateMaterial("matBazooka");
+            rocketLauncherMat = CreateMaterial("matRocketLauncher");
 
             knifeMat = CreateMaterial("matKnife");
 
@@ -284,7 +295,9 @@ namespace RobDriver.Modules
             pistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
             shotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texShotgunWeaponIcon");
             riotShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRiotShotgunWeaponIcon");
+            slugShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSlugShotgunWeaponIcon");
             machineGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texMachineGunWeaponIcon");
+            bazookaWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texBazookaWeaponIcon");
             rocketLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRocketLauncherWeaponIcon");
 
 
@@ -402,14 +415,14 @@ namespace RobDriver.Modules
                 {
                     nameToken = "ROB_DRIVER_SLUG_SHOTGUN_NAME",
                     descriptionToken = "ROB_DRIVER_SLUG_SHOTGUN_DESC",
-                    icon = Assets.riotShotgunWeaponIcon,
+                    icon = Assets.slugShotgunWeaponIcon,
                     crosshairPrefab = Assets.LoadCrosshair("SMG"),
                     tier = DriverWeaponTier.Uncommon,
                     baseDuration = Config.slugShotgunDuration.Value,
                     primarySkillDef = Survivors.Driver.slugShotgunPrimarySkillDef,
                     secondarySkillDef = Survivors.Driver.slugShotgunSecondarySkillDef,
-                    mesh = Assets.riotShotgunMesh,
-                    material = Assets.riotShotgunMat,
+                    mesh = Assets.slugShotgunMesh,
+                    material = Assets.slugShotgunMat,
                     animLayer = "Body, Shotgun",
                     calloutSoundString = "sfx_driver_callout_shotgun"
                 });
@@ -455,6 +468,23 @@ namespace RobDriver.Modules
                 });
                 DriverWeaponCatalog.AddWeapon(heavyMachineGunWeaponDef);
             }
+
+            bazookaWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_BAZOOKA_NAME",
+                descriptionToken = "ROB_DRIVER_BAZOOKA_DESC",
+                icon = Assets.bazookaWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                tier = DriverWeaponTier.Uncommon,
+                baseDuration = Config.rocketLauncherDuration.Value,
+                primarySkillDef = Survivors.Driver.bazookaPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.bazookaSecondarySkillDef,
+                mesh = Assets.bazookaMesh,
+                material = Assets.bazookaMat,
+                animLayer = "Body, Shotgun",
+                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+            });
+            DriverWeaponCatalog.AddWeapon(bazookaWeaponDef);
 
             if (Modules.Config.rocketLauncherEnabled.Value)
             {

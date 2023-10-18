@@ -7,7 +7,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 {
     public class Charge : BaseDriverSkillState
     {
-        public static float baseChargeDuration = 1.6f;
+        public static float baseChargeDuration = 1.1f;
         public static float minChargeDuration = 0.2f;
         public static float minBloomRadius = 0.1f;
         public static float maxBloomRadius = 2f;
@@ -25,7 +25,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
             if (this.iDrive) this.iDrive.StartTimer();
 
-            Transform muzzleTransform = base.FindModelChild("BazookaMuzzle");
+            Transform muzzleTransform = base.FindModelChild("ShotgunMuzzle");
             if (muzzleTransform)
             {
                 this.chargeEffectInstance = UnityEngine.Object.Instantiate<GameObject>(EntityStates.LemurianBruiserMonster.ChargeMegaFireball.chargeEffectPrefab, muzzleTransform.position, muzzleTransform.rotation);
@@ -46,6 +46,12 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            this.characterBody.outOfCombatStopwatch = 0f;
+            this.characterBody.isSprinting = false;
+            base.characterBody.SetAimTimer(0.2f);
+
+            // this is so fucking bad LMAO
+            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
 
             float charge = this.CalcCharge();
 

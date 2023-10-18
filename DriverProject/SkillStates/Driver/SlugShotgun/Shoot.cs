@@ -36,8 +36,8 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
             this.isCrit = base.RollCrit();
             this.earlyExitTime = 0.75f * this.duration;
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_riot_shotgun_shoot_critical", base.gameObject);
-            else Util.PlaySound("sfx_driver_riot_shotgun_shoot", base.gameObject);
+            if (this.isCrit) Util.PlaySound("sfx_driver_slug_shotgun_shoot_critical", base.gameObject);
+            else Util.PlaySound("sfx_driver_slug_shotgun_shoot", base.gameObject);
 
             base.PlayAnimation("Gesture, Override", "FireRiotShotgun", "Shoot.playbackRate", this.duration);
 
@@ -74,7 +74,7 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
 
                     float spread = Shoot.bulletSpread;
                     float thiccness = Shoot.bulletThiccness;
-                    float force = 500;
+                    float force = 2500;
 
                     BulletAttack bulletAttack = new BulletAttack
                     {

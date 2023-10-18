@@ -8,6 +8,7 @@
 
             // hardcoded, fix at some point
             if (this.characterBody.skinIndex == 1) this.PlayEmote("Dance", "sfx_jacket_dance");
+            else if (this.characterBody.skinIndex == 2) this.PlayEmote("Dance", "sfx_slugger_dance");
             else this.PlayEmote("Dance", "sfx_driver_dance");
 
             this.FindModelChild("Boombox").gameObject.SetActive(true);

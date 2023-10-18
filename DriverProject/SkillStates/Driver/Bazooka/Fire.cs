@@ -13,8 +13,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         public static float baseDuration = 0.7f;
         public static float minSpeed = 20f;
         public static float maxSpeed = 160f;
-        public static float minDamageCoefficient = 6f;
-        public static float maxDamageCoefficient = 9f;
+        public static float minDamageCoefficient = 4f;
+        public static float maxDamageCoefficient = 8f;
         public static float minRecoil = 0.5f;
         public static float maxRecoil = 5f;
 
@@ -33,8 +33,10 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             this.recoil = Util.Remap(this.charge, 0f, 1f, Fire.minRecoil, Fire.maxRecoil);
             this.hasFired = false;
 
-            if (this.charge >= 0.8f) base.PlayAnimation("Gesture, Override", "FireCharged", "Bazooka.playbackRate", 0.8f);
-            else base.PlayAnimation("Gesture, Override", "Fire", "Bazooka.playbackRate", 1f);
+            //if (this.charge >= 0.8f) base.PlayAnimation("Gesture, Override", "FireCharged", "Bazooka.playbackRate", 0.8f);
+            //else base.PlayAnimation("Gesture, Override", "Fire", "Bazooka.playbackRate", 1f);
+            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
+
             this.FireRocket();
         }
 
@@ -44,7 +46,10 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             {
                 this.hasFired = true;
                 //EffectManager.SimpleMuzzleFlash(Modules.Assets.bazookaMuzzleFlash, base.gameObject, "BazookaMuzzle", false);
-                Util.PlaySound("HenryFire", base.gameObject);
+                bool isCrit = this.RollCrit();
+
+                if (isCrit) Util.PlaySound("sfx_driver_bazooka_fire_critical", this.gameObject);
+                else Util.PlaySound("sfx_driver_bazooka_fire", this.gameObject);
 
                 if (base.isAuthority)
                 {
@@ -52,13 +57,13 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
                     Ray aimRay = base.GetAimRay();
 
-                    ProjectileManager.instance.FireProjectile(Modules.Projectiles.rocketProjectilePrefab,
+                    ProjectileManager.instance.FireProjectile(Modules.Projectiles.bazookaProjectilePrefab,
                         aimRay.origin,
                         Util.QuaternionSafeLookRotation(aimRay.direction),
                         this.gameObject,
                         this.damageCoefficient * this.damageStat,
                         2000f,
-                        this.RollCrit(),
+                        isCrit,
                         DamageColorIndex.Default,
                         null,
                         this.speed);
