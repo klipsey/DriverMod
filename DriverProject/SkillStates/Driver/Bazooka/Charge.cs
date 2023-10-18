@@ -36,6 +36,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
                 this.chargeEffectInstance.transform.Find("FlameBillboards, Local").gameObject.SetActive(false);
                 this.chargeEffectInstance.transform.Find("SmokeBillboard").gameObject.SetActive(false);
             }
+
+            base.PlayAnimation("AimPitch", "SteadyAimPitch");
         }
 
         private float CalcCharge()
@@ -71,6 +73,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             base.OnExit();
 
             AkSoundEngine.StopPlayingID(this.chargePlayID);
+
+            base.PlayAnimation("AimPitch", "AimPitch");
 
             if (this.chargeEffectInstance) EntityState.Destroy(this.chargeEffectInstance);
         }

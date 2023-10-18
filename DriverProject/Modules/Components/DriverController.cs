@@ -210,8 +210,9 @@ namespace RobDriver.Modules.Components
             this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = this.weaponDef.material;
 
             // timer
-            this.maxWeaponTimer = this.weaponDef.baseDuration;
-            this.weaponTimer = this.weaponDef.baseDuration;
+            float duration = 8f;
+            this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
+            this.weaponTimer = duration;//this.weaponDef.baseDuration;
 
             // crosshair
             this.crosshairPrefab = this.weaponDef.crosshairPrefab;

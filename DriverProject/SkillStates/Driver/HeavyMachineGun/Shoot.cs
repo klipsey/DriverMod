@@ -7,9 +7,9 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 2.4f;
+        public static float damageCoefficient = 2.1f;
         public static float procCoefficient = 1f;
-        public static float baseDuration = 0.34f;
+        public static float baseDuration = 0.31f;
         public static float force = 50f;
         public static float recoil = 0.85f;
         public static float range = 256f;
@@ -69,7 +69,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
                     origin = aimRay.origin,
                     damage = Shoot.damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Generic,
+                    damageType = DamageType.BypassArmor,
                     falloffModel = BulletAttack.FalloffModel.None,
                     maxDistance = Shoot.range,
                     force = Shoot.force,

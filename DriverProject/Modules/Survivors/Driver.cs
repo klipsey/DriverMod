@@ -44,6 +44,8 @@ namespace RobDriver.Modules.Survivors
         internal static UnlockableDef masteryUnlockableDef;
         internal static UnlockableDef grandMasteryUnlockableDef;
 
+        internal static UnlockableDef supplyDropUnlockableDef;
+
         // skill overrides
         internal static SkillDef shotgunPrimarySkillDef;
         internal static SkillDef shotgunSecondarySkillDef;
@@ -80,6 +82,8 @@ namespace RobDriver.Modules.Survivors
 
                 masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.MasteryAchievement>();
                 grandMasteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.GrandMasteryAchievement>();
+
+                supplyDropUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SupplyDropAchievement>();
 
                 if (!forceUnlock.Value) characterUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverUnlockAchievement>();
 
@@ -779,6 +783,8 @@ namespace RobDriver.Modules.Survivors
             });
 
             Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef/*, knifeSkillDef*/);
+
+            Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef);
             #endregion
 
             Modules.Assets.InitWeaponDefs();

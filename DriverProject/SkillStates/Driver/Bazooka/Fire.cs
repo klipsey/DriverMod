@@ -27,6 +27,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         public override void OnEnter()
         {
             base.OnEnter();
+            base.StartAimMode(2f);
             this.duration = Fire.baseDuration / this.attackSpeedStat;
             this.speed = Util.Remap(this.charge, 0f, 1f, Fire.minSpeed, Fire.maxSpeed);
             this.damageCoefficient = Util.Remap(this.charge, 0f, 1f, Fire.minDamageCoefficient, Fire.maxDamageCoefficient);
@@ -48,8 +49,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
                 //EffectManager.SimpleMuzzleFlash(Modules.Assets.bazookaMuzzleFlash, base.gameObject, "BazookaMuzzle", false);
                 bool isCrit = this.RollCrit();
 
-                if (isCrit) Util.PlaySound("sfx_driver_bazooka_fire_critical", this.gameObject);
-                else Util.PlaySound("sfx_driver_bazooka_fire", this.gameObject);
+                if (isCrit) Util.PlaySound("sfx_driver_bazooka_shoot_critical", this.gameObject);
+                else Util.PlaySound("sfx_driver_bazooka_shoot", this.gameObject);
 
                 if (base.isAuthority)
                 {

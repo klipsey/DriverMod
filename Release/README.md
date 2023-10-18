@@ -71,6 +71,8 @@ Hyperinvox - Briefcase model
 
 Bruh - Riot Shotgun model
 
+Glasus - Grand Mastery skin concept
+
 
 ## Future Plans
 - Many more weapons (rocket launcher, dual uzis, railgun, minigun, etc.)
@@ -84,6 +86,18 @@ Bruh - Riot Shotgun model
 ___
 
 ## Changelog
+
+`1.2.0`
+- Added Grand Mastery skin!! huge thanks to Glasus for the design
+- Added weapon: Bazooka
+- Added an unlockable alternate special- Flashbang bridges a pretty crucial gap in his kit so hopefully it's not a straight upgrade
+- Machine Gun primary damage: 190% > 200%, fire rate slightly increased
+- Heavy Machine Gun primary damage: 240% > 210%, fire rate increased, shots now ignore armor (more damage to bosses)
+- Changed a handful of item displays
+- Enemies marked by Starstorm 2's Relic of Termination are now guaranteed to drop a Rocket Launcher
+- All shotguns now have varying degrees of backwards force when fired
+- Updated models for Slug Shotgun and Rocket Launcher
+- Temporarily removed functionality from weapon duration configs and reverted Rocket Launcher to 8 seconds
 
 `1.1.2`
 - Pocket ICBM now works on Rocket Launcher. This has to be hardcoded into the skill state apparently

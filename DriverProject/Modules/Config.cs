@@ -40,6 +40,8 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> machineGunEnabled;
         public static ConfigEntry<float> heavyMachineGunDuration;
         public static ConfigEntry<bool> heavyMachineGunEnabled;
+        public static ConfigEntry<float> bazookaDuration;
+        public static ConfigEntry<bool> bazookaEnabled;
         public static ConfigEntry<float> rocketLauncherDuration;
         public static ConfigEntry<bool> rocketLauncherEnabled;
 
@@ -159,7 +161,7 @@ false,
     = Config.BindAndOptionsSlider("04 - Weapons - Shotgun",
              "Duration",
              8f,
-             "How long this weapon lasts, in seconds", 1f, 20f);
+             "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
 
             shotgunEnabled
 = Config.BindAndOptions("04 - Weapons - Shotgun",
@@ -171,7 +173,7 @@ false,
 = Config.BindAndOptionsSlider("04 - Weapons - Riot Shotgun",
  "Duration",
  8f,
- "How long this weapon lasts, in seconds", 1f, 20f);
+ "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
 
             riotShotgunEnabled
 = Config.BindAndOptions("04 - Weapons - Riot Shotgun",
@@ -183,7 +185,7 @@ true,
 = Config.BindAndOptionsSlider("04 - Weapons - Slug Shotgun",
 "Duration",
 8f,
-"How long this weapon lasts, in seconds", 1f, 20f);
+"How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
 
             slugShotgunEnabled
 = Config.BindAndOptions("04 - Weapons - Slug Shotgun",
@@ -195,7 +197,7 @@ true,
 = Config.BindAndOptionsSlider("04 - Weapons - Machine Gun",
  "Duration",
  8f,
- "How long this weapon lasts, in seconds", 1f, 20f);
+ "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
 
             machineGunEnabled
 = Config.BindAndOptions("04 - Weapons - Machine Gun",
@@ -207,7 +209,7 @@ true,
 = Config.BindAndOptionsSlider("04 - Weapons - Heavy Machine Gun",
 "Duration",
 8f,
-"How long this weapon lasts, in seconds", 1f, 20f);
+"How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
 
             heavyMachineGunEnabled
 = Config.BindAndOptions("04 - Weapons - Heavy Machine Gun",
@@ -215,11 +217,23 @@ true,
 true,
 "Set to false to remove this weapon from the drop pool.", true);
 
+            bazookaDuration
+= Config.BindAndOptionsSlider("04 - Weapons - Bazooka",
+"Duration",
+8f,
+"How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
+
+            bazookaEnabled
+= Config.BindAndOptions("04 - Weapons - Bazooka",
+"Enabled",
+true,
+"Set to false to remove this weapon from the drop pool.", true);
+
             rocketLauncherDuration
 = Config.BindAndOptionsSlider("04 - Weapons - Rocket Launcher",
  "Duration",
- 20f,
- "How long this weapon lasts, in seconds", 1f, 20f);
+ 8f,
+ "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
 
             rocketLauncherEnabled
 = Config.BindAndOptions("04 - Weapons - Rocket Launcher",

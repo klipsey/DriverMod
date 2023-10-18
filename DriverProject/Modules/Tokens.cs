@@ -37,7 +37,7 @@ namespace RobDriver.Modules
             #region Skins
             LanguageAPI.Add(prefix + "DEFAULT_SKIN_NAME", "Default");
             LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "Jacket");
-            LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "");
+            LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "Slugger");
             LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion
 
@@ -66,7 +66,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION", $"Fire an accurate spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.HeavyMachineGun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_NAME", "Shoot");
-            LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_DESCRIPTION", $"Charge and fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.Bazooka.Fire.minDamageCoefficient}-{100f * SkillStates.Driver.Bazooka.Fire.minDamageCoefficient}% damage</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_DESCRIPTION", $"Charge and fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.Bazooka.Fire.minDamageCoefficient}-{100f * SkillStates.Driver.Bazooka.Fire.maxDamageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Shoot.damageCoefficient}% damage</style>.");
@@ -112,6 +112,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Grand Mastery");
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Grand Mastery");
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Typhoon or Eclipse.\n<color=#8888>(Counts any difficulty Typhoon or higher)</color>");
+
+            LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Locked and Loaded");
+            LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Locked and Loaded");
+            LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, complete a teleporter event without letting any briefcases despawn.");
             #endregion
 
 

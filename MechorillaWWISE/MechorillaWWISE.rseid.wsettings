@@ -44,6 +44,7 @@
 				<Property Name="Event Action List\{D7B9BDD7-3B3F-445B-98F2-5C71E090FE7C}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="Event Action List\{DB8E72F6-9EEF-49EC-99A8-BA2F88E0E64A}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="Event Action List\{DC1A1201-A089-43E2-9C47-795A33043C20}\x64_Expand States" Type="string" Value=""/>
+				<Property Name="Event Action List\{DC9AC462-A7B6-40D3-9B18-36609613DB99}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="Event Action List\{DD0F2687-49D9-421F-8608-6618887AA813}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="Event Action List\{E2F5869B-FE35-4C03-9CCD-FB490BA6ABD4}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="Event Action List\{F319ADB4-6F12-4B36-9F6D-CE73413AD64F}\x64_Expand States" Type="string" Value=""/>
@@ -83,8 +84,8 @@
 				<Property Name="MonitoringManager\GameObjectFilter\x64_GameObjectFilters" Type="string" Value=""/>
 				<Property Name="ProjectExplorer\FirstVisible_10_1" Type="string" Value="{4C96B38B-3DB4-40C7-91C9-665510E38993}"/>
 				<Property Name="ProjectExplorer\FirstVisible_11_1" Type="string" Value="{23EC2DE3-3ED8-4B82-AC99-92E25F2E4C6B}"/>
-				<Property Name="ProjectExplorer\FirstVisible_1_1" Type="string" Value="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
-				<Property Name="ProjectExplorer\FirstVisible_3_1" Type="string" Value="{A69BF0FC-D84A-487C-ABDD-56F71CB2A126}"/>
+				<Property Name="ProjectExplorer\FirstVisible_1_1" Type="string" Value="{328911D7-88C9-4FF9-9324-A90E9635AE3A}"/>
+				<Property Name="ProjectExplorer\FirstVisible_3_1" Type="string" Value="{472E5B97-5428-48BF-90E8-FFF462C476EA}"/>
 				<Property Name="ProjectExplorer\FirstVisible_4_1" Type="string" Value="{CB6175F1-6080-4A23-92EF-0807E304D0C1}"/>
 				<Property Name="ProjectExplorer\FirstVisible_6_1" Type="string" Value="{C98E673F-A24C-48A8-960F-10565FFE70A0}"/>
 				<Property Name="ProjectExplorer\FirstVisible_8_1" Type="string" Value="{41093F77-829F-4D88-8601-E8B25F3D4781}"/>

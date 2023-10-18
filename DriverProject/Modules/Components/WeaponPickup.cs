@@ -51,6 +51,10 @@ namespace RobDriver.Modules.Components
 				else this.SetWeapon(DriverWeapon.Shotgun);
 			}*/
 			// no it doesn't, clients don't have the rng
+
+			// i'm a dirty hack
+			// lock me up and throw away the key
+			this.Invoke("Fuck", 59.5f);
 		}
 
 		private void Start()
@@ -110,7 +114,7 @@ namespace RobDriver.Modules.Components
 		private void OnTriggerStay(Collider collider)
 		{
 			// can this run on every client? i don't know but let's find out
-			if (NetworkServer.active && this.alive && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex)
+			if (this.alive && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex)
 			{
 				// well it can but it's not a fix.
 				DriverController iDrive = collider.GetComponent<DriverController>();
@@ -121,6 +125,14 @@ namespace RobDriver.Modules.Components
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}
+			}
+		}
+
+		private void Fuck()
+        {
+			if (this.alive)
+			{
+				Modules.Achievements.SupplyDropAchievement.weaponHasDespawned = true;
 			}
 		}
 	}
