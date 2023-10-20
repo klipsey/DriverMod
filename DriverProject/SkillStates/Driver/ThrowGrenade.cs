@@ -8,10 +8,10 @@ namespace RobDriver.SkillStates.Driver
 {
     public class ThrowGrenade : GenericProjectileBaseState
     {
-        public static float baseDuration = 0.65f;
+        public static float baseDuration = 0.55f;
         public static float baseDelayDuration = 0.1f * baseDuration;
 
-        public static float damageCoefficient = 4f;
+        public static float damageCoefficient = 6.5f;
 
         public override void OnEnter()
         {

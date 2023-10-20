@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3786256966
+CRC: 3904277006
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0eeb548287729f723dbe1f3980597d95
+    Hash: 370a4b9469c59c6315d32e2547d7d8bc
   TypeTreeHash:
     serializedVersion: 2
     Hash: 668637f38589cec50a7b1ffa4c183564
@@ -104,7 +104,7 @@ Assets:
 - Assets/Driver/FBX/meshDualShotgun.mesh
 - Assets/Driver/Icons/texRocketLauncherWeaponIcon.png
 - Assets/Driver/Animations/Default/AimPitch.anim
-- Assets/Driver/FBX/meshSlugger.mesh
+- Assets/Driver/FBX/meshSluggerOld.mesh
 - Assets/Driver/Textures/texSlugger.png
 - Assets/Driver/Textures/texDualShotgun.png
 - Assets/Driver/Textures/texCrate1.png
@@ -191,6 +191,7 @@ Assets:
 - Assets/Driver/Textures/texBriefcaseGold.png
 - Assets/Driver/FBX/animDriver.fbx
 - Assets/Driver/Materials/matBriefcaseGold.mat
+- Assets/Driver/FBX/meshSlugger.mesh
 - Assets/Driver/Textures/texRocketLauncher.png
 - Assets/Driver/Materials/matCrate2.mat
 - Assets/Driver/Materials/matDriver.mat

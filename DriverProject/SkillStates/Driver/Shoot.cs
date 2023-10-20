@@ -40,12 +40,9 @@ namespace RobDriver.SkillStates.Driver
 
             this.isCrit = base.RollCrit();
 
-            string animString = "Shoot";
-
             if (this.isCrit)
             {
                 this.duration = Shoot.baseCritDuration / this.attackSpeedStat;
-                animString = "ShootCritical";
                 this.fireTime = 0.5f * this.duration;
                 this.fireTime2 = 0.55f * this.duration;
 
@@ -55,6 +52,8 @@ namespace RobDriver.SkillStates.Driver
                 this.effectInstance.transform.localPosition = Vector3.zero;
 
                 this.spinPlayID = Util.PlaySound("sfx_driver_pistol_spin", this.gameObject);
+
+                this.PlayAnimation("Gesture, Override", "ShootCritical", "Shoot.playbackRate", this.duration);
             }
             else
             {
@@ -63,9 +62,9 @@ namespace RobDriver.SkillStates.Driver
                     this.hasFired = true;
                     this.Fire();
                 }
-            }
 
-            base.PlayAnimation("Gesture, Override", animString, "Shoot.playbackRate", this.duration);
+                this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration * 1.5f);
+            }
         }
 
         public override void OnExit()
