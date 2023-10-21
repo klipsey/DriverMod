@@ -34,6 +34,7 @@ namespace RobDriver.Modules
             survivorDef.mainEndingEscapeFailureFlavorToken = fullFailureString;
             survivorDef.desiredSortPosition = 100f;
             survivorDef.unlockableDef = unlockableDef;
+            survivorDef.cachedName = fullNameString;
 
             survivorDefinitions.Add(survivorDef);
         }

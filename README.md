@@ -93,6 +93,7 @@ ___
 - Flashbang damage: 400% > 650%, animation slightly sped up
 - Tweaked kickback on all shotguns
 - Fixed weapon duration meter being visible with no weapon equipped
+- Fixed Eclipse levels not going up
 
 `1.2.0`
 - Added Grand Mastery skin!! huge thanks to Glasus for the design
