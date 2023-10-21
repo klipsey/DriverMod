@@ -7,8 +7,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 {
     public class Charge : BaseDriverSkillState
     {
-        public static float baseChargeDuration = 1.1f;
-        public static float minChargeDuration = 0.2f;
+        public static float baseChargeDuration = 1f;
+        public static float minChargeDuration = 0.08f;
         public static float minBloomRadius = 0.1f;
         public static float maxBloomRadius = 2f;
 

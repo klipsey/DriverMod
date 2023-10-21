@@ -92,6 +92,8 @@ ___
 - Added a new unlockable skin (thanks Glasus for the challenge idea)
 - Flashbang damage: 400% > 650%, animation slightly sped up
 - Tweaked kickback on all shotguns
+- Bazooka minimum damage: 400% > 600%, charge time lowered and lockout before you can release an uncharged shot decreased
+- Updated Grand Mastery skin, adding more detail and polish
 - Fixed weapon duration meter being visible with no weapon equipped
 - Fixed Eclipse levels not going up
 
