@@ -18,7 +18,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
         public static float bulletRecoil = 8f;
         public static float bulletRange = 100f;
         public static float bulletThiccness = 0.7f;
-        public float selfForce = 1200f;
+        public float selfForce = 1000f;
 
         private float earlyExitTime;
         protected float duration;

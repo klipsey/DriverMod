@@ -14,7 +14,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         public static float baseDuration = 0.7f;
         public static float minSpeed = 20f;
         public static float maxSpeed = 160f;
-        public static float minDamageCoefficient = 4f;
+        public static float minDamageCoefficient = 6f;
         public static float maxDamageCoefficient = 8f;
         public static float minRecoil = 0.5f;
         public static float maxRecoil = 5f;

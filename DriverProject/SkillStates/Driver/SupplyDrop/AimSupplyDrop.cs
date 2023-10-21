@@ -26,6 +26,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             if (NetworkServer.active) this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             //this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
+            this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("SimpleDot");
 
             this.FindModelChild("ButtonModel").gameObject.SetActive(true);
 
@@ -34,6 +35,10 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 this.areaIndicatorInstance = UnityEngine.Object.Instantiate<GameObject>(EntityStates.Huntress.ArrowRain.areaIndicatorPrefab);
                 this.areaIndicatorInstance.transform.localScale = Vector3.zero;
             }
+
+            this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+            this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+            this.skillLocator.special.SetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
         }
 
         public override void Update()
@@ -56,7 +61,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 this.areaIndicatorInstance.transform.localScale = new Vector3(size, size, size);
             }
 
-            if ((this.inputBank.skill1.down || this.inputBank.skill2.down) && base.isAuthority)
+            if ((this.inputBank.skill1.down) && base.isAuthority)
             {
                 if (base.fixedAge >= 0.5f)
                 {
@@ -72,7 +77,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 }
             }
 
-            if (this.inputBank.skill4.down && base.isAuthority)
+            if ((this.inputBank.skill2.down || this.inputBank.skill4.down) && base.isAuthority)
             {
                 if (base.fixedAge >= 0.25f)
                 {
@@ -118,6 +123,12 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.1f);
                 this.FindModelChild("ButtonModel").gameObject.SetActive(false);
             }
+
+            this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;
+
+            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+            this.skillLocator.special.UnsetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

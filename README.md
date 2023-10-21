@@ -88,6 +88,10 @@ ___
 ## Changelog
 
 `1.2.1`
+- Added weapon: Sniper Rifle (thanks to Swuff for the weak point targeting implementation)
+- Added a new unlockable skin (thanks Glasus for the challenge idea)
+- Flashbang damage: 400% > 650%, animation slightly sped up
+- Tweaked kickback on all shotguns
 - Fixed weapon duration meter being visible with no weapon equipped
 
 `1.2.0`

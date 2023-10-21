@@ -5,6 +5,7 @@ internal enum DriverCameraParams
 {
     DEFAULT,
     AIM_PISTOL,
+    AIM_SNIPER,
     EMOTE
 }
 
@@ -14,12 +15,14 @@ namespace RobDriver.Modules
     {
         internal static CharacterCameraParamsData defaultCameraParams;
         internal static CharacterCameraParamsData aimCameraParams;
+        internal static CharacterCameraParamsData sniperAimCameraParams;
         internal static CharacterCameraParamsData emoteCameraParams;
 
         internal static void InitializeParams()
         {
             defaultCameraParams = NewCameraParams("ccpRobDriver", 70f, 1.37f, new Vector3(0f, 0f, -8.1f));
             aimCameraParams = NewCameraParams("ccpRobDriverAim", 70f, 0.8f, new Vector3(1f, 0f, -5f));
+            sniperAimCameraParams = NewCameraParams("ccpRobDriverSniperAim", 70f, 0.8f, new Vector3(1.5f, 0f, -2.5f));
             emoteCameraParams = NewCameraParams("ccpRobDriverEmote", 70f, 0.4f, new Vector3(0f, 0f, -6f));
         }
 
@@ -79,6 +82,9 @@ namespace RobDriver.Modules
                     break;
                 case DriverCameraParams.AIM_PISTOL:
                     paramsData = aimCameraParams;
+                    break;
+                case DriverCameraParams.AIM_SNIPER:
+                    paramsData = sniperAimCameraParams;
                     break;
                 case DriverCameraParams.EMOTE:
                     paramsData = emoteCameraParams;

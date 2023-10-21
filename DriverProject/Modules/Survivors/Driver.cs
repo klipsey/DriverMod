@@ -43,6 +43,7 @@ namespace RobDriver.Modules.Survivors
         internal static UnlockableDef characterUnlockableDef;
         internal static UnlockableDef masteryUnlockableDef;
         internal static UnlockableDef grandMasteryUnlockableDef;
+        internal static UnlockableDef suitUnlockableDef;
 
         internal static UnlockableDef supplyDropUnlockableDef;
 
@@ -68,6 +69,12 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef rocketLauncherPrimarySkillDef;
         internal static SkillDef rocketLauncherSecondarySkillDef;
 
+        internal static SkillDef sniperPrimarySkillDef;
+        internal static SkillDef sniperSecondarySkillDef;
+
+        internal static SkillDef confirmSkillDef;
+        internal static SkillDef cancelSkillDef;
+
         internal static string bodyNameToken;
 
         internal void CreateCharacter()
@@ -82,6 +89,7 @@ namespace RobDriver.Modules.Survivors
 
                 masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.MasteryAchievement>();
                 grandMasteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.GrandMasteryAchievement>();
+                suitUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SuitAchievement>();
 
                 supplyDropUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SupplyDropAchievement>();
 
@@ -181,6 +189,8 @@ namespace RobDriver.Modules.Survivors
 
             Material clothMat = Modules.Assets.CreateMaterial("matSlugger", 1f, Color.white);
 
+            Material tieMat = Modules.Assets.CreateMaterial("matSuit", 1f, Color.white);
+
             bodyRendererIndex = 0;
 
             Modules.Prefabs.SetupCharacterModel(newPrefab, new CustomRendererInfo[] {
@@ -211,6 +221,11 @@ namespace RobDriver.Modules.Survivors
                 },
                 new CustomRendererInfo
                 {
+                    childName = "TieModel",
+                    material = tieMat
+                },
+                new CustomRendererInfo
+                {
                     childName = "PistolModel",
                     material = Modules.Assets.pistolMat
                 } }, bodyRendererIndex);
@@ -219,6 +234,7 @@ namespace RobDriver.Modules.Survivors
             childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
             childLocator.FindChild("ButtonModel").gameObject.SetActive(false);
             childLocator.FindChild("SluggerCloth").gameObject.SetActive(false);
+            childLocator.FindChild("Tie").gameObject.SetActive(false);
             #endregion
 
             CreateHitboxes(newPrefab);
@@ -399,6 +415,54 @@ namespace RobDriver.Modules.Survivors
             skillLocator.passiveSkill.skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE_DESCRIPTION";
             skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
 
+            Driver.confirmSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_CONFIRM_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_CONFIRM_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_CONFIRM_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texConfirmIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "fuck",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 0,
+            });
+
+            Driver.cancelSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_CANCEL_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_CANCEL_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_CANCEL_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texCancelIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "fuck",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 0,
+            });
+
             #region Primary
             Modules.Skills.AddPrimarySkills(prefab,
                 Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));//,
@@ -459,6 +523,14 @@ namespace RobDriver.Modules.Survivors
                 prefix + "_DRIVER_BODY_PRIMARY_ROCKETLAUNCHER_DESCRIPTION",
                 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
                 false);
+
+            Driver.sniperPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SniperRifle.Shoot)),
+    "Weapon",
+    prefix + "_DRIVER_BODY_PRIMARY_SNIPER_NAME",
+    prefix + "_DRIVER_BODY_PRIMARY_SNIPER_DESCRIPTION",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlugShotgunIcon"),
+    false);
             #endregion
 
             #region Secondary
@@ -678,6 +750,30 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1,
             });
 
+            Driver.sniperSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SNIPER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SNIPER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SNIPER_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SniperRifle.SteadyAim)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 8f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 0,
+                stockToConsume = 0,
+            });
+
             Modules.Skills.AddSecondarySkills(prefab, steadyAimSkillDef/*, pissSkillDef*/);
             #endregion
 
@@ -805,6 +901,7 @@ namespace RobDriver.Modules.Survivors
             List<SkinDef> skins = new List<SkinDef>();
 
             GameObject sluggerCloth = childLocator.FindChild("SluggerCloth").gameObject;
+            GameObject tie = childLocator.FindChild("Tie").gameObject;
 
             #region DefaultSkin
             SkinDef defaultSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_DEFAULT_SKIN_NAME",
@@ -827,6 +924,11 @@ namespace RobDriver.Modules.Survivors
                 new SkinDef.GameObjectActivation
                 {
                     gameObject = sluggerCloth,
+                    shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
                     shouldActivate = false
                 }
             };
@@ -860,6 +962,11 @@ namespace RobDriver.Modules.Survivors
                 {
                     gameObject = sluggerCloth,
                     shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = false
                 }
             };
 
@@ -892,10 +999,89 @@ namespace RobDriver.Modules.Survivors
                 {
                     gameObject = sluggerCloth,
                     shouldActivate = true
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = false
                 }
             };
 
             skins.Add(grandMasterySkin);
+            #endregion
+
+            #region SuitSkin
+            SkinDef suitSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_SUIT_SKIN_NAME",
+                Assets.mainAssetBundle.LoadAsset<Sprite>("texSuitSkin"),
+                SkinRendererInfos(defaultRenderers, new Material[]
+                {
+                    Modules.Assets.CreateMaterial("matSuit", 1f, Color.white)
+                }),
+                mainRenderer,
+                model,
+                suitUnlockableDef);
+
+            suitSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    renderer = mainRenderer,
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshSuit")
+                }
+            };
+
+            suitSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = sluggerCloth,
+                    shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = true
+                }
+            };
+
+            skins.Add(suitSkin);
+            #endregion
+
+            #region Suit2Skin
+            SkinDef suit2Skin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_SUIT2_SKIN_NAME",
+                Assets.mainAssetBundle.LoadAsset<Sprite>("texSuit2Skin"),
+                SkinRendererInfos(defaultRenderers, new Material[]
+                {
+                    Modules.Assets.CreateMaterial("matSuit", 1f, Color.white)
+                }),
+                mainRenderer,
+                model,
+                suitUnlockableDef);
+
+            suit2Skin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    renderer = mainRenderer,
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshSuit2")
+                }
+            };
+
+            suit2Skin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = sluggerCloth,
+                    shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = true
+                }
+            };
+
+            if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
             #endregion
 
             #region MinecraftSkin
@@ -918,6 +1104,21 @@ namespace RobDriver.Modules.Survivors
                     mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
                 }
                 };
+
+                minecraftSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+{
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = sluggerCloth,
+                    shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = false
+                }
+};
+
 
                 skins.Add(minecraftSkin);
             }

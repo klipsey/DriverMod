@@ -5,6 +5,12 @@ using RoR2.Skills;
 [CreateAssetMenu(fileName = "wpn", menuName = "ScriptableObjects/WeaponDef", order = 1)]
 public class DriverWeaponDef : ScriptableObject
 {
+    public enum AnimationSet // i hate enums but this is okay being one since animation sets won't be added often
+    {
+        Default,
+        TwoHanded
+    }
+
     [Header("General")]
     public string nameToken = "";
     public string descriptionToken = "";
@@ -20,7 +26,7 @@ public class DriverWeaponDef : ScriptableObject
     [Header("Visuals")]
     public Mesh mesh;
     public Material material;
-    public string animLayer = "";
+    public AnimationSet animationSet = AnimationSet.Default;
     public string calloutSoundString = "";
 
     [HideInInspector]
@@ -42,7 +48,7 @@ public class DriverWeaponDef : ScriptableObject
 
         weaponDef.mesh = weaponDefInfo.mesh;
         weaponDef.material = weaponDefInfo.material;
-        weaponDef.animLayer = weaponDefInfo.animLayer;
+        weaponDef.animationSet = weaponDefInfo.animationSet;
         weaponDef.calloutSoundString = weaponDefInfo.calloutSoundString;
 
         return weaponDef;
@@ -64,7 +70,7 @@ public struct DriverWeaponDefInfo
 
     public Mesh mesh;
     public Material material;
-    public string animLayer;
+    public DriverWeaponDef.AnimationSet animationSet;
     public string calloutSoundString;
 }
 

@@ -220,7 +220,15 @@ namespace RobDriver.Modules.Components
             this.characterBody._defaultCrosshairPrefab = this.crosshairPrefab;
 
             // animator layer
-            this.EnableLayer(this.weaponDef.animLayer);
+            switch (this.weaponDef.animationSet)
+            {
+                case DriverWeaponDef.AnimationSet.Default:
+                    this.EnableLayer("");
+                    break;
+                case DriverWeaponDef.AnimationSet.TwoHanded:
+                    this.EnableLayer("Body, Shotgun");
+                    break;
+            }
         }
 
         private void EnableLayer(string layerName)

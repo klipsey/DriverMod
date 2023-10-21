@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3904277006
+CRC: 1025709660
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 370a4b9469c59c6315d32e2547d7d8bc
+    Hash: 56c44d674123ce2d61a47a896d3f4c8d
   TypeTreeHash:
     serializedVersion: 2
     Hash: 668637f38589cec50a7b1ffa4c183564
@@ -72,6 +72,7 @@ ClassTypes:
 Assets:
 - Assets/Driver/Icons/texSlugShotgunIcon.png
 - Assets/Driver/Animations/animDriverCSS.controller
+- Assets/Driver/Icons/texSniperRifleWeaponIcon.png
 - Assets/Driver/Icons/texPistolIcon.png
 - Assets/Driver/Materials/matShotgun.mat
 - Assets/Driver/Animations/Shotgun/RunR.anim
@@ -80,6 +81,7 @@ Assets:
 - Assets/Driver/Animations/Default/RestEmoteLoop.anim
 - Assets/Driver/Animations/Default/JumpSprint.anim
 - Assets/Driver/VFX/matShockwave.mat
+- Assets/Driver/Icons/texSuit2Skin.png
 - Assets/Driver/Materials/matBriefcase.mat
 - Assets/Driver/FBX/Slugger.fbx
 - Assets/Driver/Animations/Default/CSSIdle.anim
@@ -87,12 +89,15 @@ Assets:
 - Assets/Driver/Animations/Default/SprintFast.anim
 - Assets/Driver/Animations/Default/RunB.anim
 - Assets/Driver/Icons/texSlugShotgunWeaponIcon.png
+- Assets/Driver/Textures/texSniperRifle.png
 - Assets/Driver/Animations/Default/RunR.anim
 - Assets/Driver/Textures/texDriver.png
 - Assets/Driver/Animations/Shotgun/Descend.anim
+- Assets/Driver/Icons/texSuitSkin.png
 - Assets/Driver/VFX/matShockwave2.mat
 - Assets/Driver/Animations/Default/Idle.anim
 - Assets/Driver/FBX/meshMachineGun.mesh
+- Assets/Driver/Materials/matSniperRifle.mat
 - Assets/Driver/FBX/WeaponCrate.fbx
 - Assets/Driver/Icons/texMachineGunWeaponIcon.png
 - Assets/Driver/Animations/Shotgun/Idle.anim
@@ -122,6 +127,7 @@ Assets:
 - Assets/Driver/VFX/texShockwave.png
 - Assets/Driver/Textures/texTank.png
 - Assets/Driver/DriverDisplay.prefab
+- Assets/Driver/Icons/texConfirmIcon.png
 - Assets/Driver/Icons/texMinecraftSkin.png
 - Assets/Driver/Animations/Default/Descend.anim
 - Assets/Driver/Animations/Shotgun/Ascend.anim
@@ -148,6 +154,7 @@ Assets:
 - Assets/Driver/FBX/meshJacket.mesh
 - Assets/Driver/Animations/Default/maskDriverImpact.mask
 - Assets/Driver/Icons/texHeavyMachineGunWeaponIcon.png
+- Assets/Driver/FBX/meshSuit.mesh
 - Assets/Driver/Textures/texMinecraftDriver.png
 - Assets/Driver/Icons/texMachineGunIcon.png
 - Assets/Driver/Textures/texBriefcase.png
@@ -155,6 +162,7 @@ Assets:
 - Assets/Driver/mdlDriver.prefab
 - Assets/Driver/FBX/meshBazooka.mesh
 - Assets/Driver/Materials/matSlugShotgun.mat
+- Assets/Driver/Textures/texSuit.png
 - Assets/Driver/Materials/matKnife.mat
 - Assets/Driver/Textures/texPistol.png
 - Assets/Driver/Materials/matBazooka.mat
@@ -168,6 +176,7 @@ Assets:
 - Assets/Driver/Animations/Shotgun/Reload.anim
 - Assets/Driver/Materials/matCrate1.mat
 - Assets/Driver/Animations/maskDriverAim 1.mask
+- Assets/Driver/Materials/matSuit.mat
 - Assets/Driver/Icons/texPistolSecondaryIcon.png
 - Assets/Driver/Animations/Shotgun/ShootRiot.anim
 - Assets/Driver/Materials/matButton.mat
@@ -186,6 +195,7 @@ Assets:
 - Assets/Driver/Animations/Default/DefaultPose.anim
 - Assets/Driver/Textures/texKnifeNormal.png
 - Assets/Driver/FBX/meshSuperShotgun.mesh
+- Assets/Driver/FBX/SluggerCloth.fbx
 - Assets/Driver/Projectiles/DriverStunGrenadeImpact.prefab
 - Assets/Driver/Materials/matRiotShotgun.mat
 - Assets/Driver/Textures/texBriefcaseGold.png
@@ -193,18 +203,22 @@ Assets:
 - Assets/Driver/Materials/matBriefcaseGold.mat
 - Assets/Driver/FBX/meshSlugger.mesh
 - Assets/Driver/Textures/texRocketLauncher.png
+- Assets/Driver/FBX/meshSuit2.mesh
 - Assets/Driver/Materials/matCrate2.mat
 - Assets/Driver/Materials/matDriver.mat
 - Assets/Driver/Projectiles/DriverStunGrenadeGhost.prefab
 - Assets/Driver/Materials/matMinecraftDriver.mat
 - Assets/Driver/Icons/texPistolWeaponIcon.png
 - Assets/Driver/Icons/texSlideIcon.png
+- Assets/Driver/Icons/texCancelIcon.png
+- Assets/Driver/FBX/meshSniperRifle.mesh
 - Assets/Driver/FBX/animDriverShotgun.fbx
 - Assets/Driver/Icons/texRocketLauncherIcon.png
 - Assets/Driver/Textures/texMinecraftDriverEmission.png
 - Assets/Driver/Icons/texShotgunIcon.png
 - Assets/Driver/Animations/Default/Dance.anim
 - Assets/Driver/Icons/texRiotShotgunIcon.png
+- Assets/Driver/Textures/texSuitEmission.png
 - Assets/Driver/Materials/matSlugger.mat
 - Assets/Driver/Animations/Default/SteadyAim.anim
 - Assets/Driver/Icons/texShotgunSecondaryIcon.png

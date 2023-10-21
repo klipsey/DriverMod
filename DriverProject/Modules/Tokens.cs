@@ -38,12 +38,20 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "DEFAULT_SKIN_NAME", "Default");
             LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "Jacket");
             LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "Slugger");
+            LanguageAPI.Add(prefix + "SUIT_SKIN_NAME", "Hitman");
+            LanguageAPI.Add(prefix + "SUIT2_SKIN_NAME", "Hitman EX");
             LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion
 
             #region Passive
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Survivalist");
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"Enemies killed by the Driver have a chance to drop a new <style=cIsUtility>weapon</style>. These give you <style=cIsDamage>powerful attacks</style> for a limited time!");
+
+            LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
+            LanguageAPI.Add(prefix + "CONFIRM_DESC", "Proceed with the current skill.");
+
+            LanguageAPI.Add(prefix + "CANCEL_NAME", "Cancel");
+            LanguageAPI.Add(prefix + "CANCEL_DESC", "Cancel the current skill.");
             #endregion
 
             #region Primary
@@ -70,6 +78,9 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Shoot.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_SNIPER_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_SNIPER_DESCRIPTION", $"Fire your rifle for <style=cIsDamage>{100f * SkillStates.Driver.SniperRifle.Shoot.damageCoefficient}% damage</style>.");
             #endregion
 
             #region Secondary
@@ -84,6 +95,9 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_NAME", "Bash");
             LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_DESCRIPTION", $"<style=cIsDamage>Stun</style> and <style=cIsUtility>knock back</style> nearby enemies for <style=cIsDamage>{100f * SkillStates.Driver.Shotgun.Bash.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SECONDARY_SNIPER_NAME", "Focus");
+            LanguageAPI.Add(prefix + "SECONDARY_SNIPER_DESCRIPTION", $"Take aim and charge a devastating piercing shot for <style=cIsDamage>{100f * SkillStates.Driver.SniperRifle.SteadyAim.damageCoefficient}% damage</style>. <style=cIsUtility>Exposes enemy weak points.</style>");
 
             #endregion
 
@@ -116,6 +130,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Locked and Loaded");
             LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Locked and Loaded");
             LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, complete a teleporter event without letting any briefcases despawn.");
+
+            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
+            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");
+            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, land the killing blow on a boss with a Sniper Rifle.");
             #endregion
 
 
@@ -146,6 +164,9 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add("ROB_DRIVER_BAZOOKA_NAME", "Bazooka");
             LanguageAPI.Add("ROB_DRIVER_BAZOOKA_DESC", "A chargeable bazooka good for clearing out crowds.");
+
+            LanguageAPI.Add("ROB_DRIVER_SNIPER_NAME", "Sniper Rifle");
+            LanguageAPI.Add("ROB_DRIVER_SNIPER_DESC", "A rifle specializing in precise, fatal shots.");
 
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_NAME", "Rocket Launcher");
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_DESC", "KABOOOM");

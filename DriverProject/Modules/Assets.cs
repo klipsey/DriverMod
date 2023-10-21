@@ -34,6 +34,7 @@ namespace RobDriver.Modules
         public static Mesh machineGunMesh;
         public static Mesh bazookaMesh;
         public static Mesh rocketLauncherMesh;
+        public static Mesh sniperMesh;
 
         public static Material pistolMat;
         public static Material shotgunMat;
@@ -42,6 +43,7 @@ namespace RobDriver.Modules
         public static Material machineGunMat;
         public static Material rocketLauncherMat;
         public static Material bazookaMat;
+        public static Material sniperMat;
 
         public static Material knifeMat;
 
@@ -60,6 +62,7 @@ namespace RobDriver.Modules
         internal static Texture machineGunWeaponIcon;
         internal static Texture bazookaWeaponIcon;
         internal static Texture rocketLauncherWeaponIcon;
+        internal static Texture sniperWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
@@ -72,6 +75,7 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef heavyMachineGunWeaponDef;
         internal static DriverWeaponDef bazookaWeaponDef;
         internal static DriverWeaponDef rocketLauncherWeaponDef;
+        internal static DriverWeaponDef sniperWeaponDef;
 
         internal static void PopulateAssets()
         {
@@ -120,6 +124,7 @@ namespace RobDriver.Modules
             machineGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshMachineGun");
             bazookaMesh = mainAssetBundle.LoadAsset<Mesh>("meshBazooka");
             rocketLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshRocketLauncher");
+            sniperMesh = mainAssetBundle.LoadAsset<Mesh>("meshSniperRifle");
 
             pistolMat = CreateMaterial("matPistol");
             shotgunMat = CreateMaterial("matShotgun");
@@ -128,6 +133,7 @@ namespace RobDriver.Modules
             machineGunMat = CreateMaterial("matMachineGun");
             bazookaMat = CreateMaterial("matBazooka");
             rocketLauncherMat = CreateMaterial("matRocketLauncher");
+            sniperMat = CreateMaterial("matSniperRifle");
 
             knifeMat = CreateMaterial("matKnife");
 
@@ -299,6 +305,7 @@ namespace RobDriver.Modules
             machineGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texMachineGunWeaponIcon");
             bazookaWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texBazookaWeaponIcon");
             rocketLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRocketLauncherWeaponIcon");
+            sniperWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSniperRifleWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -364,7 +371,7 @@ namespace RobDriver.Modules
                 secondarySkillDef = null,
                 mesh = Assets.pistolMesh,
                 material = Assets.pistolMat,
-                animLayer = ""
+                animationSet = DriverWeaponDef.AnimationSet.Default,
             });
             DriverWeaponCatalog.AddWeapon(pistolWeaponDef);
 
@@ -383,7 +390,7 @@ namespace RobDriver.Modules
                     secondarySkillDef = Survivors.Driver.shotgunSecondarySkillDef,
                     mesh = Assets.shotgunMesh,
                     material = Assets.shotgunMat,
-                    animLayer = "Body, Shotgun",
+                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                     calloutSoundString = "sfx_driver_callout_shotgun"
                 });// now add it to the catalog here; catalog is necessary for networking
                 DriverWeaponCatalog.AddWeapon(shotgunWeaponDef);
@@ -403,7 +410,7 @@ namespace RobDriver.Modules
                     secondarySkillDef = Survivors.Driver.riotShotgunSecondarySkillDef,
                     mesh = Assets.riotShotgunMesh,
                     material = Assets.riotShotgunMat,
-                    animLayer = "Body, Shotgun",
+                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                     calloutSoundString = "sfx_driver_callout_shotgun"
                 });
                 DriverWeaponCatalog.AddWeapon(riotShotgunWeaponDef);
@@ -423,7 +430,7 @@ namespace RobDriver.Modules
                     secondarySkillDef = Survivors.Driver.slugShotgunSecondarySkillDef,
                     mesh = Assets.slugShotgunMesh,
                     material = Assets.slugShotgunMat,
-                    animLayer = "Body, Shotgun",
+                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                     calloutSoundString = "sfx_driver_callout_shotgun"
                 });
                 DriverWeaponCatalog.AddWeapon(slugShotgunWeaponDef);
@@ -443,7 +450,7 @@ namespace RobDriver.Modules
                     secondarySkillDef = Survivors.Driver.machineGunSecondarySkillDef,
                     mesh = Assets.machineGunMesh,
                     material = Assets.machineGunMat,
-                    animLayer = "Body, Shotgun",
+                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                     calloutSoundString = "sfx_driver_callout_machine_gun"
                 });
                 DriverWeaponCatalog.AddWeapon(machineGunWeaponDef);
@@ -463,10 +470,30 @@ namespace RobDriver.Modules
                     secondarySkillDef = Survivors.Driver.heavyMachineGunSecondarySkillDef,
                     mesh = Assets.machineGunMesh,
                     material = Assets.machineGunMat,
-                    animLayer = "Body, Shotgun",
+                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                     calloutSoundString = "sfx_driver_callout_machine_gun"
                 });
                 DriverWeaponCatalog.AddWeapon(heavyMachineGunWeaponDef);
+            }
+
+            if (Modules.Config.heavyMachineGunEnabled.Value)
+            {
+                sniperWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+                {
+                    nameToken = "ROB_DRIVER_SNIPER_NAME",
+                    descriptionToken = "ROB_DRIVER_SNIPER_DESC",
+                    icon = Assets.sniperWeaponIcon,
+                    crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                    tier = DriverWeaponTier.Uncommon,
+                    baseDuration = Config.heavyMachineGunDuration.Value,
+                    primarySkillDef = Survivors.Driver.sniperPrimarySkillDef,
+                    secondarySkillDef = Survivors.Driver.sniperSecondarySkillDef,
+                    mesh = Assets.sniperMesh,
+                    material = Assets.sniperMat,
+                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                    calloutSoundString = ""
+                });
+                DriverWeaponCatalog.AddWeapon(sniperWeaponDef);
             }
 
             bazookaWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
@@ -481,7 +508,7 @@ namespace RobDriver.Modules
                 secondarySkillDef = Survivors.Driver.bazookaSecondarySkillDef,
                 mesh = Assets.bazookaMesh,
                 material = Assets.bazookaMat,
-                animLayer = "Body, Shotgun",
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_rocket_launcher"
             });
             DriverWeaponCatalog.AddWeapon(bazookaWeaponDef);
@@ -500,7 +527,7 @@ namespace RobDriver.Modules
                     secondarySkillDef = Survivors.Driver.rocketLauncherSecondarySkillDef,
                     mesh = Assets.rocketLauncherMesh,
                     material = Assets.rocketLauncherMat,
-                    animLayer = "Body, Shotgun",
+                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                     calloutSoundString = "sfx_driver_callout_rocket_launcher"
                 });
                 DriverWeaponCatalog.AddWeapon(rocketLauncherWeaponDef);
