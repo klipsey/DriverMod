@@ -35,7 +35,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.2.1";
+        public const string MODVERSION = "1.2.2";
 
         public const string developerPrefix = "ROB";
 

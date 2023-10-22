@@ -48,10 +48,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"Enemies killed by the Driver have a chance to drop a new <style=cIsUtility>weapon</style>. These give you <style=cIsDamage>powerful attacks</style> for a limited time!");
 
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
-            LanguageAPI.Add(prefix + "CONFIRM_DESC", "Proceed with the current skill.");
+            LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
 
             LanguageAPI.Add(prefix + "CANCEL_NAME", "Cancel");
-            LanguageAPI.Add(prefix + "CANCEL_DESC", "Cancel the current skill.");
+            LanguageAPI.Add(prefix + "CANCEL_DESCRIPTION", "Cancel the current skill.");
             #endregion
 
             #region Primary
@@ -104,6 +104,9 @@ namespace RobDriver.Modules
             #region Utility
             LanguageAPI.Add(prefix + "UTILITY_SLIDE_NAME", "Combat Slide");
             LanguageAPI.Add(prefix + "UTILITY_SLIDE_DESCRIPTION", "<style=cIsUtility>Slide</style> on the ground for a short distance. You can <style=cIsDamage>fire while sliding.</style>");
+
+            LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_NAME", "Skateboard");
+            LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_DESCRIPTION", "Ride your <style=cIsUtility>skateboard</style>. You can <style=cIsDamage>fire while skating.</style>");
             #endregion
 
             #region Special

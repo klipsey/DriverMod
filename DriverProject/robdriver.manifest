@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1025709660
+CRC: 3326932303
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 56c44d674123ce2d61a47a896d3f4c8d
+    Hash: 154eafdf4cbab86172838122a372a5f7
   TypeTreeHash:
     serializedVersion: 2
     Hash: 668637f38589cec50a7b1ffa4c183564
@@ -71,7 +71,9 @@ ClassTypes:
   Script: {instanceID: 0}
 Assets:
 - Assets/Driver/Icons/texSlugShotgunIcon.png
+- Assets/Driver/FBX/SkateFastest.anim
 - Assets/Driver/Animations/animDriverCSS.controller
+- Assets/Driver/Materials/matSkateboard.mat
 - Assets/Driver/Icons/texSniperRifleWeaponIcon.png
 - Assets/Driver/Icons/texPistolIcon.png
 - Assets/Driver/Materials/matShotgun.mat
@@ -104,11 +106,13 @@ Assets:
 - Assets/Driver/Animations/Default/AimYaw.anim
 - Assets/Driver/FBX/Boombox.fbx
 - Assets/Driver/FBX/meshRiotShotgun.mesh
+- Assets/Driver/FBX/SkateAccelerate.anim
 - Assets/Driver/Animations/Default/CSSIdleIn.anim
 - Assets/Driver/Textures/texBazooka.png
 - Assets/Driver/FBX/meshDualShotgun.mesh
 - Assets/Driver/Icons/texRocketLauncherWeaponIcon.png
 - Assets/Driver/Animations/Default/AimPitch.anim
+- Assets/Driver/FBX/animDriverSkateboard.fbx
 - Assets/Driver/FBX/meshSluggerOld.mesh
 - Assets/Driver/Textures/texSlugger.png
 - Assets/Driver/Textures/texDualShotgun.png
@@ -128,6 +132,7 @@ Assets:
 - Assets/Driver/Textures/texTank.png
 - Assets/Driver/DriverDisplay.prefab
 - Assets/Driver/Icons/texConfirmIcon.png
+- Assets/Driver/FBX/Descend.anim
 - Assets/Driver/Icons/texMinecraftSkin.png
 - Assets/Driver/Animations/Default/Descend.anim
 - Assets/Driver/Animations/Shotgun/Ascend.anim
@@ -159,6 +164,7 @@ Assets:
 - Assets/Driver/Icons/texMachineGunIcon.png
 - Assets/Driver/Textures/texBriefcase.png
 - Assets/Driver/WeaponPickup.prefab
+- Assets/Driver/Textures/texSkateboard.png
 - Assets/Driver/mdlDriver.prefab
 - Assets/Driver/FBX/meshBazooka.mesh
 - Assets/Driver/Materials/matSlugShotgun.mat
@@ -174,6 +180,7 @@ Assets:
 - Assets/Driver/Textures/texDriverEmission.png
 - Assets/Driver/Animations/Shotgun/SprintFast.anim
 - Assets/Driver/Animations/Shotgun/Reload.anim
+- Assets/Driver/FBX/SkateFast.anim
 - Assets/Driver/Materials/matCrate1.mat
 - Assets/Driver/Animations/maskDriverAim 1.mask
 - Assets/Driver/Materials/matSuit.mat
@@ -206,6 +213,7 @@ Assets:
 - Assets/Driver/FBX/meshSuit2.mesh
 - Assets/Driver/Materials/matCrate2.mat
 - Assets/Driver/Materials/matDriver.mat
+- Assets/Driver/FBX/Ascend.anim
 - Assets/Driver/Projectiles/DriverStunGrenadeGhost.prefab
 - Assets/Driver/Materials/matMinecraftDriver.mat
 - Assets/Driver/Icons/texPistolWeaponIcon.png
@@ -229,6 +237,7 @@ Assets:
 - Assets/Driver/Materials/matRocketLauncher.mat
 - Assets/Driver/Materials/matJacket.mat
 - Assets/Driver/Textures/texShell.png
+- Assets/Driver/FBX/SkateSlow.anim
 - Assets/Driver/Animations/Shotgun/RunB.anim
 - Assets/Driver/HUD/Textures/texWhite.png
 Dependencies: []

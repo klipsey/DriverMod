@@ -75,6 +75,8 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef confirmSkillDef;
         internal static SkillDef cancelSkillDef;
 
+        internal static SkillDef skateCancelSkillDef;
+
         internal static string bodyNameToken;
 
         internal void CreateCharacter()
@@ -188,8 +190,8 @@ namespace RobDriver.Modules.Survivors
             Material mainMat = Modules.Assets.CreateMaterial("matDriver", 1f, Color.white);
 
             Material clothMat = Modules.Assets.CreateMaterial("matSlugger", 1f, Color.white);
-
             Material tieMat = Modules.Assets.CreateMaterial("matSuit", 1f, Color.white);
+            Material skateboardMat = Modules.Assets.CreateMaterial("matSkateboard");
 
             bodyRendererIndex = 0;
 
@@ -226,6 +228,16 @@ namespace RobDriver.Modules.Survivors
                 },
                 new CustomRendererInfo
                 {
+                    childName = "SkateboardModel",
+                    material = skateboardMat
+                },
+                new CustomRendererInfo
+                {
+                    childName = "SkateboardBackModel",
+                    material = skateboardMat
+                },
+                new CustomRendererInfo
+                {
                     childName = "PistolModel",
                     material = Modules.Assets.pistolMat
                 } }, bodyRendererIndex);
@@ -235,6 +247,8 @@ namespace RobDriver.Modules.Survivors
             childLocator.FindChild("ButtonModel").gameObject.SetActive(false);
             childLocator.FindChild("SluggerCloth").gameObject.SetActive(false);
             childLocator.FindChild("Tie").gameObject.SetActive(false);
+            childLocator.FindChild("SkateboardModel").gameObject.SetActive(false);
+            childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(false);
             #endregion
 
             CreateHitboxes(newPrefab);
@@ -802,7 +816,55 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
-            Modules.Skills.AddUtilitySkills(prefab, slideSkillDef);
+            SkillDef skateboardSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlideIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Skateboard.Start)),
+                activationStateMachineName = "Slide",
+                baseMaxStock = 1,
+                baseRechargeInterval = 4f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = true,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = false,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            skateCancelSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlideIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Skateboard.Stop)),
+                activationStateMachineName = "Slide",
+                baseMaxStock = 1,
+                baseRechargeInterval = 4f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = true,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = false,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            Modules.Skills.AddUtilitySkills(prefab, slideSkillDef, skateboardSkillDef);
             #endregion
 
             #region Special
