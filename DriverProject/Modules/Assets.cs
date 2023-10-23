@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
 using TMPro;
+using RoR2.UI;
+using UnityEngine.UI;
 
 namespace RobDriver.Modules
 {
@@ -27,6 +29,8 @@ namespace RobDriver.Modules
 
         public static GameObject pistolAimCrosshairPrefab;
         public static GameObject bazookaCrosshairPrefab;
+        public static GameObject rocketLauncherCrosshairPrefab;
+        public static GameObject grenadeLauncherCrosshairPrefab;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -39,6 +43,8 @@ namespace RobDriver.Modules
         public static Mesh sniperMesh;
         public static Mesh armCannonMesh;
         public static Mesh plasmaCannonMesh;
+        public static Mesh behemothMesh;
+        public static Mesh beetleShieldMesh;
 
         public static Material pistolMat;
         public static Material goldenGunMat;
@@ -76,6 +82,7 @@ namespace RobDriver.Modules
         internal static Texture sniperWeaponIcon;
         internal static Texture armCannonWeaponIcon;
         internal static Texture plasmaCannonWeaponIcon;
+        internal static Texture beetleShieldWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
@@ -93,6 +100,9 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef sniperWeaponDef;
         internal static DriverWeaponDef armCannonWeaponDef;
         internal static DriverWeaponDef plasmaCannonWeaponDef;
+        internal static DriverWeaponDef beetleShieldWeaponDef;
+        internal static DriverWeaponDef behemothWeaponDef;
+        internal static DriverWeaponDef grenadeLauncherWeaponDef;
 
         internal static void PopulateAssets()
         {
@@ -117,6 +127,7 @@ namespace RobDriver.Modules
 
             jammedEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ROB_DRIVER_JAMMED_POPUP");
 
+            #region Pistol Crosshair
             pistolAimCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverPistolAimCrosshair", false);
 
             GameObject chargeBar = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
@@ -132,7 +143,93 @@ namespace RobDriver.Modules
             rect.localPosition = new Vector3(0f, -60f, 0f);
 
             chargeBar.transform.GetChild(0).gameObject.AddComponent<Modules.Components.CrosshairChargeBar>().crosshairController = pistolAimCrosshairPrefab.GetComponent<RoR2.UI.CrosshairController>();
+            #endregion
 
+            #region Bazooka Crosshair
+            bazookaCrosshairPrefab = PrefabAPI.InstantiateClone(LoadCrosshair("ToolbotGrenadeLauncher"), "DriverBazookaCrosshair", false);
+            CrosshairController crosshair = bazookaCrosshairPrefab.GetComponent<CrosshairController>();
+            crosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
+
+            bazookaCrosshairPrefab.transform.GetChild(0).GetComponentInChildren<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperNib.png").WaitForCompletion();
+            rect = bazookaCrosshairPrefab.transform.GetChild(0).GetComponent<RectTransform>();
+            rect.localEulerAngles = Vector3.zero;
+            rect.anchoredPosition = new Vector2(-50f, -10f);
+
+            bazookaCrosshairPrefab.transform.GetChild(1).GetComponentInChildren<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperNib.png").WaitForCompletion();
+            rect = bazookaCrosshairPrefab.transform.GetChild(1).GetComponent<RectTransform>();
+            rect.localEulerAngles = new Vector3(0f, 0f, 90f);
+
+            bazookaCrosshairPrefab.transform.GetChild(2).GetComponentInChildren<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperNib.png").WaitForCompletion();
+            rect = bazookaCrosshairPrefab.transform.GetChild(2).GetComponent<RectTransform>();
+            rect.localEulerAngles = Vector3.zero;
+            rect.anchoredPosition = new Vector2(50f, -10f);
+
+            bazookaCrosshairPrefab.transform.Find("StockCountHolder").gameObject.SetActive(false);
+            bazookaCrosshairPrefab.transform.Find("Image, Arrow (1)").gameObject.SetActive(true);
+
+            crosshair.spriteSpreadPositions[0].zeroPosition = new Vector3(0f, 25f, 0f);
+            crosshair.spriteSpreadPositions[0].onePosition = new Vector3(-50f, 25f, 0f);
+
+            crosshair.spriteSpreadPositions[1].zeroPosition = new Vector3(100f, 0f, 0f);
+            crosshair.spriteSpreadPositions[1].onePosition = new Vector3(150f, 0f, 0f);
+
+            crosshair.spriteSpreadPositions[2].zeroPosition = new Vector3(0f, 25f, 0f);
+            crosshair.spriteSpreadPositions[2].onePosition = new Vector3(50f, 25f, 0f);
+
+            chargeBar = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+            chargeBar.transform.SetParent(bazookaCrosshairPrefab.transform);
+
+            rect = chargeBar.GetComponent<RectTransform>();
+
+            rect.localScale = new Vector3(0.5f, 0.1f, 1f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(50f, 0f);
+            rect.localPosition = new Vector3(40f, -40f, 0f);
+            rect.localEulerAngles = new Vector3(0f, 0f, 90f);
+
+            chargeBar.transform.GetChild(0).gameObject.AddComponent<Modules.Components.CrosshairChargeBar>().crosshairController = crosshair;
+            #endregion
+
+            #region Grenade Launcher Crosshair
+            grenadeLauncherCrosshairPrefab = PrefabAPI.InstantiateClone(LoadCrosshair("ToolbotGrenadeLauncher"), "DriverGrenadeLauncherCrosshair", false);
+            crosshair = grenadeLauncherCrosshairPrefab.GetComponent<CrosshairController>();
+            crosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
+
+            grenadeLauncherCrosshairPrefab.transform.GetChild(0).GetComponentInChildren<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperNib.png").WaitForCompletion();
+            rect = grenadeLauncherCrosshairPrefab.transform.GetChild(0).GetComponent<RectTransform>();
+            rect.localEulerAngles = Vector3.zero;
+            rect.anchoredPosition = new Vector2(-50f, -10f);
+
+            grenadeLauncherCrosshairPrefab.transform.GetChild(1).GetComponentInChildren<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperNib.png").WaitForCompletion();
+            rect = grenadeLauncherCrosshairPrefab.transform.GetChild(1).GetComponent<RectTransform>();
+            rect.localEulerAngles = new Vector3(0f, 0f, 90f);
+
+            grenadeLauncherCrosshairPrefab.transform.GetChild(2).GetComponentInChildren<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperNib.png").WaitForCompletion();
+            rect = grenadeLauncherCrosshairPrefab.transform.GetChild(2).GetComponent<RectTransform>();
+            rect.localEulerAngles = Vector3.zero;
+            rect.anchoredPosition = new Vector2(50f, -10f);
+
+            grenadeLauncherCrosshairPrefab.transform.Find("StockCountHolder").gameObject.SetActive(false);
+            grenadeLauncherCrosshairPrefab.transform.Find("Image, Arrow (1)").gameObject.SetActive(true);
+
+            crosshair.spriteSpreadPositions[0].zeroPosition = new Vector3(25f, 25f, 0f);
+            crosshair.spriteSpreadPositions[0].onePosition = new Vector3(-25f, 25f, 0f);
+
+            crosshair.spriteSpreadPositions[1].zeroPosition = new Vector3(75f, 0f, 0f);
+            crosshair.spriteSpreadPositions[1].onePosition = new Vector3(125f, 0f, 0f);
+
+            crosshair.spriteSpreadPositions[2].zeroPosition = new Vector3(-25f, 25f, 0f);
+            crosshair.spriteSpreadPositions[2].onePosition = new Vector3(25f, 25f, 0f);
+            #endregion
+
+            #region Rocket Launcher Crosshair
+            rocketLauncherCrosshairPrefab = PrefabAPI.InstantiateClone(LoadCrosshair("ToolbotGrenadeLauncher"), "DriveRocketLauncherCrosshair", false);
+            crosshair = rocketLauncherCrosshairPrefab.GetComponent<CrosshairController>();
+            crosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
+            rocketLauncherCrosshairPrefab.transform.Find("StockCountHolder").gameObject.SetActive(false);
+            #endregion
 
             pistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshPistol");
             goldenGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshGoldenGun");
@@ -145,6 +242,8 @@ namespace RobDriver.Modules
             sniperMesh = mainAssetBundle.LoadAsset<Mesh>("meshSniperRifle");
             armCannonMesh = mainAssetBundle.LoadAsset<Mesh>("meshArmCannon");
             plasmaCannonMesh = mainAssetBundle.LoadAsset<Mesh>("meshPlasmaCannon");
+            behemothMesh = mainAssetBundle.LoadAsset<Mesh>("meshBehemoth");
+            beetleShieldMesh = mainAssetBundle.LoadAsset<Mesh>("meshBeetleShield");
 
             pistolMat = CreateMaterial("matPistol");
             goldenGunMat = CreateMaterial("matGoldenGun");
@@ -375,6 +474,7 @@ namespace RobDriver.Modules
             sniperWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSniperRifleWeaponIcon");
             armCannonWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texArmCannonWeaponIcon");
             plasmaCannonWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPlasmaCannonWeaponIcon");
+            beetleShieldWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -460,6 +560,23 @@ namespace RobDriver.Modules
             });
             DriverWeaponCatalog.AddWeapon(goldenGunWeaponDef);
             DriverWeaponCatalog.GoldenGun = goldenGunWeaponDef;
+
+            beetleShieldWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_BEETLESHIELD_NAME",
+                descriptionToken = "ROB_DRIVER_BEETLESHIELD_DESC",
+                icon = Assets.beetleShieldWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Unique,
+                baseDuration = 0f,
+                primarySkillDef = Survivors.Driver.beetleShieldPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.beetleShieldSecondarySkillDef,
+                mesh = Assets.beetleShieldMesh,
+                material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Beetle/matBeetle.mat").WaitForCompletion(),
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+            });
+            DriverWeaponCatalog.AddWeapon(beetleShieldWeaponDef);
+            DriverWeaponCatalog.BeetleShield = beetleShieldWeaponDef;
 
             // example of creating a WeaponDef through code and adding it to the catalog for driver to obtain
             if (Modules.Config.shotgunEnabled.Value)
@@ -587,7 +704,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_BAZOOKA_NAME",
                 descriptionToken = "ROB_DRIVER_BAZOOKA_DESC",
                 icon = Assets.bazookaWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                crosshairPrefab = bazookaCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 baseDuration = Config.rocketLauncherDuration.Value,
                 primarySkillDef = Survivors.Driver.bazookaPrimarySkillDef,
@@ -599,6 +716,23 @@ namespace RobDriver.Modules
             });
             DriverWeaponCatalog.AddWeapon(bazookaWeaponDef);
 
+            grenadeLauncherWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_GRENADELAUNCHER_NAME",
+                descriptionToken = "ROB_DRIVER_GRENADELAUNCHER_DESC",
+                icon = Assets.bazookaWeaponIcon,
+                crosshairPrefab = grenadeLauncherCrosshairPrefab,
+                tier = DriverWeaponTier.Uncommon,
+                baseDuration = Config.rocketLauncherDuration.Value,
+                primarySkillDef = Survivors.Driver.grenadeLauncherPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.grenadeLauncherSecondarySkillDef,
+                mesh = Assets.bazookaMesh,
+                material = Assets.bazookaMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+            });
+            DriverWeaponCatalog.AddWeapon(grenadeLauncherWeaponDef);
+
             if (Modules.Config.rocketLauncherEnabled.Value)
             {
                 rocketLauncherWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
@@ -606,7 +740,7 @@ namespace RobDriver.Modules
                     nameToken = "ROB_DRIVER_ROCKETLAUNCHER_NAME",
                     descriptionToken = "ROB_DRIVER_ROCKETLAUNCHER_DESC",
                     icon = Assets.rocketLauncherWeaponIcon,
-                    crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                    crosshairPrefab = rocketLauncherCrosshairPrefab,
                     tier = DriverWeaponTier.Legendary,
                     baseDuration = Config.rocketLauncherDuration.Value,
                     primarySkillDef = Survivors.Driver.rocketLauncherPrimarySkillDef,
@@ -619,12 +753,30 @@ namespace RobDriver.Modules
                 DriverWeaponCatalog.AddWeapon(rocketLauncherWeaponDef);
             }
 
+            behemothWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_BEHEMOTH_NAME",
+                descriptionToken = "ROB_DRIVER_BEHEMOTH_DESC",
+                icon = Addressables.LoadAssetAsync<Texture>("RoR2/Base/Behemoth/texBehemothIcon.png").WaitForCompletion(),
+                crosshairPrefab = rocketLauncherCrosshairPrefab,
+                tier = DriverWeaponTier.Unique,
+                baseDuration = Config.rocketLauncherDuration.Value,
+                primarySkillDef = Survivors.Driver.behemothPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.behemothSecondarySkillDef,
+                mesh = Assets.behemothMesh,
+                material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Behemoth/matBehemoth.mat").WaitForCompletion(),
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+            });
+            DriverWeaponCatalog.AddWeapon(behemothWeaponDef);
+            DriverWeaponCatalog.Behemoth = behemothWeaponDef;
+
             rocketLauncherAltWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_ROCKETLAUNCHER_ALT_NAME",
                 descriptionToken = "ROB_DRIVER_ROCKETLAUNCHER_ALT_DESC",
                 icon = Assets.rocketLauncherAltWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                crosshairPrefab = rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
                 baseDuration = Config.rocketLauncherDuration.Value,
                 primarySkillDef = Survivors.Driver.rocketLauncherAltPrimarySkillDef,
@@ -642,7 +794,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_ARMCANNON_NAME",
                 descriptionToken = "ROB_DRIVER_ARMCANNON_DESC",
                 icon = Assets.armCannonWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                crosshairPrefab = rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
                 baseDuration = Config.rocketLauncherDuration.Value,
                 primarySkillDef = Survivors.Driver.armCannonPrimarySkillDef,
@@ -660,7 +812,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_PLASMACANNON_NAME",
                 descriptionToken = "ROB_DRIVER_PLASMACANNON_DESC",
                 icon = Assets.plasmaCannonWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                crosshairPrefab = rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Void,
                 baseDuration = Config.rocketLauncherDuration.Value,
                 primarySkillDef = Survivors.Driver.plasmaCannonPrimarySkillDef,

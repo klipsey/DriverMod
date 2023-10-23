@@ -145,6 +145,11 @@ namespace RobDriver.Modules.Components
                 {
                     this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, this);
                 }
+
+                if (itemIndex == RoR2Content.Items.Behemoth.itemIndex)
+                {
+                    this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth, this);
+                }
             }
         }
 
@@ -279,6 +284,15 @@ namespace RobDriver.Modules.Components
 
             // timer
             float duration = 8f;
+
+            if (Modules.Config.backupMagExtendDuration.Value)
+            {
+                if (this.characterBody && this.characterBody.inventory)
+                {
+                    duration += (0.5f * this.characterBody.inventory.GetItemCount(RoR2Content.Items.SecondarySkillMagazine));
+                }
+            }
+
             if (this.weaponDef.tier == DriverWeaponTier.Common) duration = 0f;
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;

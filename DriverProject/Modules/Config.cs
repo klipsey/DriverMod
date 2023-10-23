@@ -18,6 +18,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> oldPickupModel;
         public static ConfigEntry<float> baseDropRate;
         public static ConfigEntry<bool> weaponCallouts;
+        public static ConfigEntry<bool> backupMagExtendDuration;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -81,6 +82,12 @@ false,
 "Weapon Pickup Callouts",
 false,
 "If set to true, Driver will call out the weapons he picks up.");
+
+            backupMagExtendDuration
+= Config.BindAndOptions("01 - General",
+"Backup Magazine Duration Extension",
+false,
+"If set to true, Backup Magazines will extend the duration of weapon pickups by 0.5s.");
 
             cursed
 = Config.BindAndOptions("01 - General",

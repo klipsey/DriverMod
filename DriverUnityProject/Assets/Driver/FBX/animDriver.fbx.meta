@@ -86,6 +86,10 @@ ModelImporter:
     100160: meshGoldenGun
     100162: meshArmCannon
     100164: meshPlasmaCannon
+    100166: mdlBeetleShield
+    100168: mdlBehemoth
+    100170: meshBeetleShield
+    100172: meshBehemoth
     400000: //RootNode
     400002: Armature
     400004: base
@@ -169,6 +173,10 @@ ModelImporter:
     400160: meshGoldenGun
     400162: meshArmCannon
     400164: meshPlasmaCannon
+    400166: mdlBeetleShield
+    400168: mdlBehemoth
+    400170: meshBeetleShield
+    400172: meshBehemoth
     2100000: matDriver
     2100002: matDefault
     2100004: matJacket
@@ -189,6 +197,8 @@ ModelImporter:
     2100034: matMechorilla
     2100036: Material.001
     2100038: Material.003
+    2100040: matBehemoth
+    2100042: Default-Material
     2300000: meshSuperShotgun.001
     2300002: meshBazookaRocket
     2300004: meshDummyGun
@@ -217,6 +227,10 @@ ModelImporter:
     4300038: meshGoldenGun
     4300040: meshArmCannon
     4300042: meshPlasmaCannon
+    4300044: mdlBehemoth
+    4300046: mdlBeetleShield
+    4300048: meshBehemoth
+    4300050: meshBeetleShield
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|Ascend
@@ -271,6 +285,11 @@ ModelImporter:
     7400102: Armature|ReadyVoidButtonLoop
     7400104: Armature|Shader NodetreeAction
     7400106: meshDummyGun|Shader NodetreeAction
+    7400108: Armature|SHLDSteadyAim
+    7400110: Armature|SHLDSteadyAimFire
+    7400112: Armature|SHLDSteadyAimFireCritical
+    7400114: Armature|SHLDSteadyAimIn
+    7400116: Armature|SHLDSteadyAimOut
     9500000: //RootNode
     10800000: Light
     10800002: Light.001
@@ -293,6 +312,10 @@ ModelImporter:
     13700032: meshGoldenGun
     13700034: meshArmCannon
     13700036: meshPlasmaCannon
+    13700038: mdlBeetleShield
+    13700040: mdlBehemoth
+    13700042: meshBeetleShield
+    13700044: meshBehemoth
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

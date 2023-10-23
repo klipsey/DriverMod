@@ -12,6 +12,8 @@ namespace RobDriver
         internal static DriverWeaponDef PrototypeRocketLauncher;
         internal static DriverWeaponDef ArmCannon;
         internal static DriverWeaponDef PlasmaCannon;
+        internal static DriverWeaponDef Behemoth;
+        internal static DriverWeaponDef BeetleShield;
 
         internal static void AddWeapon(DriverWeaponDef weaponDef)
         {

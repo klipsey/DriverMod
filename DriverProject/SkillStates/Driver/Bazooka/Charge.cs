@@ -57,6 +57,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
             float charge = this.CalcCharge();
 
+            if (this.iDrive) this.iDrive.chargeValue = charge;
+
             bool shit = false;
 
             if (base.isAuthority && ((!base.IsKeyDownAuthority() && base.fixedAge >= Charge.minChargeDuration) || base.fixedAge >= this.duration))shit = true;
@@ -83,6 +85,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             base.PlayAnimation("AimPitch", "AimPitch");
 
             if (this.chargeEffectInstance) EntityState.Destroy(this.chargeEffectInstance);
+            if (this.iDrive) this.iDrive.chargeValue = 0f;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

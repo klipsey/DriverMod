@@ -105,7 +105,7 @@ namespace RobDriver.Modules
             fuckMyLife.AddComponent<NetworkIdentity>();
             Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_explosion");
 
-            impactExplosion.blastRadius = 12f;
+            impactExplosion.blastRadius = 4f;
             impactExplosion.destroyOnEnemy = true;
             impactExplosion.lifetime = 12f;
             impactExplosion.impactEffect = fuckMyLife;

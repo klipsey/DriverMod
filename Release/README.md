@@ -91,6 +91,11 @@ ___
 
 ## Changelog
 
+`1.2.3`
+- Nerfed both Rocket Launchers across the board- the new secondary is crazy strong so this was needed
+- Added weapon: Chitin Shield, rare drop from Beetles
+- Added weapon: Brilliant Behemoth, equipped when you pick up the respective item
+
 `1.2.2`
 - Added Pocket ICBM functionality to all grenades and explosives
 - Added Ancient Scepter upgrade for Flashbang

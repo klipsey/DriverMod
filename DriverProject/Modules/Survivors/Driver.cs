@@ -84,6 +84,15 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef sniperPrimarySkillDef;
         internal static SkillDef sniperSecondarySkillDef;
 
+        internal static SkillDef beetleShieldPrimarySkillDef;
+        internal static SkillDef beetleShieldSecondarySkillDef;
+
+        internal static SkillDef behemothPrimarySkillDef;
+        internal static SkillDef behemothSecondarySkillDef;
+
+        internal static SkillDef grenadeLauncherPrimarySkillDef;
+        internal static SkillDef grenadeLauncherSecondarySkillDef;
+
         internal static SkillDef confirmSkillDef;
         internal static SkillDef cancelSkillDef;
 
@@ -505,7 +514,14 @@ namespace RobDriver.Modules.Survivors
     prefix + "_DRIVER_BODY_PRIMARY_GOLDENGUN_DESCRIPTION",
     Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGoldenGunIcon"), false);
 
-                Driver.shotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+            Driver.beetleShieldPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.BeetleShield.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false);
+
+            Driver.shotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
                 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Shoot)),
                 "Weapon",
                 prefix + "_DRIVER_BODY_PRIMARY_SHOTGUN_NAME",
@@ -561,6 +577,14 @@ namespace RobDriver.Modules.Survivors
                 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
                 false);
 
+            Driver.behemothPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.RocketLauncher.Shoot)),
+    "Weapon",
+    prefix + "_DRIVER_BODY_PRIMARY_ROCKETLAUNCHER_NAME",
+    prefix + "_DRIVER_BODY_PRIMARY_ROCKETLAUNCHER_DESCRIPTION",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
+    false);
+
             Driver.rocketLauncherAltPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
     new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.RocketLauncher.NerfedShoot)),
     "Weapon",
@@ -568,6 +592,14 @@ namespace RobDriver.Modules.Survivors
     prefix + "_DRIVER_BODY_PRIMARY_ROCKETLAUNCHER_ALT_DESCRIPTION",
     Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
     false);
+
+            Driver.grenadeLauncherPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.GrenadeLauncher.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_GRENADELAUNCHER_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_GRENADELAUNCHER_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
+false);
 
             Driver.armCannonPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ArmCannon.Shoot)),
@@ -626,6 +658,30 @@ false);
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_PISTOL_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.SteadyAim)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 3,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 0,
+                stockToConsume = 0,
+            });
+
+            Driver.beetleShieldSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_BEETLESHIELD_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_BEETLESHIELD_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_BEETLESHIELD_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.BeetleShield.SteadyAim)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 3,
                 baseRechargeInterval = 6f,
@@ -739,6 +795,30 @@ false);
                 stockToConsume = 1,
             });
 
+            Driver.grenadeLauncherSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
             Driver.machineGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SECONDARY_MACHINEGUN_NAME",
@@ -788,6 +868,30 @@ false);
             });
 
             Driver.rocketLauncherSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_ROCKETLAUNCHER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_ROCKETLAUNCHER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_ROCKETLAUNCHER_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.RocketLauncher.Barrage)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.behemothSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SECONDARY_ROCKETLAUNCHER_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_ROCKETLAUNCHER_NAME",
@@ -1478,7 +1582,7 @@ localScale = new Vector3(1.76594F, 1.84475F, 1.84475F)
                 },
                 new ItemDisplayRule
                 {
-                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    ruleType = ItemDisplayRuleType.LimbMask,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplaySunHead"),
                     limbMask = LimbFlags.Head,
 childName = "Head",
@@ -1742,7 +1846,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         DriverWeaponTier weaponTier = DriverWeaponTier.Uncommon;
                         if (isBoss) weaponTier = DriverWeaponTier.Legendary;
 
-                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
+                        DriverWeaponDef weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
+
+                        if (damageReport.victimBody.baseNameToken == "BEETLE_BODY_NAME" && Util.CheckRoll(5f)) weaponDef = DriverWeaponCatalog.BeetleShield;
+                        if (damageReport.victimBody.baseNameToken == "ROB_MECHORILLA_BODY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.ArmCannon;
+
+                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = weaponDef;
 
                         NetworkServer.Spawn(weaponPickup);
                     }

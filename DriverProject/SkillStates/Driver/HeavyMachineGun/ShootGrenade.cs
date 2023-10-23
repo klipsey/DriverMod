@@ -78,13 +78,13 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 60f);
+                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 80f);
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 60f);
+                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 80f);
                     }
                 }
             }
@@ -119,8 +119,8 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            if (base.fixedAge >= this.earlyExitTime) return InterruptPriority.Any;
-            return InterruptPriority.Skill;
+            if (base.fixedAge >= this.earlyExitTime && this.hasFired) return InterruptPriority.Any;
+            return InterruptPriority.PrioritySkill;
         }
     }
 }

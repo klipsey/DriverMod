@@ -38,7 +38,7 @@ namespace RobDriver.SkillStates.Driver
             this.chargeDuration = this.baseChargeDuration / this.attackSpeedStat;
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.5f);
 
-            base.PlayAnimation("Gesture, Override", "SteadyAim", "Action.playbackRate", 0.25f);
+            this.PlayAnim();
             base.PlayAnimation("AimPitch", "SteadyAimPitch");
 
             if (NetworkServer.active) this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
@@ -54,6 +54,16 @@ namespace RobDriver.SkillStates.Driver
             this.autoFocus = Modules.Config.autoFocus.Value;
 
             this.FindModelChild("PistolSight").gameObject.SetActive(true);
+        }
+
+        protected virtual void PlayAnim()
+        {
+            base.PlayAnimation("Gesture, Override", "SteadyAim", "Action.playbackRate", 0.25f);
+        }
+
+        protected virtual void PlayExitAnim()
+        {
+            base.PlayAnimation("Gesture, Override", "SteadyAimEnd", "Action.playbackRate", 0.2f);
         }
 
         private void Inventory_onInventoryChanged()
@@ -168,6 +178,23 @@ namespace RobDriver.SkillStates.Driver
             }
         }
 
+        protected virtual void PlayShootAnim(bool wasCharged, bool wasCrit, float speed)
+        {
+            string animString = "SteadyAimFire";
+
+            if (wasCharged)
+            {
+                if (wasCrit) animString = "SteadyAimFireChargedCritical";
+                else animString = "SteadyAimFireCharged";
+            }
+            else
+            {
+                if (wasCrit) animString = "SteadyAimFireCritical";
+            }
+
+            base.PlayAnimation("Gesture, Override", animString, "Action.playbackRate", speed);
+        }
+
         public void Fire()
         {
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
@@ -191,24 +218,19 @@ namespace RobDriver.SkillStates.Driver
                 this.cachedShotTimer = 0.05f;
             }
 
-            string animString = "SteadyAimFire";
             if (wasCharged)
             {
                 soundString = "sfx_driver_pistol_shoot_charged";
-                if (this.isCrit) animString = "SteadyAimFireChargedCritical";
-                else animString = "SteadyAimFireCharged";
-
                 base.characterBody.AddSpreadBloom(1.5f);
             }
             else
             {
-                if (this.isCrit) animString = "SteadyAimFireCritical";
-
                 base.characterBody.AddSpreadBloom(0.35f);
             }
 
             Util.PlaySound(soundString, this.gameObject);
-            base.PlayAnimation("Gesture, Override", animString, "Action.playbackRate", this.shotCooldown * 1.5f);
+
+            this.PlayShootAnim(wasCharged, this.isCrit, this.shotCooldown * 1.5f);
 
             if (base.isAuthority)
             {
@@ -325,7 +347,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (NetworkServer.active) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
 
-            base.PlayAnimation("Gesture, Override", "SteadyAimEnd", "Action.playbackRate", 0.2f);
+            this.PlayExitAnim();
             base.PlayAnimation("AimPitch", "AimPitch");
             this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
 

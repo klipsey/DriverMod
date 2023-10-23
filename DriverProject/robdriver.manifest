@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1097888668
+CRC: 489335643
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b663f6bfcb80275d335011f28a562d44
+    Hash: f00fb5eba4c2db9a5613a6a21a338749
   TypeTreeHash:
     serializedVersion: 2
     Hash: 668637f38589cec50a7b1ffa4c183564
@@ -88,6 +88,7 @@ Assets:
 - Assets/Driver/VFX/matShockwave.mat
 - Assets/Driver/Icons/texSuit2Skin.png
 - Assets/Driver/Materials/matBriefcase.mat
+- Assets/Driver/FBX/SHLDSteadyAim.anim
 - Assets/Driver/FBX/Slugger.fbx
 - Assets/Driver/Animations/Default/CSSIdle.anim
 - Assets/Driver/VFX/ShotgunShell.prefab
@@ -151,6 +152,7 @@ Assets:
 - Assets/Driver/Materials/matBriefcaseUnique.mat
 - Assets/Driver/Textures/texGoldenGunNormal.png
 - Assets/Driver/Textures/texJacket.png
+- Assets/Driver/FBX/meshBehemoth.mesh
 - Assets/Driver/Icons/texBazookaWeaponIcon.png
 - Assets/Driver/Textures/texPistolAlt.png
 - Assets/Driver/Animations/Default/SteadyAimPitch.anim
@@ -268,6 +270,7 @@ Assets:
 - Assets/Driver/Materials/matJacket.mat
 - Assets/Driver/Textures/texShell.png
 - Assets/Driver/Icons/texBazookaIcon.png
+- Assets/Driver/FBX/meshBeetleShield.mesh
 - Assets/Driver/FBX/SkateSlow.anim
 - Assets/Driver/Animations/Shotgun/RunB.anim
 - Assets/Driver/HUD/Textures/texWhite.png
