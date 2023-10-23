@@ -83,6 +83,9 @@ ModelImporter:
     100154: meshSlugShotgun
     100156: meshSkateboard
     100158: meshSkateboardBack
+    100160: meshGoldenGun
+    100162: meshArmCannon
+    100164: meshPlasmaCannon
     400000: //RootNode
     400002: Armature
     400004: base
@@ -163,6 +166,9 @@ ModelImporter:
     400154: meshSlugShotgun
     400156: meshSkateboard
     400158: meshSkateboardBack
+    400160: meshGoldenGun
+    400162: meshArmCannon
+    400164: meshPlasmaCannon
     2100000: matDriver
     2100002: matDefault
     2100004: matJacket
@@ -179,6 +185,10 @@ ModelImporter:
     2100026: ACM_360_WEA_PUM_SHO_B
     2100028: Scateboard_MAT
     2100030: Scateboard_MAT.001
+    2100032: Material.002
+    2100034: matMechorilla
+    2100036: Material.001
+    2100038: Material.003
     2300000: meshSuperShotgun.001
     2300002: meshBazookaRocket
     2300004: meshDummyGun
@@ -204,6 +214,9 @@ ModelImporter:
     4300032: meshSlugShotgun
     4300034: meshSkateboard
     4300036: meshSkateboardBack
+    4300038: meshGoldenGun
+    4300040: meshArmCannon
+    4300042: meshPlasmaCannon
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|Ascend
@@ -251,6 +264,13 @@ ModelImporter:
     7400088: Armature|PressButton
     7400090: Armature|ReadyButton
     7400092: Armature|ReadyButtonLoop
+    7400094: Armature|AimLightsOut
+    7400096: Armature|ShootLightsOut
+    7400098: Armature|PressVoidButton
+    7400100: Armature|ReadyVoidButton
+    7400102: Armature|ReadyVoidButtonLoop
+    7400104: Armature|Shader NodetreeAction
+    7400106: meshDummyGun|Shader NodetreeAction
     9500000: //RootNode
     10800000: Light
     10800002: Light.001
@@ -270,6 +290,9 @@ ModelImporter:
     13700026: meshSlugShotgun
     13700028: meshSkateboard
     13700030: meshSkateboardBack
+    13700032: meshGoldenGun
+    13700034: meshArmCannon
+    13700036: meshPlasmaCannon
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

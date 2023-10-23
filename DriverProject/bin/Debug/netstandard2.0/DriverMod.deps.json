@@ -16,6 +16,7 @@
           "R2API": "4.3.5",
           "RiskOfRain2.GameLibs": "1.2.4-r.0",
           "UnityEngine.Modules": "2019.4.26",
+          "AncientScepter": "1.0.0.0",
           "LostInTransit": "0.0.0.0",
           "RiskOfOptions": "1.0.0.0",
           "Starstorm2": "1.0.0.0",
@@ -718,6 +719,14 @@
           }
         }
       },
+      "AncientScepter/1.0.0.0": {
+        "runtime": {
+          "AncientScepter.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "LostInTransit/0.0.0.0": {
         "runtime": {
           "LostInTransit.dll": {
@@ -1044,6 +1053,11 @@
       "sha512": "sha512-2d73AOFATaE0xsSY4qsK65CwT55e7g1myM7C5LMTdVRM57nAWpLWv8x/39uNHYjJQBnXqsQwsadk2H0xsyBsKA==",
       "path": "unityengine.modules/2019.4.26",
       "hashPath": "unityengine.modules.2019.4.26.nupkg.sha512"
+    },
+    "AncientScepter/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
     },
     "LostInTransit/0.0.0.0": {
       "type": "reference",

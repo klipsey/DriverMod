@@ -1,0 +1,19 @@
+﻿using UnityEngine;
+using RoR2;
+using EntityStates;
+
+namespace RobDriver.SkillStates.Driver.GoldenGun
+{
+    public class Shoot : SkillStates.Driver.Shoot
+    {
+        public override float _damageCoefficient => 3.9f;
+        public override string shootSoundString => "sfx_driver_pistol_shoot_charged";
+        public override BulletAttack.FalloffModel falloff => BulletAttack.FalloffModel.None;
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            if (this.iDrive) this.iDrive.StartTimer();
+        }
+    }
+}

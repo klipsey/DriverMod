@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-using RoR2;
-using UnityEngine.Networking;
-using UnityEngine.AddressableAssets;
-using EntityStates;
+﻿using EntityStates;
 
 namespace RobDriver.SkillStates.Driver.SupplyDrop
 {
@@ -23,6 +19,11 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         public override void OnExit()
         {
             base.OnExit();
+            this.HideButton();
+        }
+
+        protected virtual void HideButton()
+        {
             this.FindModelChild("ButtonModel").gameObject.SetActive(false);
         }
 

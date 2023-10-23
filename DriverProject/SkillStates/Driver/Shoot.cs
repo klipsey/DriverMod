@@ -27,6 +27,14 @@ namespace RobDriver.SkillStates.Driver
         private GameObject effectInstance;
         private uint spinPlayID;
 
+        public virtual float _damageCoefficient
+        {
+            get
+            {
+                return Shoot.damageCoefficient;
+            }
+        }
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -75,12 +83,28 @@ namespace RobDriver.SkillStates.Driver
             if (this.effectInstance) EntityState.Destroy(this.effectInstance);
         }
 
+        public virtual string shootSoundString
+        {
+            get
+            {
+                if (this.isCrit) return "sfx_driver_pistol_shoot_critical";
+                return "sfx_driver_pistol_shoot";
+            }
+        }
+
+        public virtual BulletAttack.FalloffModel falloff
+        {
+            get
+            {
+                return BulletAttack.FalloffModel.DefaultBullet;
+            }
+        }
+
         private void Fire()
         {
-            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, this.muzzleString, false);
+            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_pistol_shoot_critical", base.gameObject);
-            else Util.PlaySound("sfx_driver_pistol_shoot", base.gameObject);
+            Util.PlaySound(this.shootSoundString, this.gameObject);
 
             if (base.isAuthority)
             {
@@ -92,10 +116,10 @@ namespace RobDriver.SkillStates.Driver
                     bulletCount = 1,
                     aimVector = aimRay.direction,
                     origin = aimRay.origin,
-                    damage = Shoot.damageCoefficient * this.damageStat,
+                    damage = this._damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
                     damageType = DamageType.Generic,
-                    falloffModel = BulletAttack.FalloffModel.DefaultBullet,
+                    falloffModel = this.falloff,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,

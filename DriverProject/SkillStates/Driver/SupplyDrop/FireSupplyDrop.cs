@@ -15,7 +15,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         public Vector3 dropPosition;
         public Quaternion dropRotation;
 
-        private float duration;
+        protected float duration;
         private bool hasFired;
 
         public override void OnEnter()
@@ -23,12 +23,22 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             base.OnEnter();
             this.duration = this.baseDuration / this.attackSpeedStat;
 
-            base.PlayAnimation("Gesture, Override", "PressButton", "Action.playbackRate", this.duration);
+            this.PlayAnim();
         }
 
         public override void OnExit()
         {
             base.OnExit();
+            this.HideButton();
+        }
+
+        protected virtual void PlayAnim()
+        {
+            base.PlayAnimation("Gesture, Override", "PressButton", "Action.playbackRate", this.duration);
+        }
+
+        protected virtual void HideButton()
+        {
             this.FindModelChild("ButtonModel").gameObject.SetActive(false);
         }
 
@@ -52,20 +62,30 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             }
         }
 
-        private void Fire()
+        protected virtual DriverWeaponDef weaponDef
+        {
+            get
+            {
+                return DriverWeaponCatalog.PrototypeRocketLauncher;
+            }
+        }
+
+        protected virtual void SpawnWeapon()
         {
             if (NetworkServer.active)
             {
-                GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.weaponPickupLegendary, this.dropPosition, UnityEngine.Random.rotation);
+                GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.weaponPickupUnique, this.dropPosition, UnityEngine.Random.rotation);
 
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
-                DriverWeaponTier weaponTier = DriverWeaponTier.Legendary;
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
+                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = this.weaponDef;
 
                 NetworkServer.Spawn(weaponPickup);
             }
+        }
 
+        protected virtual void FireBlast()
+        {
             if (base.isAuthority)
             {
                 BlastAttack blastAttack = new BlastAttack();
@@ -95,9 +115,27 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             Util.PlaySound("sfx_driver_explosion", this.gameObject);
         }
 
+        private void Fire()
+        {
+            this.SpawnWeapon();
+            this.FireBlast();
+        }
+
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             return InterruptPriority.Pain;
+        }
+
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+            writer.Write(this.dropPosition);
+        }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            this.dropPosition = reader.ReadVector3();
         }
     }
 }

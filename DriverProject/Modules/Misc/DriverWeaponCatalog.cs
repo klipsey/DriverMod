@@ -8,6 +8,11 @@ namespace RobDriver
     {
         internal static DriverWeaponDef[] weaponDefs = new DriverWeaponDef[0];
 
+        internal static DriverWeaponDef GoldenGun;
+        internal static DriverWeaponDef PrototypeRocketLauncher;
+        internal static DriverWeaponDef ArmCannon;
+        internal static DriverWeaponDef PlasmaCannon;
+
         internal static void AddWeapon(DriverWeaponDef weaponDef)
         {
             Array.Resize(ref weaponDefs, weaponDefs.Length + 1);

@@ -7,7 +7,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 2.1f;
+        public static float damageCoefficient = 1.6f;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.31f;
         public static float force = 50f;

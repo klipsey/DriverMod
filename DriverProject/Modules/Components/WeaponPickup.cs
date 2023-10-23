@@ -98,16 +98,25 @@ namespace RobDriver.Modules.Components
 
 				switch (this.weaponDef.tier)
                 {
+					case DriverWeaponTier.Common:
+						textComponent.textMeshPro.color = Modules.Helpers.whiteItemColor;
+						break;
 					case DriverWeaponTier.Uncommon:
-						textComponent.textMeshPro.color = Color.green;
+						textComponent.textMeshPro.color = Modules.Helpers.greenItemColor;
 						break;
 					case DriverWeaponTier.Legendary:
-						textComponent.textMeshPro.color = Color.red;
+						textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
 						break;
 					case DriverWeaponTier.Unique:
-						textComponent.textMeshPro.color = Color.yellow;
+						textComponent.textMeshPro.color = Modules.Helpers.yellowItemColor;
 						break;
-                }
+					case DriverWeaponTier.Lunar:
+						textComponent.textMeshPro.color = Modules.Helpers.lunarItemColor;
+						break;
+					case DriverWeaponTier.Void:
+						textComponent.textMeshPro.color = Modules.Helpers.voidItemColor;
+						break;
+				}
 			}
 		}
 

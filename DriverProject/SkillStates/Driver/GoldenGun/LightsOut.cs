@@ -1,0 +1,106 @@
+﻿using RoR2;
+using UnityEngine;
+using EntityStates;
+using RobDriver.Modules.Components;
+
+namespace RobDriver.SkillStates.Driver.GoldenGun
+{
+    public class LightsOut : BaseDriverSkillState
+    {
+        public static float damageCoefficient = 99.99f;
+        public static float procCoefficient = 1f;
+        public float baseDuration = 0.8f;
+
+        private float duration;
+        private bool kill;
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            this.characterBody.SetAimTimer(2f);
+            this.duration = this.baseDuration / this.attackSpeedStat;
+
+            base.PlayAnimation("Gesture, Override", "ShootLightsOut", "Action.playbackRate", this.duration);
+
+            if (this.iDrive) this.iDrive.StartTimer();
+
+            this.Fire();
+        }
+
+        private void Fire()
+        {
+            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, "PistolMuzzle", false);
+
+            Util.PlaySound("sfx_driver_slug_shotgun_shoot_critical", this.gameObject);
+
+            if (base.isAuthority)
+            {
+                Ray aimRay = base.GetAimRay();
+                float recoil = 24f;
+                base.AddRecoil(-1f * recoil, -2f * recoil, -0.5f * recoil, 0.5f * recoil);
+
+                new BulletAttack
+                {
+                    bulletCount = 1,
+                    aimVector = aimRay.direction,
+                    origin = aimRay.origin,
+                    damage = LightsOut.damageCoefficient * this.damageStat,
+                    damageColorIndex = DamageColorIndex.Default,
+                    damageType = DamageType.BypassArmor,
+                    falloffModel = BulletAttack.FalloffModel.None,
+                    maxDistance = 9999f,
+                    force = 9999f,
+                    hitMask = LayerIndex.CommonMasks.bullet,
+                    minSpread = 0f,
+                    maxSpread = 0f,
+                    isCrit = true,
+                    owner = this.gameObject,
+                    muzzleName = "PistolMuzzle",
+                    smartCollision = true,
+                    procChainMask = default(ProcChainMask),
+                    procCoefficient = LightsOut.procCoefficient,
+                    radius = 1f,
+                    sniper = false,
+                    stopperMask = LayerIndex.CommonMasks.bullet,
+                    weapon = null,
+                    tracerEffectPrefab = Shoot.critTracerEffectPrefab,
+                    spreadPitchScale = 1f,
+                    spreadYawScale = 1f,
+                    queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
+                    hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
+                }.Fire();
+            }
+
+            base.characterBody.AddSpreadBloom(1.25f);
+        }
+
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+
+            if (base.fixedAge >= (0.5f * this.duration))
+            {
+                if (!this.kill)
+                {
+                    this.kill = true;
+                    if (this.iDrive) this.iDrive.weaponTimer = 0f;
+                }
+            }
+
+            if (base.fixedAge >= this.duration && base.isAuthority)
+            {
+                this.outer.SetNextStateToMain();
+            }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.PrioritySkill;
+        }
+    }
+}

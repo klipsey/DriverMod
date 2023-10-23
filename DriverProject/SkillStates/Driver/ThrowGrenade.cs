@@ -11,7 +11,7 @@ namespace RobDriver.SkillStates.Driver
         public static float baseDuration = 0.55f;
         public static float baseDelayDuration = 0.1f * baseDuration;
 
-        public static float damageCoefficient = 6.5f;
+        public static float damageCoefficient = 5f;
 
         public override void OnEnter()
         {
@@ -41,7 +41,35 @@ namespace RobDriver.SkillStates.Driver
                 Ray aimRay = base.GetAimRay();
                 aimRay = this.ModifyProjectileAimRay(aimRay);
                 aimRay.direction = Util.ApplySpread(aimRay.direction, this.minSpread, this.maxSpread, 1f, 1f, 0f, this.projectilePitchBonus);
-                ProjectileManager.instance.FireProjectile(Modules.Projectiles.stunGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), base.gameObject, this.damageStat * ThrowGrenade.damageCoefficient, this.force, this.RollCrit(), DamageColorIndex.Default, null, -1f);
+
+                // copied from moff's rocket
+                // the fact that this item literally has to be hardcoded into character skillstates makes me so fucking angry you have no idea
+                if (this.characterBody.inventory && this.characterBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile) > 0)
+                {
+                    float damageMult = DriverPlugin.GetICBMDamageMult(this.characterBody);
+
+                    Vector3 rhs = Vector3.Cross(Vector3.up, aimRay.direction);
+                    Vector3 axis = Vector3.Cross(aimRay.direction, rhs);
+
+                    float currentSpread = 0f;
+                    float angle = 0f;
+                    float num2 = 0f;
+                    num2 = UnityEngine.Random.Range(1f + currentSpread, 1f + currentSpread) * 3f;   //Bandit is x2
+                    angle = num2 / 2f;  //3 - 1 rockets
+
+                    Vector3 direction = Quaternion.AngleAxis(-num2 * 0.5f, axis) * aimRay.direction;
+                    Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+                    Ray aimRay2 = new Ray(aimRay.origin, direction);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.stunGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * ThrowGrenade.damageCoefficient, this.force, this.RollCrit(), DamageColorIndex.Default, null, -1f);
+                        aimRay2.direction = rotation * aimRay2.direction;
+                    }
+                }
+                else
+                {
+                    ProjectileManager.instance.FireProjectile(Modules.Projectiles.stunGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * ThrowGrenade.damageCoefficient, this.force, this.RollCrit(), DamageColorIndex.Default, null, -1f);
+                }
             }
         }
 

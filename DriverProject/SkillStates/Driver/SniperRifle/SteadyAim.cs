@@ -71,6 +71,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             this.characterBody.outOfCombatStopwatch = 0f;
             this.characterBody.isSprinting = false;
             base.characterBody.SetAimTimer(0.2f);
+            this.attackSpeedStat = this.characterBody.attackSpeed;
 
             if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
@@ -163,22 +164,12 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "ShotgunMuzzle", false);
 
             string soundString = "sfx_driver_slug_shotgun_shoot";
-            if (this.isCrit)
+            if (wasCharged)
             {
                 soundString = "sfx_driver_slug_shotgun_shoot_critical";
             }
 
-            string animString = "SteadyAimFire";
-            if (wasCharged)
-            {
-                soundString = "sfx_driver_slug_shotgun_shoot_critical";
-                if (this.isCrit) animString = "SteadyAimFireChargedCritical";
-                else animString = "SteadyAimFireCharged";
-            }
-            else
-            {
-                if (this.isCrit) animString = "SteadyAimFireCritical";
-            }
+            string animString = "SteadyAimFireCharged";
 
             Util.PlaySound(soundString, this.gameObject);
             base.PlayAnimation("Gesture, Override", animString, "Action.playbackRate", this.shotCooldown * 1.5f);

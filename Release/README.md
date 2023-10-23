@@ -1,9 +1,10 @@
 # Driver
 - Adds the Driver, an original character based on the Driver from the film Drive (2011)
-- Fully functional base kit with several weapon pickups that give him new attacks
-- Has item displays, an unlockable mastery skin and is fully multiplayer compatible
+- Fully functional base kit with many weapon pickups that give him new attacks
+- Has item displays, unlockable skins and skills and is fully multiplayer compatible
 - Configurable stats and a few other things to mess around with
 - Full Risk of Options support for all configuration options
+- Ancient Scepter support and crosscompat with a couple other mods
 - Many more weapons planned!!!!
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen1.png)]()
@@ -27,7 +28,7 @@ ___
 # Skills
 
 ## Passive
-Enemies drop weapon crates that change your skills for 8 seconds, starting when you first attack with it
+Enemies drop weapon briefcases that change your skills for 8 seconds, starting when you first attack with it
 
 [![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/passive.gif?raw=true)]()
 
@@ -56,6 +57,7 @@ ___
 ## Donations
 If you enjoy my work and would like to support me, you can donate to my Ko-fi: https://ko-fi.com/robdev
 
+
 ## Credits
 rob - Mostly everything
 
@@ -67,25 +69,40 @@ Swuff - Code help, feedback, networking help
 
 Bog - Code for Shuriken interaction fix
 
-Hyperinvox - Briefcase model
+Hyperinvox - Briefcase, Plasma Cannon model
 
-Bruh - Riot Shotgun model
+Bruh - Riot Shotgun, Golden Gun model
 
 Glasus - Grand Mastery skin concept
 
 
 ## Future Plans
-- Many more weapons (rocket launcher, dual uzis, railgun, minigun, etc.)
-- Alternate skills
-- Ancient Scepter support
-- Better item displays
+- Many more weapons (dual uzis, railgun, minigun, etc.)
 - Other things 100% decided on pure whimsy
 - Proper skill icons?
-- More skins
+- Unique monster-themed weapon drops (golem cannon, templar minigun, mithrix hammer..... yeah)
+
+
+## Known Issues
+- Clients in multiplayer see weapon pickups as ????, networking sucks major ball can someone please help me fix this :(
+- Heavy Machine Gun currently shares a model with the regular Machine Gun
 
 ___
 
 ## Changelog
+
+`1.2.2`
+- Added Pocket ICBM functionality to all grenades and explosives
+- Added Ancient Scepter upgrade for Flashbang
+- Added Ancient Scepter upgrade for Supply Drop, thanks to Hyperinvox for the weapon model!
+- Gave Heavy Machine Gun and Rocket Launcher new secondary skills
+- Heavy Machine Gun primary damage: 210% > 160%, the armor penetration ended up being way more impactful than expected
+- Flashbang damage: 650% > 500%, max stocks 1 > 2, partially reverting the damage buff and giving more utility in exchange
+- Supply Drop now drops a Prototype Rocket Launcher, a slightly nerfed version of the base weapon
+- Added a secret Golden Gun weapon, thanks to bruh for the model!
+- Fixed attack speed stat not updating while using Focus, locking your fire rate at the value it was at when you pressed the skill
+- Fixed Bandolier not refreshing weapon duration if alternate special was selected
+- Fixed Supply Drop not spawning a weapon if used by a client in multiplayer
 
 `1.2.1`
 - Added weapon: Sniper Rifle (thanks to Swuff for the weak point targeting implementation)

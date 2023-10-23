@@ -21,6 +21,14 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         private bool isCrit;
         protected string muzzleString;
 
+        protected virtual GameObject projectilePrefab
+        {
+            get
+            {
+                return Modules.Projectiles.rocketProjectilePrefab;
+            }
+        }
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -40,6 +48,14 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             this.fireDuration = 0;
 
             if (this.iDrive) this.iDrive.StartTimer();
+        }
+
+        protected virtual float _damageCoefficient
+        {
+            get
+            {
+                return Shoot.damageCoefficient;
+            }
         }
 
         public virtual void Fire()
@@ -78,13 +94,13 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.rocketProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
+                            ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.rocketProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
+                        ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
                     }
                 }
             }

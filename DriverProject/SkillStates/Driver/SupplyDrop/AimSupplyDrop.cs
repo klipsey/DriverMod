@@ -20,15 +20,12 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             base.OnEnter();
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.5f);
 
-            base.PlayAnimation("Gesture, Override", "ReadyButton", "Action.playbackRate", 0.8f);
-            base.PlayAnimation("AimPitch", "SteadyAimPitch");
-
             if (NetworkServer.active) this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             //this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
             this.characterBody._defaultCrosshairPrefab = Modules.Assets.LoadCrosshair("SimpleDot");
 
-            this.FindModelChild("ButtonModel").gameObject.SetActive(true);
+            this.ShowButton();
 
             if (EntityStates.Huntress.ArrowRain.areaIndicatorPrefab)
             {
@@ -36,9 +33,16 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 this.areaIndicatorInstance.transform.localScale = Vector3.zero;
             }
 
-            this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Replacement);
-            this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
-            this.skillLocator.special.SetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+            this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            //this.skillLocator.special.SetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+        }
+
+        protected virtual void ShowButton()
+        {
+            base.PlayAnimation("Gesture, Override", "ReadyButton", "Action.playbackRate", 0.8f);
+            base.PlayAnimation("AimPitch", "SteadyAimPitch");
+            this.FindModelChild("ButtonModel").gameObject.SetActive(true);
         }
 
         public override void Update()
@@ -65,25 +69,35 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             {
                 if (base.fixedAge >= 0.5f)
                 {
-                    FireSupplyDrop nextState = new FireSupplyDrop();
-
-                    Transform indicatorTransform = this.areaIndicatorInstance ? this.areaIndicatorInstance.transform : transform;
-
-                    nextState.dropPosition = indicatorTransform.position;
-                    nextState.dropRotation = indicatorTransform.rotation;
-
-                    this.outer.SetNextState(nextState);
+                    this.Fire();
                     return;
                 }
             }
 
-            if ((this.inputBank.skill2.down || this.inputBank.skill4.down) && base.isAuthority)
+            if ((this.inputBank.skill2.down || this.inputBank.skill4.justPressed) && base.isAuthority)
             {
-                if (base.fixedAge >= 0.25f)
+                if (base.fixedAge >= 0.1f)
                 {
-                    this.outer.SetNextState(new CancelSupplyDrop());
+                    this.Cancel();
                 }
             }
+        }
+
+        protected virtual void Fire()
+        {
+            FireSupplyDrop nextState = new FireSupplyDrop();
+
+            Transform indicatorTransform = this.areaIndicatorInstance ? this.areaIndicatorInstance.transform : transform;
+
+            nextState.dropPosition = indicatorTransform.position;
+            nextState.dropRotation = indicatorTransform.rotation;
+
+            this.outer.SetNextState(nextState);
+        }
+
+        protected virtual void Cancel()
+        {
+            this.outer.SetNextState(new CancelSupplyDrop());
         }
 
         private void UpdateAreaIndicator()
@@ -121,14 +135,19 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             if (this.outer.destroying)
             {
                 base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.1f);
-                this.FindModelChild("ButtonModel").gameObject.SetActive(false);
+                this.HideButton();
             }
 
             this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;
 
-            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Replacement);
-            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
-            this.skillLocator.special.UnsetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            //this.skillLocator.special.UnsetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+        }
+
+        protected virtual void HideButton()
+        {
+            this.FindModelChild("ButtonModel").gameObject.SetActive(false);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

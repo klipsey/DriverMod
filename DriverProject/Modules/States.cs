@@ -17,9 +17,15 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.MainState));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.JammedGun));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Shotgun.Reload));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Bazooka.Fire));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.GoldenGun.LightsOut));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Shotgun.Reload));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.FireSupplyDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.CancelSupplyDrop));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.Scepter.FireVoidDrop));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.Scepter.CancelVoidDrop));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Emote.BaseEmote));
             entityStates.Add(typeof(RobDriver.SkillStates.Emote.Rest));

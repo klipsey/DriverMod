@@ -79,5 +79,7 @@ public enum DriverWeaponTier
     Common,
     Uncommon,
     Legendary,
-    Unique
+    Unique,
+    Void,
+    Lunar
 }

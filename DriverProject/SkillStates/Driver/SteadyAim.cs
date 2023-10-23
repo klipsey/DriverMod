@@ -69,6 +69,7 @@ namespace RobDriver.SkillStates.Driver
             this.characterBody.outOfCombatStopwatch = 0f;
             this.characterBody.isSprinting = false;
             base.characterBody.SetAimTimer(0.2f);
+            this.attackSpeedStat = this.characterBody.attackSpeed;
 
             if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {

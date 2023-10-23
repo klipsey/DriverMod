@@ -26,8 +26,10 @@ namespace RobDriver.Modules
         public static GameObject stunGrenadeModelPrefab;
 
         public static GameObject pistolAimCrosshairPrefab;
+        public static GameObject bazookaCrosshairPrefab;
 
         public static Mesh pistolMesh;
+        public static Mesh goldenGunMesh;
         public static Mesh shotgunMesh;
         public static Mesh riotShotgunMesh;
         public static Mesh slugShotgunMesh;
@@ -35,15 +37,21 @@ namespace RobDriver.Modules
         public static Mesh bazookaMesh;
         public static Mesh rocketLauncherMesh;
         public static Mesh sniperMesh;
+        public static Mesh armCannonMesh;
+        public static Mesh plasmaCannonMesh;
 
         public static Material pistolMat;
+        public static Material goldenGunMat;
         public static Material shotgunMat;
         public static Material riotShotgunMat;
         public static Material slugShotgunMat;
         public static Material machineGunMat;
         public static Material rocketLauncherMat;
+        public static Material rocketLauncherAltMat;
         public static Material bazookaMat;
         public static Material sniperMat;
+        public static Material armCannonMat;
+        public static Material plasmaCannonMat;
 
         public static Material knifeMat;
 
@@ -51,23 +59,29 @@ namespace RobDriver.Modules
 
         public static GameObject weaponPickup;
         public static GameObject weaponPickupLegendary;
+        public static GameObject weaponPickupUnique;
         public static GameObject weaponPickupOld;
 
         public static GameObject weaponPickupEffect;
 
         internal static Texture pistolWeaponIcon;
+        internal static Texture goldenGunWeaponIcon;
         internal static Texture shotgunWeaponIcon;
         internal static Texture riotShotgunWeaponIcon;
         internal static Texture slugShotgunWeaponIcon;
         internal static Texture machineGunWeaponIcon;
         internal static Texture bazookaWeaponIcon;
         internal static Texture rocketLauncherWeaponIcon;
+        internal static Texture rocketLauncherAltWeaponIcon;
         internal static Texture sniperWeaponIcon;
+        internal static Texture armCannonWeaponIcon;
+        internal static Texture plasmaCannonWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
 
         internal static DriverWeaponDef pistolWeaponDef;
+        internal static DriverWeaponDef goldenGunWeaponDef;
         internal static DriverWeaponDef shotgunWeaponDef;
         internal static DriverWeaponDef riotShotgunWeaponDef;
         internal static DriverWeaponDef slugShotgunWeaponDef;
@@ -75,7 +89,10 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef heavyMachineGunWeaponDef;
         internal static DriverWeaponDef bazookaWeaponDef;
         internal static DriverWeaponDef rocketLauncherWeaponDef;
+        internal static DriverWeaponDef rocketLauncherAltWeaponDef;
         internal static DriverWeaponDef sniperWeaponDef;
+        internal static DriverWeaponDef armCannonWeaponDef;
+        internal static DriverWeaponDef plasmaCannonWeaponDef;
 
         internal static void PopulateAssets()
         {
@@ -118,6 +135,7 @@ namespace RobDriver.Modules
 
 
             pistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshPistol");
+            goldenGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshGoldenGun");
             shotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSuperShotgun");
             riotShotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshRiotShotgun");
             slugShotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSlugShotgun");
@@ -125,15 +143,21 @@ namespace RobDriver.Modules
             bazookaMesh = mainAssetBundle.LoadAsset<Mesh>("meshBazooka");
             rocketLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshRocketLauncher");
             sniperMesh = mainAssetBundle.LoadAsset<Mesh>("meshSniperRifle");
+            armCannonMesh = mainAssetBundle.LoadAsset<Mesh>("meshArmCannon");
+            plasmaCannonMesh = mainAssetBundle.LoadAsset<Mesh>("meshPlasmaCannon");
 
             pistolMat = CreateMaterial("matPistol");
+            goldenGunMat = CreateMaterial("matGoldenGun");
             shotgunMat = CreateMaterial("matShotgun");
             riotShotgunMat = CreateMaterial("matRiotShotgun");
             slugShotgunMat = CreateMaterial("matSlugShotgun");
             machineGunMat = CreateMaterial("matMachineGun");
             bazookaMat = CreateMaterial("matBazooka");
             rocketLauncherMat = CreateMaterial("matRocketLauncher");
+            rocketLauncherAltMat = CreateMaterial("matRocketLauncherAlt");
             sniperMat = CreateMaterial("matSniperRifle");
+            armCannonMat = CreateMaterial("matArmCannon", 1f);
+            plasmaCannonMat = CreateMaterial("matPlasmaCannon", 15f);
 
             knifeMat = CreateMaterial("matKnife");
 
@@ -241,34 +265,30 @@ namespace RobDriver.Modules
             MonoBehaviour.Destroy(weaponPickupLegendary.GetComponentInChildren<RoR2.GravitatePickup>());
             #endregion
 
-            #region Old weapon pickup
-            weaponPickupOld = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandolier/AmmoPack.prefab").WaitForCompletion().InstantiateClone("DriverWeaponPickupOld", true);
+            #region Unique weapon pickup
+            weaponPickupUnique = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandolier/AmmoPack.prefab").WaitForCompletion().InstantiateClone("DriverweaponPickupUnique", true);
 
-            weaponPickupOld.GetComponent<BeginRapidlyActivatingAndDeactivating>().delayBeforeBeginningBlinking = 55f;
-            weaponPickupOld.GetComponent<DestroyOnTimer>().duration = 60f;
+            weaponPickupUnique.GetComponent<BeginRapidlyActivatingAndDeactivating>().delayBeforeBeginningBlinking = 110f;
+            weaponPickupUnique.GetComponent<DestroyOnTimer>().duration = 120f;
 
-            AmmoPickup ammoPickupComponent3 = weaponPickupOld.GetComponentInChildren<AmmoPickup>();
+            AmmoPickup ammoPickupComponent3 = weaponPickupUnique.GetComponentInChildren<AmmoPickup>();
             Components.WeaponPickup weaponPickupComponent3 = ammoPickupComponent3.gameObject.AddComponent<Components.WeaponPickup>();
 
             weaponPickupComponent3.baseObject = ammoPickupComponent3.baseObject;
             weaponPickupComponent3.pickupEffect = ammoPickupComponent3.pickupEffect;
             weaponPickupComponent3.teamFilter = ammoPickupComponent3.teamFilter;
 
-            weaponPickupOld.GetComponentInChildren<MeshRenderer>().enabled = false;
+            weaponPickupUnique.GetComponentInChildren<MeshRenderer>().enabled = false;
 
-            GameObject pickupModel3 = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickupOld"));
-            pickupModel3.transform.parent = weaponPickupOld.transform.Find("Visuals");
+            GameObject pickupModel3 = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickupUnique"));
+            pickupModel3.transform.parent = weaponPickupUnique.transform.Find("Visuals");
             pickupModel3.transform.localPosition = new Vector3(0f, -0.35f, 0f);
             pickupModel3.transform.localRotation = Quaternion.identity;
 
             MeshRenderer pickupMesh3 = pickupModel3.GetComponentInChildren<MeshRenderer>();
-            pickupMesh3.materials = new Material[]
-            {
-                CreateMaterial("matCrate1"),
-                CreateMaterial("matCrate2")
-            };
+            pickupMesh3.material = CreateMaterial("matBriefcaseUnique");
 
-             GameObject textShit3 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
+            GameObject textShit3 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
             MonoBehaviour.Destroy(textShit3.GetComponent<EffectComponent>());
             textShit3.transform.parent = pickupModel3.transform;
             textShit3.transform.localPosition = Vector3.zero;
@@ -277,14 +297,58 @@ namespace RobDriver.Modules
             textShit3.GetComponent<DestroyOnTimer>().enabled = false;
 
             ObjectScaleCurve whatTheFuckIsThis3 = textShit3.GetComponentInChildren<ObjectScaleCurve>();
-            //whatTheFuckIsThis.enabled = false;
-            //whatTheFuckIsThis.transform.localScale = Vector3.one * 2;
-            //whatTheFuckIsThis.timeMax = 60f;
             Transform helpMe3 = whatTheFuckIsThis3.transform;
             MonoBehaviour.DestroyImmediate(whatTheFuckIsThis3);
             helpMe3.transform.localScale = Vector3.one * 1.25f;
 
             MonoBehaviour.Destroy(ammoPickupComponent3);
+            MonoBehaviour.Destroy(weaponPickupUnique.GetComponentInChildren<RoR2.GravitatePickup>());
+            #endregion
+
+            #region Old weapon pickup
+            weaponPickupOld = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandolier/AmmoPack.prefab").WaitForCompletion().InstantiateClone("DriverWeaponPickupOld", true);
+
+            weaponPickupOld.GetComponent<BeginRapidlyActivatingAndDeactivating>().delayBeforeBeginningBlinking = 55f;
+            weaponPickupOld.GetComponent<DestroyOnTimer>().duration = 60f;
+
+            AmmoPickup ammoPickupComponent4 = weaponPickupOld.GetComponentInChildren<AmmoPickup>();
+            Components.WeaponPickup weaponPickupComponent4 = ammoPickupComponent4.gameObject.AddComponent<Components.WeaponPickup>();
+
+            weaponPickupComponent4.baseObject = ammoPickupComponent4.baseObject;
+            weaponPickupComponent4.pickupEffect = ammoPickupComponent4.pickupEffect;
+            weaponPickupComponent4.teamFilter = ammoPickupComponent4.teamFilter;
+
+            weaponPickupOld.GetComponentInChildren<MeshRenderer>().enabled = false;
+
+            GameObject pickupModel4 = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickupOld"));
+            pickupModel4.transform.parent = weaponPickupOld.transform.Find("Visuals");
+            pickupModel4.transform.localPosition = new Vector4(0f, -0.35f, 0f);
+            pickupModel4.transform.localRotation = Quaternion.identity;
+
+            MeshRenderer pickupMesh4 = pickupModel4.GetComponentInChildren<MeshRenderer>();
+            pickupMesh4.materials = new Material[]
+            {
+                CreateMaterial("matCrate1"),
+                CreateMaterial("matCrate2")
+            };
+
+             GameObject textShit4 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
+            MonoBehaviour.Destroy(textShit4.GetComponent<EffectComponent>());
+            textShit4.transform.parent = pickupModel4.transform;
+            textShit4.transform.localPosition = Vector4.zero;
+            textShit4.transform.localRotation = Quaternion.identity;
+
+            textShit4.GetComponent<DestroyOnTimer>().enabled = false;
+
+            ObjectScaleCurve whatTheFuckIsThis4 = textShit4.GetComponentInChildren<ObjectScaleCurve>();
+            //whatTheFuckIsThis.enabled = false;
+            //whatTheFuckIsThis.transform.localScale = Vector4.one * 2;
+            //whatTheFuckIsThis.timeMax = 60f;
+            Transform helpMe4 = whatTheFuckIsThis4.transform;
+            MonoBehaviour.DestroyImmediate(whatTheFuckIsThis4);
+            helpMe4.transform.localScale = Vector4.one * 1.25f;
+
+            MonoBehaviour.Destroy(ammoPickupComponent4);
             MonoBehaviour.Destroy(weaponPickupOld.GetComponentInChildren<RoR2.GravitatePickup>());
             #endregion
 
@@ -296,16 +360,21 @@ namespace RobDriver.Modules
             weaponPickupComponent.pickupEffect = weaponPickupEffect;
             weaponPickupComponent2.pickupEffect = weaponPickupEffect;
             weaponPickupComponent3.pickupEffect = weaponPickupEffect;
+            weaponPickupComponent4.pickupEffect = weaponPickupEffect;
 
 
             pistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
+            goldenGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGoldenGunWeaponIcon");
             shotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texShotgunWeaponIcon");
             riotShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRiotShotgunWeaponIcon");
             slugShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSlugShotgunWeaponIcon");
             machineGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texMachineGunWeaponIcon");
             bazookaWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texBazookaWeaponIcon");
             rocketLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRocketLauncherWeaponIcon");
+            rocketLauncherAltWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRocketLauncherAltWeaponIcon");
             sniperWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSniperRifleWeaponIcon");
+            armCannonWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texArmCannonWeaponIcon");
+            plasmaCannonWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPlasmaCannonWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -374,6 +443,23 @@ namespace RobDriver.Modules
                 animationSet = DriverWeaponDef.AnimationSet.Default,
             });
             DriverWeaponCatalog.AddWeapon(pistolWeaponDef);
+
+            goldenGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_GOLDENGUN_NAME",
+                descriptionToken = "ROB_DRIVER_GOLDENGUN_DESC",
+                icon = Assets.goldenGunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Unique,
+                baseDuration = 8f,
+                primarySkillDef = Survivors.Driver.goldenGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.goldenGunSecondarySkillDef,
+                mesh = Assets.goldenGunMesh,
+                material = Assets.goldenGunMat,
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+            });
+            DriverWeaponCatalog.AddWeapon(goldenGunWeaponDef);
+            DriverWeaponCatalog.GoldenGun = goldenGunWeaponDef;
 
             // example of creating a WeaponDef through code and adding it to the catalog for driver to obtain
             if (Modules.Config.shotgunEnabled.Value)
@@ -532,6 +618,60 @@ namespace RobDriver.Modules
                 });
                 DriverWeaponCatalog.AddWeapon(rocketLauncherWeaponDef);
             }
+
+            rocketLauncherAltWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_ROCKETLAUNCHER_ALT_NAME",
+                descriptionToken = "ROB_DRIVER_ROCKETLAUNCHER_ALT_DESC",
+                icon = Assets.rocketLauncherAltWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                tier = DriverWeaponTier.Unique,
+                baseDuration = Config.rocketLauncherDuration.Value,
+                primarySkillDef = Survivors.Driver.rocketLauncherAltPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.rocketLauncherAltSecondarySkillDef,
+                mesh = Assets.rocketLauncherMesh,
+                material = Assets.rocketLauncherAltMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+            });
+            DriverWeaponCatalog.AddWeapon(rocketLauncherAltWeaponDef);
+            DriverWeaponCatalog.PrototypeRocketLauncher = rocketLauncherAltWeaponDef;
+
+            armCannonWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_ARMCANNON_NAME",
+                descriptionToken = "ROB_DRIVER_ARMCANNON_DESC",
+                icon = Assets.armCannonWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                tier = DriverWeaponTier.Unique,
+                baseDuration = Config.rocketLauncherDuration.Value,
+                primarySkillDef = Survivors.Driver.armCannonPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.armCannonSecondarySkillDef,
+                mesh = Assets.armCannonMesh,
+                material = Assets.armCannonMat,
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+                calloutSoundString = ""
+            });
+            DriverWeaponCatalog.AddWeapon(armCannonWeaponDef);
+            DriverWeaponCatalog.ArmCannon = armCannonWeaponDef;
+
+            plasmaCannonWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_PLASMACANNON_NAME",
+                descriptionToken = "ROB_DRIVER_PLASMACANNON_DESC",
+                icon = Assets.plasmaCannonWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("ToolbotGrenadeLauncher"),
+                tier = DriverWeaponTier.Void,
+                baseDuration = Config.rocketLauncherDuration.Value,
+                primarySkillDef = Survivors.Driver.plasmaCannonPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.plasmaCannonSecondarySkillDef,
+                mesh = Assets.plasmaCannonMesh,
+                material = Assets.plasmaCannonMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = ""
+            });
+            DriverWeaponCatalog.AddWeapon(plasmaCannonWeaponDef);
+            DriverWeaponCatalog.PlasmaCannon = plasmaCannonWeaponDef;
         }
 
         internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")

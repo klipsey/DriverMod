@@ -120,11 +120,38 @@ namespace RobDriver.Modules.Components
 
             this.primarySkillOverrides = primary.ToArray();
             this.secondarySkillOverrides = secondary.ToArray();
+
+            this.Invoke("SetInventoryHook", 0.5f);
         }
 
         private void Start()
         {
             this.InitShells();
+        }
+
+        private void SetInventoryHook()
+        {
+            if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
+            {
+                this.characterBody.master.inventory.onItemAddedClient += this.Inventory_onItemAddedClient;
+            }
+        }
+
+        private void Inventory_onItemAddedClient(ItemIndex itemIndex)
+        {
+            if (DriverPlugin.litInstalled) // funny compat :-)
+            {
+                if (this.IsItemGoldenGun(itemIndex))
+                {
+                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, this);
+                }
+            }
+        }
+
+        private bool IsItemGoldenGun(ItemIndex itemIndex)
+        {
+            if (itemIndex == LostInTransit.LITContent.Items.GoldenGun.itemIndex) return true;
+            return false;
         }
 
         public void StartTimer()
@@ -134,9 +161,14 @@ namespace RobDriver.Modules.Components
 
         public void ToggleSkateboard(SkateboardState newState)
         {
+            return;
+
             this.skateboardState = newState;
 
-            //if (this.skillLocator.utility.skillDef.skillNameToken != DriverPlugin.developerPrefix + "UTILITY_SKATEBOARD_NAME") return;
+            this.skateboardObject.SetActive(false);
+            this.skateboardBackObject.SetActive(false);
+
+            if (this.skillLocator.utility.skillDef.skillNameToken != DriverPlugin.developerPrefix + "UTILITY_SKATEBOARD_NAME") return;
 
             switch (this.skateboardState)
             {
@@ -168,7 +200,7 @@ namespace RobDriver.Modules.Components
         {
             if (this.skillLocator)
             {
-                if (this.skillLocator.special.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME")
+                if (this.skillLocator.special.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME")
                 {
                     this.skillLocator.special.stock = this.availableSupplyDrops;
                 }
@@ -341,6 +373,11 @@ namespace RobDriver.Modules.Components
                 {
                     if (this.shellObjects[i]) Destroy(this.shellObjects[i]);
                 }
+            }
+
+            if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
+            {
+                this.characterBody.master.inventory.onItemAddedClient -= this.Inventory_onItemAddedClient;
             }
         }
 
