@@ -9,7 +9,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 8f;
+        public static float damageCoefficient = 7f;
         public static float procCoefficient = 1f;
         public float baseDuration = 1.3f; // the base skill duration. i.e. attack speed
         public static float recoil = 16f;
@@ -20,6 +20,15 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         protected bool hasFired;
         private bool isCrit;
         protected string muzzleString;
+
+        protected virtual string soundString
+        {
+            get
+            {
+                if (this.isCrit) return "sfx_driver_rocket_launcher_shoot";
+                return "sfx_driver_rocket_launcher_shoot";
+            }
+        }
 
         protected virtual GameObject projectilePrefab
         {
@@ -39,8 +48,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             this.isCrit = base.RollCrit();
             this.earlyExitTime = 0.4f * this.duration;
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
-            else Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
+            Util.PlaySound(this.soundString, base.gameObject);
 
             //this.PlayCrossfade("Gesture, Override", "FireShotgun", "Shoot.playbackRate", Mathf.Max(0.05f, 1.75f * duration), 0.06f);
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);

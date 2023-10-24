@@ -145,16 +145,19 @@ namespace RobDriver.Modules.Components
                 {
                     this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, this);
                 }
+            }
 
-                if (itemIndex == RoR2Content.Items.Behemoth.itemIndex)
-                {
-                    this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth, this);
-                }
+            if (itemIndex == RoR2Content.Items.Behemoth.itemIndex)
+            {
+                this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth, this);
             }
         }
 
         private bool IsItemGoldenGun(ItemIndex itemIndex)
         {
+            // golden gun disabled- forgot to account for that whoops
+            if (LostInTransit.LITContent.Items.GoldenGun == null) return false;
+
             if (itemIndex == LostInTransit.LITContent.Items.GoldenGun.itemIndex) return true;
             return false;
         }

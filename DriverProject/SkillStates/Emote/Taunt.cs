@@ -7,6 +7,8 @@
             base.OnEnter();
 
             this.PlayEmote("TauntEmote", "", 1.5f);
+
+            RoR2.Util.PlaySound("sfx_driver_boom", this.gameObject);
         }
     }
 }

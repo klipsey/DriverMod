@@ -75,6 +75,10 @@ Bruh - Riot Shotgun, Golden Gun model
 
 Glasus - Grand Mastery skin concept
 
+Falxxx - [Grenade Launcher Model](https://sketchfab.com/3d-models/ps1-style-grenade-launcher-0532a58572124fe1b31ecec7a9aff462)
+
+iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98276531d5948598ebbafe0913c7820)
+
 
 ## Future Plans
 - Many more weapons (dual uzis, railgun, minigun, etc.)
@@ -94,7 +98,12 @@ ___
 `1.2.4`
 - Added weapon: Grenade Launcher
 - Added weapon: Arm Cannon - unique drop from Steel Mechorilla
+- Updated various sounds and added some more
+- Updated Heavy Machine Gun model
 - Updated crosshairs for Bazooka, Rocket Launcher, Prototype Rocket Launcher, Super Plasma Cannon
+- Further nerfs to Rocket Launcher damage, this should be enough to keep it in line
+- Fixed Golden Gun crosscompat breaking things if LostInTransit was installed but Golden Gun was disabled
+- Fixed an oversight causing Brilliant Behemoth interaction to only occur with LostInTransit installed
 
 `1.2.3`
 - Nerfed both Rocket Launchers across the board- the new secondary is crazy strong so this was needed

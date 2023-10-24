@@ -31,8 +31,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
             this.isCrit = base.RollCrit();
             this.earlyExitTime = 0.4f * this.duration;
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
-            else Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
+            Util.PlaySound("sfx_driver_grenade_launcher_shoot", base.gameObject);
 
             //this.PlayCrossfade("Gesture, Override", "FireShotgun", "Shoot.playbackRate", Mathf.Max(0.05f, 1.75f * duration), 0.06f);
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);

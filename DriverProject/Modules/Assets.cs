@@ -38,6 +38,7 @@ namespace RobDriver.Modules
         public static Mesh riotShotgunMesh;
         public static Mesh slugShotgunMesh;
         public static Mesh machineGunMesh;
+        public static Mesh heavyMachineGunMesh;
         public static Mesh bazookaMesh;
         public static Mesh rocketLauncherMesh;
         public static Mesh sniperMesh;
@@ -45,6 +46,7 @@ namespace RobDriver.Modules
         public static Mesh plasmaCannonMesh;
         public static Mesh behemothMesh;
         public static Mesh beetleShieldMesh;
+        public static Mesh grenadeLauncherMesh;
 
         public static Material pistolMat;
         public static Material goldenGunMat;
@@ -52,12 +54,14 @@ namespace RobDriver.Modules
         public static Material riotShotgunMat;
         public static Material slugShotgunMat;
         public static Material machineGunMat;
+        public static Material heavyMachineGunMat;
         public static Material rocketLauncherMat;
         public static Material rocketLauncherAltMat;
         public static Material bazookaMat;
         public static Material sniperMat;
         public static Material armCannonMat;
         public static Material plasmaCannonMat;
+        public static Material grenadeLauncherMat;
 
         public static Material knifeMat;
 
@@ -76,6 +80,7 @@ namespace RobDriver.Modules
         internal static Texture riotShotgunWeaponIcon;
         internal static Texture slugShotgunWeaponIcon;
         internal static Texture machineGunWeaponIcon;
+        internal static Texture heavyMachineGunWeaponIcon;
         internal static Texture bazookaWeaponIcon;
         internal static Texture rocketLauncherWeaponIcon;
         internal static Texture rocketLauncherAltWeaponIcon;
@@ -83,6 +88,7 @@ namespace RobDriver.Modules
         internal static Texture armCannonWeaponIcon;
         internal static Texture plasmaCannonWeaponIcon;
         internal static Texture beetleShieldWeaponIcon;
+        internal static Texture grenadeLauncherWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
@@ -237,6 +243,7 @@ namespace RobDriver.Modules
             riotShotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshRiotShotgun");
             slugShotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSlugShotgun");
             machineGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshMachineGun");
+            heavyMachineGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshHeavyMachineGun");
             bazookaMesh = mainAssetBundle.LoadAsset<Mesh>("meshBazooka");
             rocketLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshRocketLauncher");
             sniperMesh = mainAssetBundle.LoadAsset<Mesh>("meshSniperRifle");
@@ -244,6 +251,7 @@ namespace RobDriver.Modules
             plasmaCannonMesh = mainAssetBundle.LoadAsset<Mesh>("meshPlasmaCannon");
             behemothMesh = mainAssetBundle.LoadAsset<Mesh>("meshBehemoth");
             beetleShieldMesh = mainAssetBundle.LoadAsset<Mesh>("meshBeetleShield");
+            grenadeLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshGrenadeLauncher");
 
             pistolMat = CreateMaterial("matPistol");
             goldenGunMat = CreateMaterial("matGoldenGun");
@@ -251,12 +259,14 @@ namespace RobDriver.Modules
             riotShotgunMat = CreateMaterial("matRiotShotgun");
             slugShotgunMat = CreateMaterial("matSlugShotgun");
             machineGunMat = CreateMaterial("matMachineGun");
+            heavyMachineGunMat = CreateMaterial("matHeavyMachineGun");
             bazookaMat = CreateMaterial("matBazooka");
             rocketLauncherMat = CreateMaterial("matRocketLauncher");
             rocketLauncherAltMat = CreateMaterial("matRocketLauncherAlt");
             sniperMat = CreateMaterial("matSniperRifle");
             armCannonMat = CreateMaterial("matArmCannon", 1f);
-            plasmaCannonMat = CreateMaterial("matPlasmaCannon", 15f);
+            plasmaCannonMat = CreateMaterial("matPlasmaCannon", 45f, Color.white);
+            grenadeLauncherMat = CreateMaterial("matGrenadeLauncher");
 
             knifeMat = CreateMaterial("matKnife");
 
@@ -468,13 +478,15 @@ namespace RobDriver.Modules
             riotShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRiotShotgunWeaponIcon");
             slugShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSlugShotgunWeaponIcon");
             machineGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texMachineGunWeaponIcon");
+            heavyMachineGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texHeavyMachineGunWeaponIcon");
             bazookaWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texBazookaWeaponIcon");
             rocketLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRocketLauncherWeaponIcon");
             rocketLauncherAltWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRocketLauncherAltWeaponIcon");
             sniperWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSniperRifleWeaponIcon");
             armCannonWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texArmCannonWeaponIcon");
             plasmaCannonWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPlasmaCannonWeaponIcon");
-            beetleShieldWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
+            beetleShieldWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texBeetleShieldWeaponIcon");
+            grenadeLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGrenadeLauncherWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -557,6 +569,7 @@ namespace RobDriver.Modules
                 mesh = Assets.goldenGunMesh,
                 material = Assets.goldenGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
+                calloutSoundString = "sfx_driver_callout_generic"
             });
             DriverWeaponCatalog.AddWeapon(goldenGunWeaponDef);
             DriverWeaponCatalog.GoldenGun = goldenGunWeaponDef;
@@ -574,6 +587,7 @@ namespace RobDriver.Modules
                 mesh = Assets.beetleShieldMesh,
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Beetle/matBeetle.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.Default,
+                calloutSoundString = "sfx_driver_callout_generic"
             });
             DriverWeaponCatalog.AddWeapon(beetleShieldWeaponDef);
             DriverWeaponCatalog.BeetleShield = beetleShieldWeaponDef;
@@ -665,16 +679,16 @@ namespace RobDriver.Modules
                 {
                     nameToken = "ROB_DRIVER_HEAVY_MACHINEGUN_NAME",
                     descriptionToken = "ROB_DRIVER_HEAVY_MACHINEGUN_DESC",
-                    icon = Assets.machineGunWeaponIcon,
+                    icon = Assets.heavyMachineGunWeaponIcon,
                     crosshairPrefab = Assets.LoadCrosshair("Standard"),
                     tier = DriverWeaponTier.Uncommon,
                     baseDuration = Config.heavyMachineGunDuration.Value,
                     primarySkillDef = Survivors.Driver.heavyMachineGunPrimarySkillDef,
                     secondarySkillDef = Survivors.Driver.heavyMachineGunSecondarySkillDef,
-                    mesh = Assets.machineGunMesh,
-                    material = Assets.machineGunMat,
+                    mesh = Assets.heavyMachineGunMesh,
+                    material = Assets.heavyMachineGunMat,
                     animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_machine_gun"
+                    calloutSoundString = "sfx_driver_callout_hmg"
                 });
                 DriverWeaponCatalog.AddWeapon(heavyMachineGunWeaponDef);
             }
@@ -694,7 +708,7 @@ namespace RobDriver.Modules
                     mesh = Assets.sniperMesh,
                     material = Assets.sniperMat,
                     animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = ""
+                    calloutSoundString = "sfx_driver_callout_sniper"
                 });
                 DriverWeaponCatalog.AddWeapon(sniperWeaponDef);
             }
@@ -720,16 +734,16 @@ namespace RobDriver.Modules
             {
                 nameToken = "ROB_DRIVER_GRENADELAUNCHER_NAME",
                 descriptionToken = "ROB_DRIVER_GRENADELAUNCHER_DESC",
-                icon = Assets.bazookaWeaponIcon,
+                icon = Assets.grenadeLauncherWeaponIcon,
                 crosshairPrefab = grenadeLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 baseDuration = Config.rocketLauncherDuration.Value,
                 primarySkillDef = Survivors.Driver.grenadeLauncherPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.grenadeLauncherSecondarySkillDef,
-                mesh = Assets.bazookaMesh,
-                material = Assets.bazookaMat,
+                mesh = Assets.grenadeLauncherMesh,
+                material = Assets.grenadeLauncherMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+                calloutSoundString = "sfx_driver_callout_grenade_launcher"
             });
             DriverWeaponCatalog.AddWeapon(grenadeLauncherWeaponDef);
 
@@ -802,7 +816,7 @@ namespace RobDriver.Modules
                 mesh = Assets.armCannonMesh,
                 material = Assets.armCannonMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
-                calloutSoundString = ""
+                calloutSoundString = "sfx_driver_callout_generic"
             });
             DriverWeaponCatalog.AddWeapon(armCannonWeaponDef);
             DriverWeaponCatalog.ArmCannon = armCannonWeaponDef;
@@ -820,7 +834,7 @@ namespace RobDriver.Modules
                 mesh = Assets.plasmaCannonMesh,
                 material = Assets.plasmaCannonMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = ""
+                calloutSoundString = "sfx_driver_callout_laser"
             });
             DriverWeaponCatalog.AddWeapon(plasmaCannonWeaponDef);
             DriverWeaponCatalog.PlasmaCannon = plasmaCannonWeaponDef;

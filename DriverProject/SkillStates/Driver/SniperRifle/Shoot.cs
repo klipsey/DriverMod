@@ -33,8 +33,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             this.isCrit = base.RollCrit();
             this.earlyExitTime = 0.75f * this.duration;
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_slug_shotgun_shoot_critical", base.gameObject);
-            else Util.PlaySound("sfx_driver_slug_shotgun_shoot", base.gameObject);
+            Util.PlaySound("sfx_driver_sniper_shoot", base.gameObject);
 
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
 

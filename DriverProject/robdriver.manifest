@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 489335643
+CRC: 2670349040
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f00fb5eba4c2db9a5613a6a21a338749
+    Hash: 4ae2421cbcb3c890c72c49a1d53fd83d
   TypeTreeHash:
     serializedVersion: 2
     Hash: 668637f38589cec50a7b1ffa4c183564
@@ -87,6 +87,7 @@ Assets:
 - Assets/Driver/FBX/meshArmCannon.mesh
 - Assets/Driver/VFX/matShockwave.mat
 - Assets/Driver/Icons/texSuit2Skin.png
+- Assets/Driver/FBX/meshGrenadeLauncher.mesh
 - Assets/Driver/Materials/matBriefcase.mat
 - Assets/Driver/FBX/SHLDSteadyAim.anim
 - Assets/Driver/FBX/Slugger.fbx
@@ -131,7 +132,9 @@ Assets:
 - Assets/Driver/Textures/texCrate1.png
 - Assets/Driver/Animations/animDriver.controller
 - Assets/Driver/FBX/meshSlugShotgun.mesh
+- Assets/Driver/Textures/texGrenadeLauncher.png
 - Assets/Driver/Animations/Default/LightImpact.anim
+- Assets/Driver/Materials/matGrenadeLauncher.mat
 - Assets/Driver/Materials/matPistol.mat
 - Assets/Driver/Materials/matShotgunShell.mat
 - Assets/Driver/Textures/texRiotShotgun.png
@@ -179,6 +182,7 @@ Assets:
 - Assets/Driver/FBX/meshSuit.mesh
 - Assets/Driver/Textures/texMinecraftDriver.png
 - Assets/Driver/Icons/texMachineGunIcon.png
+- Assets/Driver/Icons/texBeetleShieldWeaponIcon.png
 - Assets/Driver/Textures/texBriefcase.png
 - Assets/Driver/WeaponPickup.prefab
 - Assets/Driver/Textures/texSkateboard.png
@@ -245,6 +249,7 @@ Assets:
 - Assets/Driver/Textures/texBriefcaseUnique.png
 - Assets/Driver/Materials/matDriver.mat
 - Assets/Driver/FBX/Ascend.anim
+- Assets/Driver/FBX/meshHeavyMachineGun.mesh
 - Assets/Driver/Projectiles/DriverStunGrenadeGhost.prefab
 - Assets/Driver/Materials/matMinecraftDriver.mat
 - Assets/Driver/Icons/texPistolWeaponIcon.png
@@ -262,8 +267,10 @@ Assets:
 - Assets/Driver/Materials/matSlugger.mat
 - Assets/Driver/Animations/Default/SteadyAim.anim
 - Assets/Driver/Icons/texShotgunSecondaryIcon.png
+- Assets/Driver/Icons/texGrenadeLauncherWeaponIcon.png
 - Assets/Driver/Textures/texMachineGun.png
 - Assets/Driver/Animations/maskDriverAim.mask
+- Assets/Driver/Materials/matHeavyMachineGun.mat
 - Assets/Driver/FBX/Shell.dae
 - Assets/Driver/Textures/texShotgun.png
 - Assets/Driver/Materials/matRocketLauncher.mat

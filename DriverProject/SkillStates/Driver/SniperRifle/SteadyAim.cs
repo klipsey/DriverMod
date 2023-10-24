@@ -95,7 +95,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                 if (this.chargeTimer >= this.chargeDuration)
                 {
                     this.isCharged = true;
-                    Util.PlaySound("sfx_driver_pistol_ready", this.gameObject);
+                    Util.PlaySound("sfx_driver_sniper_click", this.gameObject);
                 }
             }
 
@@ -163,10 +163,10 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             base.characterBody.AddSpreadBloom(1f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "ShotgunMuzzle", false);
 
-            string soundString = "sfx_driver_slug_shotgun_shoot";
+            string soundString = "sfx_driver_sniper_shoot";
             if (wasCharged)
             {
-                soundString = "sfx_driver_slug_shotgun_shoot_critical";
+                soundString = "sfx_driver_sniper_shoot_charged";
             }
 
             string animString = "SteadyAimFireCharged";

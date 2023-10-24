@@ -487,6 +487,149 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_sniper_shoot" ID="{0F763E1E-FED7-4C78-A737-E734DE6A0411}">
+					<ChildrenList>
+						<Action Name="" ID="{173090CA-9302-4D7E-BE0B-476E626444EB}" ShortID="930001734">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_sniper_shoot" ID="{55454358-1FBC-4565-923D-3A3AF77BBA42}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_sniper_shoot_charged" ID="{78E3AFF0-E5D2-4370-A9C7-98498053C28E}">
+					<ChildrenList>
+						<Action Name="" ID="{0F00735E-B3A7-463D-96E0-77C523E0F18A}" ShortID="1060037035">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_sniper_shoot_charged" ID="{83BF578C-0D3C-4393-8CDA-E1342AC4EC43}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_sniper_click" ID="{368D2676-8B75-4013-9D3B-EEE416611639}">
+					<ChildrenList>
+						<Action Name="" ID="{FCF4F71C-91CE-44D5-9DFD-AF8C91860DC5}" ShortID="472275117">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_sniper_click" ID="{2D1745DD-5551-4E6E-A3E6-37285AC965B0}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_callout_sniper" ID="{E22A6447-4CB4-47D8-8C03-92ECEEE4C1B0}">
+					<ChildrenList>
+						<Action Name="" ID="{FAF87836-DBDB-46C5-AE8B-80A1F9D7BE79}" ShortID="298366747">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_callout_sniper" ID="{D25351E7-F767-45EB-BC74-26BE1EB2F8D0}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_callout_hmg" ID="{E3B7F8DE-BEC9-4971-869F-0D67801BADE7}">
+					<ChildrenList>
+						<Action Name="" ID="{697C76B2-3B4E-46BB-8566-3067EC50A271}" ShortID="688359816">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_callout_hmg" ID="{DED1022C-6510-466E-99FD-CAA8FC300413}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_callout_laser" ID="{A44B63B5-FB80-4D75-9448-7B97242C965F}">
+					<ChildrenList>
+						<Action Name="" ID="{8D0C4B93-2A84-4367-8C11-F7D86A5DC1DA}" ShortID="559118478">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_callout_laser" ID="{E3DA9F92-F1C2-4506-B4A1-CFFABAD26D06}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_callout_grenade_launcher" ID="{391C6C11-C8F7-46C5-A5FC-74FD28662625}">
+					<ChildrenList>
+						<Action Name="" ID="{6CC43536-2D61-4D45-AE5C-894E88E1336F}" ShortID="929763338">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_callout_grenadelauncher" ID="{431B787A-CB2C-42AC-866B-AEE0F87F3DBF}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_callout_flamethrower" ID="{C3C9C43E-5738-42A5-9FA2-5179A3E4755B}">
+					<ChildrenList>
+						<Action Name="" ID="{BAA4FFAA-DFEB-4239-A18F-83E725E55D92}" ShortID="931233203">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_callout_flamethrower" ID="{B954189F-3342-4B22-AD27-6F2FEB6B5312}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_callout_generic" ID="{673CC07C-6B7C-4195-9E01-74DCE0900CC4}">
+					<ChildrenList>
+						<Action Name="" ID="{0B377E16-AEBD-4E1C-8CB3-1B92DF167DA7}" ShortID="818476072">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_callout_generic" ID="{85070918-1C8C-4FF8-BB74-06C44BA03BD8}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_boom" ID="{489924A9-002A-4FE4-835D-0EA3B515A730}">
+					<ChildrenList>
+						<Action Name="" ID="{52AC3539-166F-4ED6-88D6-051C67FB20B6}" ShortID="100819684">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_boom" ID="{9C151E30-4F01-4E0E-B2A1-37DCD88AE3AB}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_grenade_launcher_shoot" ID="{567EA327-6A18-4620-87B3-45CE9F1ACBB2}">
+					<ChildrenList>
+						<Action Name="" ID="{9F42C410-8F4E-4F93-BD77-27239854A300}" ShortID="261366250">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_grenade_launcher_shoot" ID="{F7950E17-0E94-4CD5-AB69-B64576AC2835}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_grenade_explosion" ID="{B5CEB241-5FB2-46B1-8940-C595F0A7EF61}">
+					<ChildrenList>
+						<Action Name="" ID="{927303EE-3B07-4670-8190-180D85E638DD}" ShortID="500759305">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_grenade_explosion" ID="{E4AFD3DB-3AEE-4581-AB86-40E42C0B3068}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_plasma_cannon_shoot" ID="{0F5C8BA8-03B5-4946-A772-DA17B7D3D2ED}">
+					<ChildrenList>
+						<Action Name="" ID="{E6D586F4-6FC9-428B-8A5D-849D8000D137}" ShortID="341519016">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_plasma_cannon_shoot" ID="{4483E783-2602-40FA-9E18-A04B7A03F45E}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

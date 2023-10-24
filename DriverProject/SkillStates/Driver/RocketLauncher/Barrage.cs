@@ -10,7 +10,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
     public class Barrage : BaseDriverSkillState
     {
         public static int rocketCount = 7;
-        public static float damageCoefficient = 5f;
+        public static float damageCoefficient = 4f;
         public static float procCoefficient = 1f;
         public float baseShotDuration = 0.05f;
         public static float recoil = 11f;

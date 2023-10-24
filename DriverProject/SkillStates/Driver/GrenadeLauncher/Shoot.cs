@@ -31,8 +31,7 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
             this.isCrit = base.RollCrit();
             this.earlyExitTime = 0.4f * this.duration;
 
-            if (this.isCrit) Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
-            else Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
+            Util.PlaySound("sfx_driver_grenade_launcher_shoot", base.gameObject);
 
             //this.PlayCrossfade("Gesture, Override", "FireShotgun", "Shoot.playbackRate", Mathf.Max(0.05f, 1.75f * duration), 0.06f);
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
@@ -57,6 +56,7 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
+                    aimRay.direction = Util.ApplySpread(aimRay.direction, 0f, 0f, 1f, 1f, 0f, -5f);
 
                     // copied from moff's rocket
                     // the fact that this item literally has to be hardcoded into character skillstates makes me so fucking angry you have no idea
@@ -78,13 +78,13 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 90f);
+                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 90f);
+                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
                     }
                 }
             }
@@ -120,7 +120,7 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             if (base.fixedAge >= this.earlyExitTime && this.hasFired) return InterruptPriority.Any;
-            return InterruptPriority.PrioritySkill;
+            return InterruptPriority.Skill;
         }
     }
 }

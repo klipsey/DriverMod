@@ -83,7 +83,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_ALT_NAME", "Fire");
-            LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_ALT_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * 5f}% damage</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_ALT_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * 4.5f}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_GRENADELAUNCHER_NAME", "Fire");
             LanguageAPI.Add(prefix + "PRIMARY_GRENADELAUNCHER_DESCRIPTION", $"Launch a grenade for <style=cIsDamage>{100f * 5f}% damage</style>.");
