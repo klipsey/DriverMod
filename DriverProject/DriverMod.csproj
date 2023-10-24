@@ -44,6 +44,9 @@
     <Reference Include="AncientScepter">
       <HintPath>libs\AncientScepter.dll</HintPath>
     </Reference>
+    <Reference Include="ClassicItemsReturns">
+      <HintPath>libs\ClassicItemsReturns.dll</HintPath>
+    </Reference>
     <Reference Include="LostInTransit">
       <HintPath>libs\LostInTransit.dll</HintPath>
     </Reference>

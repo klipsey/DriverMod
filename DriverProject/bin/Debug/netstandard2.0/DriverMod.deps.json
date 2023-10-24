@@ -17,6 +17,7 @@
           "RiskOfRain2.GameLibs": "1.2.4-r.0",
           "UnityEngine.Modules": "2019.4.26",
           "AncientScepter": "1.0.0.0",
+          "ClassicItemsReturns": "1.0.0.0",
           "LostInTransit": "0.0.0.0",
           "RiskOfOptions": "1.0.0.0",
           "RiskUI": "1.0.0.0",
@@ -728,6 +729,14 @@
           }
         }
       },
+      "ClassicItemsReturns/1.0.0.0": {
+        "runtime": {
+          "ClassicItemsReturns.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "LostInTransit/0.0.0.0": {
         "runtime": {
           "LostInTransit.dll": {
@@ -1064,6 +1073,11 @@
       "hashPath": "unityengine.modules.2019.4.26.nupkg.sha512"
     },
     "AncientScepter/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ClassicItemsReturns/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

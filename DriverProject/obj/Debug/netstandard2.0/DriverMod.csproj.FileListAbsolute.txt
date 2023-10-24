@@ -15,3 +15,4 @@ C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netst
 C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netstandard2.0\LostInTransit.dll
 C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netstandard2.0\AncientScepter.dll
 C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netstandard2.0\RiskUI.dll
+C:\Users\rseid\OneDrive\Documents\GitHub\DriverMod\DriverProject\bin\Debug\netstandard2.0\ClassicItemsReturns.dll

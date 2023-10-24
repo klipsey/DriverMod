@@ -147,6 +147,14 @@ namespace RobDriver.Modules.Components
                 }
             }
 
+            if (DriverPlugin.classicItemsInstalled) // not funny anymore
+            {
+                if (this.IsItemGoldenGun2(itemIndex))
+                {
+                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, this);
+                }
+            }
+
             if (itemIndex == RoR2Content.Items.Behemoth.itemIndex)
             {
                 this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth, this);
@@ -159,6 +167,16 @@ namespace RobDriver.Modules.Components
             if (LostInTransit.LITContent.Items.GoldenGun == null) return false;
 
             if (itemIndex == LostInTransit.LITContent.Items.GoldenGun.itemIndex) return true;
+            return false;
+        }
+
+        private bool IsItemGoldenGun2(ItemIndex itemIndex)
+        {
+            // golden gun disabled- forgot to account for that whoops
+            if (ClassicItemsReturns.Items.GoldenGun.Instance == null) return false;
+            if (ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef == null) return false;
+
+            if (itemIndex == ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef.itemIndex) return true;
             return false;
         }
 

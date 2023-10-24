@@ -59,27 +59,33 @@ ___
 ### RiskUI
 Driver's custom weapon HUD is fully compatible with this UI overhaul
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/main/Release/FuckShit/riskui.png?raw=true)]()
 
 
 ### Standalone Ancient Scepter
 Has Scepter upgrades for both specials
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/main/Release/FuckShit/flashbangscepter.gif?raw=true)]()
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/main/Release/FuckShit/supplydropscepter.gif?raw=true)]()
 
 
 ### Starstorm 2
 Enemies marked by the Relic of Termination are guaranteed to drop a weapon when killed
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/main/Release/FuckShit/termination.png?raw=true)]()
+
+
+### Steel Mechorilla
+Unique weapon drop
+
+[![](https://github.com/ArcPh1r3/DriverMod/blob/main/Release/FuckShit/armcannon.png?raw=true)]()
 
 
 ### Golden Gun
 no more needed to say
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+[![](https://github.com/ArcPh1r3/DriverMod/blob/main/Release/FuckShit/goldengun.png?raw=true)]()
 
 
 ___
