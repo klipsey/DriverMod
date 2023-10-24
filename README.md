@@ -54,8 +54,39 @@ Stun grenade
 
 ___
 
+# Compatibility Stuff
+
+### RiskUI
+Driver's custom weapon HUD is fully compatible with this UI overhaul
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+
+
+### Standalone Ancient Scepter
+Has Scepter upgrades for both specials
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+
+
+### Starstorm 2
+Enemies marked by the Relic of Termination are guaranteed to drop a weapon when killed
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+
+
+### Golden Gun
+no more needed to say
+
+[![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+
+
+___
+
+
 ## Donations
-If you enjoy my work and would like to support me, you can donate to my Ko-fi: https://ko-fi.com/robdev
+If you enjoy my work and would like to support me, you can donate to my [Ko-fi](https://ko-fi.com/robdev)
 
 
 ## Credits
@@ -85,15 +116,20 @@ iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98
 - Other things 100% decided on pure whimsy
 - Proper skill icons?
 - Unique monster-themed weapon drops (golem cannon, templar minigun, mithrix hammer..... yeah)
+- More mod crosscompat
 
 
 ## Known Issues
 - Clients in multiplayer see weapon pickups as ????, networking sucks major ball can someone please help me fix this :(
-- Heavy Machine Gun currently shares a model with the regular Machine Gun
 
 ___
 
 ## Changelog
+
+`1.2.5`
+- Added RiskUI support! thanks to Bubbet for keeping the code clean so this was easy to implement
+- Added a stock display to Pistol's secondary so you don't have to keep looking in the corner to see if you have any shots ready
+- Golden Gun easter egg now works with the Golden Gun from ClassicItemsReturns (don't ask for classic ClassicItems compat it won't happen)
 
 `1.2.4`
 - Added weapon: Grenade Launcher

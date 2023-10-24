@@ -19,6 +19,7 @@
           "AncientScepter": "1.0.0.0",
           "LostInTransit": "0.0.0.0",
           "RiskOfOptions": "1.0.0.0",
+          "RiskUI": "1.0.0.0",
           "Starstorm2": "1.0.0.0",
           "Unity.Postprocessing.Runtime": "0.0.0.0"
         },
@@ -743,6 +744,14 @@
           }
         }
       },
+      "RiskUI/1.0.0.0": {
+        "runtime": {
+          "RiskUI.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "Starstorm2/1.0.0.0": {
         "runtime": {
           "Starstorm2.dll": {
@@ -1065,6 +1074,11 @@
       "sha512": ""
     },
     "RiskOfOptions/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RiskUI/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

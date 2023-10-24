@@ -1875,7 +1875,13 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             if (hud.targetBodyObject && hud.targetMaster.bodyPrefab == Driver.characterPrefab)
             {
-                var skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
+                if (DriverPlugin.riskUIInstalled)
+                {
+                    RiskUIHudSetup(hud);
+                    return;
+                }
+
+                Transform skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
 
                 // no one will notice these missing
                 skillsContainer.Find("SprintCluster").gameObject.SetActive(false);
@@ -1923,19 +1929,64 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 MonoBehaviour.Destroy(equipmentIconComponent);
             }
+        }
 
-            /*var energyHud = self.gameObject.AddComponent<EnergyHUD>();
+        internal static void RiskUIHudSetup(RoR2.UI.HUD hud)
+        {
+            Transform skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
 
-            GameObject energyGauge = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("EnergyGauge"), self.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
-            Debug.Log(energyGauge.name);
-            energyGauge.GetComponent<RectTransform>().localPosition = Vector3.zero;
-            energyGauge.GetComponent<RectTransform>().anchoredPosition = new Vector3(-8f, -154f);
-            energyGauge.GetComponent<RectTransform>().localScale = new Vector3(0.7f, 0.3f, 1f);
-            Debug.Log(energyGauge.transform.parent.name);
+            GameObject weaponSlot = GameObject.Instantiate(skillsContainer.Find("EquipmentSlotPos1").Find("EquipIcon").gameObject, skillsContainer);
+            weaponSlot.name = "WeaponSlot";
 
-            energyHud.energyGauge = energyGauge;
-            energyHud.energyFill = energyGauge.transform.Find("GaugeFill").gameObject.GetComponent<Image>();*/
-            // this was nemesis henry's energy gauge- code may come in handy at some point
+            EquipmentIcon equipmentIconComponent = weaponSlot.GetComponent<EquipmentIcon>();
+            Components.WeaponIcon weaponIconComponent = weaponSlot.AddComponent<Components.WeaponIcon>();
+
+            weaponIconComponent.iconImage = equipmentIconComponent.iconImage;
+            weaponIconComponent.displayRoot = equipmentIconComponent.displayRoot;
+            weaponIconComponent.flashPanelObject = equipmentIconComponent.stockFlashPanelObject;
+            weaponIconComponent.reminderFlashPanelObject = equipmentIconComponent.reminderFlashPanelObject;
+            weaponIconComponent.isReadyPanelObject = equipmentIconComponent.isReadyPanelObject;
+            weaponIconComponent.tooltipProvider = equipmentIconComponent.tooltipProvider;
+            weaponIconComponent.targetHUD = hud;
+
+            MaterialHud.MaterialEquipmentIcon x = weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>();
+            Components.MaterialWeaponIcon y = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
+
+            y.icon = weaponIconComponent;
+            y.onCooldown = x.onCooldown;
+            y.mask = x.mask;
+            y.stockText = x.stockText;
+
+            RectTransform iconRect = weaponSlot.GetComponent<RectTransform>();
+            iconRect.localScale = new Vector3(2f, 2f, 2f);
+            iconRect.anchoredPosition = new Vector2(-128f, 60f);
+
+            HGTextMeshProUGUI keyText = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").Find("SkillKeyText").gameObject.GetComponent<HGTextMeshProUGUI>();
+            keyText.gameObject.GetComponent<InputBindingDisplayController>().enabled = false;
+            keyText.text = "Weapon";
+
+            weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("StockTextContainer").gameObject.SetActive(false);
+            weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject.SetActive(false);
+
+            // duration bar
+            GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+            chargeBar.transform.SetParent(weaponSlot.transform.Find("DisplayRoot"));
+
+            RectTransform rect = chargeBar.GetComponent<RectTransform>();
+
+            rect.localScale = new Vector3(0.75f, 0.1f, 1f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.localPosition = new Vector3(0f, 0f, 0f);
+            rect.anchoredPosition = new Vector2(-8f, 36f);
+            rect.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
+
+            weaponIconComponent.durationDisplay = chargeBar;
+            weaponIconComponent.durationBar = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
+
+            MonoBehaviour.Destroy(equipmentIconComponent);
+            MonoBehaviour.Destroy(x);
         }
     }
 }

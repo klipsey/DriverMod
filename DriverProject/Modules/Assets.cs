@@ -133,8 +133,45 @@ namespace RobDriver.Modules
 
             jammedEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ROB_DRIVER_JAMMED_POPUP");
 
-            #region Pistol Crosshair
+            #region Pistol Aim Mode Crosshair
             pistolAimCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverPistolAimCrosshair", false);
+
+            GameObject stockHolder = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageCrosshair.prefab").WaitForCompletion().transform.Find("Stock").gameObject);
+            stockHolder.transform.parent = pistolAimCrosshairPrefab.transform;
+
+            CrosshairController pistolCrosshair = pistolAimCrosshairPrefab.GetComponent<CrosshairController>();
+
+            pistolCrosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[]
+            {
+                new CrosshairController.SkillStockSpriteDisplay
+                {
+                    target = stockHolder.transform.GetChild(0).gameObject,
+                    skillSlot = SkillSlot.Secondary,
+                    minimumStockCountToBeValid = 1,
+                    maximumStockCountToBeValid = 99
+                },
+                new CrosshairController.SkillStockSpriteDisplay
+                {
+                    target = stockHolder.transform.GetChild(1).gameObject,
+                    skillSlot = SkillSlot.Secondary,
+                    minimumStockCountToBeValid = 2,
+                    maximumStockCountToBeValid = 99
+                },
+                new CrosshairController.SkillStockSpriteDisplay
+                {
+                    target = stockHolder.transform.GetChild(2).gameObject,
+                    skillSlot = SkillSlot.Secondary,
+                    minimumStockCountToBeValid = 3,
+                    maximumStockCountToBeValid = 99
+                },
+                new CrosshairController.SkillStockSpriteDisplay
+                {
+                    target = stockHolder.transform.GetChild(3).gameObject,
+                    skillSlot = SkillSlot.Secondary,
+                    minimumStockCountToBeValid = 4,
+                    maximumStockCountToBeValid = 99
+                }
+            };
 
             GameObject chargeBar = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
             chargeBar.transform.SetParent(pistolAimCrosshairPrefab.transform);
