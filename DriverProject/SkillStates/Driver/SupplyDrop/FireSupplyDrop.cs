@@ -34,6 +34,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
 
         protected virtual void PlayAnim()
         {
+            Util.PlaySound("sfx_driver_button_foley", this.gameObject);
             base.PlayAnimation("Gesture, Override", "PressButton", "Action.playbackRate", this.duration);
         }
 

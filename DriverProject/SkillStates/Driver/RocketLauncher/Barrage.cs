@@ -9,11 +9,18 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 {
     public class Barrage : BaseDriverSkillState
     {
-        public static int rocketCount = 7;
-        public static float damageCoefficient = 4f;
+        public static float damageCoefficient = 3f;
         public static float procCoefficient = 1f;
         public float baseShotDuration = 0.05f;
         public static float recoil = 11f;
+
+        protected virtual int baseRocketCount
+        {
+            get
+            {
+                return 7;
+            }
+        }
 
         protected virtual float maxSpread
         {
@@ -42,7 +49,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             this.characterBody.SetAimTimer(5f);
             this.muzzleString = "ShotgunMuzzle";
             this.shotDuration = this.baseShotDuration / this.attackSpeedStat;
-            this.remainingShots = Mathf.Clamp(Mathf.RoundToInt(Barrage.rocketCount * this.attackSpeedStat), Barrage.rocketCount, 40);
+            this.remainingShots = Mathf.Clamp(Mathf.RoundToInt(this.baseRocketCount * this.attackSpeedStat), this.baseRocketCount, 40);
 
             if (this.iDrive) this.iDrive.StartTimer();
 

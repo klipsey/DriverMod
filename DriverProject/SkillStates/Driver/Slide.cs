@@ -9,11 +9,17 @@ namespace RobDriver.SkillStates.Driver
 		private Vector3 forwardDirection;
 		private GameObject slideEffectInstance;
 		private bool startedStateGrounded;
+		private Animator animator;
+		private bool classicSound;
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			Util.PlaySound(EntityStates.Commando.SlideState.soundString, base.gameObject);
+			this.animator = this.GetModelAnimator();
+
+			this.classicSound = Modules.Config.classicDodgeSound.Value;
+
+			if (this.classicSound) Util.PlaySound(EntityStates.Commando.SlideState.soundString, base.gameObject);
 
 			if (base.inputBank && base.characterDirection)
 			{
@@ -29,13 +35,26 @@ namespace RobDriver.SkillStates.Driver
 
 			if (!this.startedStateGrounded)
 			{
-				this.PlayAnimation("Body", "SprintJump");
+				if (!this.classicSound) Util.PlaySound("sfx_driver_air_dodge", this.gameObject);
+
+				EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/CharacterLandImpact"), new EffectData
+				{
+					origin = base.characterBody.footPosition,
+					scale = base.characterBody.radius
+				}, true);
+
+				/*this.animator.SetFloat("forwardSpeedCached", 1f);
+				this.animator.SetFloat("rightSpeedCached", 0);
+				this.PlayAnimation("Body", "BonusJump");*/
+				this.PlayAnimation("FullBody, Override", "AirDodge");
+
 				Vector3 velocity = base.characterMotor.velocity;
 				velocity.y = base.characterBody.jumpPower;
 				base.characterMotor.velocity = velocity;
 				return;
 			}
 
+			if (!this.classicSound) Util.PlaySound("sfx_driver_dodge", this.gameObject);
 			base.PlayAnimation("FullBody, Override", "Slide", "Slide.playbackRate", EntityStates.Commando.SlideState.slideDuration);
 
 			if (EntityStates.Commando.SlideState.slideEffectPrefab)
@@ -45,9 +64,19 @@ namespace RobDriver.SkillStates.Driver
 			}
 		}
 
-		public override void FixedUpdate()
+        public override void Update()
+        {
+            base.Update();
+			if (this.animator) this.animator.SetBool("isGrounded", this.isGrounded);
+		}
+
+        public override void FixedUpdate()
 		{
 			base.FixedUpdate();
+			if (this.animator) this.animator.SetBool("isGrounded", this.isGrounded);
+
+			if (!this.isGrounded && this.slideEffectInstance) EntityState.Destroy(this.slideEffectInstance);
+
 			if (base.isAuthority)
 			{
 				float num = this.startedStateGrounded ? EntityStates.Commando.SlideState.slideDuration : EntityStates.Commando.SlideState.jumpDuration;
@@ -73,6 +102,7 @@ namespace RobDriver.SkillStates.Driver
 
 					base.characterMotor.rootMotion += num2 * this.moveSpeedStat * this.forwardDirection * Time.fixedDeltaTime;
 				}
+
 				if (base.fixedAge >= num)
 				{
 					this.outer.SetNextStateToMain();

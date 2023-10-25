@@ -630,6 +630,50 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_dodge" ID="{46A0B7B1-7270-4D62-9A83-F5475BCC3D43}">
+					<ChildrenList>
+						<Action Name="" ID="{9DDB12E0-A571-4AB6-93B8-88E0A813E3D9}" ShortID="700779488">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_dodge" ID="{35DC9E0C-82F1-4851-8E09-FE8CD598E769}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_air_dodge" ID="{D26E74D4-FBEA-4ECC-B57D-BC87AF70C756}">
+					<ChildrenList>
+						<Action Name="" ID="{65149D82-CA76-4359-90F4-1B87E77F283B}" ShortID="959835195">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_air_dodge" ID="{768AB719-14D6-472D-B42F-1B87165BB544}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_button_foley" ID="{10D022E3-D5EE-43B1-8BB3-F9408AEF17B3}">
+					<ChildrenList>
+						<Action Name="" ID="{473BDC49-1623-42F9-957A-A8FD6FA7CE7D}" ShortID="152844983">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_button_foley" ID="{89DD953F-05D1-45C0-8ED7-160CB4CC9549}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_foley" ID="{BE71DB28-D23E-4831-A3EA-9C6E72A01C5D}">
+					<ChildrenList>
+						<Action Name="" ID="{A18F2C77-159C-4D7D-BCAB-CCBA3407A550}" ShortID="1052437196">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_foley" ID="{BCDE9886-DA31-4467-9B88-C169C1E0FD1F}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

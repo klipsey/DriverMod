@@ -1589,6 +1589,16 @@ childName = "Head",
 localPos = new Vector3(0F, 0.10143F, -0.01147F),
 localAngles = new Vector3(0F, 0F, 0F),
 localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
+                },
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemDisplays.LoadDisplay("DisplaySunHead"),
+                    limbMask = LimbFlags.Head,
+childName = "Head",
+localPos = new Vector3(0F, 0.10143F, -0.01147F),
+localAngles = new Vector3(0F, 0F, 0F),
+localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
                 }
 });
 

@@ -19,6 +19,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<float> baseDropRate;
         public static ConfigEntry<bool> weaponCallouts;
         public static ConfigEntry<bool> backupMagExtendDuration;
+        public static ConfigEntry<bool> classicDodgeSound;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -88,6 +89,12 @@ false,
 "Backup Magazine Duration Extension",
 false,
 "If set to true, Backup Magazines will extend the duration of weapon pickups by 0.5s.");
+
+            classicDodgeSound
+= Config.BindAndOptions("01 - General",
+"Classic Dodge Sound",
+false,
+"If set to true, will use the old Combat Slide SFX. (Client-side)");
 
             cursed
 = Config.BindAndOptions("01 - General",

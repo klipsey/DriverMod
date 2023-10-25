@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2670349040
+CRC: 1280865001
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 4ae2421cbcb3c890c72c49a1d53fd83d
+    Hash: 75df0128201cb52f88127d243b193cc5
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 668637f38589cec50a7b1ffa4c183564
+    Hash: 31933bbcd75f2578c858839c86501405
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -47,6 +47,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 2334069450a65d042a95a873e5229b20, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: db294d07add6b364f99a346939dd2a8a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fef0780b96a0f12448b6dd86f9c8139b, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 120
@@ -214,6 +216,7 @@ Assets:
 - Assets/Driver/Icons/texPistolSecondaryIcon.png
 - Assets/Driver/Animations/Shotgun/ShootRiot.anim
 - Assets/Driver/Materials/matButton.mat
+- Assets/Driver/Animations/Default/Taunt.anim
 - Assets/Driver/Icons/texRocketLauncherSecondaryIcon.png
 - Assets/Driver/Icons/texArmCannonWeaponIcon.png
 - Assets/Driver/FBX/animDriverMachineGun.fbx

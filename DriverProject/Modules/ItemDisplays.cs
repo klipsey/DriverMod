@@ -2,6 +2,7 @@
 using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RobDriver.Modules
 {
@@ -14,8 +15,11 @@ namespace RobDriver.Modules
             PopulateFromBody("Commando");
             PopulateFromBody("Croco");
 
+            // i forgot this cursed code was lying here
+            // waht the fuck dude?
             GameObject fuckYou = Assets.mainAssetBundle.LoadAsset<GameObject>("DriverStunGrenadeGhost").InstantiateClone("DriverStunGrenadeGhost", true);//ItemDisplays.LoadDisplay("DisplayStunGrenade").InstantiateClone("DriverStunGrenadeGhost", true);
             fuckYou.AddComponent<RoR2.Projectile.ProjectileGhostController>();
+            fuckYou.AddComponent<NetworkIdentity>();
 
             GameObject model = GameObject.Instantiate(ItemDisplays.LoadDisplay("DisplayStunGrenade"));
             model.transform.parent = fuckYou.transform;

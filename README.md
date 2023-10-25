@@ -132,6 +132,13 @@ ___
 
 ## Changelog
 
+`1.2.6`
+- Added some more flair to Combat Slide
+- Prototype Rocket Launcher secondary damage: 300% > 250%, base projectile count 7 > 4 (still scales up with attack speed)
+- ^ weapon was deleting bosses way too fast even after the nerfs
+- Added some new sounds
+- Fixed Egocentrism item display
+
 `1.2.5`
 - Added RiskUI support! thanks to Bubbet for keeping the code clean so this was easy to implement
 - Added a stock display to Pistol's secondary so you don't have to keep looking in the corner to see if you have any shots ready

@@ -36,6 +36,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             //this.skillLocator.special.SetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+
+            Util.PlaySound("sfx_driver_foley", this.gameObject);
         }
 
         protected virtual void ShowButton()

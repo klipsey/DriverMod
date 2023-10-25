@@ -38,12 +38,11 @@ namespace RobDriver.Modules
             Prefabs.projectilePrefabs.Add(stunGrenadeProjectilePrefab);
 
             stunGrenadeImpactEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/StunChanceOnHit/ImpactStunGrenade.prefab").WaitForCompletion().InstantiateClone("DriverStunGrenadeImpact", true);
-
+            stunGrenadeImpactEffectPrefab.AddComponent<NetworkIdentity>();
             stunGrenadeImpactEffectPrefab.GetComponent<EffectComponent>().soundName = "";
 
             #region Ghost
             GameObject fcuk = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("DriverStunGrenadeImpact"));
-            fcuk.AddComponent<NetworkIdentity>();
             fcuk.transform.parent = stunGrenadeImpactEffectPrefab.transform;
             fcuk.transform.localScale = Vector3.one;
             fcuk.transform.localPosition = Vector3.zero;
@@ -101,9 +100,9 @@ namespace RobDriver.Modules
             ProjectileImpactExplosion impactExplosion = hmgGrenadeProjectilePrefab.GetComponent<ProjectileImpactExplosion>();
             InitializeImpactExplosion(impactExplosion);
 
-            GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
+            GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion2", true);
             fuckMyLife.AddComponent<NetworkIdentity>();
-            Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_explosion");
+            Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_grenade_explosion");
 
             impactExplosion.blastRadius = 4f;
             impactExplosion.destroyOnEnemy = true;

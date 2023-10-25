@@ -118,7 +118,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rapid barrage of rockets for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Barrage.damageCoefficient}% damage</style> each.");
 
             LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_ALT_NAME", "Hailstorm");
-            LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_ALT_DESCRIPTION", $"Fire a rapid barrage of rockets for <style=cIsDamage>{100f * 3f}% damage</style> each.");
+            LanguageAPI.Add(prefix + "SECONDARY_ROCKETLAUNCHER_ALT_DESCRIPTION", $"Fire a rapid barrage of rockets for <style=cIsDamage>{100f * 2.5f}% damage</style> each.");
 
             LanguageAPI.Add(prefix + "SECONDARY_PLASMACANNON_NAME", "Annihilation");
             LanguageAPI.Add(prefix + "SECONDARY_PLASMACANNON_DESCRIPTION", $"Fire a rapid barrage of plasma bursts for <style=cIsDamage>{100f * 10f}% damage</style> each.");

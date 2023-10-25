@@ -345,6 +345,8 @@ namespace RobDriver.SkillStates.Driver
         {
             base.OnExit();
 
+            if (this.iDrive) this.iDrive.chargeValue = 0f;
+
             if (NetworkServer.active) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
 
             this.PlayExitAnim();
