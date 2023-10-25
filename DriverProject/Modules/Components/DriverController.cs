@@ -5,7 +5,9 @@ using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 // this is definitely the worst way to do this
 // please make a system for this eventually
@@ -67,6 +69,8 @@ namespace RobDriver.Modules.Components
 
         private int availableSupplyDrops;
 
+        private DriverWeaponDef defaultWeaponDef;
+
         private SkateboardState skateboardState;// this could have easily been a bool
         private GameObject skateboardObject;
         private GameObject skateboardBackObject;
@@ -93,7 +97,8 @@ namespace RobDriver.Modules.Components
             this.GetSkillOverrides();
 
             this.pistolWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(0);
-            this.PickUpWeapon(this.pistolWeaponDef);
+            this.defaultWeaponDef = this.pistolWeaponDef;
+            this.PickUpWeapon(this.defaultWeaponDef);
 
             this.availableSupplyDrops = 1;
 
@@ -101,6 +106,9 @@ namespace RobDriver.Modules.Components
             this.skateboardBackObject = this.childLocator.FindChild("SkateboardBackModel").gameObject;
 
             this.ToggleSkateboard(SkateboardState.Inactive);
+
+            this.Invoke("SetInventoryHook", 0.5f);
+            this.Invoke("CheckForUpgrade", 2.5f);
         }
 
         private void GetSkillOverrides()
@@ -120,8 +128,6 @@ namespace RobDriver.Modules.Components
 
             this.primarySkillOverrides = primary.ToArray();
             this.secondarySkillOverrides = secondary.ToArray();
-
-            this.Invoke("SetInventoryHook", 0.5f);
         }
 
         private void Start()
@@ -134,7 +140,114 @@ namespace RobDriver.Modules.Components
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
                 this.characterBody.master.inventory.onItemAddedClient += this.Inventory_onItemAddedClient;
+                this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
+
+            this.CheckForNeedler();
+        }
+
+        private void CheckForNeedler()
+        {
+            if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
+            {
+                DriverWeaponDef desiredWeapon = DriverWeaponCatalog.weaponDefs[0];
+
+                if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0)
+                {
+                    desiredWeapon = DriverWeaponCatalog.PyriteGun;
+                }
+
+                if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0)
+                {
+                    desiredWeapon = DriverWeaponCatalog.Needler;
+                }
+
+                this.defaultWeaponDef = desiredWeapon;
+                if (this.maxWeaponTimer <= 0f) this.PickUpWeapon(this.defaultWeaponDef);
+            }
+        }
+
+        private void Inventory_onInventoryChanged()
+        {
+            this.CheckForNeedler();
+        }
+
+        private void CheckForUpgrade()
+        {
+            if (!Modules.Config.enablePistolUpgrade.Value) return;
+
+            // upgrade your pistol for run-ending bosses; this is more interesting than just injecting weapon drops imo
+            Scene currentScene = SceneManager.GetActiveScene();
+
+            if (currentScene.name == "moon" || currentScene.name == "moon2")
+            {
+                this.UpgradeToLunar();
+            }
+
+            if (currentScene.name == "voidraid")
+            {
+                this.UpgradeToVoid();
+            }
+
+            if (currentScene.name == "limbo")
+            {
+                this.UpgradeToLunar();
+            }
+        }
+
+        private bool TryUpgradeWeapon(DriverWeaponDef newWeaponDef)
+        {
+            if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
+
+            this.defaultWeaponDef = newWeaponDef;
+
+            return true;
+        }
+
+        private void UpgradeToLunar()
+        {
+            bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.LunarPistol);
+
+            if (!success) return;
+            this.PickUpWeapon(this.defaultWeaponDef);
+
+            EffectData effectData = new EffectData
+            {
+                origin = this.childLocator.FindChild("PistolMuzzle").position,
+                rotation = Quaternion.identity
+            };
+            EffectManager.SpawnEffect(Modules.Assets.upgradeEffectPrefab, effectData, false);
+
+            EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarGolem/LunarGolemTwinShotExplosion.prefab").WaitForCompletion(),
+new EffectData
+{
+origin = this.childLocator.FindChild("Pistol").position,
+rotation = Quaternion.identity,
+scale = 1f
+}, false);
+        }
+
+        private void UpgradeToVoid()
+        {
+            bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.VoidPistol);
+
+            if (!success) return;
+            this.PickUpWeapon(this.defaultWeaponDef);
+
+            EffectData effectData = new EffectData
+            {
+                origin = this.childLocator.FindChild("PistolMuzzle").position,
+                rotation = Quaternion.identity
+            };
+            EffectManager.SpawnEffect(Modules.Assets.upgradeEffectPrefab, effectData, false);
+
+            EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosion.prefab").WaitForCompletion(),
+new EffectData
+{
+    origin = this.childLocator.FindChild("Pistol").position,
+    rotation = Quaternion.identity,
+    scale = 1f
+}, false);
         }
 
         private void Inventory_onItemAddedClient(ItemIndex itemIndex)
@@ -214,9 +327,9 @@ namespace RobDriver.Modules.Components
             if (this.timerStarted) this.weaponTimer -= Time.fixedDeltaTime;
             this.jamTimer = Mathf.Clamp(this.jamTimer - (2f * Time.fixedDeltaTime), 0f, Mathf.Infinity);
 
-            if (this.weaponTimer <= 0f && this.weaponDef != this.pistolWeaponDef)
+            if (this.weaponTimer <= 0f && this.maxWeaponTimer > 0f)
             {
-                this.PickUpWeapon(this.pistolWeaponDef);
+                this.PickUpWeapon(this.defaultWeaponDef);
             }
 
             this.CheckSupplyDrop();
@@ -228,6 +341,14 @@ namespace RobDriver.Modules.Components
             {
                 if (this.skillLocator.special.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME")
                 {
+                    if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
+                    {
+                        if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) > 0)
+                        {
+                            return;
+                        }
+                    }
+
                     this.skillLocator.special.stock = this.availableSupplyDrops;
                 }
             }
@@ -282,7 +403,7 @@ namespace RobDriver.Modules.Components
             {
                 if (this.primarySkillOverrides[i])
                 {
-                    this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, this.primarySkillOverrides[i], GenericSkill.SkillOverridePriority.Upgrade);
+                    this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, this.primarySkillOverrides[i], GenericSkill.SkillOverridePriority.Contextual);
                 }
             }
 
@@ -290,14 +411,14 @@ namespace RobDriver.Modules.Components
             {
                 if (this.secondarySkillOverrides[i])
                 {
-                    this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, this.secondarySkillOverrides[i], GenericSkill.SkillOverridePriority.Upgrade);
+                    this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, this.secondarySkillOverrides[i], GenericSkill.SkillOverridePriority.Contextual);
                 }
             }
             // fuck this, seriously
 
             // set new overrides
-            if (this.weaponDef.primarySkillDef) this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, this.weaponDef.primarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-            if (this.weaponDef.secondarySkillDef) this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, this.weaponDef.secondarySkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            if (this.weaponDef.primarySkillDef) this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, this.weaponDef.primarySkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            if (this.weaponDef.secondarySkillDef) this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, this.weaponDef.secondarySkillDef, GenericSkill.SkillOverridePriority.Contextual);
 
             // model swap
             this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
@@ -315,6 +436,8 @@ namespace RobDriver.Modules.Components
             }
 
             if (this.weaponDef.tier == DriverWeaponTier.Common) duration = 0f;
+            if (this.weaponDef.baseDuration == 0f) duration = 0f;
+
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;
 
@@ -413,6 +536,7 @@ namespace RobDriver.Modules.Components
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
                 this.characterBody.master.inventory.onItemAddedClient -= this.Inventory_onItemAddedClient;
+                this.characterBody.master.inventory.onInventoryChanged -= this.Inventory_onInventoryChanged;
             }
         }
 

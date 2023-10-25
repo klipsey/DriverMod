@@ -58,6 +58,15 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_PISTOL_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * SkillStates.Driver.Shoot.damageCoefficient}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
 
+            LanguageAPI.Add(prefix + "PRIMARY_PYRITE_PISTOL_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_PYRITE_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * 2.5f}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
+
+            LanguageAPI.Add(prefix + "PRIMARY_LUNAR_PISTOL_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_LUNAR_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * 3.5f}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
+
+            LanguageAPI.Add(prefix + "PRIMARY_VOID_PISTOL_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_VOID_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * 3.5f}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
+
             LanguageAPI.Add(prefix + "PRIMARY_GOLDENGUN_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_GOLDENGUN_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * 3.9f}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
 
@@ -98,6 +107,15 @@ namespace RobDriver.Modules
             #region Secondary
             LanguageAPI.Add(prefix + "SECONDARY_PISTOL_NAME", "Focus");
             LanguageAPI.Add(prefix + "SECONDARY_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * SkillStates.Driver.SteadyAim.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SECONDARY_PYRITE_PISTOL_NAME", "Focus");
+            LanguageAPI.Add(prefix + "SECONDARY_PYRITE_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 6f}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SECONDARY_LUNAR_PISTOL_NAME", "Focus");
+            LanguageAPI.Add(prefix + "SECONDARY_LUNAR_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 9f}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SECONDARY_VOID_PISTOL_NAME", "Focus");
+            LanguageAPI.Add(prefix + "SECONDARY_VOID_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 9f}% damage</style>.");
 
             LanguageAPI.Add(prefix + "SECONDARY_BEETLESHIELD_NAME", "Block");
             LanguageAPI.Add(prefix + "SECONDARY_BEETLESHIELD_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * SkillStates.Driver.SteadyAim.damageCoefficient}% damage</style>. <style=cIsUtility>Blocks all damage from in front.</style>");
@@ -177,13 +195,27 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add("ROB_DRIVER_JAMMED_POPUP", "JAMMED...");
 
+            LanguageAPI.Add("ROB_DRIVER_UPGRADE_POPUP", "UPGRADE!");
+
 
             #region Gun shit
             LanguageAPI.Add("ROB_DRIVER_PISTOL_NAME", "Pistol");
             LanguageAPI.Add("ROB_DRIVER_PISTOL_DESC", "A reliable handgun that excels at nothing.");
 
+            LanguageAPI.Add("ROB_DRIVER_LUNAR_PISTOL_NAME", "Perfected Blaster");
+            LanguageAPI.Add("ROB_DRIVER_LUNAR_PISTOL_DESC", "A perfect weapon with no flaws. Speed is war.");
+
+            LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_NAME", "Corrupted Blaster");
+            LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_DESC", "A weapon corrupted by the void.");
+
+            LanguageAPI.Add("ROB_DRIVER_NEEDLER_NAME", "Needler");
+            LanguageAPI.Add("ROB_DRIVER_NEEDLER_DESC", "Risk of Rain 2");
+
             LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_NAME", "Golden Gun");
             LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_DESC", "A legendary gun that deals extraordinary damage.");
+
+            LanguageAPI.Add("ROB_DRIVER_PYRITEGUN_NAME", "Pyrite Gun");
+            LanguageAPI.Add("ROB_DRIVER_PYRITEGUN_DESC", "A mockery of the original.");
 
             LanguageAPI.Add("ROB_DRIVER_SHOTGUN_NAME", "Shotgun");
             LanguageAPI.Add("ROB_DRIVER_SHOTGUN_DESC", "A close-range powerhouse that excels at overwhelming damage.");

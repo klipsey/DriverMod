@@ -33,8 +33,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 this.areaIndicatorInstance.transform.localScale = Vector3.zero;
             }
 
-            this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Contextual);
-            this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Network);
+            this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Network);
             //this.skillLocator.special.SetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
 
             Util.PlaySound("sfx_driver_foley", this.gameObject);
@@ -142,8 +142,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
 
             this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;
 
-            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Contextual);
-            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Network);
+            this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Network);
             //this.skillLocator.special.UnsetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
         }
 

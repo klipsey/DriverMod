@@ -27,7 +27,7 @@ namespace RobDriver.SkillStates.Driver
         private GameObject effectInstance;
         private uint spinPlayID;
 
-        public virtual float _damageCoefficient
+        protected virtual float _damageCoefficient
         {
             get
             {
@@ -146,7 +146,7 @@ namespace RobDriver.SkillStates.Driver
             base.characterBody.AddSpreadBloom(1.25f);
         }
 
-        private GameObject tracerPrefab
+        protected virtual GameObject tracerPrefab
         {
             get
             {

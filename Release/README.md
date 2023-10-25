@@ -132,6 +132,21 @@ ___
 
 ## Changelog
 
+`1.2.6`
+- Added support for permanent weapon replacements
+- Upon reaching a run-ending boss stage, your default Pistol will now upgrade itself to better help you in the fight
+- ^ can be disabled in config but that's no fun
+- Added weapon: Needler
+- Added weapon: Pyrite Gun, a permanent Pistol upgrade
+- Heresy primary and secondary no longer take priority over picked up weapons- this hasn't been thoroughly tested so please report if you run into any weirdness
+- Added animation and vfx for heresy skills
+- Added some more flair to Combat Slide
+- Added some new sounds
+- Prototype Rocket Launcher secondary damage: 300% > 250%, base projectile count 7 > 4 (still scales up with attack speed)
+- ^ weapon was deleting bosses way too fast even after the nerfs
+- Fixed Egocentrism item display
+- Fixed heresy special skill having no cooldown when used with alternate special
+
 `1.2.5`
 - Added RiskUI support! thanks to Bubbet for keeping the code clean so this was easy to implement
 - Added a stock display to Pistol's secondary so you don't have to keep looking in the corner to see if you have any shots ready

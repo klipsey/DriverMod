@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-namespace DriverMod.SkillStates.Driver.LunarPistol
+namespace RobDriver.SkillStates.Driver.LunarPistol
 {
-    class SteadyAim
+    public class SteadyAim : Driver.SteadyAim
     {
+        protected override float _damageCoefficient => 9f;
+
+        protected override GameObject tracerPrefab => Modules.Assets.lunarTracer;
     }
 }

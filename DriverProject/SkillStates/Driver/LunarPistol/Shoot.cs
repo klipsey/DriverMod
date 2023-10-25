@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RoR2;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-namespace DriverMod.SkillStates.Driver.LunarPistol
+namespace RobDriver.SkillStates.Driver.LunarPistol
 {
-    class Shoot
+    public class Shoot : Driver.Shoot
     {
+        protected override float _damageCoefficient => 3.5f;
+        protected override GameObject tracerPrefab => Modules.Assets.lunarTracer;
+        public override BulletAttack.FalloffModel falloff => BulletAttack.FalloffModel.None;
     }
 }

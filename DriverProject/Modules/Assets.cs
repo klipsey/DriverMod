@@ -25,12 +25,14 @@ namespace RobDriver.Modules
         internal static List<NetworkSoundEventDef> networkSoundEventDefs = new List<NetworkSoundEventDef>();
 
         public static GameObject jammedEffectPrefab;
+        public static GameObject upgradeEffectPrefab;
         public static GameObject stunGrenadeModelPrefab;
 
         public static GameObject pistolAimCrosshairPrefab;
         public static GameObject bazookaCrosshairPrefab;
         public static GameObject rocketLauncherCrosshairPrefab;
         public static GameObject grenadeLauncherCrosshairPrefab;
+        public static GameObject needlerCrosshairPrefab;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -47,9 +49,13 @@ namespace RobDriver.Modules
         public static Mesh behemothMesh;
         public static Mesh beetleShieldMesh;
         public static Mesh grenadeLauncherMesh;
+        public static Mesh lunarPistolMesh;
+        public static Mesh voidPistolMesh;
+        public static Mesh needlerMesh;
 
         public static Material pistolMat;
         public static Material goldenGunMat;
+        public static Material pyriteGunMat;
         public static Material shotgunMat;
         public static Material riotShotgunMat;
         public static Material slugShotgunMat;
@@ -62,6 +68,7 @@ namespace RobDriver.Modules
         public static Material armCannonMat;
         public static Material plasmaCannonMat;
         public static Material grenadeLauncherMat;
+        public static Material needlerMat;
 
         public static Material knifeMat;
 
@@ -76,6 +83,7 @@ namespace RobDriver.Modules
 
         internal static Texture pistolWeaponIcon;
         internal static Texture goldenGunWeaponIcon;
+        internal static Texture pyriteGunWeaponIcon;
         internal static Texture shotgunWeaponIcon;
         internal static Texture riotShotgunWeaponIcon;
         internal static Texture slugShotgunWeaponIcon;
@@ -89,12 +97,18 @@ namespace RobDriver.Modules
         internal static Texture plasmaCannonWeaponIcon;
         internal static Texture beetleShieldWeaponIcon;
         internal static Texture grenadeLauncherWeaponIcon;
+        internal static Texture lunarPistolWeaponIcon;
+        internal static Texture voidPistolWeaponIcon;
+        internal static Texture needlerWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
 
+        public static GameObject lunarTracer;
+
         internal static DriverWeaponDef pistolWeaponDef;
         internal static DriverWeaponDef goldenGunWeaponDef;
+        internal static DriverWeaponDef pyriteGunWeaponDef;
         internal static DriverWeaponDef shotgunWeaponDef;
         internal static DriverWeaponDef riotShotgunWeaponDef;
         internal static DriverWeaponDef slugShotgunWeaponDef;
@@ -109,6 +123,9 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef beetleShieldWeaponDef;
         internal static DriverWeaponDef behemothWeaponDef;
         internal static DriverWeaponDef grenadeLauncherWeaponDef;
+        internal static DriverWeaponDef lunarPistolWeaponDef;
+        internal static DriverWeaponDef voidPistolWeaponDef;
+        internal static DriverWeaponDef needlerWeaponDef;
 
         internal static void PopulateAssets()
         {
@@ -132,6 +149,8 @@ namespace RobDriver.Modules
             //punchSoundDef = CreateNetworkSoundEventDef("RegigigasPunchImpact");
 
             jammedEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ROB_DRIVER_JAMMED_POPUP");
+
+            upgradeEffectPrefab = CreateTextPopupEffect("DriverGunUpgradeEffect", "ROB_DRIVER_UPGRADE_POPUP");
 
             #region Pistol Aim Mode Crosshair
             pistolAimCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverPistolAimCrosshair", false);
@@ -274,6 +293,37 @@ namespace RobDriver.Modules
             rocketLauncherCrosshairPrefab.transform.Find("StockCountHolder").gameObject.SetActive(false);
             #endregion
 
+            #region Needler Crosshair
+            needlerCrosshairPrefab = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Crosshair/LoaderCrosshair"), "DriverNeedlerCrosshair", false);
+            DriverPlugin.Destroy(needlerCrosshairPrefab.GetComponent<LoaderHookCrosshairController>());
+
+            needlerCrosshairPrefab.GetComponent<RawImage>().enabled = false;
+
+            var control = needlerCrosshairPrefab.GetComponent<CrosshairController>();
+
+            control.maxSpreadAlpha = 0;
+            control.maxSpreadAngle = 3;
+            control.minSpreadAlpha = 0;
+            control.spriteSpreadPositions = new CrosshairController.SpritePosition[]
+            {
+                new CrosshairController.SpritePosition
+                {
+                    target = needlerCrosshairPrefab.transform.GetChild(2).GetComponent<RectTransform>(),
+                    zeroPosition = new Vector3(-20f, 0, 0),
+                    onePosition = new Vector3(-48f, 0, 0)
+                },
+                new CrosshairController.SpritePosition
+                {
+                    target = needlerCrosshairPrefab.transform.GetChild(3).GetComponent<RectTransform>(),
+                    zeroPosition = new Vector3(20f, 0, 0),
+                    onePosition = new Vector3(48f, 0, 0)
+                }
+            };
+
+            DriverPlugin.Destroy(needlerCrosshairPrefab.transform.GetChild(0).gameObject);
+            DriverPlugin.Destroy(needlerCrosshairPrefab.transform.GetChild(1).gameObject);
+            #endregion
+
             pistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshPistol");
             goldenGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshGoldenGun");
             shotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSuperShotgun");
@@ -289,9 +339,13 @@ namespace RobDriver.Modules
             behemothMesh = mainAssetBundle.LoadAsset<Mesh>("meshBehemoth");
             beetleShieldMesh = mainAssetBundle.LoadAsset<Mesh>("meshBeetleShield");
             grenadeLauncherMesh = mainAssetBundle.LoadAsset<Mesh>("meshGrenadeLauncher");
+            lunarPistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshLunarPistol");
+            voidPistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshVoidPistol");
+            needlerMesh = mainAssetBundle.LoadAsset<Mesh>("meshNeedler");
 
             pistolMat = CreateMaterial("matPistol");
             goldenGunMat = CreateMaterial("matGoldenGun");
+            pyriteGunMat = CreateMaterial("matPyriteGun");
             shotgunMat = CreateMaterial("matShotgun");
             riotShotgunMat = CreateMaterial("matRiotShotgun");
             slugShotgunMat = CreateMaterial("matSlugShotgun");
@@ -302,8 +356,9 @@ namespace RobDriver.Modules
             rocketLauncherAltMat = CreateMaterial("matRocketLauncherAlt");
             sniperMat = CreateMaterial("matSniperRifle");
             armCannonMat = CreateMaterial("matArmCannon", 1f);
-            plasmaCannonMat = CreateMaterial("matPlasmaCannon", 45f, Color.white);
+            plasmaCannonMat = CreateMaterial("matPlasmaCannon", 30f, Color.white);
             grenadeLauncherMat = CreateMaterial("matGrenadeLauncher");
+            needlerMat = CreateMaterial("matNeedler", 5f, Color.white);
 
             knifeMat = CreateMaterial("matKnife");
 
@@ -511,6 +566,7 @@ namespace RobDriver.Modules
 
             pistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
             goldenGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGoldenGunWeaponIcon");
+            pyriteGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPyriteGunWeaponIcon");
             shotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texShotgunWeaponIcon");
             riotShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texRiotShotgunWeaponIcon");
             slugShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texSlugShotgunWeaponIcon");
@@ -524,6 +580,9 @@ namespace RobDriver.Modules
             plasmaCannonWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPlasmaCannonWeaponIcon");
             beetleShieldWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texBeetleShieldWeaponIcon");
             grenadeLauncherWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGrenadeLauncherWeaponIcon");
+            lunarPistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texLunarPistolWeaponIcon");
+            voidPistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texVoidPistolWeaponIcon");
+            needlerWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNeedlerWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -564,8 +623,27 @@ namespace RobDriver.Modules
                 }
             }
 
+            lunarTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverLunarPistolTracer", true);
+
+            if (!lunarTracer.GetComponent<EffectComponent>()) lunarTracer.AddComponent<EffectComponent>();
+            if (!lunarTracer.GetComponent<VFXAttributes>()) lunarTracer.AddComponent<VFXAttributes>();
+            if (!lunarTracer.GetComponent<NetworkIdentity>()) lunarTracer.AddComponent<NetworkIdentity>();
+
+            foreach (LineRenderer i in lunarTracer.GetComponentsInChildren<LineRenderer>())
+            {
+                if (i)
+                {
+                    bulletMat = UnityEngine.Object.Instantiate<Material>(i.material);
+                    bulletMat.SetColor("_TintColor", new Color(0f, 102f / 255f, 1f));
+                    i.material = bulletMat;
+                    i.startColor = new Color(0f, 102f / 255f, 1f);
+                    i.endColor = new Color(0f, 102f / 255f, 1f);
+                }
+            }
+
             AddNewEffectDef(shotgunTracer);
             AddNewEffectDef(shotgunTracerCrit);
+            AddNewEffectDef(lunarTracer);
 
             Modules.Config.InitROO(Assets.mainAssetBundle.LoadAsset<Sprite>("texDriverIcon"), "Literally me");
 
@@ -593,6 +671,57 @@ namespace RobDriver.Modules
             });
             DriverWeaponCatalog.AddWeapon(pistolWeaponDef);
 
+            lunarPistolWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_LUNAR_PISTOL_NAME",
+                descriptionToken = "ROB_DRIVER_LUNAR_PISTOL_DESC",
+                icon = Assets.lunarPistolWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Lunar,
+                baseDuration = 0f,
+                primarySkillDef = Survivors.Driver.lunarPistolPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.lunarPistolSecondarySkillDef,
+                mesh = Assets.lunarPistolMesh,
+                material = Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarGolem/matLunarGolem.mat").WaitForCompletion(),
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+            });
+            DriverWeaponCatalog.AddWeapon(lunarPistolWeaponDef);
+            DriverWeaponCatalog.LunarPistol = lunarPistolWeaponDef;
+
+            voidPistolWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_VOID_PISTOL_NAME",
+                descriptionToken = "ROB_DRIVER_VOID_PISTOL_DESC",
+                icon = Assets.voidPistolWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Lunar,
+                baseDuration = 0f,
+                primarySkillDef = Survivors.Driver.voidPistolPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.voidPistolSecondarySkillDef,
+                mesh = Assets.voidPistolMesh,
+                material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidJailer/matVoidJailer.mat").WaitForCompletion(),
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+            });
+            DriverWeaponCatalog.AddWeapon(voidPistolWeaponDef);
+            DriverWeaponCatalog.VoidPistol = voidPistolWeaponDef;
+
+            needlerWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_NEEDLER_NAME",
+                descriptionToken = "ROB_DRIVER_NEEDLER_DESC",
+                icon = Assets.needlerWeaponIcon,
+                crosshairPrefab = Assets.needlerCrosshairPrefab,
+                tier = DriverWeaponTier.Lunar,
+                baseDuration = 0f,
+                primarySkillDef = null,
+                secondarySkillDef = null,
+                mesh = Assets.needlerMesh,
+                material = Assets.needlerMat,
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+            });
+            DriverWeaponCatalog.AddWeapon(needlerWeaponDef);
+            DriverWeaponCatalog.Needler = needlerWeaponDef;
+
             goldenGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_GOLDENGUN_NAME",
@@ -611,6 +740,24 @@ namespace RobDriver.Modules
             DriverWeaponCatalog.AddWeapon(goldenGunWeaponDef);
             DriverWeaponCatalog.GoldenGun = goldenGunWeaponDef;
 
+            pyriteGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_PYRITEGUN_NAME",
+                descriptionToken = "ROB_DRIVER_PYRITEGUN_DESC",
+                icon = Assets.pyriteGunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Unique,
+                baseDuration = 0f,
+                primarySkillDef = Survivors.Driver.pyriteGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.pyriteGunSecondarySkillDef,
+                mesh = Assets.goldenGunMesh,
+                material = Assets.pyriteGunMat,
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+                calloutSoundString = "sfx_driver_callout_generic"
+            });
+            DriverWeaponCatalog.AddWeapon(pyriteGunWeaponDef);
+            DriverWeaponCatalog.PyriteGun = pyriteGunWeaponDef;
+
             beetleShieldWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_BEETLESHIELD_NAME",
@@ -618,7 +765,7 @@ namespace RobDriver.Modules
                 icon = Assets.beetleShieldWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Unique,
-                baseDuration = 0f,
+                baseDuration = 8f,
                 primarySkillDef = Survivors.Driver.beetleShieldPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.beetleShieldSecondarySkillDef,
                 mesh = Assets.beetleShieldMesh,

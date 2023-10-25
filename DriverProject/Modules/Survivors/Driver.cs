@@ -48,8 +48,17 @@ namespace RobDriver.Modules.Survivors
         internal static UnlockableDef supplyDropUnlockableDef;
 
         // skill overrides
+        internal static SkillDef lunarPistolPrimarySkillDef;
+        internal static SkillDef lunarPistolSecondarySkillDef;
+
+        internal static SkillDef voidPistolPrimarySkillDef;
+        internal static SkillDef voidPistolSecondarySkillDef;
+
         internal static SkillDef goldenGunPrimarySkillDef;
         internal static SkillDef goldenGunSecondarySkillDef;
+
+        internal static SkillDef pyriteGunPrimarySkillDef;
+        internal static SkillDef pyriteGunSecondarySkillDef;
 
         internal static SkillDef shotgunPrimarySkillDef;
         internal static SkillDef shotgunSecondarySkillDef;
@@ -514,11 +523,32 @@ namespace RobDriver.Modules.Survivors
     prefix + "_DRIVER_BODY_PRIMARY_GOLDENGUN_DESCRIPTION",
     Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGoldenGunIcon"), false);
 
+            Driver.pyriteGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.PyriteGun.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_PYRITE_PISTOL_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_PYRITE_PISTOL_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGoldenGunIcon"), false);
+
             Driver.beetleShieldPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.BeetleShield.Shoot)),
 "Weapon",
 prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME",
 prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false);
+
+            Driver.lunarPistolPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.LunarPistol.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_LUNAR_PISTOL_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_LUNAR_PISTOL_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false);
+
+            Driver.voidPistolPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.VoidPistol.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_VOID_PISTOL_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_VOID_PISTOL_DESCRIPTION",
 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false);
 
             Driver.shotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
@@ -682,6 +712,78 @@ false);
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_BEETLESHIELD_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.BeetleShield.SteadyAim)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 3,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 0,
+                stockToConsume = 0,
+            });
+
+            Driver.pyriteGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_PYRITE_PISTOL_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_PYRITE_PISTOL_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_PYRITE_PISTOL_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.PyriteGun.SteadyAim)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 3,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 0,
+                stockToConsume = 0,
+            });
+
+            Driver.lunarPistolSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_LUNAR_PISTOL_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_LUNAR_PISTOL_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_LUNAR_PISTOL_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.LunarPistol.SteadyAim)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 3,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 0,
+                stockToConsume = 0,
+            });
+
+            Driver.voidPistolSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_VOID_PISTOL_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_VOID_PISTOL_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_VOID_PISTOL_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.VoidPistol.SteadyAim)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 3,
                 baseRechargeInterval = 6f,
@@ -1755,6 +1857,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             RoR2.UI.HUD.onHudTargetChangedGlobal += HUDSetup;
 
             On.RoR2.SkillLocator.ApplyAmmoPack += SkillLocator_ApplyAmmoPack;
+
+            // heresy anims
+            On.EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle.OnEnter += PlayVisionsAnimation;
+            On.EntityStates.GlobalSkills.LunarNeedle.ChargeLunarSecondary.PlayChargeAnimation += PlayChargeLunarAnimation;
+            On.EntityStates.GlobalSkills.LunarNeedle.ThrowLunarSecondary.PlayThrowAnimation += PlayThrowLunarAnimation;
+            On.EntityStates.GlobalSkills.LunarDetonator.Detonate.OnEnter += PlayRuinAnimation;
         }
 
         private static void SkillLocator_ApplyAmmoPack(On.RoR2.SkillLocator.orig_ApplyAmmoPack orig, SkillLocator self)
@@ -1997,6 +2105,58 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
             MonoBehaviour.Destroy(equipmentIconComponent);
             MonoBehaviour.Destroy(x);
+        }
+
+        private static void PlayVisionsAnimation(On.EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle.orig_OnEnter orig, EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle self)
+        {
+            orig(self);
+
+            if (self.characterBody.baseNameToken == bodyNameToken)
+            {
+                self.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", self.duration * 12f);
+                EffectManager.SimpleMuzzleFlash(EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle.muzzleFlashEffectPrefab, self.gameObject, "PistolMuzzle", false);
+            }
+        }
+
+        private static void PlayChargeLunarAnimation(On.EntityStates.GlobalSkills.LunarNeedle.ChargeLunarSecondary.orig_PlayChargeAnimation orig, EntityStates.GlobalSkills.LunarNeedle.ChargeLunarSecondary self)
+        {
+            orig(self);
+
+            if (self.characterBody.baseNameToken == bodyNameToken)
+            {
+                self.PlayAnimation("Gesture, Override", "ChargeHooks", "Hooks.playbackRate", self.duration * 0.5f);
+            }
+        }
+
+        private static void PlayThrowLunarAnimation(On.EntityStates.GlobalSkills.LunarNeedle.ThrowLunarSecondary.orig_PlayThrowAnimation orig, EntityStates.GlobalSkills.LunarNeedle.ThrowLunarSecondary self)
+        {
+            orig(self);
+
+            if (self.characterBody.baseNameToken == bodyNameToken)
+            {
+                self.PlayAnimation("Gesture, Override", "ThrowHooks", "Hooks.playbackRate", self.duration);
+            }
+        }
+
+        private static void PlayRuinAnimation(On.EntityStates.GlobalSkills.LunarDetonator.Detonate.orig_OnEnter orig, EntityStates.GlobalSkills.LunarDetonator.Detonate self)
+        {
+            orig(self);
+
+            if (self.characterBody.baseNameToken == bodyNameToken)
+            {
+                //self.PlayAnimation("Gesture, Override", "CastRuin", "Ruin.playbackRate", self.duration * 0.5f);
+                //Util.PlaySound("PaladinFingerSnap", self.gameObject);
+                self.PlayAnimation("Gesture, Override", "PressVoidButton", "Action.playbackRate", 0.5f * self.duration);
+                self.StartAimMode(self.duration + 0.5f);
+
+                EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosion.prefab").WaitForCompletion(),
+        new EffectData
+        {
+            origin = self.FindModelChild("HandL").position,
+            rotation = Quaternion.identity,
+            scale = 0.5f
+        }, false);
+            }
         }
     }
 }

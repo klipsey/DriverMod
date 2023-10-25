@@ -20,6 +20,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> weaponCallouts;
         public static ConfigEntry<bool> backupMagExtendDuration;
         public static ConfigEntry<bool> classicDodgeSound;
+        public static ConfigEntry<bool> enablePistolUpgrade;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -95,6 +96,12 @@ false,
 "Classic Dodge Sound",
 false,
 "If set to true, will use the old Combat Slide SFX. (Client-side)");
+
+            enablePistolUpgrade
+= Config.BindAndOptions("01 - General",
+"Enable Pistol Upgrade",
+true,
+"If set to false, will stop Pistol from upgrading itself for run-ending boss fights.");
 
             cursed
 = Config.BindAndOptions("01 - General",

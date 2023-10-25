@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-namespace DriverMod.SkillStates.Driver.VoidPistol
+namespace RobDriver.SkillStates.Driver.VoidPistol
 {
-    class SteadyAim
+    public class SteadyAim : Driver.SteadyAim
     {
+        protected override float _damageCoefficient => 9f;
+
+        protected override GameObject tracerPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamTracer.prefab").WaitForCompletion();
     }
 }

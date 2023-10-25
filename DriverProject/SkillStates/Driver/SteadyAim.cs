@@ -2,8 +2,6 @@
 using RoR2;
 using EntityStates;
 using static RoR2.CameraTargetParams;
-using RobDriver.Modules.Components;
-using RoR2.UI;
 using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver
@@ -17,6 +15,23 @@ namespace RobDriver.SkillStates.Driver
         public static float recoil = 0.5f;
 
         private bool lastCharge;
+
+        protected virtual float _damageCoefficient
+        {
+            get
+            {
+                return SteadyAim.damageCoefficient;
+            }
+        }
+
+        protected virtual GameObject tracerPrefab
+        {
+            get
+            {
+                if (this.isCrit) return Shoot.critTracerEffectPrefab;
+                return Shoot.tracerEffectPrefab;
+            }
+        }
 
         private CameraParamsOverrideHandle camParamsOverrideHandle;
         private float shotCooldown;
@@ -195,6 +210,14 @@ namespace RobDriver.SkillStates.Driver
             base.PlayAnimation("Gesture, Override", animString, "Action.playbackRate", speed);
         }
 
+        protected virtual string GetSoundString(bool crit, bool charged)
+        {
+            string soundString = "sfx_driver_pistol_shoot";
+            if (crit) soundString = "sfx_driver_pistol_shoot_critical";
+            if (charged) soundString = "sfx_driver_pistol_shoot_charged";
+            return soundString;
+        }
+
         public void Fire()
         {
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
@@ -209,18 +232,15 @@ namespace RobDriver.SkillStates.Driver
 
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "PistolMuzzle", false);
 
-            string soundString = "sfx_driver_pistol_shoot";
+            
             if (this.isCrit)
             {
-                soundString = "sfx_driver_pistol_shoot_critical";
-
                 this.cachedShots++;
                 this.cachedShotTimer = 0.05f;
             }
 
             if (wasCharged)
             {
-                soundString = "sfx_driver_pistol_shoot_charged";
                 base.characterBody.AddSpreadBloom(1.5f);
             }
             else
@@ -228,7 +248,7 @@ namespace RobDriver.SkillStates.Driver
                 base.characterBody.AddSpreadBloom(0.35f);
             }
 
-            Util.PlaySound(soundString, this.gameObject);
+            Util.PlaySound(this.GetSoundString(this.isCrit, wasCharged), this.gameObject);
 
             this.PlayShootAnim(wasCharged, this.isCrit, this.shotCooldown * 1.5f);
 
@@ -241,15 +261,12 @@ namespace RobDriver.SkillStates.Driver
 
                 if (wasCharged)
                 {
-                    dmg = SteadyAim.damageCoefficient;
+                    dmg = this._damageCoefficient;
 
                     this.skillLocator.secondary.DeductStock(1);
                 }
 
                 this.lastCharge = wasCharged;
-
-                GameObject tracerPrefab = Shoot.tracerEffectPrefab;
-                if (isCrit) tracerPrefab = Shoot.critTracerEffectPrefab;
 
                 new BulletAttack
                 {
@@ -275,7 +292,7 @@ namespace RobDriver.SkillStates.Driver
                     sniper = false,
                     stopperMask = LayerIndex.CommonMasks.bullet,
                     weapon = null,
-                    tracerEffectPrefab = tracerPrefab,
+                    tracerEffectPrefab = this.tracerPrefab,
                     spreadPitchScale = 0f,
                     spreadYawScale = 0f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
@@ -292,7 +309,7 @@ namespace RobDriver.SkillStates.Driver
             base.characterBody.AddSpreadBloom(1.15f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "PistolMuzzle", false);
 
-            Util.PlaySound("sfx_driver_pistol_shoot_critical", base.gameObject);
+            Util.PlaySound("sfx_driver_pistol_shoot_charged", base.gameObject);
 
             if (base.isAuthority)
             {
