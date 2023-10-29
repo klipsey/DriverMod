@@ -1,6 +1,6 @@
 # Driver
 - Adds the Driver, an original character based on the Driver from the film Drive (2011)
-- Fully functional base kit with many weapon pickups that give him new attacks
+- Fully functional base kit with many weapon pickups that give him new attacks- all weapons can be found on the Wiki on this page
 - Has item displays, unlockable skins and skills and is fully multiplayer compatible
 - Configurable stats and a few other things to mess around with
 - Full Risk of Options support for all configuration options
@@ -131,6 +131,18 @@ iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98
 ___
 
 ## Changelog
+
+`1.2.8`
+- Added weapon: Chimeric Cannon
+- Added weapon: Hammer of the King
+- Added weapon: Badass Shotgun
+- Added radius indicators to all explosives so you can actually see the blast radius
+- Added Lystate Cell functionality to alternate special
+- Added a wiki to the mod page listing all the weapons currently available
+- Updated some projectile models and VFX to add a little more variety
+- Grenade Launcher primary damage: 300% > 500%, blast radius 4m > 6m, fire rate increased by 25%, knockback force severely reduced
+- ^this weapon really sucked and needed every one of these buffs
+- Fixed cooldowns being reset any time the inventory was updated (this included equipment being used or coming off cooldown)
 
 `1.2.7`
 - Fixed weapon pickups not being fully networked, clients can now see what's in them!
