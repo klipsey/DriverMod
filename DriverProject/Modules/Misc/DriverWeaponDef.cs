@@ -8,7 +8,8 @@ public class DriverWeaponDef : ScriptableObject
     public enum AnimationSet // i hate enums but this is okay being one since animation sets won't be added often
     {
         Default,
-        TwoHanded
+        TwoHanded,
+        BigMelee
     }
 
     [Header("General")]
@@ -31,10 +32,13 @@ public class DriverWeaponDef : ScriptableObject
 
     [HideInInspector]
     public ushort index; // assigned at runtime
+    [HideInInspector]
+    public GameObject pickupPrefab; // same thing
 
     public static DriverWeaponDef CreateWeaponDefFromInfo(DriverWeaponDefInfo weaponDefInfo)
     {
         DriverWeaponDef weaponDef = (DriverWeaponDef)ScriptableObject.CreateInstance(typeof(DriverWeaponDef));
+        weaponDef.name = weaponDefInfo.nameToken;
 
         weaponDef.nameToken = weaponDefInfo.nameToken;
         weaponDef.descriptionToken = weaponDefInfo.descriptionToken;

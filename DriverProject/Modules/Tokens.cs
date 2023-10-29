@@ -10,8 +10,8 @@ namespace RobDriver.Modules
             string prefix = DriverPlugin.developerPrefix + "_DRIVER_BODY_";
 
             string desc = "The Driver is literally me.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
-            desc = desc + "< ! > Use Focus to slightly increase your fire rate." + Environment.NewLine + Environment.NewLine;
-            desc = desc + "< ! > Be careful not to get flanked while using Focus." + Environment.NewLine + Environment.NewLine;
+            desc = desc + "< ! > Weapons each last 8 seconds and have unique strengths and weaknesses so be sure to pick the right tool for the job." + Environment.NewLine + Environment.NewLine;
+            desc = desc + "< ! > Focus greatly increases your damage output, but be careful not to get flanked while aiming." + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Combat Slide while shooting to make sure your damage has no downtime." + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Flashbang can be used to make a clean getaway in a pinch." + Environment.NewLine + Environment.NewLine;
 
@@ -29,7 +29,7 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "NAME", "Driver");
             LanguageAPI.Add(prefix + "DESCRIPTION", desc);
-            LanguageAPI.Add(prefix + "SUBTITLE", "Enigmatic Man");
+            LanguageAPI.Add(prefix + "SUBTITLE", "Driver? I hardly know 'er!");
             LanguageAPI.Add(prefix + "LORE", lore);
             LanguageAPI.Add(prefix + "OUTRO_FLAVOR", outro);
             LanguageAPI.Add(prefix + "OUTRO_FAILURE", outroFailure);
@@ -74,16 +74,19 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_SHOTGUN_DESCRIPTION", $"Fire a short-range blast for <style=cIsDamage>{SkillStates.Driver.Shotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.Shotgun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_NAME", "Blast");
-            LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_DESCRIPTION", $"Fire a short-range piercing blast for <style=cIsDamage>{SkillStates.Driver.RiotShotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.RiotShotgun.Shoot.damageCoefficient}% damage</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_DESCRIPTION", $"Fire a short-range <style=cIsUtilitye>piercing</style> blast for <style=cIsDamage>{SkillStates.Driver.RiotShotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.RiotShotgun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_SLUG_SHOTGUN_NAME", "Blast");
             LanguageAPI.Add(prefix + "PRIMARY_SLUG_SHOTGUN_DESCRIPTION", $"Fire a short-range slug for <style=cIsDamage>{100f * SkillStates.Driver.SlugShotgun.Shoot.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_BADASS_SHOTGUN_NAME", "Blast");
+            LanguageAPI.Add(prefix + "PRIMARY_BADASS_SHOTGUN_DESCRIPTION", $"Fire a short-range blast for <style=cIsDamage>{SkillStates.Driver.BadassShotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.BadassShotgun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_MACHINEGUN_NAME", "Spray");
             LanguageAPI.Add(prefix + "PRIMARY_MACHINEGUN_DESCRIPTION", $"Fire a rapid spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.MachineGun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_NAME", "Spray");
-            LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION", $"Fire an accurate spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.HeavyMachineGun.Shoot.damageCoefficient}% damage</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION", $"Fire a spray of <style=cIsUtilitye>armor piercing</style> shots for <style=cIsDamage>{100f * SkillStates.Driver.HeavyMachineGun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_NAME", "Fire");
             LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_DESCRIPTION", $"Charge and fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.Bazooka.Fire.minDamageCoefficient}-{100f * SkillStates.Driver.Bazooka.Fire.maxDamageCoefficient}% damage</style>.");
@@ -102,20 +105,26 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "PRIMARY_SNIPER_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_SNIPER_DESCRIPTION", $"Fire your rifle for <style=cIsDamage>{100f * SkillStates.Driver.SniperRifle.Shoot.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_LUNARRIFLE_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_LUNARRIFLE_DESCRIPTION", $"Fire a blast for <style=cIsDamage>{100f * SkillStates.Driver.LunarRifle.Shoot.damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_LUNARHAMMER_NAME", "Crush");
+            LanguageAPI.Add(prefix + "PRIMARY_LUNARHAMMER_DESCRIPTION", $"Swing your hammer for <style=cIsDamage>{100f * SkillStates.Driver.LunarHammer.SwingCombo._damageCoefficient}% damage</style>.");
             #endregion
 
             #region Secondary
             LanguageAPI.Add(prefix + "SECONDARY_PISTOL_NAME", "Focus");
-            LanguageAPI.Add(prefix + "SECONDARY_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * SkillStates.Driver.SteadyAim.damageCoefficient}% damage</style>.");
+            LanguageAPI.Add(prefix + "SECONDARY_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * SkillStates.Driver.SteadyAim.damageCoefficient}% damage</style>. <style=cIsUtility>Boosts rate of fire and accuracy.</style>");
 
             LanguageAPI.Add(prefix + "SECONDARY_PYRITE_PISTOL_NAME", "Focus");
-            LanguageAPI.Add(prefix + "SECONDARY_PYRITE_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 6f}% damage</style>.");
+            LanguageAPI.Add(prefix + "SECONDARY_PYRITE_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 6f}% damage</style>. <style=cIsUtility>Boosts rate of fire and accuracy.</style>");
 
             LanguageAPI.Add(prefix + "SECONDARY_LUNAR_PISTOL_NAME", "Focus");
-            LanguageAPI.Add(prefix + "SECONDARY_LUNAR_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 9f}% damage</style>.");
+            LanguageAPI.Add(prefix + "SECONDARY_LUNAR_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 9f}% damage</style>. <style=cIsUtility>Boosts rate of fire and accuracy.</style>");
 
             LanguageAPI.Add(prefix + "SECONDARY_VOID_PISTOL_NAME", "Focus");
-            LanguageAPI.Add(prefix + "SECONDARY_VOID_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 9f}% damage</style>.");
+            LanguageAPI.Add(prefix + "SECONDARY_VOID_PISTOL_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * 9f}% damage</style>. <style=cIsUtility>Boosts rate of fire and accuracy.</style>");
 
             LanguageAPI.Add(prefix + "SECONDARY_BEETLESHIELD_NAME", "Block");
             LanguageAPI.Add(prefix + "SECONDARY_BEETLESHIELD_DESCRIPTION", $"Take aim and charge a shot for up to <style=cIsDamage>{100f * SkillStates.Driver.SteadyAim.damageCoefficient}% damage</style>. <style=cIsUtility>Blocks all damage from in front.</style>");
@@ -146,6 +155,9 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "SECONDARY_GOLDENGUN_NAME", "Lights Out");
             LanguageAPI.Add(prefix + "SECONDARY_GOLDENGUN_DESCRIPTION", $"Take aim and fire a devastating shot for <style=cIsDamage>{100f * SkillStates.Driver.GoldenGun.LightsOut.damageCoefficient}% damage</style>. <style=cIsHealth>Consumes the gun on use.</style>");
+
+            LanguageAPI.Add(prefix + "SECONDARY_LUNARHAMMER_NAME", "Shards");
+            LanguageAPI.Add(prefix + "SECONDARY_LUNARHAMMER_DESCRIPTION", $"<style=cIsUtility>Agile.</style> Fire a volley of <style=cIsUtility>lunar shards</style>, dealing <style=cIsDamage>" + 100f * SkillStates.Driver.LunarHammer.FireShard.damageCoefficient + "% damage</style> each.");
             #endregion
 
             #region Utility
@@ -226,6 +238,9 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_NAME", "Slug Shotgun");
             LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_DESC", "A shotgun loaded with slugs that excels at powerful single hits.");
 
+            LanguageAPI.Add("ROB_DRIVER_BADASS_SHOTGUN_NAME", "Badass Shotgun");
+            LanguageAPI.Add("ROB_DRIVER_BADASS_SHOTGUN_DESC", "A six-barreled shotgun...!?");
+
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_NAME", "Machine Gun");
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "A gun that excels at something, I'm not really sure what.");
 
@@ -261,6 +276,12 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_NAME", "Grenade Launcher");
             LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_DESC", "h");
+
+            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_NAME", "Chimeric Cannon");
+            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "h");
+
+            LanguageAPI.Add("ROB_DRIVER_LUNARHAMMER_NAME", "Hammer of the King");
+            LanguageAPI.Add("ROB_DRIVER_LUNARHAMMER_DESC", "Wield supreme power in the palm of your hand.");
             #endregion
         }
     }

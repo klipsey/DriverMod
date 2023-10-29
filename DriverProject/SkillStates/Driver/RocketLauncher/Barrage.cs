@@ -34,7 +34,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         {
             get
             {
-                return Modules.Projectiles.rocketProjectilePrefab;
+                return Modules.Projectiles.missileProjectilePrefab;
             }
         }
 

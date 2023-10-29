@@ -1,7 +1,6 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
-using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
 
@@ -9,16 +8,15 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 3f;
+        public static float damageCoefficient = 5f;
         public static float procCoefficient = 1f;
-        public float baseDuration = 1f; // the base skill duration. i.e. attack speed
-        public static float recoil = 9f;
+        public float baseDuration = 0.75f; // the base skill duration. i.e. attack speed
+        public static float recoil = 6f;
 
         private float earlyExitTime;
         protected float duration;
         protected float fireDuration;
         protected bool hasFired;
-        private bool isCrit;
         protected string muzzleString;
 
         public override void OnEnter()
@@ -28,7 +26,6 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
             this.muzzleString = "ShotgunMuzzle";
             this.hasFired = false;
             this.duration = this.baseDuration / this.attackSpeedStat;
-            this.isCrit = base.RollCrit();
             this.earlyExitTime = 0.4f * this.duration;
 
             Util.PlaySound("sfx_driver_grenade_launcher_shoot", base.gameObject);
@@ -78,13 +75,13 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
+                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
+                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
                     }
                 }
             }

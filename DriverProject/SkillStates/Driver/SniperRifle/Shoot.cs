@@ -50,7 +50,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
                 if (this.iDrive)
                 {
-                    this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
+                    this.iDrive.machineGunVFX.Play();
                 }
 
                 float recoilAmplitude = Shoot.bulletRecoil / this.attackSpeedStat;

@@ -18,6 +18,8 @@ namespace RobDriver
         internal static DriverWeaponDef LunarPistol;
         internal static DriverWeaponDef VoidPistol;
         internal static DriverWeaponDef Needler;
+        internal static DriverWeaponDef LunarRifle;
+        internal static DriverWeaponDef LunarHammer;
 
         internal static void AddWeapon(DriverWeaponDef weaponDef)
         {
@@ -27,6 +29,10 @@ namespace RobDriver
             weaponDef.index = (ushort)index;
 
             weaponDefs[index] = weaponDef;
+            weaponDef.index = (ushort)index;
+
+            // heheheha
+            weaponDef.pickupPrefab = Modules.Assets.CreatePickupObject(weaponDef);
         }
 
         internal static DriverWeaponDef GetWeaponFromIndex(int index)

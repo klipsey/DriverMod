@@ -75,11 +75,10 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         {
             if (NetworkServer.active)
             {
-                GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.weaponPickupUnique, this.dropPosition, UnityEngine.Random.rotation);
+                GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(this.weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = this.weaponDef;
 
                 NetworkServer.Spawn(weaponPickup);
             }

@@ -29,6 +29,9 @@ namespace RobDriver.SkillStates.Driver
                 if (!this.characterBody.outOfDanger || !this.characterBody.outOfCombat) cock = true;
 
                 this.animator.SetBool("inCombat", cock);
+
+				if (this.isGrounded) this.animator.SetFloat("airBlend", 0f);
+				else this.animator.SetFloat("airBlend", 1f);
             }
 
 			//emotes

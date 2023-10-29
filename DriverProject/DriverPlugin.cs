@@ -37,7 +37,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.2.6";
+        public const string MODVERSION = "1.2.8";
 
         public const string developerPrefix = "ROB";
 
@@ -88,6 +88,8 @@ namespace RobDriver
         private void Hook()
         {
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+
+            // uncomment this if network testing
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
         }
 

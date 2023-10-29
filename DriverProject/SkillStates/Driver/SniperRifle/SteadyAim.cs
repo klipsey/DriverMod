@@ -160,6 +160,12 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             this.chargeTimer = 0f;
             this.isCharged = false;
 
+            if (this.iDrive)
+            {
+                this.iDrive.StartTimer();
+                this.iDrive.machineGunVFX.Play();
+            }
+
             base.characterBody.AddSpreadBloom(1f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "ShotgunMuzzle", false);
 

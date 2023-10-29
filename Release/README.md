@@ -100,7 +100,7 @@ rob - Mostly everything
 
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
 
-Moffein - Also maintained things :-) Riot Shotgun SFX
+Moffein - Also maintained things :-) Riot Shotgun SFX, networking help and great feedback
 
 Swuff - Code help, feedback, networking help
 
@@ -126,11 +126,17 @@ iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98
 
 
 ## Known Issues
-- Clients in multiplayer see weapon pickups as ????, networking sucks major ball can someone please help me fix this :(
+- None as of right now
 
 ___
 
 ## Changelog
+
+`1.2.7`
+- Fixed weapon pickups not being fully networked, clients can now see what's in them!
+- Fixed certain Pistol upgrades being overridden by inventory changes
+- Fixed weapon HUD showing for everyone in multiplayer if someone else was playing Driver
+- Fixed some animations/skill states not being networked properly
 
 `1.2.6`
 - Added support for permanent weapon replacements

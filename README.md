@@ -100,7 +100,7 @@ rob - Mostly everything
 
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
 
-Moffein - Also maintained things :-) Riot Shotgun SFX
+Moffein - Also maintained things :-) Riot Shotgun SFX, networking help and great feedback
 
 Swuff - Code help, feedback, networking help
 
@@ -126,11 +126,29 @@ iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98
 
 
 ## Known Issues
-- Clients in multiplayer see weapon pickups as ????, networking sucks major ball can someone please help me fix this :(
+- None as of right now
 
 ___
 
 ## Changelog
+
+`1.2.8`
+- Added weapon: Chimeric Cannon
+- Added weapon: Hammer of the King
+- Added weapon: Badass Shotgun
+- Added radius indicators to all explosives so you can actually see the blast radius
+- Added Lystate Cell functionality to alternate special
+- Added a wiki to the mod page listing all the weapons currently available
+- Updated some projectile models and VFX to add a little more variety
+- Grenade Launcher primary damage: 300% > 500%, blast radius 4m > 6m, fire rate increased by 25%, knockback force severely reduced
+- ^this weapon really sucked and needed every one of these buffs
+- Fixed cooldowns being reset any time the inventory was updated (this included equipment being used or coming off cooldown)
+
+`1.2.7`
+- Fixed weapon pickups not being fully networked, clients can now see what's in them!
+- Fixed certain Pistol upgrades being overridden by inventory changes
+- Fixed weapon HUD showing for everyone in multiplayer if someone else was playing Driver
+- Fixed some animations/skill states not being networked properly
 
 `1.2.6`
 - Added support for permanent weapon replacements

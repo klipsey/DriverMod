@@ -54,7 +54,7 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
 
                 if (this.iDrive)
                 {
-                    this.iDrive.DropShell(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
+                    this.iDrive.DropSlug(-this.GetModelBaseTransform().transform.right * -Random.Range(4, 12));
                 }
 
                 float recoilAmplitude = Shoot.bulletRecoil / this.attackSpeedStat;

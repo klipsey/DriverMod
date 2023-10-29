@@ -60,23 +60,20 @@ namespace RobDriver.Modules.Components
 		private void Start()
         {
 			this.SetWeapon(this.weaponDef);
+		}
 
-			/*if (NetworkServer.active)
+		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
+        {
+			// this didn't work lole
+			this.weaponDef = newWeaponDef;
+
+			if (NetworkServer.active)
 			{
-				// this is horrible
-				// i feel like there's probably a much simpler way to do this?
-				// but really all that matters is that it works right
-				//
-				// god please work.
-				ushort fuckMyAssIFuckingHateNetworking = 1;
-				if (Random.value > 0.5f) fuckMyAssIFuckingHateNetworking = 2;
-
-				NetworkIdentity identity = this.GetComponentInParent<NetworkIdentity>();
+				NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
 				if (!identity) return;
 
-				new SyncWeaponPickup(identity.netId, fuckMyAssIFuckingHateNetworking).Send(NetworkDestination.Clients);
-			}*/
-			// no fuck my life bro no way this is real
+				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index).Send(NetworkDestination.Clients);
+			}
 		}
 
 		public void SetWeapon(DriverWeaponDef newWeapon)
@@ -87,10 +84,10 @@ namespace RobDriver.Modules.Components
 			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
 			if (textComponent)
 			{
-				if (!NetworkServer.active)
+				if (!this.weaponDef)
 				{
 					// band-aid i don't have the time to keep fighting with this code rn
-					textComponent.token = "????";
+					textComponent.token = "FUCK YOU FUCK YOU FUCK/nYOU FUCK YOU FUCK YOU";
 					return;
 				}
 
@@ -123,7 +120,7 @@ namespace RobDriver.Modules.Components
 		private void OnTriggerStay(Collider collider)
 		{
 			// can this run on every client? i don't know but let's find out
-			if (this.alive && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex)
+			if (NetworkServer.active && this.alive && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex)
 			{
 				// well it can but it's not a fix.
 				DriverController iDrive = collider.GetComponent<DriverController>();

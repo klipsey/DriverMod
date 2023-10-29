@@ -18,11 +18,14 @@ namespace RobDriver.Modules
         public static GameObject stunGrenadeImpactEffectPrefab;
 
         public static GameObject rocketProjectilePrefab;
+        public static GameObject missileProjectilePrefab;
         public static GameObject bazookaProjectilePrefab;
 
         public static GameObject plasmaCannonProjectilePrefab;
 
         public static GameObject hmgGrenadeProjectilePrefab;
+
+        public static GameObject lunarShard;
 
         internal static void RegisterProjectiles()
         {
@@ -40,6 +43,13 @@ namespace RobDriver.Modules
             stunGrenadeImpactEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/StunChanceOnHit/ImpactStunGrenade.prefab").WaitForCompletion().InstantiateClone("DriverStunGrenadeImpact", true);
             stunGrenadeImpactEffectPrefab.AddComponent<NetworkIdentity>();
             stunGrenadeImpactEffectPrefab.GetComponent<EffectComponent>().soundName = "";
+
+            GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
+            GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
+            radiusIndicator.transform.parent = stunGrenadeImpactEffectPrefab.transform;
+            radiusIndicator.transform.localPosition = Vector3.zero;
+            radiusIndicator.transform.localScale = Vector3.one * grenadeImpact.blastRadius;
+            radiusIndicator.transform.localRotation = Quaternion.identity;
 
             #region Ghost
             GameObject fcuk = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("DriverStunGrenadeImpact"));
@@ -83,12 +93,22 @@ namespace RobDriver.Modules
             #endregion
 
             CreateHMGGrenade();
+            CreateLunarShard();
 
-            rocketProjectilePrefab = CreateRocket(false, "DriverRocketProjectile", "DriverRocketGhost");
-            bazookaProjectilePrefab = CreateRocket(true, "DriverBazookaProjectile", "DriverBazookaGhost");
+            rocketProjectilePrefab = CreateRocket(false, "DriverRocketProjectile", "DriverRocketGhost", "DriverBigRocketGhost");
+            missileProjectilePrefab = CreateRocket(false, "DriverMissileProjectile", "DriverMissileGhost", "DriverMissileGhost");
+            bazookaProjectilePrefab = CreateRocket(true, "DriverBazookaProjectile", "DriverBazookaGhost", "DriverRocketGhost");
+
             plasmaCannonProjectilePrefab = CreateRocket(false, "DriverPlasmaCannonProjectile");
             plasmaCannonProjectilePrefab.GetComponent<ProjectileController>().ghostPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BFG/BeamSphereGhost.prefab").WaitForCompletion();
             plasmaCannonProjectilePrefab.GetComponent<ProjectileImpactExplosion>().impactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BFG/BeamSphereExplosion.prefab").WaitForCompletion();
+        }
+
+        private static void CreateLunarShard()
+        {
+            lunarShard = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/LunarShardProjectile"), "DriverLunarShard", true);
+            DriverPlugin.Destroy(lunarShard.GetComponent<ProjectileSteerTowardTarget>());
+            lunarShard.GetComponent<ProjectileImpactExplosion>().blastDamageCoefficient = 1f;
         }
 
         private static void CreateHMGGrenade()
@@ -102,9 +122,17 @@ namespace RobDriver.Modules
 
             GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion2", true);
             fuckMyLife.AddComponent<NetworkIdentity>();
+
+            GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
+            GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
+            radiusIndicator.transform.parent = fuckMyLife.transform;
+            radiusIndicator.transform.localPosition = Vector3.zero;
+            radiusIndicator.transform.localScale = Vector3.one;
+            radiusIndicator.transform.localRotation = Quaternion.identity;
+
             Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_grenade_explosion");
 
-            impactExplosion.blastRadius = 4f;
+            impactExplosion.blastRadius = 6f;
             impactExplosion.destroyOnEnemy = true;
             impactExplosion.lifetime = 12f;
             impactExplosion.impactEffect = fuckMyLife;
@@ -122,7 +150,7 @@ namespace RobDriver.Modules
             Prefabs.projectilePrefabs.Add(hmgGrenadeProjectilePrefab);
         }
 
-        private static GameObject CreateRocket(bool gravity, string projectileName, string ghostName = "")
+        private static GameObject CreateRocket(bool gravity, string projectileName, string ghostName = "", string ghostToLoad = "")
         {
             GameObject projectilePrefab = CloneProjectilePrefab("CommandoGrenadeProjectile", projectileName);
             projectilePrefab.AddComponent<Modules.Components.RocketRotation>();
@@ -133,6 +161,14 @@ namespace RobDriver.Modules
 
             GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
             fuckMyLife.AddComponent<NetworkIdentity>();
+
+            GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
+            GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
+            radiusIndicator.transform.parent = fuckMyLife.transform;
+            radiusIndicator.transform.localPosition = Vector3.zero;
+            radiusIndicator.transform.localScale = Vector3.one;
+            radiusIndicator.transform.localRotation = Quaternion.identity;
+
             Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_explosion");
 
             impactExplosion.blastRadius = 10f;
@@ -147,11 +183,11 @@ namespace RobDriver.Modules
 
             if (ghostName != "")
             {
-                GameObject ghost = CreateGhostPrefab("DriverRocketGhost");
+                GameObject ghost = CreateGhostPrefab(ghostToLoad);
                 ghost.name = ghostName;
-                ghost.transform.Find("model").Find("Smoke").gameObject.AddComponent<Modules.Components.DetachOnDestroy>();
-                ghost.transform.Find("model").Find("Smoke").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matDustDirectional.mat").WaitForCompletion();
-                ghost.transform.Find("model").Find("Flame").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Golem/matVFXFlame1.mat").WaitForCompletion();
+                ghost.transform.GetChild(0).Find("Smoke").gameObject.AddComponent<Modules.Components.DetachOnDestroy>();
+                ghost.transform.GetChild(0).Find("Smoke").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matDustDirectional.mat").WaitForCompletion();
+                ghost.transform.GetChild(0).Find("Flame").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Golem/matVFXFlame1.mat").WaitForCompletion();
 
                 rocketController.ghostPrefab = ghost;
                 rocketController.startSound = "";

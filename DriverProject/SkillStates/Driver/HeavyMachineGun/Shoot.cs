@@ -42,7 +42,11 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
             if (this.isCrit) base.PlayAnimation("Gesture, Override", "FireMachineGunCritical", "Shoot.playbackRate", this.duration * 2f);
             else base.PlayAnimation("Gesture, Override", "FireMachineGun", "Shoot.playbackRate", this.duration * 2f);
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive)
+            {
+                this.iDrive.StartTimer();
+                this.iDrive.machineGunVFX.Play();
+            }
         }
 
         public override void OnExit()

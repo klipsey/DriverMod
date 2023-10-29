@@ -102,6 +102,15 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef grenadeLauncherPrimarySkillDef;
         internal static SkillDef grenadeLauncherSecondarySkillDef;
 
+        internal static SkillDef badassShotgunPrimarySkillDef;
+        internal static SkillDef badassShotgunSecondarySkillDef;
+
+        internal static SkillDef lunarRiflePrimarySkillDef;
+        internal static SkillDef lunarRifleSecondarySkillDef;
+
+        internal static SkillDef lunarHammerPrimarySkillDef;
+        internal static SkillDef lunarHammerSecondarySkillDef;
+
         internal static SkillDef confirmSkillDef;
         internal static SkillDef cancelSkillDef;
 
@@ -209,6 +218,12 @@ namespace RobDriver.Modules.Survivors
             //newPrefab.GetComponent<CharacterDirection>().turnSpeed = 720f;
 
             newPrefab.GetComponent<EntityStateMachine>().mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MainState));
+
+            // this is for the lunar shard skill..
+            EntityStateMachine stateMachine = newPrefab.AddComponent<EntityStateMachine>();
+            stateMachine.customName = "Shard";
+            stateMachine.initialStateType = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle));
+            stateMachine.mainStateType = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle));
 
             //var state = isPlayer ? typeof(EntityStates.SpawnTeleporterState) : typeof(SpawnState);
             //newPrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType(state);
@@ -443,11 +458,16 @@ namespace RobDriver.Modules.Survivors
 
         private static void CreateHitboxes(GameObject prefab)
         {
-            //ChildLocator childLocator = prefab.GetComponentInChildren<ChildLocator>();
-            //GameObject model = childLocator.gameObject;
+            ChildLocator childLocator = prefab.GetComponentInChildren<ChildLocator>();
+            GameObject model = childLocator.gameObject;
 
-            //Transform hitboxTransform = childLocator.FindChild("PunchHitbox");
-            //Modules.Prefabs.SetupHitbox(model, hitboxTransform, "Punch");
+            Transform hitboxTransform = childLocator.FindChild("HammerBaseHitbox");
+            Transform hitboxTransform2 = childLocator.FindChild("HammerHitbox");
+            Modules.Prefabs.SetupHitbox(model, new Transform[]
+                {
+                    hitboxTransform,
+                    hitboxTransform2
+                }, "Hammer");
         }
 
         private static void CreateSkills(GameObject prefab)
@@ -654,6 +674,30 @@ false);
     prefix + "_DRIVER_BODY_PRIMARY_SNIPER_DESCRIPTION",
     Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlugShotgunIcon"),
     false);
+
+            Driver.badassShotgunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.BadassShotgun.Shoot)),
+    "Weapon",
+    prefix + "_DRIVER_BODY_PRIMARY_BADASS_SHOTGUN_NAME",
+    prefix + "_DRIVER_BODY_PRIMARY_BADASS_SHOTGUN_DESCRIPTION",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunIcon"),
+    false);
+
+            Driver.lunarRiflePrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.LunarRifle.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_LUNARRIFLE_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_LUNARRIFLE_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texLunarRifleIcon"),
+false);
+
+            Driver.lunarHammerPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.LunarHammer.SwingCombo)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_LUNARHAMMER_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_LUNARHAMMER_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texLunarHammerIcon"),
+false);
             #endregion
 
             #region Secondary
@@ -1135,6 +1179,78 @@ false);
                 rechargeStock = 1,
                 requiredStock = 1,
                 stockToConsume = 1,
+            });
+
+            Driver.badassShotgunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.lunarRifleSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.lunarHammerSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_LUNARHAMMER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_LUNARHAMMER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_LUNARHAMMER_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texLunarShardIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.LunarHammer.FireShard)),
+                activationStateMachineName = "Shard",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 0,
+                stockToConsume = 0,
             });
 
             Modules.Skills.AddSecondarySkills(prefab, steadyAimSkillDef/*, pissSkillDef*/);
@@ -1916,13 +2032,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     bool droppedWeapon = Util.CheckRoll(chance, damageReport.attackerMaster);
 
                     // guaranteed if the slain enemy is a boss
-                    bool isBoss = damageReport.victimBody.isChampion;
+                    bool isBoss = damageReport.victimBody.isChampion || damageReport.victimIsChampion;
 
                     // simulacrum boss wave fix
-                    if (!InfiniteTowerRun.instance)
-                    {
-                        if (damageReport.victimBody.isBoss) isBoss = true;
-                    }
+                    if (damageReport.victimBody.isBoss || damageReport.victimIsBoss) isBoss = true;
 
                     // terminal enemies from starstorm's relic of termination
                     if (DriverPlugin.CheckIfBodyIsTerminal(damageReport.victimBody)) isBoss = true;
@@ -1932,9 +2045,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     // all the above checks were originally checking the ATTACKER body
                     // not the fucking victim
                     // how
-
-                    // test
-                    //droppedWeapon = true;
 
                     // stop dropping weapons when void monsters kill each other plz this is an annoying bug
                     if (damageReport.attackerTeamIndex != TeamIndex.Player) droppedWeapon = false;
@@ -1950,26 +2060,24 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                             position = damageReport.victim.transform.position;
                         }
 
-                        GameObject pickupPrefab = Modules.Assets.weaponPickup;
-
-                        if (isBoss) pickupPrefab = Modules.Assets.weaponPickupLegendary;
-
-                        if (Modules.Config.oldPickupModel.Value) pickupPrefab = Modules.Assets.weaponPickupOld;
-
-                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(pickupPrefab, position, UnityEngine.Random.rotation);
-                        
-                        TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
-                        if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+                        //if (Modules.Config.oldPickupModel.Value) pickupPrefab = Modules.Assets.weaponPickupOld;
 
                         DriverWeaponTier weaponTier = DriverWeaponTier.Uncommon;
-                        if (isBoss) weaponTier = DriverWeaponTier.Legendary;
+                        if (damageReport.victimBody.isChampion) weaponTier = DriverWeaponTier.Legendary;
 
                         DriverWeaponDef weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
 
+                        // todo: proper system for these, clean up this whole thing and make it readable
                         if (damageReport.victimBody.baseNameToken == "BEETLE_BODY_NAME" && Util.CheckRoll(5f)) weaponDef = DriverWeaponCatalog.BeetleShield;
+                        if (damageReport.victimBody.baseNameToken == "LUNARGOLEM_BODY_NAME" && Util.CheckRoll(50f)) weaponDef = DriverWeaponCatalog.LunarRifle;
+                        if (damageReport.victimBody.baseNameToken == "BROTHER_BODY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.LunarHammer;
+
                         if (damageReport.victimBody.baseNameToken == "ROB_MECHORILLA_BODY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.ArmCannon;
 
-                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().weaponDef = weaponDef;
+                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+
+                        TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
+                        if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
                         NetworkServer.Spawn(weaponPickup);
                     }
@@ -1980,6 +2088,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     }
                 }
 
+                // combo extension would be huge but i need to network it and that's annoying
                 /*if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
                 {
                     // combo extension
@@ -1991,8 +2100,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
         internal static void HUDSetup(RoR2.UI.HUD hud)
         {
-            if (hud.targetBodyObject && hud.targetMaster.bodyPrefab == Driver.characterPrefab)
+            if (hud.targetBodyObject && hud.targetMaster && hud.targetMaster.bodyPrefab == Driver.characterPrefab)
             {
+                if (!hud.targetMaster.hasAuthority) return;
+
                 if (DriverPlugin.riskUIInstalled)
                 {
                     RiskUIHudSetup(hud);

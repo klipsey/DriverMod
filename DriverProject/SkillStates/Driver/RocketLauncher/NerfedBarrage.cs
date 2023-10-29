@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RobDriver.SkillStates.Driver.RocketLauncher
+﻿namespace RobDriver.SkillStates.Driver.RocketLauncher
 {
     public class NerfedBarrage : Barrage
     {

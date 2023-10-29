@@ -674,6 +674,39 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_swing_hammer" ID="{3A767EC7-4027-48CD-8656-578CDA5149C0}">
+					<ChildrenList>
+						<Action Name="" ID="{3861956B-2573-4CD1-ACCF-D90DF2F5CF58}" ShortID="503515334">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_swing_hammer" ID="{97E1D23F-1772-4EDA-B98E-DDE86E6CB04A}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_impact_hammer" ID="{FFDA843D-05C4-4BFC-BAD3-432946D3A3B5}">
+					<ChildrenList>
+						<Action Name="" ID="{20237721-57FF-48E4-8307-A93EF304CFD0}" ShortID="116034591">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_impact_hammer" ID="{23C1B98C-CFFC-4E96-8C99-52F668D0E359}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_lunar_rifle_shoot" ID="{C641D86D-3DE1-468E-B227-1C6ABFDA6725}">
+					<ChildrenList>
+						<Action Name="" ID="{4FBD3E84-85C1-45C7-AFB5-D382039CC233}" ShortID="661766825">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_lunar_cannon_shoot" ID="{C203F3F0-8EAA-4222-8124-DDA82BCE9599}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

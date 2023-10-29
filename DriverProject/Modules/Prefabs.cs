@@ -328,17 +328,20 @@ namespace RobDriver.Modules
             aimAnimator.inputBank = prefab.GetComponent<InputBankTest>();
         }
 
-        internal static void SetupHitbox(GameObject prefab, Transform hitboxTransform, string hitboxName)
+        internal static void SetupHitbox(GameObject prefab, Transform[] hitboxTransforms, string hitboxName)
         {
             HitBoxGroup hitBoxGroup = prefab.AddComponent<HitBoxGroup>();
 
-            HitBox hitBox = hitboxTransform.gameObject.AddComponent<HitBox>();
-            hitboxTransform.gameObject.layer = LayerIndex.projectile.intVal;
+            List<HitBox> hitboxes = new List<HitBox>();
 
-            hitBoxGroup.hitBoxes = new HitBox[]
+            foreach (Transform i in hitboxTransforms)
             {
-                hitBox
-            };
+                HitBox hitBox = i.gameObject.AddComponent<HitBox>();
+                i.gameObject.layer = LayerIndex.projectile.intVal;
+                hitboxes.Add(hitBox);
+            }
+
+            hitBoxGroup.hitBoxes = hitboxes.ToArray();
 
             hitBoxGroup.groupName = hitboxName;
         }

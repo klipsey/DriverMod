@@ -32,30 +32,8 @@ namespace RobDriver.Modules.Components
             GameObject pickupObject = Util.FindNetworkObject(this.netId);
             if (!pickupObject) return;
 
-            // this needs to be rewritten if i decide to network it this way
-            /*DriverWeapon newWeapon = DriverWeapon.Default;
-            switch (this.weapon)
-            {
-                case 0:
-                    newWeapon = DriverWeapon.Default;
-                    break;
-                case 1:
-                    newWeapon = DriverWeapon.Shotgun;
-                    break;
-                case 2:
-                    newWeapon = DriverWeapon.MachineGun;
-                    break;
-                case 3:
-                    newWeapon = DriverWeapon.RocketLauncher;
-                    break;
-            }*/
-
-            /*WeaponPickup pickupComponent = pickupObject.GetComponentInChildren<WeaponPickup>();
-            if (pickupComponent)
-            {
-                // w h y
-                //pickupComponent.SetWeapon(newWeapon);
-            }*/
+            WeaponPickup pickupComponent = pickupObject.GetComponentInChildren<WeaponPickup>();
+            if (pickupComponent) pickupComponent.SetWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon));
         }
 
         public void Serialize(NetworkWriter writer)

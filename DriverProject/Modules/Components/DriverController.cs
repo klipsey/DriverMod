@@ -51,7 +51,9 @@ namespace RobDriver.Modules.Components
 
         public int maxShellCount = 12;
         private int currentShell;
+        private int currentSlug;
         private GameObject[] shellObjects;
+        private GameObject[] slugObjects;
 
         public Action<DriverController> onWeaponUpdate;
 
@@ -68,12 +70,19 @@ namespace RobDriver.Modules.Components
         public GameObject crosshairPrefab;
 
         private int availableSupplyDrops;
+        private int lysateCellCount = 0;
 
         private DriverWeaponDef defaultWeaponDef;
 
         private SkateboardState skateboardState;// this could have easily been a bool
         private GameObject skateboardObject;
         private GameObject skateboardBackObject;
+
+        public ParticleSystem machineGunVFX;
+
+        private bool hasPickedUpHammer;
+        private GameObject hammerEffectInstance;
+        private GameObject hammerEffectInstance2;
 
         private void Awake()
         {
@@ -90,6 +99,7 @@ namespace RobDriver.Modules.Components
             this.animator = modelLocator.modelBaseTransform.GetComponentInChildren<Animator>();
             this.characterModel = modelLocator.modelBaseTransform.GetComponentInChildren<CharacterModel>();
             this.skillLocator = this.GetComponent<SkillLocator>();
+            this.machineGunVFX = this.childLocator.FindChild("MachineGunVFX").gameObject.GetComponent<ParticleSystem>();
 
             // really gotta cache this instead of calling a getcomponent on every single weapon pickup
             this.weaponRenderer = this.childLocator.FindChild("PistolModel").GetComponent<SkinnedMeshRenderer>();
@@ -106,6 +116,8 @@ namespace RobDriver.Modules.Components
             this.skateboardBackObject = this.childLocator.FindChild("SkateboardBackModel").gameObject;
 
             this.ToggleSkateboard(SkateboardState.Inactive);
+
+            this.CreateHammerEffect();
 
             this.Invoke("SetInventoryHook", 0.5f);
             this.Invoke("CheckForUpgrade", 2.5f);
@@ -143,14 +155,32 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
 
+            this.CheckForLysateCell();
+
             this.CheckForNeedler();
+        }
+
+        private void CheckForLysateCell()
+        {
+            if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
+            {
+                int count = this.characterBody.master.inventory.GetItemCount(DLC1Content.Items.EquipmentMagazineVoid);
+                if (count > this.lysateCellCount)
+                {
+                    int diff = count - this.lysateCellCount;
+                    this.availableSupplyDrops += diff;
+                    this.lysateCellCount = count;
+                }
+            }
         }
 
         private void CheckForNeedler()
         {
+            if (this.hasPickedUpHammer) return;
+
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
-                DriverWeaponDef desiredWeapon = DriverWeaponCatalog.weaponDefs[0];
+                DriverWeaponDef desiredWeapon = this.pistolWeaponDef;
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0)
                 {
@@ -162,19 +192,25 @@ namespace RobDriver.Modules.Components
                     desiredWeapon = DriverWeaponCatalog.Needler;
                 }
 
-                this.defaultWeaponDef = desiredWeapon;
-                if (this.maxWeaponTimer <= 0f) this.PickUpWeapon(this.defaultWeaponDef);
+                if (this.maxWeaponTimer <= 0f && desiredWeapon != this.defaultWeaponDef)
+                {
+                    this.defaultWeaponDef = desiredWeapon;
+                    this.PickUpWeapon(this.defaultWeaponDef);
+                }
             }
         }
 
         private void Inventory_onInventoryChanged()
         {
             this.CheckForNeedler();
+            this.CheckForLysateCell();
         }
 
         private void CheckForUpgrade()
         {
             if (!Modules.Config.enablePistolUpgrade.Value) return;
+
+            if (this.hasPickedUpHammer) return;
 
             // upgrade your pistol for run-ending bosses; this is more interesting than just injecting weapon drops imo
             Scene currentScene = SceneManager.GetActiveScene();
@@ -199,6 +235,7 @@ namespace RobDriver.Modules.Components
         {
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
+            this.pistolWeaponDef = newWeaponDef;
             this.defaultWeaponDef = newWeaponDef;
 
             return true;
@@ -293,6 +330,33 @@ new EffectData
             return false;
         }
 
+        private void CreateHammerEffect()
+        {
+            #region clone mithrix effect
+            this.hammerEffectInstance = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/CharacterBodies/BrotherBody").GetComponentInChildren<ChildLocator>().FindChild("Phase3HammerFX").gameObject);
+            this.hammerEffectInstance.transform.parent = this.childLocator.FindChild("GunR");
+            this.hammerEffectInstance.transform.localScale = Vector3.one * 0.0002f;
+            this.hammerEffectInstance.transform.rotation = Quaternion.Euler(new Vector3(0f, 90f, 90f));
+            this.hammerEffectInstance.transform.localPosition = new Vector3(0f, 1.6f, 0.05f);
+            this.hammerEffectInstance.gameObject.SetActive(true);
+
+            this.hammerEffectInstance.transform.Find("Amb_Fire_Ps, Left").localScale = Vector3.one * 0.6f;
+            this.hammerEffectInstance.transform.Find("Amb_Fire_Ps, Right").localScale = Vector3.one * 0.6f;
+            this.hammerEffectInstance.transform.Find("Core, Light").localScale = Vector3.one * 0.1f;
+            this.hammerEffectInstance.transform.Find("Blocks, Spinny").localScale = Vector3.one * 0.4f;
+            this.hammerEffectInstance.transform.Find("Sparks").localScale = Vector3.one * 0.4f;
+            #endregion
+
+            this.hammerEffectInstance2 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/CharacterBodies/LunarWispBody").GetComponentInChildren<CharacterModel>().transform.Find("Amb_Fire_Ps").gameObject);
+            this.hammerEffectInstance2.transform.parent = this.childLocator.FindChild("HandL");
+            this.hammerEffectInstance2.transform.localPosition = Vector3.zero;
+            this.hammerEffectInstance2.transform.localRotation = Quaternion.identity;
+            this.hammerEffectInstance2.transform.localScale *= 0.25f;
+
+            this.hammerEffectInstance.SetActive(false);
+            this.hammerEffectInstance2.SetActive(false);
+        }
+
         public void StartTimer()
         {
             this.timerStarted = true;
@@ -329,7 +393,7 @@ new EffectData
 
             if (this.weaponTimer <= 0f && this.maxWeaponTimer > 0f)
             {
-                this.PickUpWeapon(this.defaultWeaponDef);
+                this.ReturnToDefaultWeapon();
             }
 
             this.CheckSupplyDrop();
@@ -373,10 +437,19 @@ new EffectData
             new SyncWeapon(identity.netId, newWeapon.index).Send(NetworkDestination.Clients);
         }
 
+        private void ReturnToDefaultWeapon()
+        {
+            if (this.hasPickedUpHammer) this.PickUpWeapon(DriverWeaponCatalog.LunarHammer);
+            else this.PickUpWeapon(this.defaultWeaponDef);
+        }
+
         public void PickUpWeapon(DriverWeaponDef newWeapon)
         {
             this.timerStarted = false;
             this.weaponDef = newWeapon;
+
+            if (newWeapon == DriverWeaponCatalog.LunarHammer) this.hasPickedUpHammer = true; // hardcoding the mithrix hammer as default once picked up. fuck it
+
             this.EquipWeapon();
 
             this.TryCallout();
@@ -454,6 +527,24 @@ new EffectData
                 case DriverWeaponDef.AnimationSet.TwoHanded:
                     this.EnableLayer("Body, Shotgun");
                     break;
+                case DriverWeaponDef.AnimationSet.BigMelee:
+                    this.EnableLayer("Body, Hammer");
+                    break;
+            }
+
+            // extra shit
+            if (this.hammerEffectInstance && this.hammerEffectInstance2)
+            {
+                if (this.weaponDef == DriverWeaponCatalog.LunarHammer)
+                {
+                    this.hammerEffectInstance.SetActive(true);
+                    this.hammerEffectInstance2.SetActive(false); // this one needs to be remade from scratch ig
+                }
+                else
+                {
+                    this.hammerEffectInstance.SetActive(false);
+                    this.hammerEffectInstance2.SetActive(false);
+                }
             }
         }
 
@@ -462,6 +553,7 @@ new EffectData
             if (!this.animator) return;
 
             this.animator.SetLayerWeight(this.animator.GetLayerIndex("Body, Shotgun"), 0f);
+            this.animator.SetLayerWeight(this.animator.GetLayerIndex("Body, Hammer"), 0f);
 
             if (layerName == "") return;
 
@@ -499,6 +591,23 @@ new EffectData
                 this.shellObjects[i].layer = LayerIndex.ragdoll.intVal;
                 this.shellObjects[i].transform.GetChild(0).gameObject.layer = LayerIndex.ragdoll.intVal;
             }
+
+            this.currentSlug = 0;
+
+            this.slugObjects = new GameObject[this.maxShellCount + 1];
+
+            desiredShell = Assets.shotgunSlug;
+
+            for (int i = 0; i < this.maxShellCount; i++)
+            {
+                this.slugObjects[i] = GameObject.Instantiate(desiredShell, this.childLocator.FindChild("Pistol"), false);
+                this.slugObjects[i].transform.localScale = Vector3.one * 1.2f;
+                this.slugObjects[i].SetActive(false);
+                this.slugObjects[i].GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+                this.slugObjects[i].layer = LayerIndex.ragdoll.intVal;
+                this.slugObjects[i].transform.GetChild(0).gameObject.layer = LayerIndex.ragdoll.intVal;
+            }
         }
 
         public void DropShell(Vector3 force)
@@ -523,6 +632,28 @@ new EffectData
             if (this.currentShell >= this.maxShellCount) this.currentShell = 0;
         }
 
+        public void DropSlug(Vector3 force)
+        {
+            if (this.slugObjects == null) return;
+
+            if (this.slugObjects[this.currentSlug] == null) return;
+
+            Transform origin = this.childLocator.FindChild("Pistol");
+
+            this.slugObjects[this.currentSlug].SetActive(false);
+
+            this.slugObjects[this.currentSlug].transform.position = origin.position;
+            this.slugObjects[this.currentSlug].transform.SetParent(null);
+
+            this.slugObjects[this.currentSlug].SetActive(true);
+
+            Rigidbody rb = this.slugObjects[this.currentSlug].gameObject.GetComponent<Rigidbody>();
+            if (rb) rb.velocity = force;
+
+            this.currentSlug++;
+            if (this.currentSlug >= this.maxShellCount) this.currentSlug = 0;
+        }
+
         private void OnDestroy()
         {
             if (this.shellObjects != null && this.shellObjects.Length > 0)
@@ -530,6 +661,14 @@ new EffectData
                 for (int i = 0; i < this.shellObjects.Length; i++)
                 {
                     if (this.shellObjects[i]) Destroy(this.shellObjects[i]);
+                }
+            }
+
+            if (this.slugObjects != null && this.slugObjects.Length > 0)
+            {
+                for (int i = 0; i < this.slugObjects.Length; i++)
+                {
+                    if (this.slugObjects[i]) Destroy(this.slugObjects[i]);
                 }
             }
 
