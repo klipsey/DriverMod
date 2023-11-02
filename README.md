@@ -132,6 +132,15 @@ ___
 
 ## Changelog
 
+`1.2.9`
+- Added weapon: ???
+- Added weapon: ???
+- Added some more Starstorm 2 crosscompat goodies
+- Hammer of the King primary damage: 345600% > 3210%
+- Badass Shotgun self force now scales down with attack speed
+- Fixed certain weapon recoils not scaling down with attack speed
+- Fixed Pyrite Gun overriding the other stronger pistol upgrades
+
 `1.2.8`
 - Added weapon: Chimeric Cannon
 - Added weapon: Hammer of the King

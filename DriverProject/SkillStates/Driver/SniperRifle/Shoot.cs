@@ -1,7 +1,6 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
-using RobDriver.Modules.Components;
 
 namespace RobDriver.SkillStates.Driver.SniperRifle
 {

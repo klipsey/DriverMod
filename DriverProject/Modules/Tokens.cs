@@ -111,6 +111,12 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "PRIMARY_LUNARHAMMER_NAME", "Crush");
             LanguageAPI.Add(prefix + "PRIMARY_LUNARHAMMER_DESCRIPTION", $"Swing your hammer for <style=cIsDamage>{100f * SkillStates.Driver.LunarHammer.SwingCombo._damageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMANDO_NAME", "Shoot");
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMANDO_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * 3.8f}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
+
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMERC_NAME", "Splatter");
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMERC_DESCRIPTION", $"Fire a short-range blast for <style=cIsDamage>{SkillStates.Driver.Shotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.Shotgun.Shoot.damageCoefficient}% damage</style>, and again when released.");
             #endregion
 
             #region Secondary
@@ -158,6 +164,12 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "SECONDARY_LUNARHAMMER_NAME", "Shards");
             LanguageAPI.Add(prefix + "SECONDARY_LUNARHAMMER_DESCRIPTION", $"<style=cIsUtility>Agile.</style> Fire a volley of <style=cIsUtility>lunar shards</style>, dealing <style=cIsDamage>" + 100f * SkillStates.Driver.LunarHammer.FireShard.damageCoefficient + "% damage</style> each.");
+
+            LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_NAME", "Submission");
+            LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_DESCRIPTION", $"<style=cIsDamage>Stunning.</style> Fire repeatedly for <style=cIsDamage>" + 100f * SkillStates.Driver.LunarHammer.FireShard.damageCoefficient + "% damage</style> per shot.");
+
+            LanguageAPI.Add(prefix + "SECONDARY_NEMMERC_NAME", "Bash");
+            LanguageAPI.Add(prefix + "SECONDARY_NEMMERC_DESCRIPTION", $"<style=cIsDamage>Stun</style> and <style=cIsUtility>knock back</style> nearby enemies for <style=cIsDamage>{100f * SkillStates.Driver.Shotgun.Bash.damageCoefficient}% damage</style>.");
             #endregion
 
             #region Utility
@@ -280,8 +292,20 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_NAME", "Chimeric Cannon");
             LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "h");
 
+            LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_NAME", "Chimeric Gatling");
+            LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_DESC", "h");
+
+            LanguageAPI.Add("ROB_DRIVER_LUNARGRENADE_NAME", "Chimeric Launcher");
+            LanguageAPI.Add("ROB_DRIVER_LUNARGRENADE_DESC", "h");
+
             LanguageAPI.Add("ROB_DRIVER_LUNARHAMMER_NAME", "Hammer of the King");
             LanguageAPI.Add("ROB_DRIVER_LUNARHAMMER_DESC", "Wield supreme power in the palm of your hand.");
+
+            LanguageAPI.Add("ROB_DRIVER_NEMMANDO_NAME", "Reclaimer");
+            LanguageAPI.Add("ROB_DRIVER_NEMMANDO_DESC", "");
+
+            LanguageAPI.Add("ROB_DRIVER_NEMMERC_NAME", "Carnage");
+            LanguageAPI.Add("ROB_DRIVER_NEMMERC_DESC", "");
             #endregion
         }
     }

@@ -43,7 +43,8 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 
             base.PlayAnimation("LeftArm, Override", "FireShard", "Shard.playbackRate", this.duration * 5f);
 
-            base.AddRecoil(-0.4f * FireShard.recoilAmplitude, -0.8f * FireShard.recoilAmplitude, -0.3f * FireShard.recoilAmplitude, 0.3f * FireShard.recoilAmplitude);
+            float recoil = FireShard.recoilAmplitude / this.attackSpeedStat;
+            base.AddRecoil(-0.4f * recoil, -0.8f * recoil, -0.3f * recoil, 0.3f * recoil);
             base.characterBody.AddSpreadBloom(FireShard.spreadBloomValue);
 
             EffectManager.SimpleMuzzleFlash(Modules.Assets.lunarShardMuzzleFlash, base.gameObject, "HandL", false);

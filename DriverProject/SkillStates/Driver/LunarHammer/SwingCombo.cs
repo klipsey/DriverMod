@@ -8,7 +8,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 {
     public class SwingCombo : BaseMeleeAttack
     {
-        public static float _damageCoefficient = 3456f;
+        public static float _damageCoefficient = 32.1f;
 
         public override void OnEnter()
         {
@@ -18,7 +18,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.pushForce = 1000f;
             this.baseDuration = 1.8f;
             this.baseEarlyExitTime = 0.5f;
-            this.attackRecoil = 18f;
+            this.attackRecoil = 18f / this.attackSpeedStat;
 
             this.attackStartTime = 0.2f;
             this.attackEndTime = 0.3f;
@@ -31,6 +31,8 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.hitSoundString = "";
             this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
+
+            this.damageType = DamageType.Stun1s;
 
             if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
             else this.muzzleString = "SwingCenter2";

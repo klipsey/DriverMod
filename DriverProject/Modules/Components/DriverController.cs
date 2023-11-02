@@ -184,7 +184,7 @@ namespace RobDriver.Modules.Components
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0)
                 {
-                    desiredWeapon = DriverWeaponCatalog.PyriteGun;
+                    if (this.defaultWeaponDef == DriverWeaponCatalog.Pistol) desiredWeapon = DriverWeaponCatalog.PyriteGun;
                 }
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0)

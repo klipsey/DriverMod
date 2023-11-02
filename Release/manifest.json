@@ -1,6 +1,6 @@
 {
     "name": "Driver",
-    "version_number": "1.2.8",
+    "version_number": "1.2.9",
     "website_url": "https://github.com/ArcPh1r3/DriverMod",
     "description": "Adds the Driver, a mostly grounded survivor focused on simple gunplay. Now with a weapon wiki!",
     "dependencies": [

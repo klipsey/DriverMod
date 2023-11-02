@@ -8,6 +8,7 @@ namespace RobDriver
     {
         internal static DriverWeaponDef[] weaponDefs = new DriverWeaponDef[0];
 
+        internal static DriverWeaponDef Pistol;
         internal static DriverWeaponDef PyriteGun;
         internal static DriverWeaponDef GoldenGun;
         internal static DriverWeaponDef PrototypeRocketLauncher;
@@ -20,6 +21,8 @@ namespace RobDriver
         internal static DriverWeaponDef Needler;
         internal static DriverWeaponDef LunarRifle;
         internal static DriverWeaponDef LunarHammer;
+        internal static DriverWeaponDef NemmandoGun;
+        internal static DriverWeaponDef NemmercGun;
 
         internal static void AddWeapon(DriverWeaponDef weaponDef)
         {

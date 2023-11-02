@@ -100,6 +100,8 @@ ModelImporter:
     100188: meshLunarHammer
     100190: meshLunarRifle
     100192: meshSixBarrelShotgun
+    100194: meshNemmandoGun
+    100196: meshNemmercGun
     400000: //RootNode
     400002: Armature
     400004: base
@@ -197,6 +199,8 @@ ModelImporter:
     400188: meshLunarHammer
     400190: meshLunarRifle
     400192: meshSixBarrelShotgun
+    400194: meshNemmandoGun
+    400196: meshNemmercGun
     2100000: matDriver
     2100002: matDefault
     2100004: matJacket
@@ -228,6 +232,8 @@ ModelImporter:
     2100056: Default-Material.001
     2100058: needler_gun
     2100060: matBrotherHammer
+    2100062: nemmandoGun.001
+    2100064: Default OBJ
     2300000: meshSuperShotgun.001
     2300002: meshBazookaRocket
     2300004: meshDummyGun
@@ -269,6 +275,8 @@ ModelImporter:
     4300064: meshLunarHammer
     4300066: meshSixBarrelShotgun
     4300068: meshLunarRifle
+    4300070: meshNemmandoGun
+    4300072: meshNemmercGun
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|Ascend
@@ -341,6 +349,7 @@ ModelImporter:
     7400138: Armature|ChargeHooks
     7400140: Armature|ThrowHooks
     7400142: Armature|SlideToDescendGrounded
+    7400144: Armature|ShootSubmission
     9500000: //RootNode
     10800000: Light
     10800002: Light.001
@@ -376,6 +385,8 @@ ModelImporter:
     13700058: meshLunarHammer
     13700060: meshLunarRifle
     13700062: meshSixBarrelShotgun
+    13700064: meshNemmandoGun
+    13700066: meshNemmercGun
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

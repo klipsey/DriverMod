@@ -111,6 +111,12 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef lunarHammerPrimarySkillDef;
         internal static SkillDef lunarHammerSecondarySkillDef;
 
+        internal static SkillDef nemmandoGunPrimarySkillDef;
+        internal static SkillDef nemmandoGunSecondarySkillDef;
+
+        internal static SkillDef nemmercGunPrimarySkillDef;
+        internal static SkillDef nemmercGunSecondarySkillDef;
+
         internal static SkillDef confirmSkillDef;
         internal static SkillDef cancelSkillDef;
 
@@ -698,6 +704,22 @@ prefix + "_DRIVER_BODY_PRIMARY_LUNARHAMMER_NAME",
 prefix + "_DRIVER_BODY_PRIMARY_LUNARHAMMER_DESCRIPTION",
 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texLunarHammerIcon"),
 false);
+
+            Driver.nemmandoGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.NemmandoGun.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_NEMMANDO_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_NEMMANDO_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texNemmandoPrimaryIcon"),
+false);
+
+            Driver.nemmercGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.NemmercGun.Shoot)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_NEMMERC_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_NEMMERC_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texNemmercPrimaryIcon"),
+false);
             #endregion
 
             #region Secondary
@@ -1251,6 +1273,54 @@ false);
                 rechargeStock = 1,
                 requiredStock = 0,
                 stockToConsume = 0,
+            });
+
+            Driver.nemmandoGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_NEMMANDO_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_NEMMANDO_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_NEMMANDO_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texNemmandoSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.NemmandoGun.Submission)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.nemmercGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
             });
 
             Modules.Skills.AddSecondarySkills(prefab, steadyAimSkillDef/*, pissSkillDef*/);
@@ -2072,7 +2142,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         if (damageReport.victimBody.baseNameToken == "LUNARGOLEM_BODY_NAME" && Util.CheckRoll(50f)) weaponDef = DriverWeaponCatalog.LunarRifle;
                         if (damageReport.victimBody.baseNameToken == "BROTHER_BODY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.LunarHammer;
 
-                        if (damageReport.victimBody.baseNameToken == "ROB_MECHORILLA_BODY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.ArmCannon;
+                        // shartstorm 2 compat
+                        if (damageReport.victimBody.baseNameToken == "SS2_NEMMANDO_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.NemmandoGun;
+                        if (damageReport.victimBody.baseNameToken == "SS2_NEMESIS_MERCENARY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.NemmercGun;
+
+                        // mechorilla
+                        if (damageReport.victimBody.baseNameToken == "ROB_MECHORILLA_BODY_NAME" && Util.CheckRoll(50f)) weaponDef = DriverWeaponCatalog.ArmCannon;
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
 

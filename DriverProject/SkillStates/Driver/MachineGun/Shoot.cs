@@ -64,7 +64,10 @@ namespace RobDriver.SkillStates.Driver.MachineGun
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
-                base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
+
+                float recoilAmplitude = Shoot.recoil / this.attackSpeedStat;
+
+                base.AddRecoil(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
 
                 new BulletAttack
                 {

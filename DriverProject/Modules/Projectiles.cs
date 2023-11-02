@@ -109,6 +109,8 @@ namespace RobDriver.Modules
             lunarShard = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/LunarShardProjectile"), "DriverLunarShard", true);
             DriverPlugin.Destroy(lunarShard.GetComponent<ProjectileSteerTowardTarget>());
             lunarShard.GetComponent<ProjectileImpactExplosion>().blastDamageCoefficient = 1f;
+
+            Prefabs.projectilePrefabs.Add(lunarShard);
         }
 
         private static void CreateHMGGrenade()

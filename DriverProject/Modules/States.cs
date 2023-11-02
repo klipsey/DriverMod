@@ -46,6 +46,8 @@ namespace RobDriver.Modules
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SlugShotgun.Shoot));
 
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.BadassShotgun.Shoot));
+
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.HeavyMachineGun.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.HeavyMachineGun.ShootGrenade));
 
@@ -71,6 +73,19 @@ namespace RobDriver.Modules
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.VoidPistol.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.VoidPistol.SteadyAim));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.BadassShotgun.Shoot));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.LunarRifle.Shoot));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.LunarHammer.SwingCombo));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.LunarHammer.FireShard));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.NemmandoGun.Shoot));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.NemmandoGun.Submission));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.NemmercGun.Shoot));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.NemmercGun.Shoot2));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.AimSupplyDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.FireSupplyDrop));

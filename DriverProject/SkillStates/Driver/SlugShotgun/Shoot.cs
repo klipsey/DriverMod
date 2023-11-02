@@ -121,7 +121,7 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
                     bulletAttack.Fire();
 
-                    this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
+                    this.characterMotor.ApplyForce((aimRay.direction * -this.selfForce) / this.attackSpeedStat);
                 }
             }
         }

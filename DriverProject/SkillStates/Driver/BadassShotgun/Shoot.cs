@@ -131,6 +131,8 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
                     float x = this.selfForce;
                     if (this.isGrounded) x *= 0.25f;
 
+                    x /= this.attackSpeedStat;
+
                     this.characterMotor.ApplyForce(aimRay.direction * -x);
                 }
             }

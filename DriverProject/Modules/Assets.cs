@@ -57,6 +57,8 @@ namespace RobDriver.Modules
         public static Mesh badassShotgunMesh;
         public static Mesh lunarRifleMesh;
         public static Mesh lunarHammerMesh;
+        public static Mesh nemmandoGunMesh;
+        public static Mesh nemmercGunMesh;
 
         public static Material pistolMat;
         public static Material goldenGunMat;
@@ -75,6 +77,8 @@ namespace RobDriver.Modules
         public static Material grenadeLauncherMat;
         public static Material needlerMat;
         public static Material badassShotgunMat;
+        public static Material nemmandoGunMat;
+        public static Material nemmercGunMat;
 
         public static Material knifeMat;
 
@@ -110,11 +114,17 @@ namespace RobDriver.Modules
         internal static Texture badassShotgunWeaponIcon;
         internal static Texture lunarRifleWeaponIcon;
         internal static Texture lunarHammerWeaponIcon;
+        internal static Texture nemmandoGunWeaponIcon;
+        internal static Texture nemmercGunWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
 
         public static GameObject lunarTracer;
+
+        public static GameObject nemmandoTracer;
+
+        public static GameObject nemmercTracer;
 
         public static GameObject lunarShardMuzzleFlash;
 
@@ -141,6 +151,8 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef badassShotgunWeaponDef;
         internal static DriverWeaponDef lunarRifleWeaponDef;
         internal static DriverWeaponDef lunarHammerWeaponDef;
+        internal static DriverWeaponDef nemmandoGunWeaponDef;
+        internal static DriverWeaponDef nemmercGunWeaponDef;
 
         internal static void PopulateAssets()
         {
@@ -158,10 +170,6 @@ namespace RobDriver.Modules
                 manifestResourceStream2.Read(array, 0, array.Length);
                 SoundAPI.SoundBanks.Add(array);
             }
-
-            //drainPunchChargeEffect = LoadEffect("DrainPunchChargeEffect", true);
-
-            //punchSoundDef = CreateNetworkSoundEventDef("RegigigasPunchImpact");
 
             jammedEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ROB_DRIVER_JAMMED_POPUP");
 
@@ -362,6 +370,8 @@ namespace RobDriver.Modules
             badassShotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSixBarrelShotgun");
             lunarRifleMesh = mainAssetBundle.LoadAsset<Mesh>("meshLunarRifle");
             lunarHammerMesh = mainAssetBundle.LoadAsset<Mesh>("meshLunarHammer");
+            nemmandoGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmandoGun");
+            nemmercGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmercGun");
 
             pistolMat = CreateMaterial("matPistol");
             goldenGunMat = CreateMaterial("matGoldenGun");
@@ -380,6 +390,8 @@ namespace RobDriver.Modules
             grenadeLauncherMat = CreateMaterial("matGrenadeLauncher");
             needlerMat = CreateMaterial("matNeedler", 5f, Color.white);
             badassShotgunMat = CreateMaterial("matSawedOff");
+            nemmandoGunMat = CreateMaterial("matNemmandoGun", 5f, Color.white, 1f);
+            nemmercGunMat = CreateMaterial("matNemmercGun", 5f, Color.white, 1f);
 
             knifeMat = CreateMaterial("matKnife");
 
@@ -611,6 +623,8 @@ namespace RobDriver.Modules
             badassShotgunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texBadassShotgunWeaponIcon");
             lunarRifleWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texLunarRifleWeaponIcon");
             lunarHammerWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texLunarHammerWeaponIcon");
+            nemmandoGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNemmandoWeaponIcon");
+            nemmercGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNemmercWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -669,9 +683,47 @@ namespace RobDriver.Modules
                 }
             }
 
+            nemmandoTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverNemmandoTracer", true);
+
+            if (!nemmandoTracer.GetComponent<EffectComponent>()) nemmandoTracer.AddComponent<EffectComponent>();
+            if (!nemmandoTracer.GetComponent<VFXAttributes>()) nemmandoTracer.AddComponent<VFXAttributes>();
+            if (!nemmandoTracer.GetComponent<NetworkIdentity>()) nemmandoTracer.AddComponent<NetworkIdentity>();
+
+            foreach (LineRenderer i in nemmandoTracer.GetComponentsInChildren<LineRenderer>())
+            {
+                if (i)
+                {
+                    bulletMat = UnityEngine.Object.Instantiate<Material>(i.material);
+                    bulletMat.SetColor("_TintColor", Color.red);
+                    i.material = bulletMat;
+                    i.startColor = Color.red;
+                    i.endColor = Color.red;
+                }
+            }
+
+            nemmercTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverNemmercTracer", true);
+
+            if (!nemmercTracer.GetComponent<EffectComponent>()) nemmercTracer.AddComponent<EffectComponent>();
+            if (!nemmercTracer.GetComponent<VFXAttributes>()) nemmercTracer.AddComponent<VFXAttributes>();
+            if (!nemmercTracer.GetComponent<NetworkIdentity>()) nemmercTracer.AddComponent<NetworkIdentity>();
+
+            foreach (LineRenderer i in lunarTracer.GetComponentsInChildren<LineRenderer>())
+            {
+                if (i)
+                {
+                    bulletMat = UnityEngine.Object.Instantiate<Material>(i.material);
+                    bulletMat.SetColor("_TintColor", new Color(0f, 102f / 255f, 1f));
+                    i.material = bulletMat;
+                    i.startColor = new Color(0f, 102f / 255f, 1f);
+                    i.endColor = new Color(0f, 102f / 255f, 1f);
+                }
+            }
+
             AddNewEffectDef(shotgunTracer);
             AddNewEffectDef(shotgunTracerCrit);
             AddNewEffectDef(lunarTracer);
+            AddNewEffectDef(nemmandoTracer);
+            AddNewEffectDef(nemmercTracer);
 
             Modules.Config.InitROO(Assets.mainAssetBundle.LoadAsset<Sprite>("texDriverIcon"), "Literally me");
 
@@ -680,9 +732,9 @@ namespace RobDriver.Modules
             // kinda jank kinda not impactful enough to care about changing
 
             lunarShardMuzzleFlash = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Brother/MuzzleflashLunarShard.prefab").WaitForCompletion().InstantiateClone("DriverMuzzleflashLunarShard", false);
-            lunarShardMuzzleFlash.transform.GetChild(0).transform.localScale = Vector3.one * 0.5f;
-            lunarShardMuzzleFlash.transform.GetChild(1).transform.localScale = Vector3.one * 0.5f;
-            lunarShardMuzzleFlash.transform.GetChild(2).transform.localScale = Vector3.one * 0.5f;
+            lunarShardMuzzleFlash.transform.GetChild(0).transform.localScale = Vector3.one * 0.35f;
+            lunarShardMuzzleFlash.transform.GetChild(1).transform.localScale = Vector3.one * 0.35f;
+            lunarShardMuzzleFlash.transform.GetChild(2).transform.localScale = Vector3.one * 0.35f;
 
             AddNewEffectDef(lunarShardMuzzleFlash);
         }
@@ -691,9 +743,6 @@ namespace RobDriver.Modules
         {
             // nuclear solution...... i fucking hate modding
             GameObject newPickup = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandolier/AmmoPack.prefab").WaitForCompletion().InstantiateClone("DriverWeaponPickup" + weaponDef.index, true);
-
-            newPickup.GetComponent<BeginRapidlyActivatingAndDeactivating>().delayBeforeBeginningBlinking = 55f;
-            newPickup.GetComponent<DestroyOnTimer>().duration = 60f;
 
             AmmoPickup ammoPickupComponent = newPickup.GetComponentInChildren<AmmoPickup>();
             Components.WeaponPickup weaponPickupComponent = ammoPickupComponent.gameObject.AddComponent<Components.WeaponPickup>();
@@ -709,6 +758,7 @@ namespace RobDriver.Modules
             newPickup.GetComponentInChildren<MeshRenderer>().enabled = false;
 
             GameObject pickupModel = null;
+            float duration = 60f;
             
             switch (weaponDef.tier)
             {
@@ -720,17 +770,24 @@ namespace RobDriver.Modules
                     break;
                 case DriverWeaponTier.Legendary:
                     pickupModel = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickupLegendary"));
+                    duration = 300f;
                     break;
                 case DriverWeaponTier.Unique:
                     pickupModel = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickupUnique"));
+                    duration = 300f;
                     break;
                 case DriverWeaponTier.Lunar:
-                    pickupModel = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickup"));
+                    pickupModel = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickupLunar"));
+                    duration = 300f;
                     break;
                 case DriverWeaponTier.Void:
-                    pickupModel = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickup"));
+                    pickupModel = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("WeaponPickupLegendary"));
+                    duration = 300f;
                     break;
             }
+
+            newPickup.GetComponent<BeginRapidlyActivatingAndDeactivating>().delayBeforeBeginningBlinking = duration - 5f;
+            newPickup.GetComponent<DestroyOnTimer>().duration = duration;
 
             pickupModel.transform.parent = newPickup.transform.Find("Visuals");
             pickupModel.transform.localPosition = new Vector3(0f, -0.35f, 0f);
@@ -798,6 +855,7 @@ namespace RobDriver.Modules
                 animationSet = DriverWeaponDef.AnimationSet.Default
             });
             DriverWeaponCatalog.AddWeapon(pistolWeaponDef);
+            DriverWeaponCatalog.Pistol = pistolWeaponDef;
 
             lunarPistolWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
@@ -1202,6 +1260,42 @@ namespace RobDriver.Modules
             });
             DriverWeaponCatalog.AddWeapon(lunarHammerWeaponDef);
             DriverWeaponCatalog.LunarHammer = lunarHammerWeaponDef;
+
+            nemmandoGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_NEMMANDO_NAME",
+                descriptionToken = "ROB_DRIVER_NEMMANDO_DESC",
+                icon = Assets.nemmandoGunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Void,
+                baseDuration = 8f,
+                primarySkillDef = Survivors.Driver.nemmandoGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.nemmandoGunSecondarySkillDef,
+                mesh = Assets.nemmandoGunMesh,
+                material = Assets.nemmandoGunMat,
+                animationSet = DriverWeaponDef.AnimationSet.Default,
+                calloutSoundString = "sfx_driver_callout_generic"
+            });
+            DriverWeaponCatalog.AddWeapon(nemmandoGunWeaponDef);
+            DriverWeaponCatalog.NemmandoGun = nemmandoGunWeaponDef;
+
+            nemmercGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_NEMMERC_NAME",
+                descriptionToken = "ROB_DRIVER_NEMMERC_DESC",
+                icon = Assets.nemmercGunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("SMG"),
+                tier = DriverWeaponTier.Void,
+                baseDuration = 8f,
+                primarySkillDef = Survivors.Driver.nemmercGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.nemmercGunSecondarySkillDef,
+                mesh = Assets.nemmercGunMesh,
+                material = Assets.nemmercGunMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_shotgun"
+            });
+            DriverWeaponCatalog.AddWeapon(nemmercGunWeaponDef);
+            DriverWeaponCatalog.NemmercGun = nemmercGunWeaponDef;
         }
 
         internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")
