@@ -459,7 +459,7 @@ new EffectData
             GameObject newEffect = GameObject.Instantiate(Modules.Assets.discardedWeaponEffect);
             newEffect.GetComponent<DiscardedWeaponComponent>().Init(this.weaponDef, (this.characterBody.characterDirection.forward * -this.backForce) + (Vector3.up * this.upForce) + this.characterBody.characterMotor.velocity);
             newEffect.transform.rotation = this.characterBody.modelLocator.modelTransform.rotation;
-            newEffect.transform.position = this.childLocator.FindChild("Pistol").position;
+            newEffect.transform.position = this.childLocator.FindChild("Pistol").position + (Vector3.up * 0.5f);
         }
 
         public void PickUpWeapon(DriverWeaponDef newWeapon)

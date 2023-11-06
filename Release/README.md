@@ -132,6 +132,11 @@ ___
 
 ## Changelog
 
+`1.3.1`
+- Added weapon drop VFX
+- Using weapons no longer consumes meter while Brainstalks is active
+- Shifted Driver's position in the CSS because he is that guy
+
 `1.3.0`
 - REWORKED WEAPON TIMER
 - ^Weapon duration is no longer time based, it's now a pseudo ammo system that scales with attack speed

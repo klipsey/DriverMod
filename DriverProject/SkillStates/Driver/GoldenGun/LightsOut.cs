@@ -22,7 +22,7 @@ namespace RobDriver.SkillStates.Driver.GoldenGun
 
             base.PlayAnimation("Gesture, Override", "ShootLightsOut", "Action.playbackRate", this.duration);
 
-            if (this.iDrive) this.iDrive.StartTimer(this.iDrive.weaponTimer + 0.01f, false);
+            if (this.iDrive) this.iDrive.weaponTimer = 0.1f;
 
             this.Fire();
         }

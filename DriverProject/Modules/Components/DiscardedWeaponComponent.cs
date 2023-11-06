@@ -16,6 +16,7 @@ namespace RobDriver.Modules.Components
         private bool spinning = false;
         private GameObject effectInstance;
         private DriverWeaponDef weaponDef;
+        private float stopwatch;
 
         private void Awake()
         {
@@ -30,6 +31,8 @@ namespace RobDriver.Modules.Components
         {
             if (this.targetTransform && this.spinning)
             {
+                this.stopwatch += Time.fixedDeltaTime;
+
                 this.targetTransform.RotateAround(this.transform.position, this.transform.forward, this.rotateSpeedX * Time.fixedDeltaTime);
                 this.targetTransform.RotateAround(this.transform.position, this.transform.right, this.rotateSpeedZ * Time.fixedDeltaTime);
                 //this.targetTransform.Rotate(new Vector3(Time.fixedDeltaTime * this.rotateSpeed), this.targetTransform.localRotation.eulerAngles.y + (Time.fixedDeltaTime * this.rotateSpeedY), this.targetTransform.localRotation.eulerAngles.z + (Time.fixedDeltaTime * this.rotateSpeedZ)));
@@ -39,7 +42,7 @@ namespace RobDriver.Modules.Components
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (this.spinning)
+            if (this.spinning && this.stopwatch >= 0.25f)
             {
                 this.spinning = false;
                 if (this.effectInstance) Destroy(this.effectInstance);
@@ -54,15 +57,17 @@ namespace RobDriver.Modules.Components
         {
             this.spinning = true;
 
-            this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
-            this.effectInstance.transform.parent = this.transform;
-            this.effectInstance.transform.localRotation = Quaternion.Euler(new Vector3(0f, 90f, 0f));
-            this.effectInstance.transform.localPosition = Vector3.zero;
-
             if (this.weaponDef && this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.TwoHanded)
             {
-                this.effectInstance.transform.localPosition = new Vector3(-0.3f, 0f, 0f);
-                this.effectInstance.transform.localScale = new Vector3(3.5f, 3f, -32f);
+                //this.effectInstance.transform.localPosition = new Vector3(-0.3f, 0f, 0f);
+                //this.effectInstance.transform.localScale = new Vector3(3.5f, 2.5f, -32f);
+            }
+            else
+            {
+                this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
+                this.effectInstance.transform.parent = this.transform;
+                this.effectInstance.transform.localRotation = Quaternion.Euler(new Vector3(0f, 90f, 0f));
+                this.effectInstance.transform.localPosition = Vector3.zero;
             }
 
             Util.PlaySound("sfx_driver_gun_throw", this.gameObject);
