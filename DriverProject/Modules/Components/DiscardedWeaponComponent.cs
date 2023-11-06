@@ -12,7 +12,7 @@ namespace RobDriver.Modules.Components
         private Transform targetTransform;
         private float lifetime = 60f;
         public float rotateSpeedX = 0f;
-        public float rotateSpeedZ = -400f;
+        public float rotateSpeedZ = -1200f;
         private bool spinning = false;
         private GameObject effectInstance;
         private DriverWeaponDef weaponDef;
