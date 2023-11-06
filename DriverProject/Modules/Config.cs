@@ -33,24 +33,18 @@ namespace RobDriver.Modules
         public static ConfigEntry<float> baseCrit;
         public static ConfigEntry<float> baseRegen;
 
-        public static ConfigEntry<float> shotgunDuration;
-        public static ConfigEntry<bool> shotgunEnabled;
-        public static ConfigEntry<float> riotShotgunDuration;
-        public static ConfigEntry<bool> riotShotgunEnabled;
-        public static ConfigEntry<float> slugShotgunDuration;
-        public static ConfigEntry<bool> slugShotgunEnabled;
-        public static ConfigEntry<float> machineGunDuration;
-        public static ConfigEntry<bool> machineGunEnabled;
-        public static ConfigEntry<float> heavyMachineGunDuration;
-        public static ConfigEntry<bool> heavyMachineGunEnabled;
-        public static ConfigEntry<float> bazookaDuration;
-        public static ConfigEntry<bool> bazookaEnabled;
-        public static ConfigEntry<float> rocketLauncherDuration;
-        public static ConfigEntry<bool> rocketLauncherEnabled;
-
         public static ConfigEntry<KeyboardShortcut> restKey;
         public static ConfigEntry<KeyboardShortcut> tauntKey;
         public static ConfigEntry<KeyboardShortcut> danceKey;
+
+        public static List<WeaponConfigBinding> weaponConfigBinding = new List<WeaponConfigBinding>();
+
+        public struct WeaponConfigBinding
+        {
+            public string identifier;
+            public ConfigEntry<bool> enabled;
+            public ConfigEntry<int> shotCount;
+        }
 
         internal static void ReadConfig()
         {
@@ -176,92 +170,69 @@ false,
                                      1f,
                                      "", 0f, 100f, true);
             #endregion
+        }
 
-            #region Guns
-            shotgunDuration
-    = Config.BindAndOptionsSlider("04 - Weapons - Shotgun",
-             "Duration",
-             8f,
-             "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
+        public static void InitWeaponConfig(DriverWeaponDef weaponDef)
+        {
+            if (!weaponDef) return;
+            if (string.IsNullOrWhiteSpace(weaponDef.configIdentifier)) return;
 
-            shotgunEnabled
-= Config.BindAndOptions("04 - Weapons - Shotgun",
- "Enabled",
- true,
- "Set to false to remove this weapon from the drop pool.", true);
+            var x = Config.BindAndOptionsSlider("04 - Weapons",
+ weaponDef.configIdentifier + " - Base Ammo",
+ weaponDef.shotCount,
+ "How many shots this weapon can fire without any bonus attack speed.", 0, 200);
 
-            riotShotgunDuration
-= Config.BindAndOptionsSlider("04 - Weapons - Riot Shotgun",
- "Duration",
- 8f,
- "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
-
-            riotShotgunEnabled
-= Config.BindAndOptions("04 - Weapons - Riot Shotgun",
-"Enabled",
+            var y = Config.BindAndOptions("04 - Weapons",
+weaponDef.configIdentifier + " - Enabled",
 true,
-"Set to false to remove this weapon from the drop pool.", true);
+"Set to false to remove this weapon from the drop pool.");
 
-            slugShotgunDuration
-= Config.BindAndOptionsSlider("04 - Weapons - Slug Shotgun",
-"Duration",
-8f,
-"How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
 
-            slugShotgunEnabled
-= Config.BindAndOptions("04 - Weapons - Slug Shotgun",
-"Enabled",
-true,
-"Set to false to remove this weapon from the drop pool.", true);
+            weaponConfigBinding.Add(new WeaponConfigBinding
+            {
+                identifier = weaponDef.configIdentifier,
+                enabled = y,
+                shotCount = x
+            });
+        }
 
-            machineGunDuration
-= Config.BindAndOptionsSlider("04 - Weapons - Machine Gun",
- "Duration",
- 8f,
- "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
+        public static bool GetWeaponConfig(DriverWeaponDef weaponDef)
+        {
+            foreach (WeaponConfigBinding i in weaponConfigBinding)
+            {
+                if (i.identifier == weaponDef.configIdentifier)
+                {
+                    return true;
+                }
+            }
 
-            machineGunEnabled
-= Config.BindAndOptions("04 - Weapons - Machine Gun",
-"Enabled",
-true,
-"Set to false to remove this weapon from the drop pool.", true);
+            return false;
+        }
 
-            heavyMachineGunDuration
-= Config.BindAndOptionsSlider("04 - Weapons - Heavy Machine Gun",
-"Duration",
-8f,
-"How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
+        public static bool GetWeaponConfigEnabled(DriverWeaponDef weaponDef)
+        {
+            foreach (WeaponConfigBinding i in weaponConfigBinding)
+            {
+                if (i.identifier == weaponDef.configIdentifier)
+                {
+                    return i.enabled.Value;
+                }
+            }
 
-            heavyMachineGunEnabled
-= Config.BindAndOptions("04 - Weapons - Heavy Machine Gun",
-"Enabled",
-true,
-"Set to false to remove this weapon from the drop pool.", true);
+            return true;
+        }
 
-            bazookaDuration
-= Config.BindAndOptionsSlider("04 - Weapons - Bazooka",
-"Duration",
-8f,
-"How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
+        public static int GetWeaponConfigShotCount(DriverWeaponDef weaponDef)
+        {
+            foreach (WeaponConfigBinding i in weaponConfigBinding)
+            {
+                if (i.identifier == weaponDef.configIdentifier)
+                {
+                    return i.shotCount.Value;
+                }
+            }
 
-            bazookaEnabled
-= Config.BindAndOptions("04 - Weapons - Bazooka",
-"Enabled",
-true,
-"Set to false to remove this weapon from the drop pool.", true);
-
-            rocketLauncherDuration
-= Config.BindAndOptionsSlider("04 - Weapons - Rocket Launcher",
- "Duration",
- 8f,
- "How long this weapon lasts, in seconds [DEPRECATED]", 1f, 20f);
-
-            rocketLauncherEnabled
-= Config.BindAndOptions("04 - Weapons - Rocket Launcher",
-"Enabled",
-true,
-"Set to false to remove this weapon from the drop pool.", true);
-            #endregion
+            return 0;
         }
 
         public static void InitROO(Sprite modSprite, string modDescription)
@@ -289,7 +260,7 @@ true,
 
             ConfigEntry<T> configEntry = myConfig.Bind(section, name, defaultValue, description);
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions"))
+            if (DriverPlugin.rooInstalled)
             {
                 TryRegisterOption(configEntry, restartRequired);
             }
@@ -304,6 +275,8 @@ true,
                 description = name;
             }
 
+            description += " (Default: " + defaultValue + ")";
+
             if (restartRequired)
             {
                 description += " (restart required)";
@@ -311,7 +284,31 @@ true,
 
             ConfigEntry<float> configEntry = myConfig.Bind(section, name, defaultValue, description);
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions"))
+            if (DriverPlugin.rooInstalled)
+            {
+                TryRegisterOptionSlider(configEntry, min, max, restartRequired);
+            }
+
+            return configEntry;
+        }
+
+        public static ConfigEntry<int> BindAndOptionsSlider(string section, string name, int defaultValue, string description = "", int min = 0, int max = 20, bool restartRequired = false)
+        {
+            if (string.IsNullOrEmpty(description))
+            {
+                description = name;
+            }
+
+            description += " (Default: " + defaultValue + ")";
+
+            if (restartRequired)
+            {
+                description += " (restart required)";
+            }
+
+            ConfigEntry<int> configEntry = myConfig.Bind(section, name, defaultValue, description);
+
+            if (DriverPlugin.rooInstalled)
             {
                 TryRegisterOptionSlider(configEntry, min, max, restartRequired);
             }
@@ -338,6 +335,12 @@ true,
             {
                 ModSettingsManager.AddOption(new KeyBindOption(entry as ConfigEntry<KeyboardShortcut>, restartRequired));
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static void TryRegisterOptionSlider(ConfigEntry<int> entry, int min, int max, bool restartRequired)
+        {
+            ModSettingsManager.AddOption(new IntSliderOption(entry as ConfigEntry<int>, new IntSliderConfig() { min = min, max = max, formatString = "{0:0.00}", restartRequired = restartRequired }));
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]

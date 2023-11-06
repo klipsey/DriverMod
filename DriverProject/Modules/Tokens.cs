@@ -287,16 +287,16 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_BEHEMOTH_DESC", "huh?");
 
             LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_NAME", "Grenade Launcher");
-            LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_DESC", "h");
+            LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_DESC", "");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_NAME", "Chimeric Cannon");
-            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "h");
+            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_NAME", "Chimeric Gatling");
-            LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_DESC", "h");
+            LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_DESC", "");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARGRENADE_NAME", "Chimeric Launcher");
-            LanguageAPI.Add("ROB_DRIVER_LUNARGRENADE_DESC", "h");
+            LanguageAPI.Add("ROB_DRIVER_LUNARGRENADE_DESC", "");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARHAMMER_NAME", "Hammer of the King");
             LanguageAPI.Add("ROB_DRIVER_LUNARHAMMER_DESC", "Wield supreme power in the palm of your hand.");
@@ -306,6 +306,9 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add("ROB_DRIVER_NEMMERC_NAME", "Carnage");
             LanguageAPI.Add("ROB_DRIVER_NEMMERC_DESC", "");
+
+            LanguageAPI.Add("ROB_DRIVER_GOLEMGUN_NAME", "Stone Cannon");
+            LanguageAPI.Add("ROB_DRIVER_GOLEMGUN_DESC", "");
             #endregion
         }
     }

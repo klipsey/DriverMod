@@ -6,7 +6,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 6f;
+        public static float damageCoefficient = 8f;
         public static float procCoefficient = 1f;
         public float baseDuration = 1.6f;
         public static int bulletCount = 1;

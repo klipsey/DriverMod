@@ -23,8 +23,6 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
             this.chargePlayID = Util.PlayAttackSpeedSound("HenryBazookaCharge", this.gameObject, this.attackSpeedStat);
 
-            if (this.iDrive) this.iDrive.StartTimer();
-
             Transform muzzleTransform = base.FindModelChild("ShotgunMuzzle");
             if (muzzleTransform)
             {

@@ -51,8 +51,6 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             this.shotDuration = this.baseShotDuration / this.attackSpeedStat;
             this.remainingShots = Mathf.Clamp(Mathf.RoundToInt(this.baseRocketCount * this.attackSpeedStat), this.baseRocketCount, 40);
 
-            if (this.iDrive) this.iDrive.StartTimer();
-
             this.shotTimer = this.shotDuration;
             this.remainingShots--;
             this.Fire();
@@ -68,6 +66,8 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 
         public virtual void Fire()
         {
+            if (this.iDrive) this.iDrive.StartTimer(3f / this.baseRocketCount);
+
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", 1.4f);
             Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
 

@@ -102,6 +102,7 @@ ModelImporter:
     100192: meshSixBarrelShotgun
     100194: meshNemmandoGun
     100196: meshNemmercGun
+    100198: meshGolemGun
     400000: //RootNode
     400002: Armature
     400004: base
@@ -201,6 +202,7 @@ ModelImporter:
     400192: meshSixBarrelShotgun
     400194: meshNemmandoGun
     400196: meshNemmercGun
+    400198: meshGolemGun
     2100000: matDriver
     2100002: matDefault
     2100004: matJacket
@@ -234,6 +236,7 @@ ModelImporter:
     2100060: matBrotherHammer
     2100062: nemmandoGun.001
     2100064: Default OBJ
+    2100066: matGolem
     2300000: meshSuperShotgun.001
     2300002: meshBazookaRocket
     2300004: meshDummyGun
@@ -277,6 +280,7 @@ ModelImporter:
     4300068: meshLunarRifle
     4300070: meshNemmandoGun
     4300072: meshNemmercGun
+    4300074: meshGolemGun
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|Ascend
@@ -387,6 +391,7 @@ ModelImporter:
     13700062: meshSixBarrelShotgun
     13700064: meshNemmandoGun
     13700066: meshNemmercGun
+    13700068: meshGolemGun
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

@@ -18,7 +18,7 @@ public class DriverWeaponDef : ScriptableObject
     public Texture icon = null;
     public GameObject crosshairPrefab = null;
     public DriverWeaponTier tier = DriverWeaponTier.Common;
-    public float baseDuration = 8f;
+    public int shotCount = 8;
 
     [Header("Skills")]
     public SkillDef primarySkillDef;
@@ -29,6 +29,9 @@ public class DriverWeaponDef : ScriptableObject
     public Material material;
     public AnimationSet animationSet = AnimationSet.Default;
     public string calloutSoundString = "";
+
+    [Header("Other")]
+    public string configIdentifier = "";
 
     [HideInInspector]
     public ushort index; // assigned at runtime
@@ -45,7 +48,7 @@ public class DriverWeaponDef : ScriptableObject
         weaponDef.icon = weaponDefInfo.icon;
         weaponDef.crosshairPrefab = weaponDefInfo.crosshairPrefab;
         weaponDef.tier = weaponDefInfo.tier;
-        weaponDef.baseDuration = weaponDefInfo.baseDuration;
+        weaponDef.shotCount = weaponDefInfo.shotCount;
 
         weaponDef.primarySkillDef = weaponDefInfo.primarySkillDef;
         weaponDef.secondarySkillDef = weaponDefInfo.secondarySkillDef;
@@ -54,6 +57,8 @@ public class DriverWeaponDef : ScriptableObject
         weaponDef.material = weaponDefInfo.material;
         weaponDef.animationSet = weaponDefInfo.animationSet;
         weaponDef.calloutSoundString = weaponDefInfo.calloutSoundString;
+
+        weaponDef.configIdentifier = weaponDefInfo.configIdentifier;
 
         return weaponDef;
     }
@@ -67,7 +72,7 @@ public struct DriverWeaponDefInfo
     public Texture icon;
     public GameObject crosshairPrefab;
     public DriverWeaponTier tier;
-    public float baseDuration;
+    public int shotCount;
 
     public SkillDef primarySkillDef;
     public SkillDef secondarySkillDef;
@@ -76,6 +81,8 @@ public struct DriverWeaponDefInfo
     public Material material;
     public DriverWeaponDef.AnimationSet animationSet;
     public string calloutSoundString;
+
+    public string configIdentifier;
 }
 
 public enum DriverWeaponTier

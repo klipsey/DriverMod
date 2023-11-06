@@ -37,7 +37,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
 
             Util.PlaySound("sfx_driver_bash_prep", this.gameObject);
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            //if (this.iDrive) this.iDrive.StartTimer();
         }
 
         private void Fire()

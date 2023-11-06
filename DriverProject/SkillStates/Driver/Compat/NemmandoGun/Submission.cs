@@ -56,8 +56,6 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
             this.shotDuration = this.baseShotDuration / this.attackSpeedStat;
             this.remainingShots = Mathf.Clamp(Mathf.RoundToInt(this.baseShotCount * this.attackSpeedStat), this.baseShotCount, 40);
 
-            if (this.iDrive) this.iDrive.StartTimer();
-
             this.shotTimer = this.shotDuration;
             this.remainingShots--;
             this.Fire();
@@ -73,6 +71,8 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
         public virtual void Fire()
         {
+            if (this.iDrive) this.iDrive.StartTimer(3f / this.baseShotCount);
+
             base.PlayAnimation("Gesture, Override", "ShootSubmission", "Shoot.playbackRate", 1.4f / this.attackSpeedStat);
 
             if (DriverPlugin.starstormInstalled) Util.PlaySound("NemmandoSubmissionFire", base.gameObject);

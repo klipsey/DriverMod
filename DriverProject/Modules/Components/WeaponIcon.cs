@@ -21,6 +21,7 @@ namespace RobDriver.Modules.Components
 		public TooltipProvider tooltipProvider;
 		public GameObject durationDisplay;
 		public Image durationBar;
+		public Image durationBarRed;
 
 		private void Update()
         {
@@ -58,6 +59,13 @@ namespace RobDriver.Modules.Components
 				this.durationDisplay.SetActive(true);
 
 				float fill = Util.Remap(this.iDrive.weaponTimer, 0f, this.iDrive.maxWeaponTimer, 0f, 1f);
+
+				if (this.durationBarRed)
+				{
+					if (fill >= 1f) this.durationBarRed.fillAmount = 1f;
+					this.durationBarRed.fillAmount = Mathf.Lerp(this.durationBarRed.fillAmount, fill, Time.deltaTime * 2f);
+				}
+
 				this.durationBar.fillAmount = fill;
             }
 			else

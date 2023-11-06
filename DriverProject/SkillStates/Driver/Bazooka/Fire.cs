@@ -35,6 +35,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             this.recoil = Util.Remap(this.charge, 0f, 1f, Fire.minRecoil, Fire.maxRecoil);
             this.hasFired = false;
 
+            if (this.iDrive) this.iDrive.StartTimer();
+
             //if (this.charge >= 0.8f) base.PlayAnimation("Gesture, Override", "FireCharged", "Bazooka.playbackRate", 0.8f);
             //else base.PlayAnimation("Gesture, Override", "Fire", "Bazooka.playbackRate", 1f);
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);

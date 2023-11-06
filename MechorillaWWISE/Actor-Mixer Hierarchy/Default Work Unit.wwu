@@ -3753,6 +3753,63 @@
 										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
+								<Sound Name="M16" ID="{284D260E-E6FF-4972-98BD-879ADB5319B0}" ShortID="1035450232">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="M16" ID="{2DB74217-00E8-422D-B439-16577B6A338E}">
+											<Language>SFX</Language>
+											<AudioFile>M16.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="200549039"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="M16" ID="{2DB74217-00E8-422D-B439-16577B6A338E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="M16_01" ID="{F6CF9BDE-5F25-4E8F-9292-F71188A956E6}" ShortID="460785605">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="M16" ID="{76E46DAB-3D23-4ACA-80AA-5FDF30363226}">
+											<Language>SFX</Language>
+											<AudioFile>M16.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="200549039"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="M16" ID="{76E46DAB-3D23-4ACA-80AA-5FDF30363226}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
 							</ChildrenList>
 						</ActorMixer>
 						<RandomSequenceContainer Name="driver_dance" ID="{35F41E1A-3D9D-4772-8675-4C1ABAFFE078}" ShortID="116409879">
@@ -4172,6 +4229,31 @@
 								</Sound>
 							</ChildrenList>
 						</RandomSequenceContainer>
+						<Sound Name="sfx_driver_tyler_gun_loop" ID="{374201E0-8E27-4FB2-B069-7A4B1C4627BD}" ShortID="748588529">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="sfx_driver_tyler_gun_loop" ID="{A7D5639E-E5B4-4E8F-B272-62C52A48AF2A}">
+									<Language>SFX</Language>
+									<AudioFile>sfx_driver_tyler_gun_loop.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="694320022"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="sfx_driver_tyler_gun_loop" ID="{A7D5639E-E5B4-4E8F-B272-62C52A48AF2A}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</ActorMixer>
 			</ChildrenList>

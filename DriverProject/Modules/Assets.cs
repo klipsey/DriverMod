@@ -35,6 +35,7 @@ namespace RobDriver.Modules
         public static GameObject rocketLauncherCrosshairPrefab;
         public static GameObject grenadeLauncherCrosshairPrefab;
         public static GameObject needlerCrosshairPrefab;
+        public static GameObject circleCrosshairPrefab;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -59,6 +60,7 @@ namespace RobDriver.Modules
         public static Mesh lunarHammerMesh;
         public static Mesh nemmandoGunMesh;
         public static Mesh nemmercGunMesh;
+        public static Mesh golemGunMesh;
 
         public static Material pistolMat;
         public static Material goldenGunMat;
@@ -116,11 +118,13 @@ namespace RobDriver.Modules
         internal static Texture lunarHammerWeaponIcon;
         internal static Texture nemmandoGunWeaponIcon;
         internal static Texture nemmercGunWeaponIcon;
+        internal static Texture golemGunWeaponIcon;
 
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
 
         public static GameObject lunarTracer;
+        public static GameObject lunarRifleTracer;
 
         public static GameObject nemmandoTracer;
 
@@ -153,6 +157,7 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef lunarHammerWeaponDef;
         internal static DriverWeaponDef nemmandoGunWeaponDef;
         internal static DriverWeaponDef nemmercGunWeaponDef;
+        internal static DriverWeaponDef golemGunWeaponDef;
 
         internal static void PopulateAssets()
         {
@@ -349,6 +354,8 @@ namespace RobDriver.Modules
             DriverPlugin.Destroy(needlerCrosshairPrefab.transform.GetChild(1).gameObject);
             #endregion
 
+            circleCrosshairPrefab = CreateCrosshair();
+
             pistolMesh = mainAssetBundle.LoadAsset<Mesh>("meshPistol");
             goldenGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshGoldenGun");
             shotgunMesh = mainAssetBundle.LoadAsset<Mesh>("meshSuperShotgun");
@@ -372,6 +379,7 @@ namespace RobDriver.Modules
             lunarHammerMesh = mainAssetBundle.LoadAsset<Mesh>("meshLunarHammer");
             nemmandoGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmandoGun");
             nemmercGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmercGun");
+            golemGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshGolemGun");
 
             pistolMat = CreateMaterial("matPistol");
             goldenGunMat = CreateMaterial("matGoldenGun");
@@ -625,6 +633,7 @@ namespace RobDriver.Modules
             lunarHammerWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texLunarHammerWeaponIcon");
             nemmandoGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNemmandoWeaponIcon");
             nemmercGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNemmercWeaponIcon");
+            golemGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGolemGunWeaponIcon");
 
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -683,6 +692,15 @@ namespace RobDriver.Modules
                 }
             }
 
+            lunarRifleTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerGolem").InstantiateClone("DriverLunarRifleTracer", true);
+
+            if (!lunarRifleTracer.GetComponent<EffectComponent>()) lunarRifleTracer.AddComponent<EffectComponent>();
+            if (!lunarRifleTracer.GetComponent<VFXAttributes>()) lunarRifleTracer.AddComponent<VFXAttributes>();
+            if (!lunarRifleTracer.GetComponent<NetworkIdentity>()) lunarRifleTracer.AddComponent<NetworkIdentity>();
+
+            lunarRifleTracer.transform.Find("SmokeBeam").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarGolem/matLunarGolemChargeGlow.mat").WaitForCompletion();
+            lunarRifleTracer.transform.Find("SmokeBeam").transform.localScale = new Vector3(1f, 0.25f, 0.25f);
+
             nemmandoTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverNemmandoTracer", true);
 
             if (!nemmandoTracer.GetComponent<EffectComponent>()) nemmandoTracer.AddComponent<EffectComponent>();
@@ -722,6 +740,7 @@ namespace RobDriver.Modules
             AddNewEffectDef(shotgunTracer);
             AddNewEffectDef(shotgunTracerCrit);
             AddNewEffectDef(lunarTracer);
+            AddNewEffectDef(lunarRifleTracer);
             AddNewEffectDef(nemmandoTracer);
             AddNewEffectDef(nemmercTracer);
 
@@ -748,7 +767,7 @@ namespace RobDriver.Modules
             Components.WeaponPickup weaponPickupComponent = ammoPickupComponent.gameObject.AddComponent<Components.WeaponPickup>();
 
             weaponPickupComponent.baseObject = ammoPickupComponent.baseObject;
-            weaponPickupComponent.pickupEffect = ammoPickupComponent.pickupEffect;
+            weaponPickupComponent.pickupEffect = weaponPickupEffect;
             weaponPickupComponent.teamFilter = ammoPickupComponent.teamFilter;
             weaponPickupComponent.weaponDef = weaponDef;
 
@@ -810,7 +829,7 @@ namespace RobDriver.Modules
                     pickupMesh.material = CreateMaterial("matBriefcaseUnique");
                     break;
                 case DriverWeaponTier.Lunar:
-                    pickupMesh.material = CreateMaterial("matBriefcase");
+                    pickupMesh.material = CreateMaterial("matBriefcaseLunar");
                     break;
                 case DriverWeaponTier.Void:
                     pickupMesh.material = CreateMaterial("matBriefcase");
@@ -847,7 +866,6 @@ namespace RobDriver.Modules
                 icon = Assets.pistolWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Common,
-                baseDuration = 0f,
                 primarySkillDef = null,
                 secondarySkillDef = null,
                 mesh = Assets.pistolMesh,
@@ -864,7 +882,6 @@ namespace RobDriver.Modules
                 icon = Assets.lunarPistolWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Lunar,
-                baseDuration = 0f,
                 primarySkillDef = Survivors.Driver.lunarPistolPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.lunarPistolSecondarySkillDef,
                 mesh = Assets.lunarPistolMesh,
@@ -881,7 +898,6 @@ namespace RobDriver.Modules
                 icon = Assets.voidPistolWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Lunar,
-                baseDuration = 0f,
                 primarySkillDef = Survivors.Driver.voidPistolPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.voidPistolSecondarySkillDef,
                 mesh = Assets.voidPistolMesh,
@@ -898,7 +914,6 @@ namespace RobDriver.Modules
                 icon = Assets.needlerWeaponIcon,
                 crosshairPrefab = Assets.needlerCrosshairPrefab,
                 tier = DriverWeaponTier.Lunar,
-                baseDuration = 0f,
                 primarySkillDef = null,
                 secondarySkillDef = null,
                 mesh = Assets.needlerMesh,
@@ -915,13 +930,14 @@ namespace RobDriver.Modules
                 icon = Assets.goldenGunWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Unique,
-                baseDuration = 8f,
+                shotCount = 6,
                 primarySkillDef = Survivors.Driver.goldenGunPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.goldenGunSecondarySkillDef,
                 mesh = Assets.goldenGunMesh,
                 material = Assets.goldenGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
-                calloutSoundString = "sfx_driver_callout_generic"
+                calloutSoundString = "sfx_driver_callout_generic",
+                configIdentifier = "Golden Gun"
             });
             DriverWeaponCatalog.AddWeapon(goldenGunWeaponDef);
             DriverWeaponCatalog.GoldenGun = goldenGunWeaponDef;
@@ -933,7 +949,6 @@ namespace RobDriver.Modules
                 icon = Assets.pyriteGunWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Unique,
-                baseDuration = 0f,
                 primarySkillDef = Survivors.Driver.pyriteGunPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.pyriteGunSecondarySkillDef,
                 mesh = Assets.goldenGunMesh,
@@ -950,137 +965,126 @@ namespace RobDriver.Modules
                 icon = Assets.beetleShieldWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Unique,
-                baseDuration = 8f,
+                shotCount = 32,
                 primarySkillDef = Survivors.Driver.beetleShieldPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.beetleShieldSecondarySkillDef,
                 mesh = Assets.beetleShieldMesh,
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Beetle/matBeetle.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.Default,
-                calloutSoundString = "sfx_driver_callout_generic"
+                calloutSoundString = "sfx_driver_callout_generic",
+                configIdentifier = "Chitin Shield"
             });
             DriverWeaponCatalog.AddWeapon(beetleShieldWeaponDef);
             DriverWeaponCatalog.BeetleShield = beetleShieldWeaponDef;
 
             // example of creating a WeaponDef through code and adding it to the catalog for driver to obtain
-            if (Modules.Config.shotgunEnabled.Value)
+            shotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
-                shotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
-                {
-                    nameToken = "ROB_DRIVER_SHOTGUN_NAME",
-                    descriptionToken = "ROB_DRIVER_SHOTGUN_DESC",
-                    icon = Assets.shotgunWeaponIcon,
-                    crosshairPrefab = Assets.LoadCrosshair("SMG"),
-                    tier = DriverWeaponTier.Uncommon,
-                    baseDuration = Config.shotgunDuration.Value,
-                    primarySkillDef = Survivors.Driver.shotgunPrimarySkillDef,
-                    secondarySkillDef = Survivors.Driver.shotgunSecondarySkillDef,
-                    mesh = Assets.shotgunMesh,
-                    material = Assets.shotgunMat,
-                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_shotgun"
-                });// now add it to the catalog here; catalog is necessary for networking
-                DriverWeaponCatalog.AddWeapon(shotgunWeaponDef);
-            }
+                nameToken = "ROB_DRIVER_SHOTGUN_NAME",
+                descriptionToken = "ROB_DRIVER_SHOTGUN_DESC",
+                icon = Assets.shotgunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("SMG"),
+                tier = DriverWeaponTier.Uncommon,
+                shotCount = 8,
+                primarySkillDef = Survivors.Driver.shotgunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.shotgunSecondarySkillDef,
+                mesh = Assets.shotgunMesh,
+                material = Assets.shotgunMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_shotgun",
+                configIdentifier = "Shotgun"
+            });// now add it to the catalog here; catalog is necessary for networking
+            DriverWeaponCatalog.AddWeapon(shotgunWeaponDef);
 
-            if (Modules.Config.riotShotgunEnabled.Value)
+            riotShotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
-                riotShotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
-                {
-                    nameToken = "ROB_DRIVER_RIOT_SHOTGUN_NAME",
-                    descriptionToken = "ROB_DRIVER_RIOT_SHOTGUN_DESC",
-                    icon = Assets.riotShotgunWeaponIcon,
-                    crosshairPrefab = Assets.LoadCrosshair("SMG"),
-                    tier = DriverWeaponTier.Uncommon,
-                    baseDuration = Config.riotShotgunDuration.Value,
-                    primarySkillDef = Survivors.Driver.riotShotgunPrimarySkillDef,
-                    secondarySkillDef = Survivors.Driver.riotShotgunSecondarySkillDef,
-                    mesh = Assets.riotShotgunMesh,
-                    material = Assets.riotShotgunMat,
-                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_shotgun"
-                });
-                DriverWeaponCatalog.AddWeapon(riotShotgunWeaponDef);
-            }
+                nameToken = "ROB_DRIVER_RIOT_SHOTGUN_NAME",
+                descriptionToken = "ROB_DRIVER_RIOT_SHOTGUN_DESC",
+                icon = Assets.riotShotgunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("SMG"),
+                tier = DriverWeaponTier.Uncommon,
+                shotCount = 8,
+                primarySkillDef = Survivors.Driver.riotShotgunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.riotShotgunSecondarySkillDef,
+                mesh = Assets.riotShotgunMesh,
+                material = Assets.riotShotgunMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_shotgun",
+                configIdentifier = "Riot Shotgun"
+            });
+            DriverWeaponCatalog.AddWeapon(riotShotgunWeaponDef);
 
-            if (Modules.Config.slugShotgunEnabled.Value)
+            slugShotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
-                slugShotgunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
-                {
-                    nameToken = "ROB_DRIVER_SLUG_SHOTGUN_NAME",
-                    descriptionToken = "ROB_DRIVER_SLUG_SHOTGUN_DESC",
-                    icon = Assets.slugShotgunWeaponIcon,
-                    crosshairPrefab = Assets.LoadCrosshair("SMG"),
-                    tier = DriverWeaponTier.Uncommon,
-                    baseDuration = Config.slugShotgunDuration.Value,
-                    primarySkillDef = Survivors.Driver.slugShotgunPrimarySkillDef,
-                    secondarySkillDef = Survivors.Driver.slugShotgunSecondarySkillDef,
-                    mesh = Assets.slugShotgunMesh,
-                    material = Assets.slugShotgunMat,
-                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_shotgun"
-                });
-                DriverWeaponCatalog.AddWeapon(slugShotgunWeaponDef);
-            }
+                nameToken = "ROB_DRIVER_SLUG_SHOTGUN_NAME",
+                descriptionToken = "ROB_DRIVER_SLUG_SHOTGUN_DESC",
+                icon = Assets.slugShotgunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("SMG"),
+                tier = DriverWeaponTier.Uncommon,
+                shotCount = 8,
+                primarySkillDef = Survivors.Driver.slugShotgunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.slugShotgunSecondarySkillDef,
+                mesh = Assets.slugShotgunMesh,
+                material = Assets.slugShotgunMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_shotgun",
+                configIdentifier = "Slug Shotgun"
+            });
+            DriverWeaponCatalog.AddWeapon(slugShotgunWeaponDef);
 
-            if (Modules.Config.machineGunEnabled.Value)
+            machineGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
-                machineGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
-                {
-                    nameToken = "ROB_DRIVER_MACHINEGUN_NAME",
-                    descriptionToken = "ROB_DRIVER_MACHINEGUN_DESC",
-                    icon = Assets.machineGunWeaponIcon,
-                    crosshairPrefab = Assets.LoadCrosshair("Standard"),
-                    tier = DriverWeaponTier.Uncommon,
-                    baseDuration = Config.machineGunDuration.Value,
-                    primarySkillDef = Survivors.Driver.machineGunPrimarySkillDef,
-                    secondarySkillDef = Survivors.Driver.machineGunSecondarySkillDef,
-                    mesh = Assets.machineGunMesh,
-                    material = Assets.machineGunMat,
-                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_machine_gun"
-                });
-                DriverWeaponCatalog.AddWeapon(machineGunWeaponDef);
-            }
+                nameToken = "ROB_DRIVER_MACHINEGUN_NAME",
+                descriptionToken = "ROB_DRIVER_MACHINEGUN_DESC",
+                icon = Assets.machineGunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Uncommon,
+                shotCount = 48,
+                primarySkillDef = Survivors.Driver.machineGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.machineGunSecondarySkillDef,
+                mesh = Assets.machineGunMesh,
+                material = Assets.machineGunMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_machine_gun",
+                configIdentifier = "Machine Gun"
+            });
+            DriverWeaponCatalog.AddWeapon(machineGunWeaponDef);
 
-            if (Modules.Config.heavyMachineGunEnabled.Value)
+            heavyMachineGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
-                heavyMachineGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
-                {
-                    nameToken = "ROB_DRIVER_HEAVY_MACHINEGUN_NAME",
-                    descriptionToken = "ROB_DRIVER_HEAVY_MACHINEGUN_DESC",
-                    icon = Assets.heavyMachineGunWeaponIcon,
-                    crosshairPrefab = Assets.LoadCrosshair("Standard"),
-                    tier = DriverWeaponTier.Uncommon,
-                    baseDuration = Config.heavyMachineGunDuration.Value,
-                    primarySkillDef = Survivors.Driver.heavyMachineGunPrimarySkillDef,
-                    secondarySkillDef = Survivors.Driver.heavyMachineGunSecondarySkillDef,
-                    mesh = Assets.heavyMachineGunMesh,
-                    material = Assets.heavyMachineGunMat,
-                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_hmg"
-                });
-                DriverWeaponCatalog.AddWeapon(heavyMachineGunWeaponDef);
-            }
+                nameToken = "ROB_DRIVER_HEAVY_MACHINEGUN_NAME",
+                descriptionToken = "ROB_DRIVER_HEAVY_MACHINEGUN_DESC",
+                icon = Assets.heavyMachineGunWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Uncommon,
+                shotCount = 44,
+                primarySkillDef = Survivors.Driver.heavyMachineGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.heavyMachineGunSecondarySkillDef,
+                mesh = Assets.heavyMachineGunMesh,
+                material = Assets.heavyMachineGunMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_hmg",
+                configIdentifier = "Heavy Machine Gun"
+            });
+            DriverWeaponCatalog.AddWeapon(heavyMachineGunWeaponDef);
 
-            if (Modules.Config.heavyMachineGunEnabled.Value)
+            sniperWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
-                sniperWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
-                {
-                    nameToken = "ROB_DRIVER_SNIPER_NAME",
-                    descriptionToken = "ROB_DRIVER_SNIPER_DESC",
-                    icon = Assets.sniperWeaponIcon,
-                    crosshairPrefab = Assets.LoadCrosshair("Standard"),
-                    tier = DriverWeaponTier.Uncommon,
-                    baseDuration = Config.heavyMachineGunDuration.Value,
-                    primarySkillDef = Survivors.Driver.sniperPrimarySkillDef,
-                    secondarySkillDef = Survivors.Driver.sniperSecondarySkillDef,
-                    mesh = Assets.sniperMesh,
-                    material = Assets.sniperMat,
-                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_sniper"
-                });
-                DriverWeaponCatalog.AddWeapon(sniperWeaponDef);
-            }
+                nameToken = "ROB_DRIVER_SNIPER_NAME",
+                descriptionToken = "ROB_DRIVER_SNIPER_DESC",
+                icon = Assets.sniperWeaponIcon,
+                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                tier = DriverWeaponTier.Uncommon,
+                shotCount = 6,
+                primarySkillDef = Survivors.Driver.sniperPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.sniperSecondarySkillDef,
+                mesh = Assets.sniperMesh,
+                material = Assets.sniperMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_sniper",
+                configIdentifier = "Sniper Rifle"
+            });
+            DriverWeaponCatalog.AddWeapon(sniperWeaponDef);
 
             bazookaWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
@@ -1089,13 +1093,14 @@ namespace RobDriver.Modules
                 icon = Assets.bazookaWeaponIcon,
                 crosshairPrefab = bazookaCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 8,
                 primarySkillDef = Survivors.Driver.bazookaPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.bazookaSecondarySkillDef,
                 mesh = Assets.bazookaMesh,
                 material = Assets.bazookaMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+                calloutSoundString = "sfx_driver_callout_rocket_launcher",
+                configIdentifier = "Bazooka"
             });
             DriverWeaponCatalog.AddWeapon(bazookaWeaponDef);
 
@@ -1106,35 +1111,34 @@ namespace RobDriver.Modules
                 icon = Assets.grenadeLauncherWeaponIcon,
                 crosshairPrefab = grenadeLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 16,
                 primarySkillDef = Survivors.Driver.grenadeLauncherPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.grenadeLauncherSecondarySkillDef,
                 mesh = Assets.grenadeLauncherMesh,
                 material = Assets.grenadeLauncherMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_grenade_launcher"
+                calloutSoundString = "sfx_driver_callout_grenade_launcher",
+                configIdentifier = "Grenade Launcher"
             });
             DriverWeaponCatalog.AddWeapon(grenadeLauncherWeaponDef);
 
-            if (Modules.Config.rocketLauncherEnabled.Value)
+            rocketLauncherWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
-                rocketLauncherWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
-                {
-                    nameToken = "ROB_DRIVER_ROCKETLAUNCHER_NAME",
-                    descriptionToken = "ROB_DRIVER_ROCKETLAUNCHER_DESC",
-                    icon = Assets.rocketLauncherWeaponIcon,
-                    crosshairPrefab = rocketLauncherCrosshairPrefab,
-                    tier = DriverWeaponTier.Legendary,
-                    baseDuration = Config.rocketLauncherDuration.Value,
-                    primarySkillDef = Survivors.Driver.rocketLauncherPrimarySkillDef,
-                    secondarySkillDef = Survivors.Driver.rocketLauncherSecondarySkillDef,
-                    mesh = Assets.rocketLauncherMesh,
-                    material = Assets.rocketLauncherMat,
-                    animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                    calloutSoundString = "sfx_driver_callout_rocket_launcher"
-                });
-                DriverWeaponCatalog.AddWeapon(rocketLauncherWeaponDef);
-            }
+                nameToken = "ROB_DRIVER_ROCKETLAUNCHER_NAME",
+                descriptionToken = "ROB_DRIVER_ROCKETLAUNCHER_DESC",
+                icon = Assets.rocketLauncherWeaponIcon,
+                crosshairPrefab = rocketLauncherCrosshairPrefab,
+                tier = DriverWeaponTier.Legendary,
+                shotCount = 20,
+                primarySkillDef = Survivors.Driver.rocketLauncherPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.rocketLauncherSecondarySkillDef,
+                mesh = Assets.rocketLauncherMesh,
+                material = Assets.rocketLauncherMat,
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_rocket_launcher",
+                configIdentifier = "Rocket Launcher"
+            });
+            DriverWeaponCatalog.AddWeapon(rocketLauncherWeaponDef);
 
             behemothWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
@@ -1143,13 +1147,14 @@ namespace RobDriver.Modules
                 icon = Addressables.LoadAssetAsync<Texture>("RoR2/Base/Behemoth/texBehemothIcon.png").WaitForCompletion(),
                 crosshairPrefab = rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 20,
                 primarySkillDef = Survivors.Driver.behemothPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.behemothSecondarySkillDef,
                 mesh = Assets.behemothMesh,
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Behemoth/matBehemoth.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+                calloutSoundString = "sfx_driver_callout_rocket_launcher",
+                configIdentifier = "Brilliant Behemoth"
             });
             DriverWeaponCatalog.AddWeapon(behemothWeaponDef);
             DriverWeaponCatalog.Behemoth = behemothWeaponDef;
@@ -1161,13 +1166,14 @@ namespace RobDriver.Modules
                 icon = Assets.rocketLauncherAltWeaponIcon,
                 crosshairPrefab = rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 10,
                 primarySkillDef = Survivors.Driver.rocketLauncherAltPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.rocketLauncherAltSecondarySkillDef,
                 mesh = Assets.rocketLauncherMesh,
                 material = Assets.rocketLauncherAltMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_rocket_launcher"
+                calloutSoundString = "sfx_driver_callout_rocket_launcher",
+                configIdentifier = "Prototype Rocket Launcher"
             });
             DriverWeaponCatalog.AddWeapon(rocketLauncherAltWeaponDef);
             DriverWeaponCatalog.PrototypeRocketLauncher = rocketLauncherAltWeaponDef;
@@ -1179,13 +1185,14 @@ namespace RobDriver.Modules
                 icon = Assets.armCannonWeaponIcon,
                 crosshairPrefab = rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 15,
                 primarySkillDef = Survivors.Driver.armCannonPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.armCannonSecondarySkillDef,
                 mesh = Assets.armCannonMesh,
                 material = Assets.armCannonMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
-                calloutSoundString = "sfx_driver_callout_generic"
+                calloutSoundString = "sfx_driver_callout_generic",
+                configIdentifier = "Arm Cannon"
             });
             DriverWeaponCatalog.AddWeapon(armCannonWeaponDef);
             DriverWeaponCatalog.ArmCannon = armCannonWeaponDef;
@@ -1197,13 +1204,14 @@ namespace RobDriver.Modules
                 icon = Assets.plasmaCannonWeaponIcon,
                 crosshairPrefab = rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Void,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 30,
                 primarySkillDef = Survivors.Driver.plasmaCannonPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.plasmaCannonSecondarySkillDef,
                 mesh = Assets.plasmaCannonMesh,
                 material = Assets.plasmaCannonMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_laser"
+                calloutSoundString = "sfx_driver_callout_laser",
+                configIdentifier = "Super Plasma Cannon"
             });
             DriverWeaponCatalog.AddWeapon(plasmaCannonWeaponDef);
             DriverWeaponCatalog.PlasmaCannon = plasmaCannonWeaponDef;
@@ -1215,13 +1223,14 @@ namespace RobDriver.Modules
                 icon = Assets.badassShotgunWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("SMG"),
                 tier = DriverWeaponTier.Legendary,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 10,
                 primarySkillDef = Survivors.Driver.badassShotgunPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.badassShotgunSecondarySkillDef,
                 mesh = Assets.badassShotgunMesh,
                 material = Assets.badassShotgunMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
-                calloutSoundString = "sfx_driver_callout_shotgun"
+                calloutSoundString = "sfx_driver_callout_shotgun",
+                configIdentifier = "Badass Shotgun"
             });
             DriverWeaponCatalog.AddWeapon(badassShotgunWeaponDef);
 
@@ -1232,13 +1241,14 @@ namespace RobDriver.Modules
                 icon = Assets.lunarRifleWeaponIcon,
                 crosshairPrefab = Assets.rocketLauncherCrosshairPrefab,
                 tier = DriverWeaponTier.Lunar,
-                baseDuration = Config.rocketLauncherDuration.Value,
+                shotCount = 16,
                 primarySkillDef = Survivors.Driver.lunarRiflePrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.lunarRifleSecondarySkillDef,
                 mesh = Assets.lunarRifleMesh,
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarGolem/matLunarGolem.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_generic"
+                calloutSoundString = "sfx_driver_callout_generic",
+                configIdentifier = "Chimeric Cannon"
             });
             DriverWeaponCatalog.AddWeapon(lunarRifleWeaponDef);
             DriverWeaponCatalog.LunarRifle = lunarRifleWeaponDef;
@@ -1250,7 +1260,6 @@ namespace RobDriver.Modules
                 icon = Assets.lunarHammerWeaponIcon,
                 crosshairPrefab = Assets.needlerCrosshairPrefab,
                 tier = DriverWeaponTier.Lunar,
-                baseDuration = 0f,
                 primarySkillDef = Survivors.Driver.lunarHammerPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.lunarHammerSecondarySkillDef,
                 mesh = Assets.lunarHammerMesh,
@@ -1268,7 +1277,7 @@ namespace RobDriver.Modules
                 icon = Assets.nemmandoGunWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("Standard"),
                 tier = DriverWeaponTier.Void,
-                baseDuration = 8f,
+                shotCount = 64,
                 primarySkillDef = Survivors.Driver.nemmandoGunPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.nemmandoGunSecondarySkillDef,
                 mesh = Assets.nemmandoGunMesh,
@@ -1286,7 +1295,7 @@ namespace RobDriver.Modules
                 icon = Assets.nemmercGunWeaponIcon,
                 crosshairPrefab = Assets.LoadCrosshair("SMG"),
                 tier = DriverWeaponTier.Void,
-                baseDuration = 8f,
+                shotCount = 48,
                 primarySkillDef = Survivors.Driver.nemmercGunPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.nemmercGunSecondarySkillDef,
                 mesh = Assets.nemmercGunMesh,
@@ -1296,6 +1305,63 @@ namespace RobDriver.Modules
             });
             DriverWeaponCatalog.AddWeapon(nemmercGunWeaponDef);
             DriverWeaponCatalog.NemmercGun = nemmercGunWeaponDef;
+
+            golemGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
+            {
+                nameToken = "ROB_DRIVER_GOLEMGUN_NAME",
+                descriptionToken = "ROB_DRIVER_GOLEMGUN_DESC",
+                icon = Assets.golemGunWeaponIcon,
+                crosshairPrefab = circleCrosshairPrefab,
+                tier = DriverWeaponTier.Unique,
+                shotCount = 24,
+                primarySkillDef = Survivors.Driver.golemGunPrimarySkillDef,
+                secondarySkillDef = Survivors.Driver.golemGunSecondarySkillDef,
+                mesh = Assets.golemGunMesh,
+                material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Golem/matGolem.mat").WaitForCompletion(),
+                animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
+                calloutSoundString = "sfx_driver_callout_generic",
+                configIdentifier = "Stone Cannon"
+            });
+            DriverWeaponCatalog.AddWeapon(golemGunWeaponDef);
+            DriverWeaponCatalog.GolemRifle = golemGunWeaponDef;
+        }
+
+        private static GameObject CreateCrosshair()
+        {
+            GameObject crosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolver.prefab").WaitForCompletion().InstantiateClone("AliemCrosshair", false);
+            CrosshairController crosshair = crosshairPrefab.GetComponent<CrosshairController>();
+            crosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
+
+            DriverPlugin.DestroyImmediate(crosshairPrefab.transform.Find("Outer").GetComponent<ObjectScaleCurve>());
+            crosshairPrefab.transform.Find("Outer").GetComponent<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/UI/texCrosshairTridant.png").WaitForCompletion();
+            RectTransform rectR = crosshairPrefab.transform.Find("Outer").GetComponent<RectTransform>();
+            rectR.localScale = Vector3.one * 0.75f;
+
+            GameObject nibL = GameObject.Instantiate(crosshair.transform.Find("Outer").gameObject);
+            nibL.transform.parent = crosshairPrefab.transform;
+            //nibL.GetComponent<Image>().sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperCenter.png").WaitForCompletion();
+            RectTransform rectL = nibL.GetComponent<RectTransform>();
+            rectL.localEulerAngles = new Vector3(0f, 0f, 180f);
+
+            crosshair.spriteSpreadPositions = new CrosshairController.SpritePosition[]
+            {
+                new CrosshairController.SpritePosition
+                {
+                    target = rectR,
+                    zeroPosition = new Vector3(0f, 0f, 0f),
+                    onePosition = new Vector3(10f, 10f, 0f)
+                },
+                new CrosshairController.SpritePosition
+                {
+                    target = rectL,
+                    zeroPosition = new Vector3(0f, 0f, 0f),
+                    onePosition = new Vector3(-10f, -10f, 0f)
+                }
+            };
+
+            crosshairPrefab.AddComponent<RobDriver.Modules.Components.CrosshairRotator>();
+
+            return crosshairPrefab;
         }
 
         internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")

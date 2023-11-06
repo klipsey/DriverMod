@@ -58,7 +58,7 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
                 this.characterBody.AddSpreadBloom(4f);
                 EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Brother/MuzzleflashLunarShard.prefab").WaitForCompletion(), gameObject, muzzleString, false);
 
-                GameObject tracer = Modules.Assets.lunarTracer;
+                GameObject tracer = Modules.Assets.lunarRifleTracer;
                 //if (this.isCrit) tracer = Modules.Assets.shotgunTracerCrit;
 
                 if (base.isAuthority)
@@ -96,7 +96,7 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
                         spreadPitchScale = 1f,
                         spreadYawScale = 1f,
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
-                        hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
+                        hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarGolem/LunarGolemTwinShotExplosion.prefab").WaitForCompletion(),
                         HitEffectNormal = false,
                     };
 

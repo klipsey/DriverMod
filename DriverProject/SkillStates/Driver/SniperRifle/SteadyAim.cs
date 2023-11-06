@@ -14,7 +14,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
         public float baseShotDuration = 1.4f;
         public float baseChargeDuration = 4f;
 
-        public static float damageCoefficient = 40f;
+        public static float damageCoefficient = 50f;
         public static float recoil = 3f;
 
         private CameraParamsOverrideHandle camParamsOverrideHandle;
@@ -150,8 +150,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
         public void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer();
-
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
             bool wasCharged = this.isCharged;
@@ -180,17 +178,19 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             Util.PlaySound(soundString, this.gameObject);
             base.PlayAnimation("Gesture, Override", animString, "Action.playbackRate", this.shotCooldown * 1.5f);
 
+            float value = Util.Remap(this.chargeTimer, 0f, this.chargeDuration, 0f, 1f);
+            if (this.iDrive) this.iDrive.StartTimer(1 + value);
+
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
                 base.AddRecoil(-1f * SteadyAim.recoil, -2f * SteadyAim.recoil, -0.5f * SteadyAim.recoil, 0.5f * SteadyAim.recoil);
 
                 float dmg = Shoot.damageCoefficient;
+                if (this.skillLocator.secondary.stock > 0) dmg = Util.Remap(value, 0f, 1f, Shoot.damageCoefficient, SteadyAim.damageCoefficient);
 
-                if (wasCharged)
+                if (value >= 0.25f)
                 {
-                    dmg = SteadyAim.damageCoefficient;
-
                     this.skillLocator.secondary.DeductStock(1);
                 }
 

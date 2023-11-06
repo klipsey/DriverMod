@@ -459,7 +459,7 @@
 						<Action Name="" ID="{36CA757D-A868-4158-AF66-E1461156B766}" ShortID="174696574">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="sfx_driver_heavy_machine_gun_shoot" ID="{C61601E5-4187-423D-9C70-DCC6E91CD3FB}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+									<ObjectRef Name="M16" ID="{284D260E-E6FF-4972-98BD-879ADB5319B0}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -470,7 +470,7 @@
 						<Action Name="" ID="{6A4C561C-8137-4244-9AFB-510D00606F16}" ShortID="240637888">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="sfx_driver_heavy_machine_gun_shoot_critical" ID="{86726911-C838-4E7C-86A6-7FF980B9E01C}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+									<ObjectRef Name="M16_01" ID="{F6CF9BDE-5F25-4E8F-9292-F71188A956E6}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -702,6 +702,39 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="sfx_driver_lunar_cannon_shoot" ID="{C203F3F0-8EAA-4222-8124-DDA82BCE9599}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_heavy_machinegun_shoot_old" ID="{AD9D8837-5D16-428B-B510-7C86A991C5B9}">
+					<ChildrenList>
+						<Action Name="" ID="{887F785C-5F4B-4CC3-9E0C-FE8CC16A5B8F}" ShortID="44938074">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_heavy_machine_gun_shoot" ID="{C61601E5-4187-423D-9C70-DCC6E91CD3FB}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_heavy_machinegun_shoot_critical_old" ID="{D597ABB8-5B03-45E7-B276-F15C699D4B87}">
+					<ChildrenList>
+						<Action Name="" ID="{9195E6CF-E999-47E0-805C-B186CDD4215D}" ShortID="198123001">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_heavy_machine_gun_shoot_critical" ID="{86726911-C838-4E7C-86A6-7FF980B9E01C}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_tyler_gun_loop" ID="{1947D3D5-B034-4ED5-AFED-3A6FCA301419}">
+					<ChildrenList>
+						<Action Name="" ID="{4D65D1BC-2B2B-432F-BDA9-EF909EF86C40}" ShortID="668730492">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_tyler_gun_loop" ID="{374201E0-8E27-4FB2-B069-7A4B1C4627BD}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

@@ -95,6 +95,8 @@ namespace RobDriver.SkillStates.Driver
             this.characterBody.isSprinting = false;
             base.characterBody.SetAimTimer(0.2f);
             this.attackSpeedStat = this.characterBody.attackSpeed;
+            this.damageStat = this.characterBody.damage;
+            this.critStat = this.characterBody.crit;
 
             if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
@@ -218,7 +220,7 @@ namespace RobDriver.SkillStates.Driver
             return soundString;
         }
 
-        public void Fire()
+        public virtual void Fire()
         {
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 

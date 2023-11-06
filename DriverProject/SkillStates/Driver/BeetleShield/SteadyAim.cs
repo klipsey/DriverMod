@@ -8,7 +8,6 @@ namespace RobDriver.SkillStates.Driver.BeetleShield
         public override void OnEnter()
         {
             base.OnEnter();
-            if (this.iDrive) this.iDrive.StartTimer();
 
             if (NetworkServer.active) this.characterBody.AddBuff(RoR2.RoR2Content.Buffs.SmallArmorBoost);
         }
@@ -34,6 +33,13 @@ namespace RobDriver.SkillStates.Driver.BeetleShield
         {
             if (wasCrit) base.PlayAnimation("Gesture, Override", "ShieldSteadyAimFireCritical", "Action.playbackRate", speed);
             else base.PlayAnimation("Gesture, Override", "ShieldSteadyAimFire", "Action.playbackRate", speed);
+        }
+
+        public override void Fire()
+        {
+            if (this.iDrive) this.iDrive.StartTimer();
+
+            base.Fire();
         }
     }
 }

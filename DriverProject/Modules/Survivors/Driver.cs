@@ -117,6 +117,9 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef nemmercGunPrimarySkillDef;
         internal static SkillDef nemmercGunSecondarySkillDef;
 
+        internal static SkillDef golemGunPrimarySkillDef;
+        internal static SkillDef golemGunSecondarySkillDef;
+
         internal static SkillDef confirmSkillDef;
         internal static SkillDef cancelSkillDef;
 
@@ -695,6 +698,14 @@ new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.LunarRifl
 prefix + "_DRIVER_BODY_PRIMARY_LUNARRIFLE_NAME",
 prefix + "_DRIVER_BODY_PRIMARY_LUNARRIFLE_DESCRIPTION",
 Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texLunarRifleIcon"),
+false);
+
+            Driver.golemGunPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.GolemGun.ChargeLaser)),
+"Weapon",
+prefix + "_DRIVER_BODY_PRIMARY_LUNARRIFLE_NAME",
+prefix + "_DRIVER_BODY_PRIMARY_LUNARRIFLE_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGolemGunIcon"),
 false);
 
             Driver.lunarHammerPrimarySkillDef = Modules.Skills.CreatePrimarySkillDef(
@@ -1300,6 +1311,30 @@ false);
             });
 
             Driver.nemmercGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 6f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
+
+            Driver.golemGunSecondarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
@@ -2139,6 +2174,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                         // todo: proper system for these, clean up this whole thing and make it readable
                         if (damageReport.victimBody.baseNameToken == "BEETLE_BODY_NAME" && Util.CheckRoll(5f)) weaponDef = DriverWeaponCatalog.BeetleShield;
+                        if (damageReport.victimBody.baseNameToken == "GOLEM_BODY_NAME" && Util.CheckRoll(10f)) weaponDef = DriverWeaponCatalog.GolemRifle;
                         if (damageReport.victimBody.baseNameToken == "LUNARGOLEM_BODY_NAME" && Util.CheckRoll(50f)) weaponDef = DriverWeaponCatalog.LunarRifle;
                         if (damageReport.victimBody.baseNameToken == "BROTHER_BODY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.LunarHammer;
 
@@ -2215,7 +2251,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject.SetActive(false);
 
                 // duration bar
-                GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+                GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
                 chargeBar.transform.SetParent(weaponSlot.transform.Find("DisplayRoot"));
 
                 RectTransform rect = chargeBar.GetComponent<RectTransform>();
@@ -2229,7 +2265,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 rect.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
 
                 weaponIconComponent.durationDisplay = chargeBar;
-                weaponIconComponent.durationBar = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
+                weaponIconComponent.durationBar = chargeBar.transform.GetChild(1).gameObject.GetComponent<UnityEngine.UI.Image>();
+                weaponIconComponent.durationBarRed = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
 
                 MonoBehaviour.Destroy(equipmentIconComponent);
             }
@@ -2273,7 +2310,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject.SetActive(false);
 
             // duration bar
-            GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+            GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
             chargeBar.transform.SetParent(weaponSlot.transform.Find("DisplayRoot"));
 
             RectTransform rect = chargeBar.GetComponent<RectTransform>();
@@ -2287,7 +2324,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             rect.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
 
             weaponIconComponent.durationDisplay = chargeBar;
-            weaponIconComponent.durationBar = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIconComponent.durationBar = chargeBar.transform.GetChild(1).gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIconComponent.durationBarRed = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
 
             MonoBehaviour.Destroy(equipmentIconComponent);
             MonoBehaviour.Destroy(x);

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3857643156
+CRC: 1108168921
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c7a928de090216108e668b7c26318bd2
+    Hash: 6a03a2582e5e1043165f8b18cb29b08c
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7d97328b274e37b2c802bf15d37d4337
@@ -170,6 +170,7 @@ Assets:
 - Assets/Driver/VFX/texShockwave.png
 - Assets/Driver/Textures/texTank.png
 - Assets/Driver/DriverDisplay.prefab
+- Assets/Driver/Icons/texGolemGunIcon.png
 - Assets/Driver/Icons/texConfirmIcon.png
 - Assets/Driver/Animations/Hammer/RunR.anim
 - Assets/Driver/Animations/Skateboard/Descend.anim
@@ -214,6 +215,7 @@ Assets:
 - Assets/Driver/FBX/meshSuit.mesh
 - Assets/Driver/Textures/texMinecraftDriver.png
 - Assets/Driver/VFX/DriverMissileGhost.prefab
+- Assets/Driver/HUD/WeaponChargeBar.prefab
 - Assets/Driver/Materials/matShotgunSlug.mat
 - Assets/Driver/Icons/texMachineGunIcon.png
 - Assets/Driver/Textures/texNeedler.png
@@ -224,6 +226,7 @@ Assets:
 - Assets/Driver/WeaponPickup.prefab
 - Assets/Driver/Textures/texSkateboard.png
 - Assets/Driver/mdlDriver.prefab
+- Assets/Driver/Icons/texGolemGunWeaponIcon.png
 - Assets/Driver/FBX/meshBazooka.mesh
 - Assets/Driver/Materials/matSlugShotgun.mat
 - Assets/Driver/Textures/texSuit.png
@@ -304,6 +307,7 @@ Assets:
 - Assets/Driver/FBX/meshNeedler.mesh
 - Assets/Driver/FBX/meshSuit2.mesh
 - Assets/Driver/Materials/matCrate2.mat
+- Assets/Driver/FBX/meshGolemGun.mesh
 - Assets/Driver/Textures/texBriefcaseUnique.png
 - Assets/Driver/Materials/matDriver.mat
 - Assets/Driver/Icons/texNemmandoPrimaryIcon.png

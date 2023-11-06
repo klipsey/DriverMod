@@ -357,9 +357,13 @@ new EffectData
             this.hammerEffectInstance2.SetActive(false);
         }
 
-        public void StartTimer()
+        public void StartTimer(float amount = 1f)
         {
-            this.timerStarted = true;
+            //this.timerStarted = true;
+
+            if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
+
+            this.weaponTimer -= amount / this.characterBody.attackSpeed;
         }
 
         public void ToggleSkateboard(SkateboardState newState)
@@ -498,7 +502,9 @@ new EffectData
             this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = this.weaponDef.material;
 
             // timer
-            float duration = 8f;
+            float duration = this.weaponDef.shotCount;
+
+            if (Modules.Config.GetWeaponConfig(this.weaponDef)) duration = Modules.Config.GetWeaponConfigShotCount(this.weaponDef);
 
             if (Modules.Config.backupMagExtendDuration.Value)
             {
@@ -509,7 +515,7 @@ new EffectData
             }
 
             if (this.weaponDef.tier == DriverWeaponTier.Common) duration = 0f;
-            if (this.weaponDef.baseDuration == 0f) duration = 0f;
+            if (this.weaponDef.shotCount == 0) duration = 0f;
 
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;

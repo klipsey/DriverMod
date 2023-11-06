@@ -19,6 +19,7 @@ namespace RobDriver
         internal static DriverWeaponDef LunarPistol;
         internal static DriverWeaponDef VoidPistol;
         internal static DriverWeaponDef Needler;
+        internal static DriverWeaponDef GolemRifle;
         internal static DriverWeaponDef LunarRifle;
         internal static DriverWeaponDef LunarHammer;
         internal static DriverWeaponDef NemmandoGun;
@@ -36,6 +37,9 @@ namespace RobDriver
 
             // heheheha
             weaponDef.pickupPrefab = Modules.Assets.CreatePickupObject(weaponDef);
+
+            // add config
+            Modules.Config.InitWeaponConfig(weaponDef);
         }
 
         internal static DriverWeaponDef GetWeaponFromIndex(int index)
@@ -49,7 +53,10 @@ namespace RobDriver
 
             for (int i = 0; i < weaponDefs.Length; i++)
             {
-                if (weaponDefs[i] && weaponDefs[i].tier == tier) validWeapons.Add(weaponDefs[i]);
+                if (weaponDefs[i] && weaponDefs[i].tier == tier)
+                {
+                    if (Modules.Config.GetWeaponConfigEnabled(weaponDefs[i])) validWeapons.Add(weaponDefs[i]);
+                }
             }
 
             DriverWeaponDef[] _validWeapons = validWeapons.ToArray();

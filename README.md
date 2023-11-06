@@ -120,7 +120,7 @@ iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98
 ## Future Plans
 - Many more weapons (dual uzis, railgun, minigun, etc.)
 - Other things 100% decided on pure whimsy
-- Proper skill icons?
+- Proper skill icons? (unlikely given just how many weapons there are.)
 - Unique monster-themed weapon drops (golem cannon, templar minigun, mithrix hammer..... yeah)
 - More mod crosscompat
 
@@ -131,6 +131,20 @@ iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98
 ___
 
 ## Changelog
+
+`1.3.0`
+- REWORKED WEAPON TIMER
+- ^Weapon duration is no longer time based, it's now a pseudo ammo system that scales with attack speed
+- Readded weapon configs, game no longer has to be restarted to toggle weapons on or off
+- Added weapon: Stone Cannon- rare drop from Stone Golems
+- Machine Gun primary damage: 200% > 160% - this one was just shredding WAY too fast
+- Sniper Rifle primary damage: 600% > 800% - this one sucked all around
+- Sniper Rifle secondary max damage: 4000% > 5000%, damage now scales linearly with charge instead of being all or nothing
+- Updated Heavy Machine Gun SFX
+- Updated Chimeric Cannon VFX
+- Improved weights on the Hitman skins
+- Restored weapon pickup SFX
+- Fixed stats not updating while holding down Focus
 
 `1.2.9`
 - Added weapon: ???

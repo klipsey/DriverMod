@@ -87,6 +87,9 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.NemmercGun.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.NemmercGun.Shoot2));
 
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.GolemGun.ChargeLaser));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.GolemGun.FireLaser));
+
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.AimSupplyDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.FireSupplyDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.CancelSupplyDrop));
