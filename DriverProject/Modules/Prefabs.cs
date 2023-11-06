@@ -32,7 +32,7 @@ namespace RobDriver.Modules
             survivorDef.descriptionToken = fullDescString;
             survivorDef.outroFlavorToken = fullOutroString;
             survivorDef.mainEndingEscapeFailureFlavorToken = fullFailureString;
-            survivorDef.desiredSortPosition = 100f;
+            survivorDef.desiredSortPosition = 3.99f;
             survivorDef.unlockableDef = unlockableDef;
             survivorDef.cachedName = fullNameString;
 
