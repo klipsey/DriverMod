@@ -80,7 +80,7 @@ namespace RobDriver.SkillStates.Driver.ArmCannon
 
             if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
-                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();
                 return;
             }

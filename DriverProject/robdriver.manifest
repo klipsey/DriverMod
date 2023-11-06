@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1108168921
+CRC: 1831832106
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6a03a2582e5e1043165f8b18cb29b08c
+    Hash: d26f2b942cf6bed49c09ab74c96838be
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7d97328b274e37b2c802bf15d37d4337
@@ -146,6 +146,7 @@ Assets:
 - Assets/Driver/FBX/animDriverSkateboard.fbx
 - Assets/Driver/FBX/meshSluggerOld.mesh
 - Assets/Driver/Textures/texSlugger.png
+- Assets/Driver/VFX/DiscardedWeapon.prefab
 - Assets/Driver/Icons/texArmCannonIcon.png
 - Assets/Driver/Textures/texSawedOff.png
 - Assets/Driver/Textures/texDualShotgun.png

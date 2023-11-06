@@ -38,6 +38,15 @@ public class DriverWeaponDef : ScriptableObject
     [HideInInspector]
     public GameObject pickupPrefab; // same thing
 
+    public string equipAnimationString
+    {
+        get
+        {
+            if (this.animationSet == AnimationSet.Default) return "EquipPistol";
+            return "BufferEmpty";
+        }
+    }
+
     public static DriverWeaponDef CreateWeaponDefFromInfo(DriverWeaponDefInfo weaponDefInfo)
     {
         DriverWeaponDef weaponDef = (DriverWeaponDef)ScriptableObject.CreateInstance(typeof(DriverWeaponDef));

@@ -246,7 +246,14 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                 this.characterBody.master.inventory.onInventoryChanged -= Inventory_onInventoryChanged;
             }
 
-            if (!this.cancelling) this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;
+            if (!this.cancelling)
+            {
+                this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;
+            }
+            else
+            {
+                base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
+            }
 
             if (this.overlayController != null)
             {

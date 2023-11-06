@@ -63,6 +63,9 @@ namespace RobDriver.Modules.Components
         private DriverWeaponDef pistolWeaponDef;
         private SkinnedMeshRenderer weaponRenderer;
 
+        public float upForce = 9f;
+        public float backForce = 2.4f;
+
         // ooooAAAAAUGHHHHHGAHEM,67TKM
         private SkillDef[] primarySkillOverrides;
         private SkillDef[] secondarySkillOverrides;
@@ -357,13 +360,14 @@ new EffectData
             this.hammerEffectInstance2.SetActive(false);
         }
 
-        public void StartTimer(float amount = 1f)
+        public void StartTimer(float amount = 1f, bool scaleWithAttackSpeed = true)
         {
             //this.timerStarted = true;
 
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
-            this.weaponTimer -= amount / this.characterBody.attackSpeed;
+            if (scaleWithAttackSpeed) this.weaponTimer -= amount / this.characterBody.attackSpeed;
+            else this.weaponTimer -= amount;
         }
 
         public void ToggleSkateboard(SkateboardState newState)
@@ -443,8 +447,19 @@ new EffectData
 
         private void ReturnToDefaultWeapon()
         {
+            this.DiscardWeapon();
+
             if (this.hasPickedUpHammer) this.PickUpWeapon(DriverWeaponCatalog.LunarHammer);
             else this.PickUpWeapon(this.defaultWeaponDef);
+        }
+
+        private void DiscardWeapon()
+        {
+            // just create the effect here
+            GameObject newEffect = GameObject.Instantiate(Modules.Assets.discardedWeaponEffect);
+            newEffect.GetComponent<DiscardedWeaponComponent>().Init(this.weaponDef, (this.characterBody.characterDirection.forward * -this.backForce) + (Vector3.up * this.upForce) + this.characterBody.characterMotor.velocity);
+            newEffect.transform.rotation = this.characterBody.modelLocator.modelTransform.rotation;
+            newEffect.transform.position = this.childLocator.FindChild("Pistol").position;
         }
 
         public void PickUpWeapon(DriverWeaponDef newWeapon)

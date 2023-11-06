@@ -93,6 +93,7 @@ namespace RobDriver.Modules
         public static GameObject weaponPickupOld;
 
         public static GameObject weaponPickupEffect;
+        public static GameObject discardedWeaponEffect;
 
         internal static Texture pistolWeaponIcon;
         internal static Texture goldenGunWeaponIcon;
@@ -756,6 +757,11 @@ namespace RobDriver.Modules
             lunarShardMuzzleFlash.transform.GetChild(2).transform.localScale = Vector3.one * 0.35f;
 
             AddNewEffectDef(lunarShardMuzzleFlash);
+
+
+            discardedWeaponEffect = mainAssetBundle.LoadAsset<GameObject>("DiscardedWeapon");
+            Modules.Components.DiscardedWeaponComponent discardComponent = discardedWeaponEffect.AddComponent<Modules.Components.DiscardedWeaponComponent>();
+            discardedWeaponEffect.gameObject.layer = LayerIndex.ragdoll.intVal;
         }
 
         internal static GameObject CreatePickupObject(DriverWeaponDef weaponDef)
