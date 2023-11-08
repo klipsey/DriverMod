@@ -230,13 +230,13 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_LUNAR_PISTOL_DESC", "A perfect weapon with no flaws. Speed is war.");
 
             LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_NAME", "Corrupted Blaster");
-            LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_DESC", "A weapon corrupted by the void.");
+            LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_DESC", "A weapon corrupted and powered up by the void.");
 
             LanguageAPI.Add("ROB_DRIVER_NEEDLER_NAME", "Needler");
             LanguageAPI.Add("ROB_DRIVER_NEEDLER_DESC", "Risk of Rain 2");
 
             LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_NAME", "Golden Gun");
-            LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_DESC", "A legendary gun that deals extraordinary damage.");
+            LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_DESC", "A legendary gun that deals extraordinary damage, but only has a few shots.");
 
             LanguageAPI.Add("ROB_DRIVER_PYRITEGUN_NAME", "Pyrite Gun");
             LanguageAPI.Add("ROB_DRIVER_PYRITEGUN_DESC", "A mockery of the original.");
@@ -254,10 +254,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_BADASS_SHOTGUN_DESC", "A six-barreled shotgun...!?");
 
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_NAME", "Machine Gun");
-            LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "A gun that excels at something, I'm not really sure what.");
+            LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "A good all-rounder that shoots fast but has high recoil.");
 
             LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_NAME", "Heavy Machine Gun");
-            LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_DESC", "A machine gun with slower shots, higher damage and more consistent aim.");
+            LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_DESC", "A machine gun with slower shots, higher damage and armor piercing rounds.");
 
             LanguageAPI.Add("ROB_DRIVER_UZIS_NAME", "Dual Uzis");
             LanguageAPI.Add("ROB_DRIVER_UZIS_DESC", "A pair of uzis with high recoil but ridiculous damage.");
@@ -272,7 +272,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_DESC", "KABOOOM");
 
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_ALT_NAME", "Prototype Rocket Launcher");
-            LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_ALT_DESC", "KABLOOEY");
+            LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_ALT_DESC", "An early prototype Rocket Launcher that lasts for a short time.");
 
             LanguageAPI.Add("ROB_DRIVER_ARMCANNON_NAME", "Arm Cannon");
             LanguageAPI.Add("ROB_DRIVER_ARMCANNON_DESC", "Arm Cannon scavenged from a Steel Mechorilla.");
@@ -287,10 +287,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_BEHEMOTH_DESC", "huh?");
 
             LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_NAME", "Grenade Launcher");
-            LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_DESC", "");
+            LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_DESC", "Fast-firing grenades with high damage but low blast radius.");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_NAME", "Chimeric Cannon");
-            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "");
+            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "Fire blasts of condensed lunar energy.");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_NAME", "Chimeric Gatling");
             LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_DESC", "");

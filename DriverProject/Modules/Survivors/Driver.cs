@@ -12,6 +12,7 @@ using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
 using RoR2.UI;
 using System.Linq;
+using RobDriver.Modules.Components;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -2269,6 +2270,23 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 weaponIconComponent.durationBarRed = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
 
                 MonoBehaviour.Destroy(equipmentIconComponent);
+
+
+                // weapon pickup notification
+
+                GameObject notificationPanel = GameObject.Instantiate(hud.transform.Find("MainContainer").Find("NotificationArea").gameObject);
+                notificationPanel.transform.SetParent(hud.transform.Find("MainContainer"), true);
+                notificationPanel.GetComponent<RectTransform>().localPosition = new Vector3(0f, -265f, -150f);
+                notificationPanel.transform.localScale = Vector3.one;
+
+                NotificationUIController _old = notificationPanel.GetComponent<NotificationUIController>();
+                WeaponNotificationUIController _new = notificationPanel.AddComponent<WeaponNotificationUIController>();
+
+                _new.hud = _old.hud;
+                _new.genericNotificationPrefab = Modules.Assets.weaponNotificationPrefab;
+                _new.notificationQueue = hud.targetMaster.gameObject.AddComponent<WeaponNotificationQueue>();
+
+                _old.enabled = false;
             }
         }
 

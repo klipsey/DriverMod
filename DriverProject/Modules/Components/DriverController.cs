@@ -87,6 +87,9 @@ namespace RobDriver.Modules.Components
         private GameObject hammerEffectInstance;
         private GameObject hammerEffectInstance2;
 
+        private DriverWeaponDef lastWeaponDef;
+        private WeaponNotificationQueue notificationQueue;
+
         private void Awake()
         {
             // this was originally used for gun jamming
@@ -187,7 +190,7 @@ namespace RobDriver.Modules.Components
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0)
                 {
-                    if (this.defaultWeaponDef == DriverWeaponCatalog.Pistol) desiredWeapon = DriverWeaponCatalog.PyriteGun;
+                    if (this.defaultWeaponDef == DriverWeaponCatalog.Pistol || this.defaultWeaponDef == DriverWeaponCatalog.PyriteGun) desiredWeapon = DriverWeaponCatalog.PyriteGun;
                 }
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0)
@@ -473,8 +476,32 @@ new EffectData
 
             this.TryCallout();
 
+            this.TryPickupNotification();
+
             if (this.onWeaponUpdate == null) return;
             this.onWeaponUpdate(this);
+        }
+
+        private void TryPickupNotification()
+        {
+            // attempt to add the component if it's not there
+            if (!this.notificationQueue && this.characterBody.master)
+            {
+                this.notificationQueue = this.characterBody.master.GetComponent<WeaponNotificationQueue>();
+               // if (!this.notificationQueue) this.notificationQueue = this.characterBody.master.gameObject.AddComponent<WeaponNotificationQueue>();
+            }
+
+            if (this.notificationQueue)
+            {
+                if (this.weaponDef != this.lastWeaponDef)
+                {
+                    if (this.weaponDef != this.defaultWeaponDef && this.weaponDef != this.pistolWeaponDef)
+                    {
+                        WeaponNotificationQueue.PushWeaponNotification(this.characterBody.master, this.weaponDef.index);
+                    }
+                }
+                this.lastWeaponDef = this.weaponDef;
+            }
         }
 
         private void TryCallout()

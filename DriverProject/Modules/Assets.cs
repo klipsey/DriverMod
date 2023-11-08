@@ -11,6 +11,7 @@ using UnityEngine.AddressableAssets;
 using TMPro;
 using RoR2.UI;
 using UnityEngine.UI;
+using RobDriver.Modules.Components;
 
 namespace RobDriver.Modules
 {
@@ -36,6 +37,8 @@ namespace RobDriver.Modules
         public static GameObject grenadeLauncherCrosshairPrefab;
         public static GameObject needlerCrosshairPrefab;
         public static GameObject circleCrosshairPrefab;
+
+        public static GameObject weaponNotificationPrefab;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -610,6 +613,21 @@ namespace RobDriver.Modules
             weaponPickupComponent4.pickupEffect = weaponPickupEffect;
 
 
+            weaponNotificationPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/NotificationPanel2.prefab").WaitForCompletion().InstantiateClone("WeaponNotification", false);
+            WeaponNotification _new = weaponNotificationPrefab.AddComponent<WeaponNotification>();
+            GenericNotification _old = weaponNotificationPrefab.GetComponent<GenericNotification>();
+
+            _new.titleText = _old.titleText;
+            _new.titleTMP = _old.titleTMP;
+            _new.descriptionText = _old.descriptionText;
+            _new.iconImage = _old.iconImage;
+            _new.previousIconImage = _old.previousIconImage;
+            _new.canvasGroup = _old.canvasGroup;
+            _new.fadeOutT = _old.fadeOutT;
+
+            _old.enabled = false;
+
+
             pistolWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPistolWeaponIcon");
             goldenGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGoldenGunWeaponIcon");
             pyriteGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texPyriteGunWeaponIcon");
@@ -857,6 +875,9 @@ namespace RobDriver.Modules
 
             MonoBehaviour.Destroy(ammoPickupComponent);
             MonoBehaviour.Destroy(newPickup.GetComponentInChildren<RoR2.GravitatePickup>());
+
+            newPickup.transform.Find("Visuals").Find("Particle System").Find("Particle System").gameObject.SetActive(false);
+            newPickup.GetComponentInChildren<Light>().color = Modules.Survivors.Driver.characterColor;
 
             // i seriously hate this but it works
             return newPickup;

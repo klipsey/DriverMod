@@ -47,6 +47,30 @@ public class DriverWeaponDef : ScriptableObject
         }
     }
 
+    public Color color
+    {
+        get
+        {
+            switch (this.tier)
+            {
+                case DriverWeaponTier.Common:
+                    return RobDriver.Modules.Helpers.whiteItemColor;
+                case DriverWeaponTier.Uncommon:
+                    return RobDriver.Modules.Helpers.greenItemColor;
+                case DriverWeaponTier.Legendary:
+                    return RobDriver.Modules.Helpers.redItemColor;
+                case DriverWeaponTier.Unique:
+                    return RobDriver.Modules.Helpers.yellowItemColor;
+                case DriverWeaponTier.Lunar:
+                    return RobDriver.Modules.Helpers.lunarItemColor;
+                case DriverWeaponTier.Void:
+                    return RobDriver.Modules.Helpers.voidItemColor;
+            }
+
+            return RobDriver.Modules.Helpers.whiteItemColor;
+        }
+    }
+
     public static DriverWeaponDef CreateWeaponDefFromInfo(DriverWeaponDefInfo weaponDefInfo)
     {
         DriverWeaponDef weaponDef = (DriverWeaponDef)ScriptableObject.CreateInstance(typeof(DriverWeaponDef));
