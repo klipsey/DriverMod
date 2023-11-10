@@ -1864,7 +1864,25 @@ localScale = new Vector3(0.30902F, 0.09537F, 0.30934F)
                 }
 });
 
-            ReplaceItemDisplay(RoR2Content.Items.AttackSpeedOnCrit, new ItemDisplayRule[]
+            if (Modules.Config.predatoryOnHead.Value)
+            {
+                ReplaceItemDisplay(RoR2Content.Items.AttackSpeedOnCrit, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemDisplays.LoadDisplay("DisplayWolfPelt"),
+                    limbMask = LimbFlags.None,
+childName = "Head",
+localPos = new Vector3(0F, 0.18766F, -0.11041F),
+localAngles = new Vector3(302.566F, 0F, 0F),
+localScale = new Vector3(0.47332F, 0.47332F, 0.47332F)
+                }
+});
+            }
+            else
+            {
+                ReplaceItemDisplay(RoR2Content.Items.AttackSpeedOnCrit, new ItemDisplayRule[]
 {
                 new ItemDisplayRule
                 {
@@ -1877,6 +1895,7 @@ localAngles = new Vector3(309.4066F, 250.1116F, 175.7708F),
 localScale = new Vector3(0.363F, 0.363F, 0.363F)
                 }
 });
+            }
 
             ReplaceItemDisplay(DLC1Content.Items.CritGlassesVoid, new ItemDisplayRule[]
 {
@@ -2320,6 +2339,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             iconRect.localScale = new Vector3(2f, 2f, 2f);
             iconRect.anchoredPosition = new Vector2(-128f, 60f);
 
+            if (DriverPlugin.extendedLoadoutInstalled)
+            {
+                iconRect.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                iconRect.anchoredPosition = new Vector2(-110f, 60f);
+            }
+
             HGTextMeshProUGUI keyText = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").Find("SkillKeyText").gameObject.GetComponent<HGTextMeshProUGUI>();
             keyText.gameObject.GetComponent<InputBindingDisplayController>().enabled = false;
             keyText.text = "Weapon";
@@ -2347,6 +2372,23 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
             MonoBehaviour.Destroy(equipmentIconComponent);
             MonoBehaviour.Destroy(x);
+
+
+            // weapon pickup notification
+
+            GameObject notificationPanel = GameObject.Instantiate(hud.transform.Find("MainContainer").Find("NotificationArea").gameObject);
+            notificationPanel.transform.SetParent(hud.transform.Find("MainContainer"), true);
+            notificationPanel.GetComponent<RectTransform>().localPosition = new Vector3(0f, -210f, -50f);
+            notificationPanel.transform.localScale = Vector3.one;
+
+            NotificationUIController _old = notificationPanel.GetComponent<NotificationUIController>();
+            WeaponNotificationUIController _new = notificationPanel.AddComponent<WeaponNotificationUIController>();
+
+            _new.hud = _old.hud;
+            _new.genericNotificationPrefab = Modules.Assets.weaponNotificationPrefab;
+            _new.notificationQueue = hud.targetMaster.gameObject.AddComponent<WeaponNotificationQueue>();
+
+            _old.enabled = false;
         }
 
         private static void PlayVisionsAnimation(On.EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle.orig_OnEnter orig, EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle self)

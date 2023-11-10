@@ -15,13 +15,16 @@
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/DriverUnityProject/Assets/Driver/Icons/texDriverIcon.png)]()
 
-To share feedback, report bugs, or offer suggestions feel free to DM @braindead_ape on Discord
+
+To share feedback, report bugs, or offer suggestions feel free to DM @braindead_ape on Discord or make an issue on the GitHub repo
 
 ___
 
 # Unlock
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/unlock.png)]()
+
+This can be circumvented via config for the lazy (it's a really easy unlock)
 
 ___
 
@@ -106,24 +109,27 @@ Swuff - Code help, feedback, networking help
 
 Bog - Code for Shuriken interaction fix
 
-Hyperinvox - Briefcase, Plasma Cannon model
+Hyperinvox - Briefcases, Plasma Cannon model
 
-Bruh - Riot Shotgun, Golden Gun model
+Bruh - Riot Shotgun, Golden Gun, Nemesis gun models
 
-Glasus - Grand Mastery skin concept
+Glasus - Grand Mastery skin concept and feedback
 
 Falxxx - [Grenade Launcher Model](https://sketchfab.com/3d-models/ps1-style-grenade-launcher-0532a58572124fe1b31ecec7a9aff462)
 
 iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98276531d5948598ebbafe0913c7820)
 
 
+Big thanks to everyone in the community for all the valuable feedback and criticism as well, he wouldn't be the same without it
+
+
 ## Future Plans
 - Many more weapons (dual uzis, railgun, minigun, etc.)
 - Other things 100% decided on pure whimsy
 - Proper skill icons? (unlikely given just how many weapons there are.)
-- Unique monster-themed weapon drops (golem cannon, templar minigun, mithrix hammer..... yeah)
+- Unique monster-themed weapon drops (templar minigun, scav cannon, etc.)
 - More mod crosscompat
-
+- Unique secondary skills for each weapon; these are difficult to come up with, so feel free to hit me with any ideas!
 
 ## Known Issues
 - None as of right now
@@ -131,6 +137,12 @@ iedalton - [Heavy Machine Gun Model](https://sketchfab.com/3d-models/m60-lmg-f98
 ___
 
 ## Changelog
+
+`1.3.2`
+- Added weapon pickup notifications; these can be disabled via config if you find it too intrusive
+- Prototype Rocket Launcher primary damage: 450% > 600%, low duration of the weapon means it can get some of its power back
+- Rocket Launcher secondary meter consumption reduced by 33%
+- Fixed Sniper Rifle secondary not actually boosting damage at all, oops
 
 `1.3.1`
 - Added weapon drop VFX

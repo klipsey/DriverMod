@@ -37,7 +37,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.3.1";
+        public const string MODVERSION = "1.3.4";
 
         public const string developerPrefix = "ROB";
 
@@ -49,6 +49,7 @@ namespace RobDriver
         public static bool litInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.ContactLight.LostInTransit");
         public static bool classicItemsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.RiskySleeps.ClassicItemsReturns");
         public static bool riskUIInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("bubbet.riskui");
+        public static bool extendedLoadoutInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.KingEnderBrine.ExtendedLoadout");
 
         private void Awake()
         {

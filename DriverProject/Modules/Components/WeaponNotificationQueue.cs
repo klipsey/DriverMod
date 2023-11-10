@@ -45,7 +45,7 @@ namespace RobDriver.Modules.Components
 
 				if (weaponDef)
                 {
-					notificationQueueForMaster.PushNotification(new CharacterMasterNotificationQueue.NotificationInfo(weaponDef, null), 6f);
+					notificationQueueForMaster.PushNotification(new CharacterMasterNotificationQueue.NotificationInfo(weaponDef, null), 3.5f);
 				}
 			}
 		}

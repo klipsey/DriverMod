@@ -66,7 +66,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 
         public virtual void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer(3f / this.baseRocketCount);
+            if (this.iDrive) this.iDrive.StartTimer(2f / this.baseRocketCount);
 
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", 1.4f);
             Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);

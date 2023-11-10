@@ -21,6 +21,8 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> backupMagExtendDuration;
         public static ConfigEntry<bool> classicDodgeSound;
         public static ConfigEntry<bool> enablePistolUpgrade;
+        public static ConfigEntry<bool> enablePickupNotifications;
+        public static ConfigEntry<bool> predatoryOnHead;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -77,7 +79,7 @@ false,
 = Config.BindAndOptions("01 - General",
 "Weapon Pickup Callouts",
 false,
-"If set to true, Driver will call out the weapons he picks up.");
+"If set to true, Driver will call out the weapons he picks up. (Client-side)");
 
             backupMagExtendDuration
 = Config.BindAndOptions("01 - General",
@@ -96,6 +98,18 @@ false,
 "Enable Pistol Upgrade",
 true,
 "If set to false, will stop Pistol from upgrading itself for run-ending boss fights.");
+
+            enablePickupNotifications
+= Config.BindAndOptions("01 - General",
+"Enable Weapon Pickup Notifications",
+true,
+"If set to false, will disable the notifications from picking up weapons. (Client-side)");
+
+            predatoryOnHead
+= Config.BindAndOptions("01 - General",
+"Predatory Instincts On Head",
+false,
+"If set to true, the item display for Predatory Instincts will be moved to the head like other survivors. (Client-side)", true);
 
             cursed
 = Config.BindAndOptions("01 - General",

@@ -254,6 +254,8 @@ namespace RobDriver.Modules.Components
             if (!success) return;
             this.PickUpWeapon(this.defaultWeaponDef);
 
+            this.TryPickupNotification(true);
+
             EffectData effectData = new EffectData
             {
                 origin = this.childLocator.FindChild("PistolMuzzle").position,
@@ -276,6 +278,8 @@ scale = 1f
 
             if (!success) return;
             this.PickUpWeapon(this.defaultWeaponDef);
+
+            this.TryPickupNotification(true);
 
             EffectData effectData = new EffectData
             {
@@ -482,8 +486,10 @@ new EffectData
             this.onWeaponUpdate(this);
         }
 
-        private void TryPickupNotification()
+        private void TryPickupNotification(bool force = false)
         {
+            if (!Modules.Config.enablePickupNotifications.Value) return;
+
             // attempt to add the component if it's not there
             if (!this.notificationQueue && this.characterBody.master)
             {
@@ -493,6 +499,13 @@ new EffectData
 
             if (this.notificationQueue)
             {
+                if (force)
+                {
+                    WeaponNotificationQueue.PushWeaponNotification(this.characterBody.master, this.weaponDef.index);
+                    this.lastWeaponDef = this.weaponDef;
+                    return;
+                }
+
                 if (this.weaponDef != this.lastWeaponDef)
                 {
                     if (this.weaponDef != this.defaultWeaponDef && this.weaponDef != this.pistolWeaponDef)

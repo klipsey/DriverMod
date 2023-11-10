@@ -155,7 +155,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             bool wasCharged = this.isCharged;
 
             this.shotCooldown = this.baseShotDuration / this.attackSpeedStat;
-            this.chargeTimer = 0f;
             this.isCharged = false;
 
             if (this.iDrive)
@@ -179,7 +178,10 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             base.PlayAnimation("Gesture, Override", animString, "Action.playbackRate", this.shotCooldown * 1.5f);
 
             float value = Util.Remap(this.chargeTimer, 0f, this.chargeDuration, 0f, 1f);
-            if (this.iDrive) this.iDrive.StartTimer(1 + value);
+
+            this.chargeTimer = 0f;
+
+            if (this.iDrive) this.iDrive.StartTimer(1f + value);
 
             if (base.isAuthority)
             {

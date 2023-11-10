@@ -95,7 +95,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.RocketLauncher.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_ALT_NAME", "Fire");
-            LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_ALT_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * 4.5f}% damage</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_ROCKETLAUNCHER_ALT_DESCRIPTION", $"Fire a rocket for <style=cIsDamage>{100f * 6f}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_GRENADELAUNCHER_NAME", "Fire");
             LanguageAPI.Add(prefix + "PRIMARY_GRENADELAUNCHER_DESCRIPTION", $"Launch a grenade for <style=cIsDamage>{100f * 5f}% damage</style>.");
@@ -229,44 +229,44 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_LUNAR_PISTOL_NAME", "Perfected Blaster");
             LanguageAPI.Add("ROB_DRIVER_LUNAR_PISTOL_DESC", "A perfect weapon with no flaws. Speed is war.");
 
-            LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_NAME", "Corrupted Blaster");
+            LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_NAME", "Null Blaster");
             LanguageAPI.Add("ROB_DRIVER_VOID_PISTOL_DESC", "A weapon corrupted and powered up by the void.");
 
             LanguageAPI.Add("ROB_DRIVER_NEEDLER_NAME", "Needler");
             LanguageAPI.Add("ROB_DRIVER_NEEDLER_DESC", "Risk of Rain 2");
 
             LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_NAME", "Golden Gun");
-            LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_DESC", "A legendary gun that deals extraordinary damage, but only has a few shots.");
+            LanguageAPI.Add("ROB_DRIVER_GOLDENGUN_DESC", "Deals extraordinary damage, but only has a few shots.");
 
             LanguageAPI.Add("ROB_DRIVER_PYRITEGUN_NAME", "Pyrite Gun");
-            LanguageAPI.Add("ROB_DRIVER_PYRITEGUN_DESC", "A mockery of the original.");
+            LanguageAPI.Add("ROB_DRIVER_PYRITEGUN_DESC", "A mockery of the real thing.");
 
             LanguageAPI.Add("ROB_DRIVER_SHOTGUN_NAME", "Shotgun");
-            LanguageAPI.Add("ROB_DRIVER_SHOTGUN_DESC", "A close-range powerhouse that excels at overwhelming damage.");
+            LanguageAPI.Add("ROB_DRIVER_SHOTGUN_DESC", "Close-range powerhouse with overwhelming damage.");
 
             LanguageAPI.Add("ROB_DRIVER_RIOT_SHOTGUN_NAME", "Riot Shotgun");
-            LanguageAPI.Add("ROB_DRIVER_RIOT_SHOTGUN_DESC", "A piercing shotgun that excels at crowd control and heavy damage.");
+            LanguageAPI.Add("ROB_DRIVER_RIOT_SHOTGUN_DESC", "Piercing blasts great for crowd control.");
 
             LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_NAME", "Slug Shotgun");
-            LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_DESC", "A shotgun loaded with slugs that excels at powerful single hits.");
+            LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_DESC", "Powerful single hits with high kickback.");
 
             LanguageAPI.Add("ROB_DRIVER_BADASS_SHOTGUN_NAME", "Badass Shotgun");
             LanguageAPI.Add("ROB_DRIVER_BADASS_SHOTGUN_DESC", "A six-barreled shotgun...!?");
 
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_NAME", "Machine Gun");
-            LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "A good all-rounder that shoots fast but has high recoil.");
+            LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "Good all-rounder that shoots fast but has high recoil.");
 
             LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_NAME", "Heavy Machine Gun");
-            LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_DESC", "A machine gun with slower shots, higher damage and armor piercing rounds.");
+            LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_DESC", "Accurate, armor piercing rounds.");
 
             LanguageAPI.Add("ROB_DRIVER_UZIS_NAME", "Dual Uzis");
             LanguageAPI.Add("ROB_DRIVER_UZIS_DESC", "A pair of uzis with high recoil but ridiculous damage.");
 
             LanguageAPI.Add("ROB_DRIVER_BAZOOKA_NAME", "Bazooka");
-            LanguageAPI.Add("ROB_DRIVER_BAZOOKA_DESC", "A chargeable bazooka good for clearing out crowds.");
+            LanguageAPI.Add("ROB_DRIVER_BAZOOKA_DESC", "Chargeable arcing rockets good for clearing out crowds.");
 
             LanguageAPI.Add("ROB_DRIVER_SNIPER_NAME", "Sniper Rifle");
-            LanguageAPI.Add("ROB_DRIVER_SNIPER_DESC", "A rifle specializing in precise, fatal shots.");
+            LanguageAPI.Add("ROB_DRIVER_SNIPER_DESC", "Precise, fatal shots.");
 
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_NAME", "Rocket Launcher");
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_DESC", "KABOOOM");
@@ -290,7 +290,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_GRENADELAUNCHER_DESC", "Fast-firing grenades with high damage but low blast radius.");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_NAME", "Chimeric Cannon");
-            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "Fire blasts of condensed lunar energy.");
+            LanguageAPI.Add("ROB_DRIVER_LUNARRIFLE_DESC", "Blasts of condensed lunar energy.");
 
             LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_NAME", "Chimeric Gatling");
             LanguageAPI.Add("ROB_DRIVER_LUNARMINIGUN_DESC", "");
@@ -302,13 +302,13 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_LUNARHAMMER_DESC", "Wield supreme power in the palm of your hand.");
 
             LanguageAPI.Add("ROB_DRIVER_NEMMANDO_NAME", "Reclaimer");
-            LanguageAPI.Add("ROB_DRIVER_NEMMANDO_DESC", "");
+            LanguageAPI.Add("ROB_DRIVER_NEMMANDO_DESC", "Nemesis Commando's gun.");
 
             LanguageAPI.Add("ROB_DRIVER_NEMMERC_NAME", "Carnage");
-            LanguageAPI.Add("ROB_DRIVER_NEMMERC_DESC", "");
+            LanguageAPI.Add("ROB_DRIVER_NEMMERC_DESC", "Nemesis Mercenary's shotgun.");
 
             LanguageAPI.Add("ROB_DRIVER_GOLEMGUN_NAME", "Stone Cannon");
-            LanguageAPI.Add("ROB_DRIVER_GOLEMGUN_DESC", "");
+            LanguageAPI.Add("ROB_DRIVER_GOLEMGUN_DESC", "Harness the intense beams of a Stone Golem.");
             #endregion
         }
     }
