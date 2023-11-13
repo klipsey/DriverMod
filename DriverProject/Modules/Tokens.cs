@@ -74,7 +74,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_SHOTGUN_DESCRIPTION", $"Fire a short-range blast for <style=cIsDamage>{SkillStates.Driver.Shotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.Shotgun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_NAME", "Blast");
-            LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_DESCRIPTION", $"Fire a short-range <style=cIsUtilitye>piercing</style> blast for <style=cIsDamage>{SkillStates.Driver.RiotShotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.RiotShotgun.Shoot.damageCoefficient}% damage</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_RIOT_SHOTGUN_DESCRIPTION", $"Fire a short-range <style=cIsUtility>piercing</style> blast for <style=cIsDamage>{SkillStates.Driver.RiotShotgun.Shoot.bulletCount}x{100f * SkillStates.Driver.RiotShotgun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_SLUG_SHOTGUN_NAME", "Blast");
             LanguageAPI.Add(prefix + "PRIMARY_SLUG_SHOTGUN_DESCRIPTION", $"Fire a short-range slug for <style=cIsDamage>{100f * SkillStates.Driver.SlugShotgun.Shoot.damageCoefficient}% damage</style>.");
@@ -86,7 +86,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_MACHINEGUN_DESCRIPTION", $"Fire a rapid spray of shots for <style=cIsDamage>{100f * SkillStates.Driver.MachineGun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_NAME", "Spray");
-            LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION", $"Fire a spray of <style=cIsUtilitye>armor piercing</style> shots for <style=cIsDamage>{100f * SkillStates.Driver.HeavyMachineGun.Shoot.damageCoefficient}% damage</style>.");
+            LanguageAPI.Add(prefix + "PRIMARY_HEAVY_MACHINEGUN_DESCRIPTION", $"Fire a spray of <style=cIsUtility>armor piercing</style> shots for <style=cIsDamage>{100f * SkillStates.Driver.HeavyMachineGun.Shoot.damageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_NAME", "Fire");
             LanguageAPI.Add(prefix + "PRIMARY_BAZOOKA_DESCRIPTION", $"Charge and fire a rocket for <style=cIsDamage>{100f * SkillStates.Driver.Bazooka.Fire.minDamageCoefficient}-{100f * SkillStates.Driver.Bazooka.Fire.maxDamageCoefficient}% damage</style>.");
