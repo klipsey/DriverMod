@@ -2015,6 +2015,76 @@ localScale = new Vector3(0.31302F, 0.31302F, 0.31302F)
                 }
 });
 
+            ReplaceItemDisplay(DLC1Content.Items.FragileDamageBonus, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemDisplays.LoadDisplay("DisplayDelicateWatch"),
+                    limbMask = LimbFlags.None,
+childName = "HandL",
+localPos = new Vector3(0.001145094f, -0.01941454f, 0.001435831f),
+localAngles = new Vector3(84.24088f, 213.1651f, 131.5774f),
+localScale = new Vector3(0.5f, 0.5f, 0.5f)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.BarrierOnOverHeal, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemDisplays.LoadDisplay("DisplayAegis"),
+                    limbMask = LimbFlags.None,
+childName = "LowerArmL",
+localPos = new Vector3(0.01781F, 0.11702F, 0.01516F),
+localAngles = new Vector3(90F, 270F, 0F),
+localScale = new Vector3(0.3F, 0.3F, 0.3F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.SprintArmor, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemDisplays.LoadDisplay("DisplayBuckler"),
+                    limbMask = LimbFlags.None,
+childName = "LowerArmL",
+localPos = new Vector3(-0.012F, 0.171F, -0.027F),
+localAngles = new Vector3(0F, 90F, 0F),
+localScale = new Vector3(0.3F, 0.3F, 0.3F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.ArmorPlate, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemDisplays.LoadDisplay("DisplayRepulsionArmorPlate"),
+                    limbMask = LimbFlags.None,
+childName = "CalfR",
+localPos = new Vector3(-0.02573F, 0.22602F, 0.0361F),
+localAngles = new Vector3(90F, 180F, 0F),
+localScale = new Vector3(-0.2958F, 0.2958F, 0.29581F)
+                }
+});
+
+            ReplaceItemDisplay(DLC1Content.Items.CritDamage, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemDisplays.LoadDisplay("DisplayLaserSight"),
+                    limbMask = LimbFlags.None,
+childName = "Pistol",
+localPos = new Vector3(-0.01876F, 0.26245F, 0.11694F),
+localAngles = new Vector3(0F, 0F, 270F),
+localScale = new Vector3(0.05261F, 0.05261F, 0.05261F)
+                }
+});
+
             if (DriverPlugin.litInstalled) SetLITDisplays();
 
             itemDisplayRuleSet.keyAssetRuleGroups = itemDisplayRules.ToArray();
