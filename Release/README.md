@@ -138,6 +138,17 @@ ___
 
 ## Changelog
 
+`1.3.3`
+- Updated Flashbang skill icon
+- Updated standard crosshair, can be disabled in config
+- Driver's Crosshairs are now highlighted while hovering over something, can be disabled in config
+- ^ this can be applied to ALL crosshairs via a config option, if that interests you
+- Added config option to move Predatory Instincts item display to the head
+- Fixed some weapon tooltips
+- Fixed Delicate Watch item display (thanks Zenithrium for both these fixes!!)
+- Fixed Sniper Rifle consuming double the intended meter while shooting with Focus
+- Optimized some asset initialization so the mod should load up a little faster
+
 `1.3.2`
 - Added weapon pickup notifications; these can be disabled via config if you find it too intrusive
 - Prototype Rocket Launcher primary damage: 450% > 600%, low duration of the weapon means it can get some of its power back

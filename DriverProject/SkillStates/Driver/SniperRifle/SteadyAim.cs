@@ -159,7 +159,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
             if (this.iDrive)
             {
-                this.iDrive.StartTimer();
                 this.iDrive.machineGunVFX.Play();
             }
 

@@ -31,6 +31,7 @@ namespace RobDriver.Modules
         public static GameObject upgradeEffectPrefab;
         public static GameObject stunGrenadeModelPrefab;
 
+        public static GameObject defaultCrosshairPrefab;
         public static GameObject pistolAimCrosshairPrefab;
         public static GameObject bazookaCrosshairPrefab;
         public static GameObject rocketLauncherCrosshairPrefab;
@@ -86,6 +87,10 @@ namespace RobDriver.Modules
         public static Material nemmercGunMat;
 
         public static Material knifeMat;
+        public static Material briefcaseMat;
+        public static Material briefcaseGoldMat;
+        public static Material briefcaseUniqueMat;
+        public static Material briefcaseLunarMat;
 
         public static GameObject shotgunShell;
         public static GameObject shotgunSlug;
@@ -186,8 +191,18 @@ namespace RobDriver.Modules
 
             hammerImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_impact_hammer");
 
+            bool dynamicCrosshair = Modules.Config.dynamicCrosshair.Value;
+
+            #region Pistol Crosshair
+            defaultCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverPistolCrosshair", false);
+            if (!Modules.Config.enableCrosshairDot.Value) defaultCrosshairPrefab.GetComponent<RawImage>().enabled = false;
+            if (dynamicCrosshair) defaultCrosshairPrefab.AddComponent<DynamicCrosshair>();
+            #endregion
+
             #region Pistol Aim Mode Crosshair
             pistolAimCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverPistolAimCrosshair", false);
+            if (!Modules.Config.enableCrosshairDot.Value) pistolAimCrosshairPrefab.GetComponent<RawImage>().enabled = false;
+            if (dynamicCrosshair) pistolAimCrosshairPrefab.AddComponent<DynamicCrosshair>();
 
             GameObject stockHolder = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageCrosshair.prefab").WaitForCompletion().transform.Find("Stock").gameObject);
             stockHolder.transform.parent = pistolAimCrosshairPrefab.transform;
@@ -290,6 +305,7 @@ namespace RobDriver.Modules
 
             #region Grenade Launcher Crosshair
             grenadeLauncherCrosshairPrefab = PrefabAPI.InstantiateClone(LoadCrosshair("ToolbotGrenadeLauncher"), "DriverGrenadeLauncherCrosshair", false);
+            if (dynamicCrosshair) grenadeLauncherCrosshairPrefab.AddComponent<DynamicCrosshair>();
             crosshair = grenadeLauncherCrosshairPrefab.GetComponent<CrosshairController>();
             crosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
 
@@ -322,6 +338,7 @@ namespace RobDriver.Modules
 
             #region Rocket Launcher Crosshair
             rocketLauncherCrosshairPrefab = PrefabAPI.InstantiateClone(LoadCrosshair("ToolbotGrenadeLauncher"), "DriveRocketLauncherCrosshair", false);
+            if (dynamicCrosshair) rocketLauncherCrosshairPrefab.AddComponent<DynamicCrosshair>();
             crosshair = rocketLauncherCrosshairPrefab.GetComponent<CrosshairController>();
             crosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
             rocketLauncherCrosshairPrefab.transform.Find("StockCountHolder").gameObject.SetActive(false);
@@ -330,6 +347,7 @@ namespace RobDriver.Modules
             #region Needler Crosshair
             needlerCrosshairPrefab = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Crosshair/LoaderCrosshair"), "DriverNeedlerCrosshair", false);
             DriverPlugin.Destroy(needlerCrosshairPrefab.GetComponent<LoaderHookCrosshairController>());
+            if (dynamicCrosshair) needlerCrosshairPrefab.AddComponent<DynamicCrosshair>();
 
             needlerCrosshairPrefab.GetComponent<RawImage>().enabled = false;
 
@@ -415,6 +433,10 @@ namespace RobDriver.Modules
             shotgunSlug.GetComponentInChildren<MeshRenderer>().material = CreateMaterial("matShotgunSlug");
             shotgunSlug.AddComponent<Modules.Components.ShellController>();
 
+            briefcaseMat = CreateMaterial("matBriefcase");
+            briefcaseGoldMat = CreateMaterial("matBriefcaseGold");
+            briefcaseUniqueMat = CreateMaterial("matBriefcaseUnique");
+            briefcaseLunarMat = CreateMaterial("matBriefcaseLunar");
 
             #region Normal weapon pickup
             weaponPickup = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandolier/AmmoPack.prefab").WaitForCompletion().InstantiateClone("DriverWeaponPickup", true);
@@ -841,22 +863,22 @@ namespace RobDriver.Modules
             switch (weaponDef.tier)
             {
                 case DriverWeaponTier.Common:
-                    pickupMesh.material = CreateMaterial("matBriefcase");
+                    pickupMesh.material = briefcaseMat;
                     break;
                 case DriverWeaponTier.Uncommon:
-                    pickupMesh.material = CreateMaterial("matBriefcase");
+                    pickupMesh.material = briefcaseMat;
                     break;
                 case DriverWeaponTier.Legendary:
-                    pickupMesh.material = CreateMaterial("matBriefcaseGold");
+                    pickupMesh.material = briefcaseGoldMat;
                     break;
                 case DriverWeaponTier.Unique:
-                    pickupMesh.material = CreateMaterial("matBriefcaseUnique");
+                    pickupMesh.material = briefcaseUniqueMat;
                     break;
                 case DriverWeaponTier.Lunar:
-                    pickupMesh.material = CreateMaterial("matBriefcaseLunar");
+                    pickupMesh.material = briefcaseLunarMat;
                     break;
                 case DriverWeaponTier.Void:
-                    pickupMesh.material = CreateMaterial("matBriefcase");
+                    pickupMesh.material = briefcaseMat;
                     break;
             }
 
@@ -891,7 +913,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_PISTOL_NAME",
                 descriptionToken = "ROB_DRIVER_PISTOL_DESC",
                 icon = Assets.pistolWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Common,
                 primarySkillDef = null,
                 secondarySkillDef = null,
@@ -907,7 +929,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_LUNAR_PISTOL_NAME",
                 descriptionToken = "ROB_DRIVER_LUNAR_PISTOL_DESC",
                 icon = Assets.lunarPistolWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Lunar,
                 primarySkillDef = Survivors.Driver.lunarPistolPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.lunarPistolSecondarySkillDef,
@@ -923,7 +945,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_VOID_PISTOL_NAME",
                 descriptionToken = "ROB_DRIVER_VOID_PISTOL_DESC",
                 icon = Assets.voidPistolWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Lunar,
                 primarySkillDef = Survivors.Driver.voidPistolPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.voidPistolSecondarySkillDef,
@@ -955,7 +977,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_GOLDENGUN_NAME",
                 descriptionToken = "ROB_DRIVER_GOLDENGUN_DESC",
                 icon = Assets.goldenGunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
                 shotCount = 6,
                 primarySkillDef = Survivors.Driver.goldenGunPrimarySkillDef,
@@ -974,7 +996,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_PYRITEGUN_NAME",
                 descriptionToken = "ROB_DRIVER_PYRITEGUN_DESC",
                 icon = Assets.pyriteGunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
                 primarySkillDef = Survivors.Driver.pyriteGunPrimarySkillDef,
                 secondarySkillDef = Survivors.Driver.pyriteGunSecondarySkillDef,
@@ -990,7 +1012,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_BEETLESHIELD_NAME",
                 descriptionToken = "ROB_DRIVER_BEETLESHIELD_DESC",
                 icon = Assets.beetleShieldWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Unique,
                 shotCount = 32,
                 primarySkillDef = Survivors.Driver.beetleShieldPrimarySkillDef,
@@ -1064,7 +1086,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_MACHINEGUN_NAME",
                 descriptionToken = "ROB_DRIVER_MACHINEGUN_DESC",
                 icon = Assets.machineGunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 shotCount = 48,
                 primarySkillDef = Survivors.Driver.machineGunPrimarySkillDef,
@@ -1082,7 +1104,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_HEAVY_MACHINEGUN_NAME",
                 descriptionToken = "ROB_DRIVER_HEAVY_MACHINEGUN_DESC",
                 icon = Assets.heavyMachineGunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 shotCount = 44,
                 primarySkillDef = Survivors.Driver.heavyMachineGunPrimarySkillDef,
@@ -1100,7 +1122,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_SNIPER_NAME",
                 descriptionToken = "ROB_DRIVER_SNIPER_DESC",
                 icon = Assets.sniperWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 shotCount = 6,
                 primarySkillDef = Survivors.Driver.sniperPrimarySkillDef,
@@ -1302,7 +1324,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_NEMMANDO_NAME",
                 descriptionToken = "ROB_DRIVER_NEMMANDO_DESC",
                 icon = Assets.nemmandoGunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("Standard"),
+                crosshairPrefab = Assets.defaultCrosshairPrefab,
                 tier = DriverWeaponTier.Void,
                 shotCount = 64,
                 primarySkillDef = Survivors.Driver.nemmandoGunPrimarySkillDef,

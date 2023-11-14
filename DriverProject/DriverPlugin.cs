@@ -37,7 +37,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.3.4";
+        public const string MODVERSION = "1.3.3";
 
         public const string developerPrefix = "ROB";
 
@@ -88,10 +88,24 @@ namespace RobDriver
 
         private void Hook()
         {
+            if (Modules.Config.dynamicCrosshairUniversal.Value) On.RoR2.UI.CrosshairController.Awake += CrosshairController_Awake;
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
 
             // uncomment this if network testing
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
+        }
+
+        private void CrosshairController_Awake(On.RoR2.UI.CrosshairController.orig_Awake orig, RoR2.UI.CrosshairController self)
+        {
+            orig(self);
+
+            if (!self.name.Contains("SprintCrosshair"))
+            {
+                if (!self.GetComponent<Modules.Components.DynamicCrosshair>())
+                {
+                    self.gameObject.AddComponent<Modules.Components.DynamicCrosshair>();
+                }
+            }
         }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, R2API.RecalculateStatsAPI.StatHookEventArgs args) {

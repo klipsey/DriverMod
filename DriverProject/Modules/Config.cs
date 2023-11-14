@@ -23,6 +23,9 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> enablePistolUpgrade;
         public static ConfigEntry<bool> enablePickupNotifications;
         public static ConfigEntry<bool> predatoryOnHead;
+        public static ConfigEntry<bool> enableCrosshairDot;
+        public static ConfigEntry<bool> dynamicCrosshair;
+        public static ConfigEntry<bool> dynamicCrosshairUniversal;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -110,6 +113,24 @@ true,
 "Predatory Instincts On Head",
 false,
 "If set to true, the item display for Predatory Instincts will be moved to the head like other survivors. (Client-side)", true);
+
+            enableCrosshairDot
+= Config.BindAndOptions("01 - General",
+"Enable Crosshair Dot",
+false,
+"If set to false, the dot in the center of the default crosshair will be hidden. (Client-side)", true);
+
+            dynamicCrosshair
+= Config.BindAndOptions("01 - General",
+"Dynamic Crosshair",
+true,
+"If set to false, will no longer highlight the crosshair when hovering over entities. (Client-side)", true);
+
+            dynamicCrosshairUniversal
+= Config.BindAndOptions("01 - General",
+"Dynamic Crosshair (Universal)",
+false,
+"If set to true, highlight the crosshair while hovering over entities, but for ALL characters. Overrides the other option. (Client-side)", true);
 
             cursed
 = Config.BindAndOptions("01 - General",
