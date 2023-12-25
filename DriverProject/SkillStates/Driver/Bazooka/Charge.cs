@@ -35,7 +35,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
                 this.chargeEffectInstance.transform.Find("SmokeBillboard").gameObject.SetActive(false);
             }
 
-            base.PlayAnimation("AimPitch", "SteadyAimPitch");
+            base.PlayAnimation("AimPitch", "ShotgunAimPitch");
+            base.PlayAnimation("Gesture, Override", "AimTwohand");
         }
 
         private float CalcCharge()
@@ -49,9 +50,6 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             this.characterBody.outOfCombatStopwatch = 0f;
             this.characterBody.isSprinting = false;
             base.characterBody.SetAimTimer(0.2f);
-
-            // this is so fucking bad LMAO
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
 
             float charge = this.CalcCharge();
 
@@ -80,10 +78,14 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
             AkSoundEngine.StopPlayingID(this.chargePlayID);
 
-            base.PlayAnimation("AimPitch", "AimPitch");
-
             if (this.chargeEffectInstance) EntityState.Destroy(this.chargeEffectInstance);
             if (this.iDrive) this.iDrive.chargeValue = 0f;
+
+            if (this.outer.destroying)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                base.PlayAnimation("AimPitch", "AimPitch");
+            }
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

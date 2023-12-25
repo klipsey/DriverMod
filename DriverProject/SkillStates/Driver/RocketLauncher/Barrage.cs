@@ -38,6 +38,14 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             }
         }
 
+        protected virtual float ammoMod
+        {
+            get
+            {
+                return 1f;
+            }
+        }
+
         private int remainingShots;
         private float shotTimer;
         private float shotDuration;
@@ -66,9 +74,11 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 
         public virtual void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer(2f / this.baseRocketCount);
+            if (this.iDrive) this.iDrive.StartTimer(this.ammoMod * (2f / this.baseRocketCount));
 
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", 1.4f);
+            base.PlayAnimation("Gesture, Override", "FireBazooka", "Shoot.playbackRate", 1.4f);
+            base.PlayAnimation("AimPitch", "Shoot");
+
             Util.PlaySound("sfx_driver_rocket_launcher_shoot", base.gameObject);
 
             float recoilAmplitude = Barrage.recoil / this.attackSpeedStat;
@@ -146,6 +156,8 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         public override void OnExit()
         {
             base.OnExit();
+
+            this.GetModelAnimator().SetTrigger("endAim");
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

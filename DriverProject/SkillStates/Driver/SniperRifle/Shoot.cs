@@ -6,14 +6,14 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 8f;
+        public static float damageCoefficient = 18f;
         public static float procCoefficient = 1f;
         public float baseDuration = 1.6f;
         public static int bulletCount = 1;
         public static float bulletRecoil = 16f;
-        public static float bulletRange = 250f;
-        public static float bulletThiccness = 1f;
-        public float selfForce = -500f;
+        public static float bulletRange = 2000f;
+        public float selfForce = 0f;
+        public bool aiming;
 
         private float earlyExitTime;
         protected float duration;
@@ -34,7 +34,8 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
             Util.PlaySound("sfx_driver_sniper_shoot", base.gameObject);
 
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("Gesture, Override", "FireSniper", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("AimPitch", "Shoot");
 
             this.fireDuration = 0;
 
@@ -47,10 +48,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             {
                 this.hasFired = true;
 
-                if (this.iDrive)
-                {
-                    this.iDrive.machineGunVFX.Play();
-                }
+                if (this.iDrive) this.iDrive.machineGunVFX.Play();
 
                 float recoilAmplitude = Shoot.bulletRecoil / this.attackSpeedStat;
 
@@ -67,16 +65,32 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
                     Ray aimRay = GetAimRay();
 
-                    float thiccness = Shoot.bulletThiccness;
                     float force = 2500;
 
-                    new BulletAttack
+                    float maxSpread = 6f;
+                    float minSpread = 3f;
+
+                    float radius = 1f;
+
+                    LayerMask stopperMask = LayerIndex.CommonMasks.bullet;
+                    DamageType damageType = DamageType.Generic;
+                    if (this.aiming)
+                    {
+                        maxSpread = 0f;
+                        minSpread = 0f;
+                        stopperMask = LayerIndex.world.mask;
+                        damageType = DamageType.Stun1s;
+                        tracer = Modules.Assets.sniperTracer;
+                        radius = 0.25f;
+                    }
+
+                    BulletAttack bulletAttack = new BulletAttack
                     {
                         aimVector = aimRay.direction,
                         origin = aimRay.origin,
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
+                        damageType = damageType,
                         falloffModel = BulletAttack.FalloffModel.None,
                         maxDistance = bulletRange,
                         force = force,
@@ -87,9 +101,9 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         smartCollision = true,
                         procChainMask = default,
                         procCoefficient = procCoefficient,
-                        radius = thiccness,
+                        radius = radius,
                         sniper = false,
-                        stopperMask = LayerIndex.CommonMasks.bullet,
+                        stopperMask = stopperMask,
                         weapon = null,
                         tracerEffectPrefab = tracer,
                         spreadPitchScale = 1f,
@@ -97,10 +111,34 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                         HitEffectNormal = false,
-                        maxSpread = 5f,
-                        minSpread = 2f,
+                        maxSpread = maxSpread,
+                        minSpread = minSpread,
                         bulletCount = 1
-                    }.Fire();
+                    };
+
+                    if (this.aiming)
+                    {
+                        bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
+                        {
+                            if (BulletAttack.IsSniperTargetHit(hitInfo))
+                            {
+                                damageInfo.damage *= 2f;
+                                damageInfo.damageColorIndex = DamageColorIndex.Sniper;
+
+                                EffectData effectData = new EffectData
+                                {
+                                    origin = hitInfo.point,
+                                    rotation = Quaternion.LookRotation(-hitInfo.direction)
+                                };
+
+                                effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
+                                //EffectManager.SpawnEffect(BaseSnipeState.headshotEffectPrefab, effectData, true);
+                                //RoR2.Util.PlaySound("Play_SniperClassic_headshot", base.gameObject);
+                            }
+                        };
+                    }
+
+                    bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
                 }
@@ -132,6 +170,8 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
         public override void OnExit()
         {
             base.OnExit();
+
+            this.GetModelAnimator().SetTrigger("endAim");
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

@@ -64,6 +64,9 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 
 			this.flashTimer = 0f;
 			this.laserOn = true;
+
+			base.PlayAnimation("Gesture, Override", "AimTwohand");
+			base.PlayAnimation("AimPitch", "ShotgunAimPitch");
 		}
 
 		public override void OnExit()
@@ -77,6 +80,12 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 			if (this.laserEffect)
 			{
 				EntityState.Destroy(this.laserEffect);
+			}
+
+			if (this.outer.destroying)
+			{
+				base.PlayAnimation("Gesture, Override", "BufferEmpty");
+				base.PlayAnimation("AimPitch", "AimPitch");
 			}
 		}
 
@@ -123,8 +132,6 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 			base.FixedUpdate();
 			this.characterBody.outOfCombatStopwatch = 0f;
 			base.characterBody.SetAimTimer(0.2f);
-
-			base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", FireLaser.baseDuration * 2f);
 
 			if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
 			{

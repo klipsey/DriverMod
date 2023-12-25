@@ -40,6 +40,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
             else Util.PlaySound("sfx_driver_riot_shotgun_shoot", base.gameObject);
 
             base.PlayAnimation("Gesture, Override", "FireRiotShotgun", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("AimPitch", "Shoot");
 
             this.fireDuration = 0;
 
@@ -152,6 +153,8 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
         public override void OnExit()
         {
             base.OnExit();
+
+            this.GetModelAnimator().SetTrigger("endAim");
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

@@ -42,7 +42,7 @@ namespace RobDriver.Modules
 
             stunGrenadeImpactEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/StunChanceOnHit/ImpactStunGrenade.prefab").WaitForCompletion().InstantiateClone("DriverStunGrenadeImpact", true);
             stunGrenadeImpactEffectPrefab.AddComponent<NetworkIdentity>();
-            stunGrenadeImpactEffectPrefab.GetComponent<EffectComponent>().soundName = "";
+            stunGrenadeImpactEffectPrefab.GetComponent<EffectComponent>().soundName = "sfx_driver_stun_grenade";
 
             GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
             GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
@@ -62,15 +62,16 @@ namespace RobDriver.Modules
             #endregion
 
             #region ImpactExplosion
-            grenadeImpact.lifetimeExpiredSoundString = "";
-            grenadeImpact.explosionSoundString = "sfx_driver_stun_grenade";// Sounds.GasExplosion;
-            grenadeImpact.offsetForLifetimeExpiredSound = 1;
+            //grenadeImpact.lifetimeExpiredSoundString = "";
+            //grenadeImpact.explosionSoundString = "";
+            grenadeImpact.lifetimeExpiredSound = Addressables.LoadAssetAsync<NetworkSoundEventDef>("RoR2/Base/Commando/nseCommandoGrenadeBounce.asset").WaitForCompletion();
+            grenadeImpact.offsetForLifetimeExpiredSound = 0.1f;
             grenadeImpact.destroyOnEnemy = false;
             grenadeImpact.destroyOnWorld = false;
             grenadeImpact.timerAfterImpact = true;
             grenadeImpact.falloffModel = BlastAttack.FalloffModel.None;
             grenadeImpact.lifetime = 12;
-            grenadeImpact.lifetimeAfterImpact = 0.15f;
+            grenadeImpact.lifetimeAfterImpact = 0.1f;
             grenadeImpact.lifetimeRandomOffset = 0;
             grenadeImpact.blastRadius = 16;
             grenadeImpact.blastDamageCoefficient = 1;

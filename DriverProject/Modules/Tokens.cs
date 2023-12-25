@@ -10,7 +10,7 @@ namespace RobDriver.Modules
             string prefix = DriverPlugin.developerPrefix + "_DRIVER_BODY_";
 
             string desc = "The Driver is literally me.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
-            desc = desc + "< ! > Weapons each last 8 seconds and have unique strengths and weaknesses so be sure to pick the right tool for the job." + Environment.NewLine + Environment.NewLine;
+            desc = desc + "< ! > Each weapon has its own unique strengths and weaknesses so be sure to pick the right tool for the job." + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Focus greatly increases your damage output, but be careful not to get flanked while aiming." + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Combat Slide while shooting to make sure your damage has no downtime." + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Flashbang can be used to make a clean getaway in a pinch." + Environment.NewLine + Environment.NewLine;
@@ -40,6 +40,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "Slugger");
             LanguageAPI.Add(prefix + "SUIT_SKIN_NAME", "Hitman");
             LanguageAPI.Add(prefix + "SUIT2_SKIN_NAME", "Hitman EX");
+            LanguageAPI.Add(prefix + "GREEN_SKIN_NAME", "Green");
             LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion
 
@@ -157,7 +158,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SECONDARY_PLASMACANNON_DESCRIPTION", $"Fire a rapid barrage of plasma bursts for <style=cIsDamage>{100f * 10f}% damage</style> each.");
 
             LanguageAPI.Add(prefix + "SECONDARY_SNIPER_NAME", "Focus");
-            LanguageAPI.Add(prefix + "SECONDARY_SNIPER_DESCRIPTION", $"Take aim and charge a devastating piercing shot for <style=cIsDamage>{100f * SkillStates.Driver.SniperRifle.SteadyAim.damageCoefficient}% damage</style>. <style=cIsUtility>Exposes enemy weak points.</style>");
+            LanguageAPI.Add(prefix + "SECONDARY_SNIPER_DESCRIPTION", $"Aim down your scope, <style=cIsDamage>exposing enemy weak points</style>.");
 
             LanguageAPI.Add(prefix + "SECONDARY_GOLDENGUN_NAME", "Lights Out");
             LanguageAPI.Add(prefix + "SECONDARY_GOLDENGUN_DESCRIPTION", $"Take aim and fire a devastating shot for <style=cIsDamage>{100f * SkillStates.Driver.GoldenGun.LightsOut.damageCoefficient}% damage</style>. <style=cIsHealth>Consumes the gun on use.</style>");
@@ -182,16 +183,22 @@ namespace RobDriver.Modules
 
             #region Special
             LanguageAPI.Add(prefix + "SPECIAL_GRENADE_NAME", "Flashbang");
-            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>stuns</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>You can hold up to two.</style>");
+            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>dazes</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>Dazed enemies aim in random directions for 5 seconds.</style>");
 
             LanguageAPI.Add(prefix + "SPECIAL_GRENADE_SCEPTER_NAME", "Molotov");
-            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>stuns</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>You can hold up to two.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
+            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>dazes</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>Dazed enemies aim in random directions for 5 seconds.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
 
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_NAME", "Supply Drop");
-            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.yellowItemHex}>Prototype Rocket Launcher</color>. <style=cIsUtility>You can only request one per stage.</style>");
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.greenItemHex}>random weapon</color>.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_NAME", "Supply Drop (Legacy)");
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.yellowItemHex}>Prototype Rocket Launcher</color>. <style=cIsUtility>You can only request one per stage.</style>");
 
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_SCEPTER_NAME", "Call of the Void");
-            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_SCEPTER_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.yellowItemHex}>Prototype Rocket Launcher</color>. <style=cIsUtility>You can only request one per stage.</style>" + Helpers.ScepterDescription("Summon a <color=#" + Helpers.voidItemHex + ">voidborn weapon</color> instead."));
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_SCEPTER_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.greenItemHex}>random weapon</color>." + Helpers.ScepterDescription("Summon a <color=#" + Helpers.voidItemHex + ">voidborn weapon</color> instead."));
+
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_NAME", "Call of the Void");
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.yellowItemHex}>Prototype Rocket Launcher</color>." + Helpers.ScepterDescription("Summon a <color=#" + Helpers.voidItemHex + ">voidborn weapon</color> instead."));
             #endregion
 
             #region Achievements
@@ -248,13 +255,13 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_RIOT_SHOTGUN_DESC", "Piercing blasts great for crowd control.");
 
             LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_NAME", "Slug Shotgun");
-            LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_DESC", "Powerful single hits with high kickback.");
+            LanguageAPI.Add("ROB_DRIVER_SLUG_SHOTGUN_DESC", "Powerful single hits with heavy kickback.");
 
             LanguageAPI.Add("ROB_DRIVER_BADASS_SHOTGUN_NAME", "Badass Shotgun");
             LanguageAPI.Add("ROB_DRIVER_BADASS_SHOTGUN_DESC", "A six-barreled shotgun...!?");
 
             LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_NAME", "Machine Gun");
-            LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "Good all-rounder that shoots fast but has high recoil.");
+            LanguageAPI.Add("ROB_DRIVER_MACHINEGUN_DESC", "Shoots fast but has high spread.");
 
             LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_NAME", "Heavy Machine Gun");
             LanguageAPI.Add("ROB_DRIVER_HEAVY_MACHINEGUN_DESC", "Accurate, armor piercing rounds.");
@@ -263,7 +270,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_UZIS_DESC", "A pair of uzis with high recoil but ridiculous damage.");
 
             LanguageAPI.Add("ROB_DRIVER_BAZOOKA_NAME", "Bazooka");
-            LanguageAPI.Add("ROB_DRIVER_BAZOOKA_DESC", "Chargeable arcing rockets good for clearing out crowds.");
+            LanguageAPI.Add("ROB_DRIVER_BAZOOKA_DESC", "Chargeable arcing rockets.");
 
             LanguageAPI.Add("ROB_DRIVER_SNIPER_NAME", "Sniper Rifle");
             LanguageAPI.Add("ROB_DRIVER_SNIPER_DESC", "Precise, fatal shots.");
@@ -272,7 +279,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_DESC", "KABOOOM");
 
             LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_ALT_NAME", "Prototype Rocket Launcher");
-            LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_ALT_DESC", "An early prototype Rocket Launcher that lasts for a short time.");
+            LanguageAPI.Add("ROB_DRIVER_ROCKETLAUNCHER_ALT_DESC", "A faulty prototype that can only fire a few shots.");
 
             LanguageAPI.Add("ROB_DRIVER_ARMCANNON_NAME", "Arm Cannon");
             LanguageAPI.Add("ROB_DRIVER_ARMCANNON_DESC", "Arm Cannon scavenged from a Steel Mechorilla.");

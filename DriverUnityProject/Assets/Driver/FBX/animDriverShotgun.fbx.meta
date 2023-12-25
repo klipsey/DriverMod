@@ -175,6 +175,12 @@ ModelImporter:
     7400066: Armature|Reload
     7400068: Armature|Bash
     7400070: Armature|ShootRiot
+    7400072: Armature|AimPitchShotgun
+    7400074: Armature|AimTwohand
+    7400076: Armature|ShootBazooka
+    7400078: Armature|ShootTwohand
+    7400080: Armature|ShoulderBashPrep
+    7400082: Armature|ShootSniper
     9500000: //RootNode
     10800000: Light
     10800002: Light.001

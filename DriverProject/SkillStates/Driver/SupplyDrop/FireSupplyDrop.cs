@@ -10,7 +10,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
     {
         public float baseDuration = 0.8f;
 
-        public static float damageCoefficient = 25f;
+        public static float damageCoefficient = 16f;
 
         public Vector3 dropPosition;
         public Quaternion dropRotation;
@@ -22,6 +22,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         {
             base.OnEnter();
             this.duration = this.baseDuration / this.attackSpeedStat;
+
+            this.skillLocator.special.DeductStock(1);
 
             this.PlayAnim();
         }
@@ -95,7 +97,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 blastAttack.attacker = this.gameObject;
                 blastAttack.crit = this.RollCrit();
                 blastAttack.baseDamage = this.damageStat * FireSupplyDrop.damageCoefficient;
-                blastAttack.falloffModel = BlastAttack.FalloffModel.Linear;
+                blastAttack.falloffModel = BlastAttack.FalloffModel.SweetSpot;
                 blastAttack.baseForce = 4000f;
                 blastAttack.teamIndex = this.teamComponent.teamIndex;
                 blastAttack.damageType = DamageType.Stun1s;

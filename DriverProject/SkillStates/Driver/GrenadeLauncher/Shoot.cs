@@ -31,7 +31,8 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
             Util.PlaySound("sfx_driver_grenade_launcher_shoot", base.gameObject);
 
             //this.PlayCrossfade("Gesture, Override", "FireShotgun", "Shoot.playbackRate", Mathf.Max(0.05f, 1.75f * duration), 0.06f);
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("AimPitch", "Shoot");
 
             this.fireDuration = 0;
 
@@ -112,6 +113,8 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
         public override void OnExit()
         {
             base.OnExit();
+
+            this.GetModelAnimator().SetTrigger("endAim");
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

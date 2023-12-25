@@ -31,7 +31,8 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 			string text = "ShotgunMuzzle";
 			this.characterBody.SetAimTimer(2f);
 
-			base.PlayAnimation("Gesture", "FireLaser", "FireLaser.playbackRate", this.duration);
+			base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", this.duration);
+			base.PlayAnimation("AimPitch", "Shoot");
 
 			if (EntityStates.GolemMonster.FireLaser.effectPrefab)
 			{
@@ -94,7 +95,8 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 		{
 			base.OnExit();
 
-			if (this.iDrive) this.iDrive.StartTimer();
+			if (this.iDrive) this.iDrive.StartTimer(2f);
+			this.GetModelAnimator().SetTrigger("endAim");
 		}
 
 		public override void FixedUpdate()

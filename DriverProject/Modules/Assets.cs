@@ -132,7 +132,10 @@ namespace RobDriver.Modules
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
 
+        public static GameObject sniperTracer;
+
         public static GameObject lunarTracer;
+        public static GameObject chargedLunarTracer;
         public static GameObject lunarRifleTracer;
 
         public static GameObject nemmandoTracer;
@@ -209,6 +212,16 @@ namespace RobDriver.Modules
 
             CrosshairController pistolCrosshair = pistolAimCrosshairPrefab.GetComponent<CrosshairController>();
 
+            Sprite boolet = mainAssetBundle.LoadAsset<Sprite>("texBulletIndicator");
+            stockHolder.transform.GetChild(0).GetComponent<Image>().sprite = boolet;
+            stockHolder.transform.GetChild(0).GetComponent<RectTransform>().localScale *= 2.5f;
+            stockHolder.transform.GetChild(1).GetComponent<Image>().sprite = boolet;
+            stockHolder.transform.GetChild(1).GetComponent<RectTransform>().localScale *= 2.5f;
+            stockHolder.transform.GetChild(2).GetComponent<Image>().sprite = boolet;
+            stockHolder.transform.GetChild(2).GetComponent<RectTransform>().localScale *= 2.5f;
+            stockHolder.transform.GetChild(3).GetComponent<Image>().sprite = boolet;
+            stockHolder.transform.GetChild(3).GetComponent<RectTransform>().localScale *= 2.5f;
+
             pistolCrosshair.skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[]
             {
                 new CrosshairController.SkillStockSpriteDisplay
@@ -216,28 +229,28 @@ namespace RobDriver.Modules
                     target = stockHolder.transform.GetChild(0).gameObject,
                     skillSlot = SkillSlot.Secondary,
                     minimumStockCountToBeValid = 1,
-                    maximumStockCountToBeValid = 99
+                    maximumStockCountToBeValid = 999
                 },
                 new CrosshairController.SkillStockSpriteDisplay
                 {
                     target = stockHolder.transform.GetChild(1).gameObject,
                     skillSlot = SkillSlot.Secondary,
                     minimumStockCountToBeValid = 2,
-                    maximumStockCountToBeValid = 99
+                    maximumStockCountToBeValid = 999
                 },
                 new CrosshairController.SkillStockSpriteDisplay
                 {
                     target = stockHolder.transform.GetChild(2).gameObject,
                     skillSlot = SkillSlot.Secondary,
                     minimumStockCountToBeValid = 3,
-                    maximumStockCountToBeValid = 99
+                    maximumStockCountToBeValid = 999
                 },
                 new CrosshairController.SkillStockSpriteDisplay
                 {
                     target = stockHolder.transform.GetChild(3).gameObject,
                     skillSlot = SkillSlot.Secondary,
                     minimumStockCountToBeValid = 4,
-                    maximumStockCountToBeValid = 99
+                    maximumStockCountToBeValid = 999
                 }
             };
 
@@ -254,6 +267,20 @@ namespace RobDriver.Modules
             rect.localPosition = new Vector3(0f, -60f, 0f);
 
             chargeBar.transform.GetChild(0).gameObject.AddComponent<Modules.Components.CrosshairChargeBar>().crosshairController = pistolAimCrosshairPrefab.GetComponent<RoR2.UI.CrosshairController>();
+
+            GameObject chargeRing = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeRing"));
+            chargeRing.transform.SetParent(pistolAimCrosshairPrefab.transform);
+
+            rect = chargeRing.GetComponent<RectTransform>();
+
+            rect.localScale = new Vector3(0.25f, 0.25f, 1f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(50f, 0f);
+            rect.localPosition = new Vector3(65f, -75f, 0f);
+
+            chargeRing.transform.GetChild(0).gameObject.AddComponent<Modules.Components.CrosshairChargeRing>().crosshairController = pistolAimCrosshairPrefab.GetComponent<RoR2.UI.CrosshairController>();
             #endregion
 
             #region Bazooka Crosshair
@@ -300,7 +327,7 @@ namespace RobDriver.Modules
             rect.localPosition = new Vector3(40f, -40f, 0f);
             rect.localEulerAngles = new Vector3(0f, 0f, 90f);
 
-            chargeBar.transform.GetChild(0).gameObject.AddComponent<Modules.Components.CrosshairChargeBar>().crosshairController = crosshair;
+            chargeBar.transform.GetChild(0).gameObject.AddComponent<Modules.Components.CrosshairChargeBar>().crosshairController = bazookaCrosshairPrefab.GetComponent<CrosshairController>();
             #endregion
 
             #region Grenade Launcher Crosshair
@@ -778,6 +805,22 @@ namespace RobDriver.Modules
                 }
             }
 
+            sniperTracer = CreateTracer("TracerHuntressSnipe", "TracerDriverSniperRifle");
+
+            LineRenderer line = sniperTracer.transform.Find("TracerHead").GetComponent<LineRenderer>();
+            line.startWidth *= 0.25f;
+            line.endWidth *= 0.25f;
+            // this did not work.
+            line.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/MagmaWorm/matMagmaWormFireballTrail.mat").WaitForCompletion();
+
+            chargedLunarTracer = CreateTracer("TracerHuntressSnipe", "TracerDriverChargedLunarPistol");
+
+            line = chargedLunarTracer.transform.Find("TracerHead").GetComponent<LineRenderer>();
+            line.startWidth *= 0.25f;
+            line.endWidth *= 0.25f;
+            // this did not work.
+            line.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/EliteLunar/matEliteLunarDonut.mat").WaitForCompletion();
+
             AddNewEffectDef(shotgunTracer);
             AddNewEffectDef(shotgunTracerCrit);
             AddNewEffectDef(lunarTracer);
@@ -802,6 +845,22 @@ namespace RobDriver.Modules
             discardedWeaponEffect = mainAssetBundle.LoadAsset<GameObject>("DiscardedWeapon");
             Modules.Components.DiscardedWeaponComponent discardComponent = discardedWeaponEffect.AddComponent<Modules.Components.DiscardedWeaponComponent>();
             discardedWeaponEffect.gameObject.layer = LayerIndex.ragdoll.intVal;
+        }
+
+        private static GameObject CreateTracer(string originalTracerName, string newTracerName)
+        {
+            GameObject newTracer = R2API.PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/" + originalTracerName), newTracerName, true);
+
+            if (!newTracer.GetComponent<EffectComponent>()) newTracer.AddComponent<EffectComponent>();
+            if (!newTracer.GetComponent<VFXAttributes>()) newTracer.AddComponent<VFXAttributes>();
+            if (!newTracer.GetComponent<NetworkIdentity>()) newTracer.AddComponent<NetworkIdentity>();
+
+            newTracer.GetComponent<Tracer>().speed = 250f;
+            newTracer.GetComponent<Tracer>().length = 50f;
+
+            AddNewEffectDef(newTracer);
+
+            return newTracer;
         }
 
         internal static GameObject CreatePickupObject(DriverWeaponDef weaponDef)

@@ -4,6 +4,7 @@ using R2API;
 using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace RobDriver.Modules
 {
@@ -12,11 +13,12 @@ namespace RobDriver.Modules
         internal static List<BuffDef> buffDefs = new List<BuffDef>();
 
         internal static BuffDef dazedDebuff;
+        internal static BuffDef woundDebuff;
 
         internal static void RegisterBuffs()
         {
-            dazedDebuff = AddNewBuff("RobDriverDazedDebuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.grey, false, false);
-            //slowStartBuff = AddNewBuff("RegigigasSlowStartDebuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffSlow50Icon"), Color.grey, true, false);
+            dazedDebuff = AddNewBuff("RobDriverDazedDebuff", Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdCloak.asset").WaitForCompletion().iconSprite, Color.grey, false, false);
+            //woundDebuff = AddNewBuff("RobDriverWoundDebuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.grey, false, false);
         }
 
         // simple helper method

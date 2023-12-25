@@ -43,7 +43,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         protected virtual void ShowButton()
         {
             base.PlayAnimation("Gesture, Override", "ReadyButton", "Action.playbackRate", 0.8f);
-            base.PlayAnimation("AimPitch", "SteadyAimPitch");
+            base.PlayAnimation("AimPitch", "ShotgunAimPitch");
             this.FindModelChild("ButtonModel").gameObject.SetActive(true);
         }
 

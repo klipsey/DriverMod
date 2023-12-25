@@ -128,6 +128,7 @@ namespace RobDriver.Modules.Survivors
 
         internal static SkillDef scepterGrenadeSkillDef;
         internal static SkillDef scepterSupplyDropSkillDef;
+        internal static SkillDef scepterSupplyDropLegacySkillDef;
 
         internal static string bodyNameToken;
 
@@ -1149,7 +1150,7 @@ false);
                 skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_SNIPER_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_SNIPER_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SniperRifle.SteadyAim)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SniperRifle.Aim)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
                 baseRechargeInterval = 8f,
@@ -1447,7 +1448,7 @@ false);
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texStunGrenadeIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ThrowGrenade)),
                 activationStateMachineName = "Weapon",
-                baseMaxStock = 2,
+                baseMaxStock = 1,
                 baseRechargeInterval = 8f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
@@ -1517,6 +1518,54 @@ false);
                 skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SupplyDrop.Nerfed.AimCrapDrop)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 24f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 0
+            });
+
+            scepterSupplyDropSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_SCEPTER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_SCEPTER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_SCEPTER_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropScepterIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SupplyDrop.Scepter.AimVoidDrop)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 24f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 0
+            });
+
+            SkillDef supplyDropLegacySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SupplyDrop.AimSupplyDrop)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -1532,14 +1581,14 @@ false);
                 cancelSprintingOnActivation = true,
                 rechargeStock = 0,
                 requiredStock = 1,
-                stockToConsume = 1
+                stockToConsume = 0
             });
 
-            scepterSupplyDropSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            scepterSupplyDropLegacySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_SCEPTER_NAME",
-                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_SCEPTER_NAME",
-                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_SCEPTER_DESCRIPTION",
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropScepterIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SupplyDrop.Scepter.AimVoidDrop)),
                 activationStateMachineName = "Weapon",
@@ -1559,9 +1608,16 @@ false);
                 stockToConsume = 1
             });
 
-            Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef/*, knifeSkillDef*/);
-
-            Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef);
+            if (Modules.Config.cursed.Value)
+            {
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef/*, knifeSkillDef*/);
+                Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef, supplyDropUnlockableDef);
+            }
+            else
+            {
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef/*, knifeSkillDef*/);
+                Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef);
+            }
             #endregion
 
             if (DriverPlugin.scepterInstalled) InitializeScepterSkills();
@@ -1573,6 +1629,8 @@ false);
         {
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterGrenadeSkillDef, bodyName, SkillSlot.Special, 0);
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSupplyDropSkillDef, bodyName, SkillSlot.Special, 1);
+
+            if (Modules.Config.cursed.Value) AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSupplyDropLegacySkillDef, bodyName, SkillSlot.Special, 2);
         }
 
         private static void CreateSkins(GameObject prefab)
@@ -1771,6 +1829,42 @@ false);
             };
 
             if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
+            #endregion
+
+            #region GreenSkin
+            SkinDef greenSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_GREEN_SKIN_NAME",
+                Assets.mainAssetBundle.LoadAsset<Sprite>("texGreenSkin"),
+                SkinRendererInfos(defaultRenderers, new Material[]
+                {
+                    Modules.Assets.CreateMaterial("matDriverGreen", 1f, Color.white)
+                }),
+                mainRenderer,
+                model);
+
+            greenSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    renderer = mainRenderer,
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshDriver")
+                }
+            };
+
+            greenSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = sluggerCloth,
+                    shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = false
+                }
+            };
+
+            if (Modules.Config.cursed.Value) skins.Add(greenSkin);
             #endregion
 
             #region MinecraftSkin
@@ -2174,6 +2268,50 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             On.EntityStates.GlobalSkills.LunarNeedle.ChargeLunarSecondary.PlayChargeAnimation += PlayChargeLunarAnimation;
             On.EntityStates.GlobalSkills.LunarNeedle.ThrowLunarSecondary.PlayThrowAnimation += PlayThrowLunarAnimation;
             On.EntityStates.GlobalSkills.LunarDetonator.Detonate.OnEnter += PlayRuinAnimation;
+
+            // dazed debuff
+            On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
+            On.EntityStates.AI.BaseAIState.AimAt += BaseAIState_AimAt;
+            On.EntityStates.AI.BaseAIState.AimInDirection += BaseAIState_AimInDirection;
+        }
+
+        private static void BaseAIState_AimInDirection(On.EntityStates.AI.BaseAIState.orig_AimInDirection orig, EntityStates.AI.BaseAIState self, ref BaseAI.BodyInputs dest, Vector3 aimDirection)
+        {
+            if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
+            {
+                orig(self, ref dest, Random.onUnitSphere);
+                dest.desiredAimDirection = Random.onUnitSphere;
+            }
+            else orig(self, ref dest, aimDirection);
+        }
+
+        private static void BaseAIState_AimAt(On.EntityStates.AI.BaseAIState.orig_AimAt orig, EntityStates.AI.BaseAIState self, ref BaseAI.BodyInputs dest, BaseAI.Target aimTarget)
+        {
+            if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
+            {
+                orig(self, ref dest, aimTarget);
+                dest.desiredAimDirection = Random.onUnitSphere;
+            }
+            else orig(self, ref dest, aimTarget);
+        }
+
+        private static void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
+        {
+            if (damageInfo.inflictor)
+            {
+                if (damageInfo.inflictor.name.Contains("RobDriverStunGrenade"))
+                {
+                    if (self)
+                    {
+                        if (self.body)
+                        {
+                            self.body.AddTimedBuff(Modules.Buffs.dazedDebuff, 5f);
+                        }
+                    }
+                }
+            }   
+            
+            orig(self, damageInfo);
         }
 
         private static void SkillLocator_ApplyAmmoPack(On.RoR2.SkillLocator.orig_ApplyAmmoPack orig, SkillLocator self)
@@ -2214,10 +2352,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     float chance = Modules.Config.baseDropRate.Value;
 
                     // higher chance if it's a big guy
-                    if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(1.5f * chance, 0f, 100f);
+                    if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(1.35f * chance, 0f, 100f);
 
                     // minimum 50% chance if the slain enemy is an elite
-                    if (damageReport.victimBody.isElite) chance = Mathf.Clamp(chance, 50f, 100f);
+                    if (damageReport.victimBody.isElite) chance = Mathf.Clamp(chance, 40f, 100f);
 
                     // halved on swarms, fuck You
                     if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms)) chance *= 0.5f;
@@ -2285,7 +2423,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     else
                     {
                         // add pity
-                        Driver.instance.pityMultiplier += 0.02f;
+                        Driver.instance.pityMultiplier += 0.01f;
                     }
                 }
 

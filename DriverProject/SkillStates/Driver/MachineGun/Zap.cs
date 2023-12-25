@@ -62,6 +62,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
         {
             base.OnExit();
 
+            this.GetModelAnimator().SetTrigger("endAim");
             AkSoundEngine.StopPlayingID(this.playID);
         }
 
@@ -76,6 +77,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
             if (base.GetModelAnimator())
             {
                 base.PlayAnimation("Gesture, Override", "Zap", "Action.playbackRate", this.duration);
+                base.PlayAnimation("AimPitch", "Shoot");
             }
         }
     }

@@ -47,6 +47,22 @@ namespace RobDriver
             return weaponDefs[index];
         }
 
+        internal static DriverWeaponDef GetRandomWeapon()
+        {
+            List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();
+
+            for (int i = 0; i < weaponDefs.Length; i++)
+            {
+                if (Modules.Config.GetWeaponConfigEnabled(weaponDefs[i]) && weaponDefs[i].shotCount > 0) validWeapons.Add(weaponDefs[i]);
+            }
+
+            DriverWeaponDef[] _validWeapons = validWeapons.ToArray();
+
+            if (_validWeapons.Length <= 0) return weaponDefs[0]; // pistol failsafe
+
+            return _validWeapons[UnityEngine.Random.Range(0, _validWeapons.Length)];
+        }
+
         internal static DriverWeaponDef GetRandomWeaponFromTier(DriverWeaponTier tier)
         {
             List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();

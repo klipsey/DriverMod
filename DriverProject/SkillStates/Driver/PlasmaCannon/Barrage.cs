@@ -6,5 +6,6 @@ namespace RobDriver.SkillStates.Driver.PlasmaCannon
     {
         protected override float _damageCoefficient => 10f;
         protected override GameObject projectilePrefab => Modules.Projectiles.plasmaCannonProjectilePrefab;
+        protected override float ammoMod => 2f;
     }
 }

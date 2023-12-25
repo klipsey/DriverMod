@@ -39,7 +39,8 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
             if (this.isCrit) Util.PlaySound("sfx_driver_lunar_rifle_shoot", base.gameObject);
             else Util.PlaySound("sfx_driver_lunar_rifle_shoot", base.gameObject);
 
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("AimPitch", "Shoot");
 
             this.fireDuration = 0;
 
@@ -146,6 +147,8 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
         public override void OnExit()
         {
             base.OnExit();
+
+            this.GetModelAnimator().SetTrigger("endAim");
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

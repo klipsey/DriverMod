@@ -15,9 +15,9 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         public static float minSpeed = 20f;
         public static float maxSpeed = 160f;
         public static float minDamageCoefficient = 6f;
-        public static float maxDamageCoefficient = 8f;
+        public static float maxDamageCoefficient = 12f;
         public static float minRecoil = 0.5f;
-        public static float maxRecoil = 5f;
+        public static float maxRecoil = 25f;
 
         private float duration;
         private float speed;
@@ -37,9 +37,9 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
             if (this.iDrive) this.iDrive.StartTimer();
 
-            //if (this.charge >= 0.8f) base.PlayAnimation("Gesture, Override", "FireCharged", "Bazooka.playbackRate", 0.8f);
-            //else base.PlayAnimation("Gesture, Override", "Fire", "Bazooka.playbackRate", 1f);
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
+            if (this.charge >= 0.8f) base.PlayAnimation("Gesture, Override", "FireBazooka", "Shoot.playbackRate", 2.5f * this.duration);
+            else base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", 2.5f * this.duration);
+            base.PlayAnimation("AimPitch", "Shoot");
 
             this.FireRocket();
         }
@@ -94,6 +94,13 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             }
         }
 
+        public override void OnExit()
+        {
+            base.OnExit();
+
+            this.GetModelAnimator().SetTrigger("endAim");
+        }
+
         public override void FixedUpdate()
         {
             base.FixedUpdate();
@@ -103,11 +110,6 @@ namespace RobDriver.SkillStates.Driver.Bazooka
                 this.outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

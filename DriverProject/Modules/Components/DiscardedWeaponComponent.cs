@@ -57,15 +57,15 @@ namespace RobDriver.Modules.Components
         {
             this.spinning = true;
 
+            this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
+            this.effectInstance.transform.parent = this.transform;
             if (this.weaponDef && this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.TwoHanded)
             {
-                //this.effectInstance.transform.localPosition = new Vector3(-0.3f, 0f, 0f);
-                //this.effectInstance.transform.localScale = new Vector3(3.5f, 2.5f, -32f);
+                this.effectInstance.transform.localPosition = new Vector3(-0.3f, 0f, 0f);
+                this.effectInstance.transform.localScale = new Vector3(3.5f, 2.5f, -32f);
             }
             else
             {
-                this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
-                this.effectInstance.transform.parent = this.transform;
                 this.effectInstance.transform.localRotation = Quaternion.Euler(new Vector3(0f, 90f, 0f));
                 this.effectInstance.transform.localPosition = Vector3.zero;
             }

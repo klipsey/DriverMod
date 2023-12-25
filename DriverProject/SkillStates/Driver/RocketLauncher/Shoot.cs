@@ -38,6 +38,14 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             }
         }
 
+        protected virtual float ammoMod
+        {
+            get
+            {
+                return 1f;
+            }
+        }
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -51,11 +59,12 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             Util.PlaySound(this.soundString, base.gameObject);
 
             //this.PlayCrossfade("Gesture, Override", "FireShotgun", "Shoot.playbackRate", Mathf.Max(0.05f, 1.75f * duration), 0.06f);
-            base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("AimPitch", "Shoot");
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.StartTimer(this.ammoMod);
         }
 
         protected virtual float _damageCoefficient
@@ -139,6 +148,8 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         public override void OnExit()
         {
             base.OnExit();
+
+            this.GetModelAnimator().SetTrigger("endAim");
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

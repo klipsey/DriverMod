@@ -32,12 +32,11 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
         public override void OnEnter()
         {
             base.OnEnter();
-            this.iDrive = this.GetComponent<DriverController>();
             this.chargeDuration = this.baseChargeDuration / this.attackSpeedStat;
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_SNIPER, 0.5f);
 
-            base.PlayAnimation("Gesture, Override", "SteadyAim", "Action.playbackRate", 0.25f);
-            base.PlayAnimation("AimPitch", "SteadyAimPitch");
+            base.PlayAnimation("Gesture, Override", "AimTwohand");
+            base.PlayAnimation("AimPitch", "ShotgunAimPitch");
 
             this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
@@ -157,10 +156,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             this.shotCooldown = this.baseShotDuration / this.attackSpeedStat;
             this.isCharged = false;
 
-            if (this.iDrive)
-            {
-                this.iDrive.machineGunVFX.Play();
-            }
+            if (this.iDrive) this.iDrive.machineGunVFX.Play();
 
             base.characterBody.AddSpreadBloom(1f);
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, "ShotgunMuzzle", false);
@@ -195,30 +191,30 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     this.skillLocator.secondary.DeductStock(1);
                 }
 
-                GameObject tracerPrefab = Driver.Shoot.tracerEffectPrefab;
-                if (isCrit) tracerPrefab = Driver.Shoot.critTracerEffectPrefab;
+                GameObject tracerPrefab = Modules.Assets.sniperTracer;
+                //if (this.isCrit) tracerPrefab = Modules.Assets.sniperTracer;
 
-                new BulletAttack
+                BulletAttack bulletAttack = new BulletAttack
                 {
                     bulletCount = 1,
                     aimVector = aimRay.direction,
                     origin = aimRay.origin,
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.WeakPointHit,
+                    damageType = DamageType.Stun1s,
                     falloffModel = BulletAttack.FalloffModel.None,
-                    maxDistance = 500f,
+                    maxDistance = 2000f,
                     force = 1000f,
                     hitMask = LayerIndex.CommonMasks.bullet,
                     minSpread = 0f,
                     maxSpread = 0f,
                     isCrit = isCrit,
-                    owner = base.gameObject,
+                    owner = this.gameObject,
                     muzzleName = "ShotgunMuzzle",
                     smartCollision = true,
                     procChainMask = default(ProcChainMask),
                     procCoefficient = Shoot.procCoefficient,
-                    radius = 1f,
+                    radius = 0.2f,
                     sniper = false,
                     stopperMask = LayerIndex.world.mask,
                     weapon = null,
@@ -227,9 +223,28 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     spreadYawScale = 0f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                }.Fire();
+                };
 
-                // ricochet here
+                bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
+                {
+                    if (BulletAttack.IsSniperTargetHit(hitInfo))
+                    {
+                        damageInfo.damage *= 2f;
+                        damageInfo.damageColorIndex = DamageColorIndex.Sniper;
+
+                        EffectData effectData = new EffectData
+                        {
+                            origin = hitInfo.point,
+                            rotation = Quaternion.LookRotation(-hitInfo.direction)
+                        };
+
+                        effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
+                        //EffectManager.SpawnEffect(BaseSnipeState.headshotEffectPrefab, effectData, true);
+                        //RoR2.Util.PlaySound("Play_SniperClassic_headshot", base.gameObject);
+                    }
+                };
+
+                bulletAttack.Fire();
             }
         }
 

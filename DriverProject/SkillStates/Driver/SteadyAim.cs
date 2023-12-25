@@ -14,7 +14,15 @@ namespace RobDriver.SkillStates.Driver
         public static float damageCoefficient = 5f;
         public static float recoil = 0.5f;
 
-        private bool lastCharge;
+        protected bool lastCharge;
+
+        protected virtual bool isPiercing
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         protected virtual float _damageCoefficient
         {
@@ -270,36 +278,72 @@ namespace RobDriver.SkillStates.Driver
 
                 this.lastCharge = wasCharged;
 
-                new BulletAttack
+                if (this.isPiercing)
                 {
-                    bulletCount = 1,
-                    aimVector = aimRay.direction,
-                    origin = aimRay.origin,
-                    damage = dmg * this.damageStat,
-                    damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Generic,
-                    falloffModel = BulletAttack.FalloffModel.None,
-                    maxDistance = Shoot.range,
-                    force = Shoot.force,
-                    hitMask = LayerIndex.CommonMasks.bullet,
-                    minSpread = 0f,
-                    maxSpread = 0f,
-                    isCrit = isCrit,
-                    owner = base.gameObject,
-                    muzzleName = "PistolMuzzle",
-                    smartCollision = true,
-                    procChainMask = default(ProcChainMask),
-                    procCoefficient = Shoot.procCoefficient,
-                    radius = 1f,
-                    sniper = false,
-                    stopperMask = LayerIndex.CommonMasks.bullet,
-                    weapon = null,
-                    tracerEffectPrefab = this.tracerPrefab,
-                    spreadPitchScale = 0f,
-                    spreadYawScale = 0f,
-                    queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
-                    hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                }.Fire();
+                    new BulletAttack
+                    {
+                        bulletCount = 1,
+                        aimVector = aimRay.direction,
+                        origin = aimRay.origin,
+                        damage = dmg * this.damageStat,
+                        damageColorIndex = DamageColorIndex.Default,
+                        damageType = DamageType.Generic,
+                        falloffModel = BulletAttack.FalloffModel.None,
+                        maxDistance = Shoot.range,
+                        force = Shoot.force,
+                        hitMask = LayerIndex.CommonMasks.bullet,
+                        minSpread = 0f,
+                        maxSpread = 0f,
+                        isCrit = isCrit,
+                        owner = base.gameObject,
+                        muzzleName = "PistolMuzzle",
+                        smartCollision = true,
+                        procChainMask = default(ProcChainMask),
+                        procCoefficient = Shoot.procCoefficient,
+                        radius = 1f,
+                        sniper = false,
+                        stopperMask = LayerIndex.world.mask,
+                        weapon = null,
+                        tracerEffectPrefab = this.tracerPrefab,
+                        spreadPitchScale = 0f,
+                        spreadYawScale = 0f,
+                        queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
+                        hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
+                    }.Fire();
+                }
+                else
+                {
+                    new BulletAttack
+                    {
+                        bulletCount = 1,
+                        aimVector = aimRay.direction,
+                        origin = aimRay.origin,
+                        damage = dmg * this.damageStat,
+                        damageColorIndex = DamageColorIndex.Default,
+                        damageType = DamageType.Generic,
+                        falloffModel = BulletAttack.FalloffModel.None,
+                        maxDistance = Shoot.range,
+                        force = Shoot.force,
+                        hitMask = LayerIndex.CommonMasks.bullet,
+                        minSpread = 0f,
+                        maxSpread = 0f,
+                        isCrit = isCrit,
+                        owner = base.gameObject,
+                        muzzleName = "PistolMuzzle",
+                        smartCollision = true,
+                        procChainMask = default(ProcChainMask),
+                        procCoefficient = Shoot.procCoefficient,
+                        radius = 1f,
+                        sniper = false,
+                        stopperMask = LayerIndex.CommonMasks.bullet,
+                        weapon = null,
+                        tracerEffectPrefab = this.tracerPrefab,
+                        spreadPitchScale = 0f,
+                        spreadYawScale = 0f,
+                        queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
+                        hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
+                    }.Fire();
+                }
             }
         }
 

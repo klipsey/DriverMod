@@ -70,6 +70,7 @@ namespace RobDriver.Modules
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SniperRifle.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SniperRifle.SteadyAim));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SniperRifle.Aim));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.VoidPistol.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.VoidPistol.SteadyAim));
@@ -93,6 +94,10 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.AimSupplyDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.FireSupplyDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.CancelSupplyDrop));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.Nerfed.AimCrapDrop));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.Nerfed.FireCrapDrop));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.Nerfed.CancelCrapDrop));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.Scepter.AimVoidDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.Scepter.FireVoidDrop));

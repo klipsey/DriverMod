@@ -18,6 +18,8 @@
 
 To share feedback, report bugs, or offer suggestions feel free to DM @braindead_ape on Discord or make an issue on the GitHub repo
 
+https://youtu.be/05dgUnSWYx8
+
 ___
 
 # Unlock
@@ -132,16 +134,46 @@ Big thanks to everyone in the community for all the valuable feedback and critic
 - Unique secondary skills for each weapon; these are difficult to come up with, so feel free to hit me with any ideas!
 
 ## Known Issues
-- None as of right now
+- Some weapon icons have an incorrectly colored outline
 
 ___
 
 ## Changelog
 
+`1.3.7`
+- Supply Drop now drops a random normal weapon, spammable rocket launchers was way too much
+- Added Supply Drop (Legacy), the old version of the skill (enabled Cursed config for this)
+- ^skill ended up changing so drastically it felt worth having this option
+- Flashbang base stock reduced from 2 to 1
+- Flashbang now applies a unique Dazed debuff, causing enemies to aim in random directions for 5 seconds
+
+`1.3.6`
+- Added an extra indicator to Focus crosshair, showing the skill cooldown (so you know when your next shot is coming up)
+- Updated all weapon icons and survivor icon to use the official template (huge thanks to Swuff for this!)
+- Supply Drop is no longer once per stage- now functions as a normal skill with a 24s cooldown, ammo heavily reduced
+- ^once per stage pretty much meant "use on teleporter boss only" which kinda sucked to play with, will nerf if needed
+- Lunar Blaster and Null Blaster now pierce when firing charged shots with Focus
+- Fixed Sniper Rifle not critting when hitting a weakpoint and updated VFX
+
+`1.3.5`
+- Alien Head's cooldown reduction now applies to Driver's ammo consumption, using the same formula
+- Fixed a couple animations
+- Fixed Driver umbra not having a headshot hurtbox
+
+`1.3.4`
+- Sniper Rifle reworked: charge removed, damage 800% > 1800%, unscoped spread increased, scope now only lowers spread + exposes headshots + makes bullets pierce, scope now enters first person view
+- ^this weapon has been consistently terrible and needed an identity that's not walmart snipermod so let's go with quickscoping
+- Bazooka fully charged primary damage: 800% > 1200%, charging it felt like a complete waste of time
+- Flashbang now detonates a little bit faster- just a tiny qol
+- Updated animations for all two handed guns, allowing their animations to properly aim vertically
+- Updated Flashbang SFX
+- Updated Focus stock indicators
+- Added a new skin locked behind Cursed config
+
 `1.3.3`
 - Updated Flashbang skill icon
 - Updated standard crosshair, can be disabled in config
-- Driver's Crosshairs are now highlighted while hovering over something, can be disabled in config
+- Driver's crosshairs are now highlighted while hovering over something, can be disabled in config
 - ^ this can be applied to ALL crosshairs via a config option, if that interests you
 - Added config option to move Predatory Instincts item display to the head
 - Fixed some weapon tooltips

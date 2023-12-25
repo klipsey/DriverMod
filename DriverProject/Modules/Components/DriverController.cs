@@ -373,6 +373,18 @@ new EffectData
 
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
+            if (this.characterBody && this.characterBody.inventory && scaleWithAttackSpeed)
+            {
+                int alienHeadCount = this.characterBody.inventory.GetItemCount(RoR2Content.Items.AlienHead);
+                if (alienHeadCount > 0)
+                {
+                    for (int i = 0; i < alienHeadCount; i++)
+                    {
+                        amount *= 0.75f;
+                    }
+                }
+            }
+
             if (scaleWithAttackSpeed) this.weaponTimer -= amount / this.characterBody.attackSpeed;
             else this.weaponTimer -= amount;
         }
@@ -418,7 +430,7 @@ new EffectData
         {
             if (this.skillLocator)
             {
-                if (this.skillLocator.special.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_NAME")
+                if (this.skillLocator.special.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_NAME")
                 {
                     if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
                     {

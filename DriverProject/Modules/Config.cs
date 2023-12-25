@@ -26,6 +26,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> enableCrosshairDot;
         public static ConfigEntry<bool> dynamicCrosshair;
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
+        public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -132,11 +133,17 @@ true,
 false,
 "If set to true, highlight the crosshair while hovering over entities, but for ALL characters. Overrides the other option. (Client-side)", true);
 
+            randomSupplyDrop
+= Config.BindAndOptions("01 - General",
+"Random Supply Drop",
+false,
+"If set to true, Supply Drop will drop a random weapon from ANY tier. Completely unbalanced but fun! Use at your own risk.");
+
             cursed
 = Config.BindAndOptions("01 - General",
 "Cursed",
 false,
-"Enables unstable and stupid content", true);
+"Enables unfinished, stupid and old content.", true);
             #endregion
 
             #region Emotes
