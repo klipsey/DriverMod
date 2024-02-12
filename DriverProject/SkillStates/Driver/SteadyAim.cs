@@ -76,6 +76,11 @@ namespace RobDriver.SkillStates.Driver
             this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
             this.autoFocus = Modules.Config.autoFocus.Value;
 
+            if (Modules.Config.adaptiveFocus.Value)
+            {
+                if (this.chargeDuration <= 0.1f) this.autoFocus = true;
+            }
+
             this.FindModelChild("PistolSight").gameObject.SetActive(true);
         }
 
@@ -278,6 +283,9 @@ namespace RobDriver.SkillStates.Driver
 
                 this.lastCharge = wasCharged;
 
+                BulletAttack.FalloffModel falloffModel = BulletAttack.FalloffModel.DefaultBullet;
+                if (this.lastCharge) falloffModel = BulletAttack.FalloffModel.None;
+
                 if (this.isPiercing)
                 {
                     new BulletAttack
@@ -288,7 +296,7 @@ namespace RobDriver.SkillStates.Driver
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
                         damageType = DamageType.Generic,
-                        falloffModel = BulletAttack.FalloffModel.None,
+                        falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
                         hitMask = LayerIndex.CommonMasks.bullet,
@@ -321,7 +329,7 @@ namespace RobDriver.SkillStates.Driver
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
                         damageType = DamageType.Generic,
-                        falloffModel = BulletAttack.FalloffModel.None,
+                        falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
                         hitMask = LayerIndex.CommonMasks.bullet,
@@ -364,9 +372,12 @@ namespace RobDriver.SkillStates.Driver
 
                 float dmg = Shoot.damageCoefficient;
 
+                BulletAttack.FalloffModel falloffModel = BulletAttack.FalloffModel.DefaultBullet;
+
                 if (this.lastCharge)
                 {
                     dmg = SteadyAim.damageCoefficient;
+                    falloffModel = BulletAttack.FalloffModel.None;
                 }
 
                 GameObject tracerPrefab = Shoot.critTracerEffectPrefab;
@@ -379,7 +390,7 @@ namespace RobDriver.SkillStates.Driver
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
                     damageType = DamageType.Generic,
-                    falloffModel = BulletAttack.FalloffModel.DefaultBullet,
+                    falloffModel = falloffModel,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,

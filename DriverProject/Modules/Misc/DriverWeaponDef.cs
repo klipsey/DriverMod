@@ -32,6 +32,7 @@ public class DriverWeaponDef : ScriptableObject
 
     [Header("Other")]
     public string configIdentifier = "";
+    public float dropChance = 0f;
 
     [HideInInspector]
     public ushort index; // assigned at runtime
@@ -92,6 +93,7 @@ public class DriverWeaponDef : ScriptableObject
         weaponDef.calloutSoundString = weaponDefInfo.calloutSoundString;
 
         weaponDef.configIdentifier = weaponDefInfo.configIdentifier;
+        weaponDef.dropChance = weaponDefInfo.dropChance;
 
         return weaponDef;
     }
@@ -116,6 +118,7 @@ public struct DriverWeaponDefInfo
     public string calloutSoundString;
 
     public string configIdentifier;
+    public float dropChance;
 }
 
 public enum DriverWeaponTier

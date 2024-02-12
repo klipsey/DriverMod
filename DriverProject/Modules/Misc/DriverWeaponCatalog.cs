@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace RobDriver
 {
-    internal static class DriverWeaponCatalog
+    public static class DriverWeaponCatalog
     {
-        internal static DriverWeaponDef[] weaponDefs = new DriverWeaponDef[0];
+        public static Dictionary<string, DriverWeaponDef> weaponDrops = new Dictionary<string, DriverWeaponDef>();
+        public static DriverWeaponDef[] weaponDefs = new DriverWeaponDef[0];
 
         internal static DriverWeaponDef Pistol;
         internal static DriverWeaponDef PyriteGun;
@@ -25,7 +26,7 @@ namespace RobDriver
         internal static DriverWeaponDef NemmandoGun;
         internal static DriverWeaponDef NemmercGun;
 
-        internal static void AddWeapon(DriverWeaponDef weaponDef)
+        public static void AddWeapon(DriverWeaponDef weaponDef)
         {
             Array.Resize(ref weaponDefs, weaponDefs.Length + 1);
 
@@ -42,12 +43,23 @@ namespace RobDriver
             Modules.Config.InitWeaponConfig(weaponDef);
         }
 
-        internal static DriverWeaponDef GetWeaponFromIndex(int index)
+        public static void AddWeaponDrop(string bodyName, DriverWeaponDef weaponDef, bool autoComplete = true)
+        {
+            if (autoComplete)
+            {
+                if (!bodyName.Contains("Body")) bodyName += "Body";
+                if (!bodyName.Contains("(Clone)")) bodyName += "(Clone)";
+            }
+
+            weaponDrops.Add(bodyName, weaponDef);
+        }
+
+        public static DriverWeaponDef GetWeaponFromIndex(int index)
         {
             return weaponDefs[index];
         }
 
-        internal static DriverWeaponDef GetRandomWeapon()
+        public static DriverWeaponDef GetRandomWeapon()
         {
             List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();
 
@@ -63,7 +75,7 @@ namespace RobDriver
             return _validWeapons[UnityEngine.Random.Range(0, _validWeapons.Length)];
         }
 
-        internal static DriverWeaponDef GetRandomWeaponFromTier(DriverWeaponTier tier)
+        public static DriverWeaponDef GetRandomWeaponFromTier(DriverWeaponTier tier)
         {
             List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();
 

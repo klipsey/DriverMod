@@ -9,7 +9,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 7f;
+        public static float damageCoefficient = 5f;
         public static float procCoefficient = 1f;
         public float baseDuration = 1.3f; // the base skill duration. i.e. attack speed
         public static float recoil = 16f;

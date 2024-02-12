@@ -10,7 +10,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
         public const float RAD2 = 1.414f;//for area calculation
         //public const float RAD3 = 1.732f;//for area calculation
 
-        public static float damageCoefficient = 1.8f;
+        public static float damageCoefficient = 1.4f;
         public static float procCoefficient = 1f;
         public float baseDuration = 1.6f; // the base skill duration. i.e. attack speed
         public static int bulletCount = 24;

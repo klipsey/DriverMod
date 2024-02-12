@@ -16,7 +16,7 @@
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/DriverUnityProject/Assets/Driver/Icons/texDriverIcon.png)]()
 
 
-To share feedback, report bugs, or offer suggestions feel free to DM @braindead_ape on Discord or make an issue on the GitHub repo
+To share feedback, report bugs, or offer suggestions feel free to create an issue on the GitHub repo or join the Discord: https://discord.gg/HV68ujvkqe
 
 https://youtu.be/05dgUnSWYx8
 
@@ -139,6 +139,26 @@ Big thanks to everyone in the community for all the valuable feedback and critic
 ___
 
 ## Changelog
+
+`1.3.9`
+- Added skin: Special Forces, currently unlocked by default
+- Focus no longer removes damage falloff unless the bullet is charged
+- Added config to make Focus auto charge after reaching a certain attack speed, on by default
+- ^Charging it got super tedious later into runs so this QoL should be a huge help
+- Rewrote unique weapon drop system, allowing external mods to easily add their own
+- Significantly changed drop rates
+- Minimum chance when killing an elite: 40% > 25%
+- Bonus multiplier when killing large enemies: 135% > 110%
+- Pity multiplier after drop: 100% > 80%
+- Pity multiplier growth on kill: 0.1% > 2.5%
+- ^Weapons were way too common, you can config up the base chance if you don't like this change though
+- Rocket Launcher damage: 700% > 500%
+- Badass Shotgun damage: 180x24% > 140x24%
+- ^Legendary weapons were basically a free win
+- Attempted to fix Simulacrum boss waves dropping a weapon for every enemy
+
+`1.3.8`
+- Publicized weapon catalog code so that external mods can add their own weapons
 
 `1.3.7`
 - Supply Drop now drops a random normal weapon, spammable rocket launchers was way too much

@@ -1757,6 +1757,42 @@ false);
             skins.Add(grandMasterySkin);
             #endregion
 
+            #region SpecialForcesSkin
+            SkinDef specialForcesSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIALFORCES_SKIN_NAME",
+    Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
+    SkinRendererInfos(defaultRenderers, new Material[]
+    {
+                    Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
+    }),
+    mainRenderer,
+    model);
+
+            specialForcesSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    renderer = mainRenderer,
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshSpecialForces")
+                }
+            };
+
+            specialForcesSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = sluggerCloth,
+                    shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = false
+                }
+            };
+
+            skins.Add(specialForcesSkin);
+            #endregion
+
             #region SuitSkin
             SkinDef suitSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_SUIT_SKIN_NAME",
                 Assets.mainAssetBundle.LoadAsset<Sprite>("texSuitSkin"),
@@ -2352,10 +2388,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     float chance = Modules.Config.baseDropRate.Value;
 
                     // higher chance if it's a big guy
-                    if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(1.35f * chance, 0f, 100f);
+                    if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(1.1f * chance, 0f, 100f);
 
-                    // minimum 50% chance if the slain enemy is an elite
-                    if (damageReport.victimBody.isElite) chance = Mathf.Clamp(chance, 40f, 100f);
+                    // minimum 25% chance if the slain enemy is an elite
+                    if (damageReport.victimBody.isElite) chance = Mathf.Clamp(chance, 25f, 100f);
 
                     // halved on swarms, fuck You
                     if (Run.instance && RoR2.RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms)) chance *= 0.5f;
@@ -2368,7 +2404,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     bool isBoss = damageReport.victimBody.isChampion || damageReport.victimIsChampion;
 
                     // simulacrum boss wave fix
-                    if (damageReport.victimBody.isBoss || damageReport.victimIsBoss) isBoss = true;
+                    if ((damageReport.victimBody.isBoss || damageReport.victimIsBoss) && !InfiniteTowerRun.instance) isBoss = true;
 
                     // terminal enemies from starstorm's relic of termination
                     if (DriverPlugin.CheckIfBodyIsTerminal(damageReport.victimBody)) isBoss = true;
@@ -2384,7 +2420,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                     if (droppedWeapon)
                     {
-                        Driver.instance.pityMultiplier = 1f;
+                        Driver.instance.pityMultiplier = 0.8f;
 
                         Vector3 position = Vector3.zero;
                         Transform transform = damageReport.victim.transform;
@@ -2400,18 +2436,11 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                         DriverWeaponDef weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
 
-                        // todo: proper system for these, clean up this whole thing and make it readable
-                        if (damageReport.victimBody.baseNameToken == "BEETLE_BODY_NAME" && Util.CheckRoll(5f)) weaponDef = DriverWeaponCatalog.BeetleShield;
-                        if (damageReport.victimBody.baseNameToken == "GOLEM_BODY_NAME" && Util.CheckRoll(10f)) weaponDef = DriverWeaponCatalog.GolemRifle;
-                        if (damageReport.victimBody.baseNameToken == "LUNARGOLEM_BODY_NAME" && Util.CheckRoll(50f)) weaponDef = DriverWeaponCatalog.LunarRifle;
-                        if (damageReport.victimBody.baseNameToken == "BROTHER_BODY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.LunarHammer;
-
-                        // shartstorm 2 compat
-                        if (damageReport.victimBody.baseNameToken == "SS2_NEMMANDO_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.NemmandoGun;
-                        if (damageReport.victimBody.baseNameToken == "SS2_NEMESIS_MERCENARY_NAME" && Util.CheckRoll(100f)) weaponDef = DriverWeaponCatalog.NemmercGun;
-
-                        // mechorilla
-                        if (damageReport.victimBody.baseNameToken == "ROB_MECHORILLA_BODY_NAME" && Util.CheckRoll(50f)) weaponDef = DriverWeaponCatalog.ArmCannon;
+                        if (DriverWeaponCatalog.weaponDrops.ContainsKey(damageReport.victimBody.gameObject.name))
+                        {
+                            DriverWeaponDef newWeapon = DriverWeaponCatalog.weaponDrops[damageReport.victimBody.gameObject.name];
+                            if (Util.CheckRoll(newWeapon.dropChance)) weaponDef = newWeapon;
+                        }
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
 
@@ -2423,7 +2452,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     else
                     {
                         // add pity
-                        Driver.instance.pityMultiplier += 0.01f;
+                        Driver.instance.pityMultiplier += 0.025f;
                     }
                 }
 

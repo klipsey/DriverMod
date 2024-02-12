@@ -11,6 +11,7 @@ namespace RobDriver.SkillStates.Driver
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.7f;
         public static float baseCritDuration = 0.9f;
+        public static float baseCritDuration2 = 1.4f;
         public static float force = 200f;
         public static float recoil = 2f;
         public static float range = 256f;
@@ -26,6 +27,7 @@ namespace RobDriver.SkillStates.Driver
         private bool isCrit;
         private GameObject effectInstance;
         private uint spinPlayID;
+        private bool oldShoot;
 
         protected virtual float _damageCoefficient
         {
@@ -40,6 +42,7 @@ namespace RobDriver.SkillStates.Driver
             base.OnEnter();
             this.duration = Shoot.baseDuration / this.attackSpeedStat;
             this.characterBody.isSprinting = false;
+            this.oldShoot = Modules.Config.oldCritShot.Value;
 
             this.fireTime = 0.1f * this.duration;
             this.fireTime2 = 0.2f * this.duration;
@@ -50,18 +53,29 @@ namespace RobDriver.SkillStates.Driver
 
             if (this.isCrit)
             {
-                this.duration = Shoot.baseCritDuration / this.attackSpeedStat;
-                this.fireTime = 0.5f * this.duration;
-                this.fireTime2 = 0.55f * this.duration;
+                if (this.oldShoot)
+                {
+                    this.duration = Shoot.baseCritDuration / this.attackSpeedStat;
+                    this.fireTime = 0.5f * this.duration;
+                    this.fireTime2 = 0.55f * this.duration;
 
-                this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
-                this.effectInstance.transform.parent = this.FindModelChild("Pistol");
-                this.effectInstance.transform.localRotation = Quaternion.Euler(new Vector3(0f, 80f, 0f));
-                this.effectInstance.transform.localPosition = Vector3.zero;
+                    this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
+                    this.effectInstance.transform.parent = this.FindModelChild("Pistol");
+                    this.effectInstance.transform.localRotation = Quaternion.Euler(new Vector3(0f, 80f, 0f));
+                    this.effectInstance.transform.localPosition = Vector3.zero;
 
-                this.spinPlayID = Util.PlaySound("sfx_driver_pistol_spin", this.gameObject);
+                    this.spinPlayID = Util.PlaySound("sfx_driver_pistol_spin", this.gameObject);
 
-                this.PlayAnimation("Gesture, Override", "ShootCritical", "Shoot.playbackRate", this.duration);
+                    this.PlayAnimation("Gesture, Override", "ShootCritical", "Shoot.playbackRate", this.duration);
+                }
+                else
+                {
+                    this.duration = Shoot.baseCritDuration2 / this.attackSpeedStat;
+                    this.fireTime = 0f * this.duration;
+                    this.fireTime2 = 0.05f * this.duration;
+
+                    this.PlayAnimation("Gesture, Override", "ShootCriticalAlt", "Shoot.playbackRate", this.duration);
+                }
             }
             else
             {
@@ -184,13 +198,28 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (this.effectInstance && base.fixedAge >= (0.4f * this.duration))
+            if (this.oldShoot)
             {
-                EntityState.Destroy(this.effectInstance);
+                if (this.effectInstance && base.fixedAge >= (0.4f * this.duration))
+                {
+                    EntityState.Destroy(this.effectInstance);
 
-                AkSoundEngine.StopPlayingID(this.spinPlayID);
-                this.spinPlayID = 0u;
-                Util.PlaySound("sfx_driver_pistol_ready", this.gameObject);
+                    AkSoundEngine.StopPlayingID(this.spinPlayID);
+                    this.spinPlayID = 0u;
+                    Util.PlaySound("sfx_driver_pistol_ready", this.gameObject);
+                }
+            }
+            else
+            {
+                if (this.isCrit && !this.effectInstance && base.fixedAge >= (0.55f * this.duration))
+                {
+                    this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
+                    this.effectInstance.transform.parent = this.FindModelChild("Pistol");
+                    this.effectInstance.transform.localRotation = Quaternion.Euler(new Vector3(0f, 80f, 0f));
+                    this.effectInstance.transform.localPosition = Vector3.zero;
+
+                    this.spinPlayID = Util.PlaySound("sfx_driver_pistol_spin", this.gameObject);
+                }
             }
 
             if (base.fixedAge >= this.duration && base.isAuthority)
@@ -203,7 +232,7 @@ namespace RobDriver.SkillStates.Driver
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             float kek = 0.5f;
-            if (this.isCrit) kek = 0.75f;
+            if (this.isCrit && this.oldShoot) kek = 0.75f;
 
             if (base.fixedAge >= kek * this.duration)
             {

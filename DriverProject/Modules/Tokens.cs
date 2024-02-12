@@ -40,6 +40,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "Slugger");
             LanguageAPI.Add(prefix + "SUIT_SKIN_NAME", "Hitman");
             LanguageAPI.Add(prefix + "SUIT2_SKIN_NAME", "Hitman EX");
+            LanguageAPI.Add(prefix + "SPECIALFORCES_SKIN_NAME", "Special Forces");
             LanguageAPI.Add(prefix + "GREEN_SKIN_NAME", "Green");
             LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion

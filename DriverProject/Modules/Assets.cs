@@ -1045,7 +1045,8 @@ namespace RobDriver.Modules
                 material = Assets.goldenGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
                 calloutSoundString = "sfx_driver_callout_generic",
-                configIdentifier = "Golden Gun"
+                configIdentifier = "Golden Gun",
+                dropChance = 100f
             });
             DriverWeaponCatalog.AddWeapon(goldenGunWeaponDef);
             DriverWeaponCatalog.GoldenGun = goldenGunWeaponDef;
@@ -1080,7 +1081,8 @@ namespace RobDriver.Modules
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Beetle/matBeetle.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.Default,
                 calloutSoundString = "sfx_driver_callout_generic",
-                configIdentifier = "Chitin Shield"
+                configIdentifier = "Chitin Shield",
+                dropChance = 2f
             });
             DriverWeaponCatalog.AddWeapon(beetleShieldWeaponDef);
             DriverWeaponCatalog.BeetleShield = beetleShieldWeaponDef;
@@ -1300,7 +1302,8 @@ namespace RobDriver.Modules
                 material = Assets.armCannonMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
                 calloutSoundString = "sfx_driver_callout_generic",
-                configIdentifier = "Arm Cannon"
+                configIdentifier = "Arm Cannon",
+                dropChance = 25f
             });
             DriverWeaponCatalog.AddWeapon(armCannonWeaponDef);
             DriverWeaponCatalog.ArmCannon = armCannonWeaponDef;
@@ -1356,7 +1359,8 @@ namespace RobDriver.Modules
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarGolem/matLunarGolem.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_generic",
-                configIdentifier = "Chimeric Cannon"
+                configIdentifier = "Chimeric Cannon",
+                dropChance = 5f
             });
             DriverWeaponCatalog.AddWeapon(lunarRifleWeaponDef);
             DriverWeaponCatalog.LunarRifle = lunarRifleWeaponDef;
@@ -1373,7 +1377,8 @@ namespace RobDriver.Modules
                 mesh = Assets.lunarHammerMesh,
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Brother/matBrotherHammer.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.BigMelee,
-                calloutSoundString = "sfx_driver_callout_generic"
+                calloutSoundString = "sfx_driver_callout_generic",
+                dropChance = 100f
             });
             DriverWeaponCatalog.AddWeapon(lunarHammerWeaponDef);
             DriverWeaponCatalog.LunarHammer = lunarHammerWeaponDef;
@@ -1391,7 +1396,8 @@ namespace RobDriver.Modules
                 mesh = Assets.nemmandoGunMesh,
                 material = Assets.nemmandoGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
-                calloutSoundString = "sfx_driver_callout_generic"
+                calloutSoundString = "sfx_driver_callout_generic",
+                dropChance = 100f
             });
             DriverWeaponCatalog.AddWeapon(nemmandoGunWeaponDef);
             DriverWeaponCatalog.NemmandoGun = nemmandoGunWeaponDef;
@@ -1409,7 +1415,8 @@ namespace RobDriver.Modules
                 mesh = Assets.nemmercGunMesh,
                 material = Assets.nemmercGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
-                calloutSoundString = "sfx_driver_callout_shotgun"
+                calloutSoundString = "sfx_driver_callout_shotgun",
+                dropChance = 100f
             });
             DriverWeaponCatalog.AddWeapon(nemmercGunWeaponDef);
             DriverWeaponCatalog.NemmercGun = nemmercGunWeaponDef;
@@ -1428,10 +1435,23 @@ namespace RobDriver.Modules
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Golem/matGolem.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_generic",
-                configIdentifier = "Stone Cannon"
+                configIdentifier = "Stone Cannon",
+                dropChance = 5f
             });
             DriverWeaponCatalog.AddWeapon(golemGunWeaponDef);
             DriverWeaponCatalog.GolemRifle = golemGunWeaponDef;
+
+            DriverWeaponCatalog.AddWeaponDrop("Beetle", beetleShieldWeaponDef);
+            DriverWeaponCatalog.AddWeaponDrop("Golem", golemGunWeaponDef);
+            DriverWeaponCatalog.AddWeaponDrop("LunarGolem", lunarRifleWeaponDef);
+            DriverWeaponCatalog.AddWeaponDrop("TitanGold", goldenGunWeaponDef);
+            DriverWeaponCatalog.AddWeaponDrop("Brother", lunarRifleWeaponDef);
+            DriverWeaponCatalog.AddWeaponDrop("BrotherHurt", lunarHammerWeaponDef);
+
+            DriverWeaponCatalog.AddWeaponDrop("Mechorilla", armCannonWeaponDef);
+
+            DriverWeaponCatalog.AddWeaponDrop("NemCommando", nemmandoGunWeaponDef);
+            DriverWeaponCatalog.AddWeaponDrop("NemMerc", nemmercGunWeaponDef);
         }
 
         private static GameObject CreateCrosshair()

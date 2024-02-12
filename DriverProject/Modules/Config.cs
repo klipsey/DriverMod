@@ -13,6 +13,7 @@ namespace RobDriver.Modules
     {
         public static ConfigFile myConfig;
 
+        public static ConfigEntry<bool> adaptiveFocus;
         public static ConfigEntry<bool> autoFocus;
         public static ConfigEntry<bool> sharedPickupVisuals;
         public static ConfigEntry<bool> oldPickupModel;
@@ -27,6 +28,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> dynamicCrosshair;
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
         public static ConfigEntry<bool> randomSupplyDrop;
+        public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -55,6 +57,12 @@ namespace RobDriver.Modules
         internal static void ReadConfig()
         {
             #region General
+            adaptiveFocus
+ = Config.BindAndOptions("01 - General",
+ "Adaptive Focus",
+ true,
+ "If set to true, Focus will always charge up before firing a shot once your attack speed reaches a certain amount. (Client-side)");
+
             autoFocus
              = Config.BindAndOptions("01 - General",
              "Focus Auto Charge",
@@ -138,6 +146,12 @@ false,
 "Random Supply Drop",
 false,
 "If set to true, Supply Drop will drop a random weapon from ANY tier. Completely unbalanced but fun! Use at your own risk.");
+
+            oldCritShot
+= Config.BindAndOptions("01 - General",
+"Old Critical Shot",
+false,
+"If set to true, will use the old critical animation which spins the gun BEFORE shooting.");
 
             cursed
 = Config.BindAndOptions("01 - General",
