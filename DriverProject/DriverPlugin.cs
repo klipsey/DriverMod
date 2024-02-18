@@ -18,6 +18,7 @@ namespace RobDriver
     [BepInDependency("com.ContactLight.LostInTransit", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.TeamMoonstorm.Starstorm2", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.RiskySleeps.ClassicItemsReturns", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("bubbet.riskui", BepInDependency.DependencyFlags.SoftDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(MODUID, MODNAME, MODVERSION)]
@@ -37,7 +38,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.4.0";
+        public const string MODVERSION = "1.4.1";
 
         public const string developerPrefix = "ROB";
 
@@ -50,6 +51,7 @@ namespace RobDriver
         public static bool classicItemsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.RiskySleeps.ClassicItemsReturns");
         public static bool riskUIInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("bubbet.riskui");
         public static bool extendedLoadoutInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.KingEnderBrine.ExtendedLoadout");
+        public static bool greenAlienHeadInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Borbo.GreenAlienHead");
 
         private void Awake()
         {
@@ -133,6 +135,13 @@ namespace RobDriver
 
             if (self && self.HasBuff(Modules.Buffs.syringeCritBuff))
             {
+                self.crit += 25f;
+            }
+
+            if (self && self.HasBuff(Modules.Buffs.syringeScepterBuff))
+            {
+                self.damage += self.level * 1.5f;
+                self.attackSpeed += 0.3f;
                 self.crit += 25f;
             }
         }

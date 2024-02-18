@@ -131,6 +131,8 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef scepterGrenadeSkillDef;
         internal static SkillDef scepterSupplyDropSkillDef;
         internal static SkillDef scepterSupplyDropLegacySkillDef;
+        internal static SkillDef scepterSyringeSkillDef;
+        internal static SkillDef scepterKnifeSkillDef;
 
         internal static string bodyNameToken;
 
@@ -1468,7 +1470,7 @@ false);
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texStunGrenadeScepterIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ThrowMolotov)),
                 activationStateMachineName = "Weapon",
-                baseMaxStock = 2,
+                baseMaxStock = 1,
                 baseRechargeInterval = 12f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
@@ -1494,6 +1496,30 @@ false);
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
                 baseRechargeInterval = 7f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            scepterKnifeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_SCEPTER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_SCEPTER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_SCEPTER_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texKnifeScepterIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SwingKnifeScepter)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 2,
+                baseRechargeInterval = 3.5f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -1652,6 +1678,30 @@ false);
                 stockToConsume = 1
             });
 
+            scepterSyringeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SYRINGE_SCEPTER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGE_SCEPTER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGE_SCEPTER_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSyringeScepterIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.UseSyringeScepter)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 12f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
             if (Modules.Config.cursed.Value)
             {
                 Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef);
@@ -1674,7 +1724,17 @@ false);
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterGrenadeSkillDef, bodyName, SkillSlot.Special, 0);
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSupplyDropSkillDef, bodyName, SkillSlot.Special, 1);
 
-            if (Modules.Config.cursed.Value) AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSupplyDropLegacySkillDef, bodyName, SkillSlot.Special, 2);
+            if (Modules.Config.cursed.Value)
+            {
+                AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSupplyDropLegacySkillDef, bodyName, SkillSlot.Special, 2);
+                AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterKnifeSkillDef, bodyName, SkillSlot.Special, 3);
+                AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSyringeSkillDef, bodyName, SkillSlot.Special, 4);
+            }
+            else
+            {
+                AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterKnifeSkillDef, bodyName, SkillSlot.Special, 2);
+                AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSyringeSkillDef, bodyName, SkillSlot.Special, 3);
+            }
         }
 
         private static void CreateSkins(GameObject prefab)

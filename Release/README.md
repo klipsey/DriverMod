@@ -140,6 +140,14 @@ ___
 
 ## Changelog
 
+`1.4.1`
+- Driver's held weapon now finally persists between stages :-)
+- Nullifier primary damage: 300% > 500%
+- Nemesis survivor weapons no longer consume any ammo
+- Added scepter upgrades for the new specials, polish is needed but they're adequate for now
+- Fixed some broken weapon icons to properly use the placeholder icons
+- Fixed Lunar Exploders having a 100% drop rate on their unique weapon
+
 `1.4.0`
 - Rewrote a handful of weapon initialization code, making the system friendlier to external mods
 - Changed in 1.3.9, forgot to list it, moved the pistol crit spin animation to after the shot and added config to revert this behavior

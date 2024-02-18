@@ -7,7 +7,7 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 3f;
+        public static float damageCoefficient = 5f;
         public static float procCoefficient = 1f;
         public float baseDuration = 0.25f;
         public static int bulletCount = 1;

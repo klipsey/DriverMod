@@ -49,7 +49,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmercGun
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            //if (this.iDrive) this.iDrive.StartTimer();
         }
 
         public virtual void FireBullet()

@@ -33,10 +33,12 @@ namespace RobDriver.Modules
         public static GameObject damageBuffEffectPrefab;
         public static GameObject attackSpeedBuffEffectPrefab;
         public static GameObject critBuffEffectPrefab;
+        public static GameObject scepterSyringeBuffEffectPrefab;
 
         public static GameObject damageBuffEffectPrefab2;
         public static GameObject attackSpeedBuffEffectPrefab2;
         public static GameObject critBuffEffectPrefab2;
+        public static GameObject scepterSyringeBuffEffectPrefab2;
 
         public static GameObject stunGrenadeModelPrefab;
 
@@ -185,6 +187,7 @@ namespace RobDriver.Modules
         internal static Material syringeDamageOverlayMat;
         internal static Material syringeAttackSpeedOverlayMat;
         internal static Material syringeCritOverlayMat;
+        internal static Material syringeScepterOverlayMat;
         internal static Material woundOverlayMat;
 
         internal static void PopulateAssets()
@@ -205,9 +208,10 @@ namespace RobDriver.Modules
             }
 
             jammedEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ROB_DRIVER_JAMMED_POPUP");
-            damageBuffEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "DAMAGE!", new Color(1f, 70f / 255f, 75f / 255f));
-            attackSpeedBuffEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ATTACK SPEED!", new Color(1f, 170f / 255f, 45f / 255f));
-            critBuffEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "CRITICAL CHANCE!", new Color(1f, 80f / 255f, 17f / 255f));
+            damageBuffEffectPrefab = CreateTextPopupEffect("DriverDamageBuffEffect", "DAMAGE!", new Color(1f, 70f / 255f, 75f / 255f));
+            attackSpeedBuffEffectPrefab = CreateTextPopupEffect("DriverAttackSpeedBuffEffect", "ATTACK SPEED!", new Color(1f, 170f / 255f, 45f / 255f));
+            critBuffEffectPrefab = CreateTextPopupEffect("DriverCritBuffEffect", "CRITICAL CHANCE!", new Color(1f, 80f / 255f, 17f / 255f));
+            scepterSyringeBuffEffectPrefab = CreateTextPopupEffect("DriverScepterSyringeBuffEffect", "POWER!!!!", Modules.Survivors.Driver.characterColor);
 
             upgradeEffectPrefab = CreateTextPopupEffect("DriverGunUpgradeEffect", "ROB_DRIVER_UPGRADE_POPUP");
 
@@ -219,6 +223,9 @@ namespace RobDriver.Modules
 
             syringeCritOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
             syringeCritOverlayMat.SetColor("_TintColor", new Color(1f, 80f / 255f, 17f / 255f));
+
+            syringeScepterOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
+            syringeScepterOverlayMat.SetColor("_TintColor", Modules.Survivors.Driver.characterColor);
 
             woundOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/ArmorReductionOnHit/matPulverizedOverlay.mat").WaitForCompletion());
             woundOverlayMat.SetColor("_TintColor", Color.red);
@@ -964,6 +971,21 @@ namespace RobDriver.Modules
                 }
             }
             AddNewEffectDef(critBuffEffectPrefab2);
+
+            scepterSyringeBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverScepterSyringeBuffEffect2", true);
+
+            scepterSyringeBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
+            scepterSyringeBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
+            scepterSyringeBuffEffectPrefab2.transform.Find("TextCamScaler").gameObject.SetActive(false);
+            foreach (ParticleSystem i in scepterSyringeBuffEffectPrefab2.GetComponentsInChildren<ParticleSystem>())
+            {
+                if (i)
+                {
+                    var j = i.main;
+                    j.startColor = Modules.Survivors.Driver.characterColor;
+                }
+            }
+            AddNewEffectDef(scepterSyringeBuffEffectPrefab2);
         }
 
         private static GameObject CreateTracer(string originalTracerName, string newTracerName)

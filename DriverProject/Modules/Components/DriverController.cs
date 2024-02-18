@@ -90,6 +90,14 @@ namespace RobDriver.Modules.Components
         private DriverWeaponDef lastWeaponDef;
         private WeaponNotificationQueue notificationQueue;
 
+        public float ammo
+        {
+            get
+            {
+                return this.weaponTimer;
+            }
+        }
+
         private void Awake()
         {
             // this was originally used for gun jamming
@@ -112,7 +120,7 @@ namespace RobDriver.Modules.Components
 
             this.GetSkillOverrides();
 
-            this.pistolWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(0);
+            this.pistolWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(Modules.Config.defaultWeaponIndex.Value);
             this.defaultWeaponDef = this.pistolWeaponDef;
             this.PickUpWeapon(this.defaultWeaponDef);
 
@@ -164,6 +172,47 @@ namespace RobDriver.Modules.Components
             this.CheckForLysateCell();
 
             this.CheckForNeedler();
+
+            this.CheckForStoredWeapon();
+        }
+
+        private void CheckForStoredWeapon()
+        {
+            if (NetworkServer.active)
+            {
+                if (this.characterBody && this.characterBody.master)
+                {
+                    DriverWeaponTracker weaponTracker = this._weaponTracker;
+                    if (weaponTracker.isStoringWeapon)
+                    {
+                        DriverWeaponTracker.StoredWeapon storedWeapon = weaponTracker.RetrieveWeapon();
+                        this.ServerGetStoredWeapon(storedWeapon.weaponDef, storedWeapon.ammo, this);
+                    }
+                }
+            }
+        }
+
+        private void StoreWeapon()
+        {
+            if (this.characterBody && this.characterBody.master)
+            {
+                DriverWeaponTracker weaponTracker = this._weaponTracker;
+                weaponTracker.StoreWeapon(this.weaponDef, this.ammo);
+            }
+        }
+
+        private DriverWeaponTracker _weaponTracker
+        {
+            get
+            {
+                if (this.characterBody && this.characterBody.master)
+                {
+                    DriverWeaponTracker i = this.characterBody.master.GetComponent<DriverWeaponTracker>();
+                    if (!i) i = this.characterBody.master.gameObject.AddComponent<DriverWeaponTracker>();
+                    return i;
+                }
+                return null;
+            }
         }
 
         private void CheckForLysateCell()
@@ -367,10 +416,8 @@ new EffectData
             this.hammerEffectInstance2.SetActive(false);
         }
 
-        public void StartTimer(float amount = 1f, bool scaleWithAttackSpeed = true)
+        public void ConsumeAmmo(float multiplier = 1f, bool scaleWithAttackSpeed = true)
         {
-            //this.timerStarted = true;
-
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
             if (this.characterBody && this.characterBody.inventory && scaleWithAttackSpeed)
@@ -380,13 +427,27 @@ new EffectData
                 {
                     for (int i = 0; i < alienHeadCount; i++)
                     {
-                        amount *= 0.75f;
+                        if (DriverPlugin.greenAlienHeadInstalled)
+                        {
+                            multiplier *= 0.85f;
+                        }
+                        else
+                        {
+                            multiplier *= 0.75f;
+                        }
                     }
                 }
             }
 
-            if (scaleWithAttackSpeed) this.weaponTimer -= amount / this.characterBody.attackSpeed;
-            else this.weaponTimer -= amount;
+            if (scaleWithAttackSpeed) this.weaponTimer -= multiplier / this.characterBody.attackSpeed;
+            else this.weaponTimer -= multiplier;
+        }
+
+        public void StartTimer(float amount = 1f, bool scaleWithAttackSpeed = true)
+        {
+            //this.timerStarted = true;
+
+            this.ConsumeAmmo(amount, scaleWithAttackSpeed);
         }
 
         public void ToggleSkateboard(SkateboardState newState)
@@ -456,6 +517,14 @@ new EffectData
             this.ServerPickUpWeapon(this.weaponDef, this);
         }
 
+        public void ServerGetStoredWeapon(DriverWeaponDef newWeapon, float ammo, DriverController driverController)
+        {
+            NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
+            if (!identity) return;
+
+            new SyncStoredWeapon(identity.netId, newWeapon.index, ammo).Send(NetworkDestination.Clients);
+        }
+
         public void ServerPickUpWeapon(DriverWeaponDef newWeapon, DriverController driverController)
         {
             NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
@@ -481,14 +550,14 @@ new EffectData
             newEffect.transform.position = this.childLocator.FindChild("Pistol").position + (Vector3.up * 0.5f);
         }
 
-        public void PickUpWeapon(DriverWeaponDef newWeapon)
+        public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f)
         {
             this.timerStarted = false;
             this.weaponDef = newWeapon;
 
             if (newWeapon == DriverWeaponCatalog.LunarHammer) this.hasPickedUpHammer = true; // hardcoding the mithrix hammer as default once picked up. fuck it
 
-            this.EquipWeapon();
+            this.EquipWeapon(ammo);
 
             this.TryCallout();
 
@@ -540,7 +609,7 @@ new EffectData
             }
         }
 
-        private void EquipWeapon()
+        private void EquipWeapon(float ammo = -1f)
         {
             // unset all the overrides....
             for (int i = 0; i < this.primarySkillOverrides.Length; i++)
@@ -602,6 +671,7 @@ new EffectData
 
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;
+            if (ammo != -1f) this.weaponTimer = ammo;
 
             // crosshair
             this.crosshairPrefab = this.weaponDef.crosshairPrefab;
@@ -765,6 +835,11 @@ new EffectData
             {
                 this.characterBody.master.inventory.onItemAddedClient -= this.Inventory_onItemAddedClient;
                 this.characterBody.master.inventory.onInventoryChanged -= this.Inventory_onInventoryChanged;
+            }
+
+            if (NetworkServer.active)
+            {
+                this.StoreWeapon();
             }
         }
 

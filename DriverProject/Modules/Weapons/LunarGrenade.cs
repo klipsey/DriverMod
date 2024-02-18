@@ -18,7 +18,7 @@ namespace RobDriver.Modules.Weapons
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.TwoHanded;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "Lunar Launcher";
-        public override float dropChance => 100f;
+        public override float dropChance => 5f;
         public override bool addToPool => false;
         public override string uniqueDropBodyName => "LunarExploder";
 

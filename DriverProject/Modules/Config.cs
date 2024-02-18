@@ -29,6 +29,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
+        public static ConfigEntry<int> defaultWeaponIndex;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -152,6 +153,12 @@ false,
 "Old Critical Shot",
 false,
 "If set to true, will use the old critical animation which spins the gun BEFORE shooting.");
+
+            defaultWeaponIndex
+= Config.BindAndOptions("01 - General",
+"Default Weapon Index",
+0,
+"Change the index of the default weapon Driver uses. Purely for fun, don't ask me what the indices are because I don't know, they're generated at runtime.");
 
             cursed
 = Config.BindAndOptions("01 - General",

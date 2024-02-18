@@ -17,6 +17,7 @@ namespace RobDriver.Modules
         internal static BuffDef syringeDamageBuff;
         internal static BuffDef syringeAttackSpeedBuff;
         internal static BuffDef syringeCritBuff;
+        internal static BuffDef syringeScepterBuff;
 
         internal static void RegisterBuffs()
         {
@@ -25,6 +26,7 @@ namespace RobDriver.Modules
             syringeDamageBuff = AddNewBuff("RobDriverSyringeDamageBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 70f / 255f, 75f / 255f), false, false);
             syringeAttackSpeedBuff = AddNewBuff("RobDriverSyringeAttackSpeedBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 170f / 255f, 45f / 255f), false, false);
             syringeCritBuff = AddNewBuff("RobDriverSyringeCritBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 80f / 255f, 17f / 255f), false, false);
+            syringeScepterBuff = AddNewBuff("RobDriverSyringeScepterBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), Modules.Survivors.Driver.characterColor, false, false);
         }
 
         // simple helper method
