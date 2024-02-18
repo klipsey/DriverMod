@@ -8,7 +8,7 @@ namespace RobDriver.Modules.Weapons
     {
         public override string weaponNameToken => "LUNAR_GRENADE";
         public override string weaponName => "Lunar Launcher";
-        public override string weaponDesc => "Bomba";
+        public override string weaponDesc => "Fire orbs of lunar energy.";
         public override string iconName => "texLunarGrenadeWeaponIcon";
         public override GameObject crosshairPrefab => Modules.Assets.grenadeLauncherCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Lunar;
@@ -18,7 +18,7 @@ namespace RobDriver.Modules.Weapons
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.TwoHanded;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "Lunar Launcher";
-        public override float dropChance => 5f;
+        public override float dropChance => 100f;
         public override bool addToPool => false;
         public override string uniqueDropBodyName => "LunarExploder";
 

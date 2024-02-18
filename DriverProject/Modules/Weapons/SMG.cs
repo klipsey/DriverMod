@@ -8,19 +8,19 @@ namespace RobDriver.Modules.Weapons
     {
         public override string weaponNameToken => "SMG";
         public override string weaponName => "Submachine Gun";
-        public override string weaponDesc => "";
-        public override string iconName => "texSMGIcon";
+        public override string weaponDesc => "Close-range gun with high damage and equally high spread.";
+        public override string iconName => "texSMGWeaponIcon";
         public override GameObject crosshairPrefab => Modules.Assets.defaultCrosshairPrefab;
-        public override DriverWeaponTier tier => DriverWeaponTier.Unique;
+        public override DriverWeaponTier tier => DriverWeaponTier.Uncommon;
         public override int shotCount => 48;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshCommandoGun");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Commando/matCommandoDualies.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "Submachine Gun";
-        public override float dropChance => 100f;
-        public override bool addToPool => false;
-        public override string uniqueDropBodyName => "Commando";
+        public override float dropChance => 0f;
+        public override bool addToPool => true;
+        public override string uniqueDropBodyName => "";
 
         public override SkillDef primarySkillDef => Modules.Skills.CreatePrimarySkillDef(
 new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SMG.Shoot)),
@@ -36,7 +36,7 @@ false);
             skillNameToken = "ROB_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
             skillDescriptionToken = "ROB_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
             skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
-            activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Shotgun.Bash)),
+            activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SMG.PhaseRound)),
             activationStateMachineName = "Weapon",
             baseMaxStock = 1,
             baseRechargeInterval = 6f,

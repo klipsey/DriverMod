@@ -15,7 +15,7 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
         public static int bulletCount = 1;
         public static float bulletSpread = 0f;
         public static float bulletRecoil = 12f;
-        public static float bulletRange = 150f;
+        public static float bulletRange = 500f;
         public static float bulletThiccness = 1f;
         public float selfForce = -500f;
 

@@ -205,7 +205,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SPECIAL_HEAL_DESCRIPTION", $"Pull out a <style=cIsUtility>Medkit</style> and gradually <style=cIsUtility>heal</style> yourself back to full health.");
 
             LanguageAPI.Add(prefix + "SPECIAL_KNIFE_NAME", "Combat Knife");
-            LanguageAPI.Add(prefix + "SPECIAL_KNIFE_DESCRIPTION", $"Slash nearby enemies with a serrated blade, dealing  <style=cIsDamage>470% damage</style> and <style=cIsHealth>wounding</style> them, <style=cIsDamage>lowering their armor</style> for <style=cIsUtility>4 seconds</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_KNIFE_DESCRIPTION", $"Slash nearby enemies with a serrated blade, dealing <style=cIsDamage>470% damage</style> and <style=cIsHealth>wounding</style> them, <style=cIsDamage>lowering their armor</style> for <style=cIsUtility>4 seconds</style>.");
 
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Suspicious Syringe");
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a random <style=cIsDamage>offensive buff</style> for the next <style=cIsUtility>6 seconds</style>.");

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using RoR2;
+using EntityStates;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -48,10 +49,16 @@ namespace RobDriver.SkillStates.Driver
                                     origin = this.FindModelChild("PistolMuzzle").position,
                                     rotation = Quaternion.identity
                                 }, true);
+                                EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab2, new EffectData
+                                {
+                                    origin = this.transform.position + new Vector3(0f, 0.5f, 0f),
+                                    rotation = Quaternion.identity,
+                                    rootObject = this.gameObject
+                                }, true);
                                 if (this.modelTransform)
                                 {
                                     TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                                    temporaryOverlay.duration = 6f;
+                                    temporaryOverlay.duration = 12f;
                                     temporaryOverlay.animateShaderAlpha = true;
                                     temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
                                     temporaryOverlay.destroyComponentOnEnd = true;
@@ -66,10 +73,16 @@ namespace RobDriver.SkillStates.Driver
                                     origin = this.FindModelChild("PistolMuzzle").position,
                                     rotation = Quaternion.identity
                                 }, true);
+                                EffectManager.SpawnEffect(Modules.Assets.attackSpeedBuffEffectPrefab2, new EffectData
+                                {
+                                    origin = this.transform.position + new Vector3(0f, 0.5f, 0f),
+                                    rotation = Quaternion.identity,
+                                    rootObject = this.gameObject
+                                }, true);
                                 if (this.modelTransform)
                                 {
                                     TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                                    temporaryOverlay.duration = 6f;
+                                    temporaryOverlay.duration = 12f;
                                     temporaryOverlay.animateShaderAlpha = true;
                                     temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
                                     temporaryOverlay.destroyComponentOnEnd = true;
@@ -84,10 +97,16 @@ namespace RobDriver.SkillStates.Driver
                                     origin = this.FindModelChild("PistolMuzzle").position,
                                     rotation = Quaternion.identity
                                 }, true);
+                                EffectManager.SpawnEffect(Modules.Assets.critBuffEffectPrefab2, new EffectData
+                                {
+                                    origin = this.transform.position + new Vector3(0f, 0.5f, 0f),
+                                    rotation = Quaternion.identity,
+                                    rootObject = this.gameObject
+                                }, true);
                                 if (this.modelTransform)
                                 {
                                     TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                                    temporaryOverlay.duration = 6f;
+                                    temporaryOverlay.duration = 12f;
                                     temporaryOverlay.animateShaderAlpha = true;
                                     temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
                                     temporaryOverlay.destroyComponentOnEnd = true;
@@ -104,6 +123,11 @@ namespace RobDriver.SkillStates.Driver
             {
                 this.outer.SetNextStateToMain();
             }
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Pain;
         }
     }
 }

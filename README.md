@@ -134,24 +134,31 @@ Big thanks to everyone in the community for all the valuable feedback and critic
 - Unique secondary skills for each weapon; these are difficult to come up with, so feel free to hit me with any ideas!
 
 ## Known Issues
-- Some weapon icons have an incorrectly colored outline
+- Some weapons are missing descriptions for their abilities
 
 ___
 
 ## Changelog
 
-`1.3.10`
+`1.4.0`
+- Rewrote a handful of weapon initialization code, making the system friendlier to external mods
 - Changed in 1.3.9, forgot to list it, moved the pistol crit spin animation to after the shot and added config to revert this behavior
 - Flashbang daze duration: 5s > 10s
 - Flashbang cooldown: 8s > 12s
 - ^5 seconds wasn't enough to even do anything defensively, this should make it a little more competitive with the other specials
 - Added new special: Combat Knife - melee that reduces enemy armor by 30 for 4 seconds
 - Added new special: Suspicious Syringe - self buff that randomly buffs either damage, attack speed or crit chance
-- Added weapon: Preon Accelerator
-- Added weapon: Nullifier
-- Added weapon: Lunar Launcher
-- Added weapon: Energy Cannon
-- Nerfed ammo of Rocket Launcher, Badass Shotgun and Prototype Rocket Launcher
+- Added uncommon weapon: Submachine Gun
+- Added uncommon weapon: Revolver
+- Added legendary weapon: Preon Accelerator
+- Added void weapon: Nullifier
+- Added lunar weapon: Lunar Launcher
+- Added unique weapon: Worn SMG
+- Added unique weapon: Nano-Gauntlet
+- Added unique weapon: Outlaw's Revolver
+- Added unique weapon: Energy Cannon
+- Nerfed ammo capacity of Rocket Launcher, Badass Shotgun and Prototype Rocket Launcher
+- Brainstalks now resets your ammo
 
 `1.3.9`
 - Added skin: Special Forces, currently unlocked by default

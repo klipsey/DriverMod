@@ -8,7 +8,7 @@ namespace RobDriver.Modules.Weapons
     {
         public override string weaponNameToken => "SCAV_GUN";
         public override string weaponName => "Energy Cannon";
-        public override string weaponDesc => "";
+        public override string weaponDesc => "A scavenged weapon that fires blasts of raw energy.";
         public override string iconName => "texScavGunWeaponIcon";
         public override GameObject crosshairPrefab => Modules.Assets.grenadeLauncherCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Unique;
@@ -23,7 +23,7 @@ namespace RobDriver.Modules.Weapons
         public override string uniqueDropBodyName => "Scav";
 
         public override SkillDef primarySkillDef => Modules.Skills.CreatePrimarySkillDef(
-new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.VoidRifle.Shoot)),
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.LunarRifle.Shoot)),
 "Weapon",
 "ROB_DRIVER_BODY_PRIMARY_VOIDRIFLE_NAME",
 "ROB_DRIVER_BODY_PRIMARY_VOIDRIFLE_DESCRIPTION",

@@ -8,22 +8,22 @@ namespace RobDriver.Modules.Weapons
     {
         public override string weaponNameToken => "ARTI_GAUNTLET";
         public override string weaponName => "Nano-Gauntlet";
-        public override string weaponDesc => "";
+        public override string weaponDesc => "Shoot high damage fireballs that inflict burn.";
         public override string iconName => "texArtiGauntletWeaponIcon";
-        public override GameObject crosshairPrefab => Modules.Assets.grenadeLauncherCrosshairPrefab;
+        public override GameObject crosshairPrefab => Modules.Assets.needlerCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Unique;
         public override int shotCount => 20;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshArtiGauntlet");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Mage/matMage.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;
         public override string calloutSoundString => "sfx_driver_callout_generic";
-        public override string configIdentifier => "Nano-Gauntlet";
+        public override string configIdentifier => "NanoGauntlet";
         public override float dropChance => 100f;
         public override bool addToPool => false;
         public override string uniqueDropBodyName => "Mage";
 
         public override SkillDef primarySkillDef => Modules.Skills.CreatePrimarySkillDef(
-new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ArmBFG.Shoot)),
+new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ArtiGauntlet.Shoot)),
 "Weapon",
 "ROB_DRIVER_BODY_PRIMARY_BFG_NAME",
 "ROB_DRIVER_BODY_PRIMARY_BFG_DESCRIPTION",

@@ -47,11 +47,14 @@ namespace RobDriver.Modules.Weapons
 
         protected void CreateWeapon()
         {
+            Texture icon = null;
+            if (iconName != "") icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
+
             weaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_WEAPON_" + weaponNameToken + "_NAME",
                 descriptionToken = "ROB_DRIVER_WEAPON_" + weaponNameToken + "_DESC",
-                icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>(iconName),
+                icon = icon,
                 crosshairPrefab = crosshairPrefab,
                 tier = tier,
                 shotCount = shotCount,

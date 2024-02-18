@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2400812564
+CRC: 2049154604
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1303f6c1652c9df9b6d38458a3ce9763
+    Hash: f2287cc0bf4a3a707c2b9cec2d3820e3
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7d97328b274e37b2c802bf15d37d4337
@@ -80,15 +80,19 @@ Assets:
 - Assets/Driver/Animations/animDriverCSS.controller
 - Assets/Driver/Animations/Hammer/SprintFast.anim
 - Assets/Driver/Materials/matSkateboard.mat
+- Assets/Driver/Icons/Weapon/texBanditRevolverWeaponIcon.png
 - Assets/Driver/Icons/Weapon/texSniperRifleWeaponIcon.png
 - Assets/Driver/Icons/Skill/texPistolIcon.png
 - Assets/Driver/Materials/matShotgun.mat
 - Assets/Driver/Animations/Shotgun/RunR.anim
 - Assets/Driver/Icons/Skill/texGoldenGunSecondaryIcon.png
+- Assets/Driver/Icons/Weapon/texGenericWeaponGreen.png
 - Assets/Driver/WeaponPickupOld.prefab
 - Assets/Driver/Materials/matBriefcaseLunar.mat
 - Assets/Driver/HUD/ChargeBar.prefab
+- Assets/Driver/Icons/Weapon/texSMGWeaponIcon.png
 - Assets/Driver/Animations/Hammer/RunL.anim
+- Assets/Driver/Icons/Weapon/texCommandoSMGWeaponIcon.png
 - Assets/Driver/Textures/texSpecialForcesEmission.png
 - Assets/Driver/Animations/Default/RestEmoteLoop.anim
 - Assets/Driver/Animations/Default/JumpSprint.anim
@@ -135,6 +139,7 @@ Assets:
 - Assets/Driver/Icons/Weapon/texMachineGunWeaponIcon.png
 - Assets/Driver/Animations/Shotgun/Idle.anim
 - Assets/Driver/Animations/Default/AimYaw.anim
+- Assets/Driver/Icons/Weapon/texPreonWeaponIcon.png
 - Assets/Driver/FBX/Boombox.fbx
 - Assets/Driver/FBX/meshRiotShotgun.mesh
 - Assets/Driver/Icons/Skill/texPlasmaCannonIcon.png
@@ -146,6 +151,7 @@ Assets:
 - Assets/Driver/FBX/meshScavGun.mesh
 - Assets/Driver/Textures/texArmCannon.png
 - Assets/Driver/FBX/meshDualShotgun.mesh
+- Assets/Driver/Icons/Weapon/texCrabGunWeaponIcon.png
 - Assets/Driver/Icons/Weapon/texRocketLauncherWeaponIcon.png
 - Assets/Driver/Animations/Default/AimPitch.anim
 - Assets/Driver/Animations/ShootSniper.anim
@@ -173,12 +179,15 @@ Assets:
 - Assets/Driver/Animations/Default/PressButton.anim
 - Assets/Driver/Textures/texNemmandoGun.png
 - Assets/Driver/Icons/Weapon/texRiotShotgunWeaponIcon.png
+- Assets/Driver/Icons/Weapon/texGenericWeaponBlue.png
 - Assets/Driver/Textures/texNeedlerEmission.png
 - Assets/Driver/Icons/Skill/texKnifeIcon.png
+- Assets/Driver/Icons/texBuffSyringe.png
 - Assets/Driver/VFX/texShockwave.png
 - Assets/Driver/Textures/texTank.png
 - Assets/Driver/DriverDisplay.prefab
 - Assets/Driver/Icons/Skill/texGolemGunIcon.png
+- Assets/Driver/Icons/Weapon/texGenericWeaponYellow.png
 - Assets/Driver/Icons/Skill/texConfirmIcon.png
 - Assets/Driver/Animations/Hammer/RunR.anim
 - Assets/Driver/Animations/Skateboard/Descend.anim
@@ -198,6 +207,7 @@ Assets:
 - Assets/Driver/Animations/Default/SteadyAimPitch.anim
 - Assets/Driver/FBX/meshNemmercGun.mesh
 - Assets/Driver/Icons/texDriverAchievement.png
+- Assets/Driver/Icons/Weapon/texGenericWeaponPurple.png
 - Assets/Driver/Materials/matPistolAlt.mat
 - Assets/Driver/Animations/Hammer/Idle.anim
 - Assets/Driver/Materials/matMachineGun.mat
@@ -214,19 +224,17 @@ Assets:
 - Assets/Driver/Animations/Shotgun/Sprint.anim
 - Assets/Driver/Icons/texDriverIcon.png
 - Assets/Driver/Textures/texKnife.png
-- Assets/Driver/Icons/Weapon/1/texLunarLauncherWeaponIcon.png
 - Assets/Driver/Animations/Default/Ascend.anim
 - Assets/Driver/FBX/meshPistol.mesh
 - Assets/Driver/VFX/ShotgunSlug.prefab
-- Assets/Driver/Icons/Weapon/1/texPreonWeaponIcon.png
 - Assets/Driver/Icons/Weapon/texPyriteGunWeaponIcon.png
 - Assets/Driver/FBX/meshJacket.mesh
 - Assets/Driver/Icons/Skill/texHeavyMachineGunSecondaryIcon.png
 - Assets/Driver/Animations/Default/maskDriverImpact.mask
 - Assets/Driver/Icons/Weapon/texHeavyMachineGunWeaponIcon.png
-- Assets/Driver/Icons/Weapon/1/texCrabGunWeaponIcon.png
 - Assets/Driver/Textures/texLunarBriefcase.png
 - Assets/Driver/FBX/meshSuit.mesh
+- Assets/Driver/FBX/meshRevolver.mesh
 - Assets/Driver/Textures/texMinecraftDriver.png
 - Assets/Driver/VFX/DriverMissileGhost.prefab
 - Assets/Driver/HUD/WeaponChargeBar.prefab
@@ -238,6 +246,7 @@ Assets:
 - Assets/Driver/Animations/Hammer/RestIdle.anim
 - Assets/Driver/Textures/texBriefcase.png
 - Assets/Driver/WeaponPickup.prefab
+- Assets/Driver/Icons/Weapon/texGenericWeaponRed.png
 - Assets/Driver/Textures/texSkateboard.png
 - Assets/Driver/mdlDriver.prefab
 - Assets/Driver/Icons/Weapon/texGolemGunWeaponIcon.png
@@ -305,6 +314,7 @@ Assets:
 - Assets/Driver/Animations/Default/DefaultPose.anim
 - Assets/Driver/HUD/Textures/texChargeRing.png
 - Assets/Driver/Textures/texNemmercGunEmission.png
+- Assets/Driver/Icons/Weapon/texArtiGauntletWeaponIcon.png
 - Assets/Driver/Textures/texKnifeNormal.png
 - Assets/Driver/FBX/meshSuperShotgun.mesh
 - Assets/Driver/FBX/meshCrabGun.mesh
@@ -315,8 +325,10 @@ Assets:
 - Assets/Driver/Materials/matRiotShotgun.mat
 - Assets/Driver/Textures/texBriefcaseGold.png
 - Assets/Driver/Textures/texNemmandoGunNormal.png
+- Assets/Driver/Icons/Weapon/texGenericWeaponGrey.png
 - Assets/Driver/FBX/Rockets.fbx
 - Assets/Driver/FBX/meshGoldenGun.mesh
+- Assets/Driver/Icons/Weapon/texRevolverWeaponIcon.png
 - Assets/Driver/FBX/meshArmBFG.mesh
 - Assets/Driver/Materials/matGoldenGun.mat
 - Assets/Driver/VFX/DriverBigRocketGhost.prefab
@@ -368,6 +380,7 @@ Assets:
 - Assets/Driver/Materials/matSawedOff.mat
 - Assets/Driver/Animations/Hammer/Sprint.anim
 - Assets/Driver/Materials/matHeavyMachineGun.mat
+- Assets/Driver/Icons/Weapon/texLunarGrenadeWeaponIcon.png
 - Assets/Driver/FBX/Shell.dae
 - Assets/Driver/Textures/texShotgun.png
 - Assets/Driver/Materials/matRocketLauncher.mat

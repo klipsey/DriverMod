@@ -34,6 +34,10 @@ namespace RobDriver.Modules
         public static GameObject attackSpeedBuffEffectPrefab;
         public static GameObject critBuffEffectPrefab;
 
+        public static GameObject damageBuffEffectPrefab2;
+        public static GameObject attackSpeedBuffEffectPrefab2;
+        public static GameObject critBuffEffectPrefab2;
+
         public static GameObject stunGrenadeModelPrefab;
 
         public static GameObject defaultCrosshairPrefab;
@@ -216,7 +220,7 @@ namespace RobDriver.Modules
             syringeCritOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
             syringeCritOverlayMat.SetColor("_TintColor", new Color(1f, 80f / 255f, 17f / 255f));
 
-            woundOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
+            woundOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/ArmorReductionOnHit/matPulverizedOverlay.mat").WaitForCompletion());
             woundOverlayMat.SetColor("_TintColor", Color.red);
 
             hammerImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_impact_hammer");
@@ -914,6 +918,52 @@ namespace RobDriver.Modules
             knifeImpactEffect.transform.localScale = Vector3.one * 1.5f;
 
             AddNewEffectDef(knifeImpactEffect);
+
+            damageBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverDamageBuffEffect2", true);
+
+            damageBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
+            damageBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
+            damageBuffEffectPrefab2.transform.Find("TextCamScaler").gameObject.SetActive(false);
+            foreach(ParticleSystem i in damageBuffEffectPrefab2.GetComponentsInChildren<ParticleSystem>())
+            {
+                if (i)
+                {
+                    var j = i.main;
+                    j.startColor = new Color(1f, 70f / 255f, 75f / 255f);
+                }
+            }
+
+            AddNewEffectDef(damageBuffEffectPrefab2);
+
+            attackSpeedBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverAttackSpeedBuffEffect2", true);
+
+            attackSpeedBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
+            attackSpeedBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
+            attackSpeedBuffEffectPrefab2.transform.Find("TextCamScaler").gameObject.SetActive(false);
+            foreach (ParticleSystem i in attackSpeedBuffEffectPrefab2.GetComponentsInChildren<ParticleSystem>())
+            {
+                if (i)
+                {
+                    var j = i.main;
+                    j.startColor = new Color(1f, 170f / 255f, 45f / 255f);
+                }
+            }
+            AddNewEffectDef(attackSpeedBuffEffectPrefab2);
+
+            critBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverCritBuffEffect2", true);
+
+            critBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
+            critBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
+            critBuffEffectPrefab2.transform.Find("TextCamScaler").gameObject.SetActive(false);
+            foreach (ParticleSystem i in critBuffEffectPrefab2.GetComponentsInChildren<ParticleSystem>())
+            {
+                if (i)
+                {
+                    var j = i.main;
+                    j.startColor = new Color(1f, 80f / 255f, 17f / 255f);
+                }
+            }
+            AddNewEffectDef(critBuffEffectPrefab2);
         }
 
         private static GameObject CreateTracer(string originalTracerName, string newTracerName)

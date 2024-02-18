@@ -73,6 +73,7 @@ namespace RobDriver
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeapon>();
             //NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeaponPickup>();
             // kill me
+            NetworkingAPI.RegisterMessageType<Modules.Components.SyncOverlay>();
 
             Hook();
 
@@ -93,6 +94,12 @@ namespace RobDriver
             new Modules.Weapons.ArmBFG().Init();
             new Modules.Weapons.CrabGun().Init();
             new Modules.Weapons.LunarGrenade().Init();
+            new Modules.Weapons.ScavGun().Init();
+            new Modules.Weapons.ArtiGauntlet().Init();
+            new Modules.Weapons.BanditRevolver().Init();
+            new Modules.Weapons.CommandoSMG().Init();
+            new Modules.Weapons.Revolver().Init();
+            new Modules.Weapons.SMG().Init();
         }
 
         private void Hook()

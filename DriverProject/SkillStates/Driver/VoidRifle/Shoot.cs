@@ -7,16 +7,14 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
 {
     public class Shoot : BaseDriverSkillState
     {
-        public const float RAD2 = 1.414f;
-
-        public static float damageCoefficient = 8f;
+        public static float damageCoefficient = 3f;
         public static float procCoefficient = 1f;
-        public float baseDuration = 1f;
+        public float baseDuration = 0.25f;
         public static int bulletCount = 1;
         public static float bulletSpread = 0f;
-        public static float bulletRecoil = 12f;
-        public static float bulletRange = 150f;
-        public static float bulletThiccness = 1f;
+        public static float bulletRecoil = 4f;
+        public static float bulletRange = 500f;
+        public static float bulletThiccness = 1.5f;
         public float selfForce = 0f;
 
         private float earlyExitTime;
@@ -39,8 +37,10 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
             if (this.isCrit) Util.PlaySound("sfx_driver_lunar_rifle_shoot", base.gameObject);
             else Util.PlaySound("sfx_driver_lunar_rifle_shoot", base.gameObject);
 
-            base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", this.duration);
+            base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", this.duration * 3f);
             base.PlayAnimation("AimPitch", "Shoot");
+
+            this.iDrive.StartTimer();
 
             this.fireDuration = 0;
         }
@@ -55,9 +55,9 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
 
                 base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
                 this.characterBody.AddSpreadBloom(4f);
-                EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Brother/MuzzleflashLunarShard.prefab").WaitForCompletion(), gameObject, muzzleString, false);
+                EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/MuzzleflashVoidRaidCrabMissiles.prefab").WaitForCompletion(), gameObject, muzzleString, false);
 
-                GameObject tracer = Modules.Assets.lunarTracer;
+                GameObject tracer = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamTracer.prefab").WaitForCompletion();
                 //if (this.isCrit) tracer = Modules.Assets.shotgunTracerCrit;
 
                 if (base.isAuthority)
@@ -68,7 +68,7 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
 
                     float spread = Shoot.bulletSpread;
                     float thiccness = Shoot.bulletThiccness;
-                    float force = 2500;
+                    float force = 25;
 
                     BulletAttack bulletAttack = new BulletAttack
                     {
@@ -102,17 +102,6 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;
-                    bulletAttack.Fire();
-
-                    uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
-                    bulletAttack.minSpread = 0;
-                    bulletAttack.maxSpread = spread / 1.45f;
-                    bulletAttack.bulletCount = secondShot;
-                    bulletAttack.Fire();
-
-                    bulletAttack.minSpread = spread / 1.45f;
-                    bulletAttack.maxSpread = spread;
-                    bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
                     bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);

@@ -7,11 +7,11 @@ namespace RobDriver.SkillStates.Driver.SMG
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 1.8f;
+        public static float damageCoefficient = 2.1f;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.21f;
         public static float force = 20f;
-        public static float recoil = 1f;
+        public static float recoil = 1.5f;
         public static float range = 256f;
         public static GameObject tracerEffectPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoDefault");
 
@@ -39,7 +39,7 @@ namespace RobDriver.SkillStates.Driver.SMG
                 this.Fire();
             }
 
-            this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration * 1.5f);
+            this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", 0.9f);
 
             if (this.iDrive)
             {
@@ -95,7 +95,7 @@ namespace RobDriver.SkillStates.Driver.SMG
                 }.Fire();
             }
 
-            base.characterBody.AddSpreadBloom(0.224f);
+            base.characterBody.AddSpreadBloom(0.7f);
         }
 
         private GameObject tracerPrefab

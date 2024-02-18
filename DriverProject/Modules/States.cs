@@ -20,9 +20,10 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Slide));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SteadyAim));
-            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SwingKnife));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ThrowGrenade));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ThrowMolotov));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SwingKnife));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.UseSyringe));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ArmCannon.Shoot));
 
@@ -96,6 +97,18 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.GolemGun.FireLaser));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ArmBFG.Shoot));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.ArtiGauntlet.Shoot));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SMG.Shoot));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SMG.PhaseRound));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.SMG.SuppressiveFire));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.Shoot));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.AimLightsOut));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.AimLightsOutReset));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.LightsOut));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.LightsOutReset));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.AimSupplyDrop));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SupplyDrop.FireSupplyDrop));

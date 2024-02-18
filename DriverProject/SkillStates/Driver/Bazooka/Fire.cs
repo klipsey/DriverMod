@@ -105,6 +105,13 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         {
             base.FixedUpdate();
 
+            if (base.fixedAge >= (0.5f * this.duration) && this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            {
+                base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
+                this.outer.SetNextStateToMain();
+                return;
+            }
+
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
                 this.outer.SetNextStateToMain();

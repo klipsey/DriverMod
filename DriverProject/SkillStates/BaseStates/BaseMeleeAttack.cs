@@ -237,7 +237,7 @@ namespace RobDriver.SkillStates.BaseStates
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Skill;
+            return InterruptPriority.Pain;
         }
 
         public override void OnSerialize(NetworkWriter writer)

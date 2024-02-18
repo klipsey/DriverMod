@@ -85,6 +85,8 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 				}
 			}
 
+			if (this.iDrive) this.iDrive.StartTimer(2f);
+
 			float recoilAmplitude = FireLaser.recoil / this.attackSpeedStat;
 
 			base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
@@ -95,7 +97,6 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 		{
 			base.OnExit();
 
-			if (this.iDrive) this.iDrive.StartTimer(2f);
 			this.GetModelAnimator().SetTrigger("endAim");
 		}
 
@@ -103,7 +104,7 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 		{
 			base.FixedUpdate();
 
-			if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+			if (base.fixedAge >= (0.5f * this.duration) && this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
 			{
 				base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
 				this.outer.SetNextStateToMain();

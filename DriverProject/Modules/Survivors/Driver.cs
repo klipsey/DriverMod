@@ -13,6 +13,8 @@ using UnityEngine.AddressableAssets;
 using RoR2.UI;
 using System.Linq;
 using RobDriver.Modules.Components;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -2340,6 +2342,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             RoR2.UI.HUD.onHudTargetChangedGlobal += HUDSetup;
 
             On.RoR2.SkillLocator.ApplyAmmoPack += SkillLocator_ApplyAmmoPack;
+            On.RoR2.SkillLocator.ResetSkills += SkillLocator_ResetSkills;
 
             // heresy anims
             On.EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle.OnEnter += PlayVisionsAnimation;
@@ -2398,6 +2401,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     if (self)
                     {
                         if (self.body) self.body.AddTimedBuff(Modules.Buffs.woundDebuff, 4f);
+
+                        NetworkIdentity identity = self.gameObject.GetComponent<NetworkIdentity>();
+                        if (identity)
+                        {
+                            new SyncOverlay(identity.netId, self.gameObject).Send(NetworkDestination.Clients);
+                        }
                     }
                 }
             }
@@ -2412,6 +2421,20 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             // this is terribly hardcoded and not future proof
             // but more performant than doing something like a getcomponent every time a bandolier drop is picked up on anyone
             // this will break if an alternate primary is added but that'll never happen with the weapon system existing
+            if (self && self.primary.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME")
+            {
+                Components.DriverController iDrive = self.GetComponent<Components.DriverController>();
+                if (iDrive)
+                {
+                    iDrive.ServerResetTimer();
+                }
+            }
+        }
+
+        private static void SkillLocator_ResetSkills(On.RoR2.SkillLocator.orig_ResetSkills orig, SkillLocator self)
+        {
+            orig(self);
+
             if (self && self.primary.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME")
             {
                 Components.DriverController iDrive = self.GetComponent<Components.DriverController>();
@@ -2441,6 +2464,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 {
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
+                    bool fuckMyAss = chance >= 100f;
 
                     // higher chance if it's a big guy
                     if (damageReport.victimBody.hullClassification == HullClassification.Golem) chance = Mathf.Clamp(1.1f * chance, 0f, 100f);
@@ -2464,7 +2488,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     // terminal enemies from starstorm's relic of termination
                     if (DriverPlugin.CheckIfBodyIsTerminal(damageReport.victimBody)) isBoss = true;
 
-                    if (isBoss) droppedWeapon = true;
+                    if (isBoss || fuckMyAss) droppedWeapon = true;
 
                     // all the above checks were originally checking the ATTACKER body
                     // not the fucking victim
@@ -2472,6 +2496,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                     // stop dropping weapons when void monsters kill each other plz this is an annoying bug
                     if (damageReport.attackerTeamIndex != TeamIndex.Player) droppedWeapon = false;
+
+                    if (DriverWeaponCatalog.weaponDrops.ContainsKey(damageReport.victimBody.gameObject.name))
+                    {
+                        DriverWeaponDef z = DriverWeaponCatalog.weaponDrops[damageReport.victimBody.gameObject.name];
+                        if (z.dropChance >= 100f) droppedWeapon = true;
+                    }
 
                     if (droppedWeapon)
                     {

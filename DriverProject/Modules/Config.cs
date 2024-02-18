@@ -243,6 +243,10 @@ weaponDef.configIdentifier + " - Enabled",
 true,
 "Set to false to remove this weapon from the drop pool.");
 
+            foreach (WeaponConfigBinding i in weaponConfigBinding)
+            {
+                if (i.identifier == weaponDef.configIdentifier) return;
+            }
 
             weaponConfigBinding.Add(new WeaponConfigBinding
             {

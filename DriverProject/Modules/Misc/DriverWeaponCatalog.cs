@@ -39,6 +39,32 @@ namespace RobDriver
             // heheheha
             weaponDef.pickupPrefab = Modules.Assets.CreatePickupObject(weaponDef);
 
+            // set default icon
+            if (!weaponDef.icon)
+            {
+                switch (weaponDef.tier)
+                {
+                    case DriverWeaponTier.Common:
+                        weaponDef.icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>("texGenericWeaponGrey");
+                        break;
+                    case DriverWeaponTier.Uncommon:
+                        weaponDef.icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>("texGenericWeaponGreen");
+                        break;
+                    case DriverWeaponTier.Legendary:
+                        weaponDef.icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>("texGenericWeaponRed");
+                        break;
+                    case DriverWeaponTier.Unique:
+                        weaponDef.icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>("texGenericWeaponYellow");
+                        break;
+                    case DriverWeaponTier.Lunar:
+                        weaponDef.icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>("texGenericWeaponBlue");
+                        break;
+                    case DriverWeaponTier.Void:
+                        weaponDef.icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>("texGenericWeaponPurple");
+                        break;
+                }
+            }
+
             // add config
             Modules.Config.InitWeaponConfig(weaponDef);
         }
