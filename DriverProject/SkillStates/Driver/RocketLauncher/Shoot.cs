@@ -42,7 +42,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         {
             get
             {
-                return 1f;
+                return 1.5f;
             }
         }
 

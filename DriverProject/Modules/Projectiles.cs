@@ -27,6 +27,8 @@ namespace RobDriver.Modules
 
         public static GameObject lunarShard;
 
+        public static GameObject lunarGrenadeProjectilePrefab;
+
         internal static void RegisterProjectiles()
         {
             #region Stun Grenade
@@ -95,6 +97,7 @@ namespace RobDriver.Modules
 
             CreateHMGGrenade();
             CreateLunarShard();
+            CreateLunarGrenade();
 
             rocketProjectilePrefab = CreateRocket(false, "DriverRocketProjectile", "DriverRocketGhost", "DriverBigRocketGhost");
             missileProjectilePrefab = CreateRocket(false, "DriverMissileProjectile", "DriverMissileGhost", "DriverMissileGhost");
@@ -151,6 +154,30 @@ namespace RobDriver.Modules
             hmgGrenadeProjectilePrefab.GetComponent<Rigidbody>().useGravity = true;
 
             Prefabs.projectilePrefabs.Add(hmgGrenadeProjectilePrefab);
+        }
+
+        private static void CreateLunarGrenade()
+        {
+            lunarGrenadeProjectilePrefab = CloneProjectilePrefab("CommandoGrenadeProjectile", "DriverLunarGrenade");
+            lunarGrenadeProjectilePrefab.transform.localScale *= 2f;
+            ProjectileImpactExplosion impactExplosion = lunarGrenadeProjectilePrefab.GetComponent<ProjectileImpactExplosion>();
+            InitializeImpactExplosion(impactExplosion);
+
+            impactExplosion.blastRadius = 7f;
+            impactExplosion.destroyOnEnemy = true;
+            impactExplosion.lifetime = 12f;
+            impactExplosion.impactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarGolem/LunarGolemTwinShotExplosion.prefab").WaitForCompletion();
+            impactExplosion.timerAfterImpact = true;
+            impactExplosion.lifetimeAfterImpact = 0f;
+
+            ProjectileController rocketController = lunarGrenadeProjectilePrefab.GetComponent<ProjectileController>();
+
+            rocketController.ghostPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarExploder/LunarExploderShardGhost.prefab").WaitForCompletion();
+            rocketController.startSound = "";
+
+            lunarGrenadeProjectilePrefab.GetComponent<Rigidbody>().useGravity = true;
+
+            Prefabs.projectilePrefabs.Add(lunarGrenadeProjectilePrefab);
         }
 
         private static GameObject CreateRocket(bool gravity, string projectileName, string ghostName = "", string ghostToLoad = "")

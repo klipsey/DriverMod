@@ -1,26 +1,104 @@
 ﻿using RoR2;
 using EntityStates;
+using RobDriver.SkillStates.BaseStates;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver
 {
-    public class SwingKnife : EntityStates.Bandit2.Weapon.SlashBlade
+    public class SwingKnife : BaseMeleeAttack
     {
-        // i don't know if this will work lmao
+        protected override string prop => "KnifeModel";
+
+        private GameObject swingEffectInstance;
+
         public override void OnEnter()
         {
+            this.hitboxName = "Knife";
+
+            this.damageCoefficient = 4.7f;
+            this.pushForce = 200f;
+            this.baseDuration = 0.8f;
+            this.baseEarlyExitTime = 0.5f;
+            this.attackRecoil = 5f / this.attackSpeedStat;
+
+            this.attackStartTime = 0.2f;
+            this.attackEndTime = 0.5f;
+
+            this.hitStopDuration = 0.12f;
+            this.smoothHitstop = true;
+
+            this.swingSoundString = "sfx_driver_swing_knife";
+            this.swingEffectPrefab = Modules.Assets.knifeSwingEffect;
+            this.hitSoundString = "";
+            this.hitEffectPrefab = Modules.Assets.knifeImpactEffect;
+            this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
+
+            this.damageType = DamageType.ApplyMercExpose;
+
+            this.muzzleString = "KnifeSwingMuzzle";
+
             base.OnEnter();
-            this.FindModelChild("KnifeModel").gameObject.SetActive(true);
+
+            Util.PlaySound("sfx_driver_foley_knife", this.gameObject);
         }
 
-        public override void OnExit()
+        protected override void FireAttack()
         {
-            base.OnExit();
-            this.FindModelChild("KnifeModel").gameObject.SetActive(false);
+            if (base.isAuthority)
+            {
+                Vector3 direction = this.GetAimRay().direction;
+                direction.y = Mathf.Max(direction.y, direction.y * 0.5f);
+                this.FindModelChild("MeleePivot").rotation = Util.QuaternionSafeLookRotation(direction);
+            }
+
+            base.FireAttack();
         }
 
-        public override void PlayAnimation()
+        protected override void PlaySwingEffect()
         {
-            this.PlayCrossfade("Gesture, Override", "SwingKnife", "Knife.playbackRate", this.duration, 0.1f);
+            Util.PlaySound(this.swingSoundString, this.gameObject);
+            if (this.swingEffectPrefab)
+            {
+                Transform muzzleTransform = this.FindModelChild(this.muzzleString);
+                if (muzzleTransform)
+                {
+                    this.swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
+                    ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                    if (fuck) fuck.newDuration = fuck.initialDuration;
+                }
+            }
+        }
+
+        protected override void TriggerHitStop()
+        {
+            base.TriggerHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = 20f;
+            }
+        }
+
+        protected override void ClearHitStop()
+        {
+            base.ClearHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = fuck.initialDuration;
+            }
+        }
+
+        protected override void PlayAttackAnimation()
+        {
+            base.PlayCrossfade("Gesture, Override", "SwingKnife", "Action.playbackRate", this.duration, 0.1f);
+        }
+
+        protected override void SetNextState()
+        {
         }
     }
 }

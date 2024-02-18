@@ -26,9 +26,14 @@ namespace RobDriver.Modules
         internal static List<NetworkSoundEventDef> networkSoundEventDefs = new List<NetworkSoundEventDef>();
 
         internal static NetworkSoundEventDef hammerImpactSoundDef;
+        internal static NetworkSoundEventDef knifeImpactSoundDef;
 
         public static GameObject jammedEffectPrefab;
         public static GameObject upgradeEffectPrefab;
+        public static GameObject damageBuffEffectPrefab;
+        public static GameObject attackSpeedBuffEffectPrefab;
+        public static GameObject critBuffEffectPrefab;
+
         public static GameObject stunGrenadeModelPrefab;
 
         public static GameObject defaultCrosshairPrefab;
@@ -102,6 +107,8 @@ namespace RobDriver.Modules
 
         public static GameObject weaponPickupEffect;
         public static GameObject discardedWeaponEffect;
+        internal static GameObject knifeImpactEffect;
+        internal static GameObject knifeSwingEffect;
 
         internal static Texture pistolWeaponIcon;
         internal static Texture goldenGunWeaponIcon;
@@ -171,6 +178,11 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef nemmercGunWeaponDef;
         internal static DriverWeaponDef golemGunWeaponDef;
 
+        internal static Material syringeDamageOverlayMat;
+        internal static Material syringeAttackSpeedOverlayMat;
+        internal static Material syringeCritOverlayMat;
+        internal static Material woundOverlayMat;
+
         internal static void PopulateAssets()
         {
             if (mainAssetBundle == null)
@@ -189,10 +201,26 @@ namespace RobDriver.Modules
             }
 
             jammedEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ROB_DRIVER_JAMMED_POPUP");
+            damageBuffEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "DAMAGE!", new Color(1f, 70f / 255f, 75f / 255f));
+            attackSpeedBuffEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "ATTACK SPEED!", new Color(1f, 170f / 255f, 45f / 255f));
+            critBuffEffectPrefab = CreateTextPopupEffect("DriverGunJammedEffect", "CRITICAL CHANCE!", new Color(1f, 80f / 255f, 17f / 255f));
 
             upgradeEffectPrefab = CreateTextPopupEffect("DriverGunUpgradeEffect", "ROB_DRIVER_UPGRADE_POPUP");
 
+            syringeDamageOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
+            syringeDamageOverlayMat.SetColor("_TintColor", new Color(1f, 70f / 255f, 75f / 255f));
+
+            syringeAttackSpeedOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
+            syringeAttackSpeedOverlayMat.SetColor("_TintColor", new Color(1f, 170f / 255f, 45f / 255f));
+
+            syringeCritOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
+            syringeCritOverlayMat.SetColor("_TintColor", new Color(1f, 80f / 255f, 17f / 255f));
+
+            woundOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
+            woundOverlayMat.SetColor("_TintColor", Color.red);
+
             hammerImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_impact_hammer");
+            knifeImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_knife_impact");
 
             bool dynamicCrosshair = Modules.Config.dynamicCrosshair.Value;
 
@@ -845,6 +873,47 @@ namespace RobDriver.Modules
             discardedWeaponEffect = mainAssetBundle.LoadAsset<GameObject>("DiscardedWeapon");
             Modules.Components.DiscardedWeaponComponent discardComponent = discardedWeaponEffect.AddComponent<Modules.Components.DiscardedWeaponComponent>();
             discardedWeaponEffect.gameObject.layer = LayerIndex.ragdoll.intVal;
+
+            knifeSwingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlash.prefab").WaitForCompletion().InstantiateClone("DriverKnifeSwing", false);
+            knifeSwingEffect.transform.GetChild(0).GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Huntress/matHuntressSwingTrail.mat").WaitForCompletion();
+
+            knifeImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("DriverKnifeImpact", false);
+            knifeImpactEffect.GetComponent<OmniEffect>().enabled = false;
+
+            Material hitsparkMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat").WaitForCompletion());
+            hitsparkMat.SetColor("_TintColor", Color.white);
+
+            knifeImpactEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = hitsparkMat;
+
+            knifeImpactEffect.transform.GetChild(2).localScale = Vector3.one * 1.5f;
+            knifeImpactEffect.transform.GetChild(2).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Huntress/matOmniRing2Huntress.mat").WaitForCompletion();
+
+            Material slashMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRadialSlash1Generic.mat").WaitForCompletion());
+            //slashMat.SetColor("_TintColor", Color.white);
+
+            knifeImpactEffect.transform.GetChild(5).gameObject.GetComponent<ParticleSystemRenderer>().material = slashMat;
+
+            //knifeImpactEffect.transform.GetChild(4).localScale = Vector3.one * 3f;
+            //knifeImpactEffect.transform.GetChild(4).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDust.mat").WaitForCompletion();
+
+            knifeImpactEffect.transform.GetChild(6).GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarWisp/matOmniHitspark1LunarWisp.mat").WaitForCompletion();
+            knifeImpactEffect.transform.GetChild(6).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniHitspark2Generic.mat").WaitForCompletion();
+
+            knifeImpactEffect.transform.GetChild(1).localScale = Vector3.one * 1.5f;
+
+            knifeImpactEffect.transform.GetChild(1).gameObject.SetActive(true);
+            knifeImpactEffect.transform.GetChild(2).gameObject.SetActive(true);
+            knifeImpactEffect.transform.GetChild(3).gameObject.SetActive(true);
+            knifeImpactEffect.transform.GetChild(4).gameObject.SetActive(true);
+            knifeImpactEffect.transform.GetChild(5).gameObject.SetActive(true);
+            knifeImpactEffect.transform.GetChild(6).gameObject.SetActive(true);
+            knifeImpactEffect.transform.GetChild(6).GetChild(0).gameObject.SetActive(true);
+
+            knifeImpactEffect.transform.GetChild(6).transform.localScale = new Vector3(1f, 1f, 3f);
+
+            knifeImpactEffect.transform.localScale = Vector3.one * 1.5f;
+
+            AddNewEffectDef(knifeImpactEffect);
         }
 
         private static GameObject CreateTracer(string originalTracerName, string newTracerName)
@@ -1492,6 +1561,15 @@ namespace RobDriver.Modules
             return crosshairPrefab;
         }
 
+        internal static GameObject CreateTextPopupEffect(string prefabName, string token, Color color)
+        {
+            GameObject i = CreateTextPopupEffect(prefabName, token);
+
+            i.GetComponentInChildren<TMP_Text>().color = color;
+
+            return i;
+        }
+
         internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")
         {
             GameObject i = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc").InstantiateClone(prefabName, true);
@@ -1563,6 +1641,11 @@ namespace RobDriver.Modules
         internal static Texture LoadCharacterIcon(string characterName)
         {
             return mainAssetBundle.LoadAsset<Texture>("tex" + characterName + "Icon");
+        }
+
+        internal static Mesh LoadMesh(string meshName)
+        {
+            return mainAssetBundle.LoadAsset<Mesh>(meshName);
         }
 
         internal static GameObject LoadCrosshair(string crosshairName)

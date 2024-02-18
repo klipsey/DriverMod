@@ -200,6 +200,15 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_NAME", "Call of the Void");
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.yellowItemHex}>Prototype Rocket Launcher</color>." + Helpers.ScepterDescription("Summon a <color=#" + Helpers.voidItemHex + ">voidborn weapon</color> instead."));
+
+            LanguageAPI.Add(prefix + "SPECIAL_HEAL_NAME", "Self-Care");
+            LanguageAPI.Add(prefix + "SPECIAL_HEAL_DESCRIPTION", $"Pull out a <style=cIsUtility>Medkit</style> and gradually <style=cIsUtility>heal</style> yourself back to full health.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_KNIFE_NAME", "Combat Knife");
+            LanguageAPI.Add(prefix + "SPECIAL_KNIFE_DESCRIPTION", $"Slash nearby enemies with a serrated blade, dealing  <style=cIsDamage>470% damage</style> and <style=cIsHealth>wounding</style> them, <style=cIsDamage>lowering their armor</style> for <style=cIsUtility>4 seconds</style>.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Suspicious Syringe");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a random <style=cIsDamage>offensive buff</style> for the next <style=cIsUtility>6 seconds</style>.");
             #endregion
 
             #region Achievements

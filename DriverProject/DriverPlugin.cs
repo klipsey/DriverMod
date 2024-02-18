@@ -37,7 +37,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.3.9";
+        public const string MODVERSION = "1.4.0";
 
         public const string developerPrefix = "ROB";
 
@@ -79,6 +79,8 @@ namespace RobDriver
             new Modules.ContentPacks().Initialize();
 
             RoR2.ContentManagement.ContentManager.onContentPacksAssigned += LateSetup;
+
+            CreateWeapons();
         }
 
         private void LateSetup(global::HG.ReadOnlyArray<RoR2.ContentManagement.ReadOnlyContentPack> obj)
@@ -86,13 +88,46 @@ namespace RobDriver
             Modules.Survivors.Driver.SetItemDisplays();
         }
 
+        private void CreateWeapons()
+        {
+            new Modules.Weapons.ArmBFG().Init();
+            new Modules.Weapons.CrabGun().Init();
+            new Modules.Weapons.LunarGrenade().Init();
+        }
+
         private void Hook()
         {
             if (Modules.Config.dynamicCrosshairUniversal.Value) On.RoR2.UI.CrosshairController.Awake += CrosshairController_Awake;
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+            On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
 
             // uncomment this if network testing
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
+        }
+
+        private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        {
+            orig(self);
+
+            if (self && self.HasBuff(Modules.Buffs.woundDebuff))
+            {
+                self.armor -= 20f;
+            }
+
+            if (self && self.HasBuff(Modules.Buffs.syringeDamageBuff))
+            {
+                self.damage += self.level * 1.5f;
+            }
+
+            if (self && self.HasBuff(Modules.Buffs.syringeAttackSpeedBuff))
+            {
+                self.attackSpeed += 0.3f;
+            }
+
+            if (self && self.HasBuff(Modules.Buffs.syringeCritBuff))
+            {
+                self.crit += 25f;
+            }
         }
 
         private void CrosshairController_Awake(On.RoR2.UI.CrosshairController.orig_Awake orig, RoR2.UI.CrosshairController self)

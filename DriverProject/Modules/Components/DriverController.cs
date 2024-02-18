@@ -565,8 +565,24 @@ new EffectData
             if (this.weaponDef.secondarySkillDef) this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, this.weaponDef.secondarySkillDef, GenericSkill.SkillOverridePriority.Contextual);
 
             // model swap
-            this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
-            this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = this.weaponDef.material;
+            if (this.weaponDef.mesh)
+            {
+                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
+                this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = this.weaponDef.material;
+            }
+            else
+            {
+                if (this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.TwoHanded)
+                {
+                    this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Behemoth.mesh;
+                    this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = DriverWeaponCatalog.Behemoth.material;
+                }
+                else
+                {
+                    this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Pistol.mesh;
+                    this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = DriverWeaponCatalog.Pistol.material;
+                }
+            }
 
             // timer
             float duration = this.weaponDef.shotCount;

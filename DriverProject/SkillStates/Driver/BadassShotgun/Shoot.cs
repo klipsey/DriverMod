@@ -45,7 +45,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.StartTimer(2f);
         }
 
         public virtual void FireBullet()

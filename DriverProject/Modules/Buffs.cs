@@ -14,11 +14,17 @@ namespace RobDriver.Modules
 
         internal static BuffDef dazedDebuff;
         internal static BuffDef woundDebuff;
+        internal static BuffDef syringeDamageBuff;
+        internal static BuffDef syringeAttackSpeedBuff;
+        internal static BuffDef syringeCritBuff;
 
         internal static void RegisterBuffs()
         {
             dazedDebuff = AddNewBuff("RobDriverDazedDebuff", Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdCloak.asset").WaitForCompletion().iconSprite, Color.grey, false, false);
-            //woundDebuff = AddNewBuff("RobDriverWoundDebuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.grey, false, false);
+            woundDebuff = AddNewBuff("RobDriverWoundDebuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.red, false, true);
+            syringeDamageBuff = AddNewBuff("RobDriverSyringeDamageBuff", Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/AttackSpeedOnCrit/bdAttackSpeedOnCrit.asset").WaitForCompletion().iconSprite, Color.grey, false, false);
+            syringeAttackSpeedBuff = AddNewBuff("RobDriverSyringeAttackSpeedBuff", Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/AttackSpeedOnCrit/bdAttackSpeedOnCrit.asset").WaitForCompletion().iconSprite, Color.grey, false, false);
+            syringeCritBuff = AddNewBuff("RobDriverSyringeCritBuff", Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/AttackSpeedOnCrit/bdAttackSpeedOnCrit.asset").WaitForCompletion().iconSprite, Color.grey, false, false);
         }
 
         // simple helper method

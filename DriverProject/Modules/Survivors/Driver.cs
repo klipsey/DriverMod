@@ -272,6 +272,16 @@ namespace RobDriver.Modules.Survivors
                 },
                 new CustomRendererInfo
                 {
+                    childName = "SyringeModel",
+                    material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Syringe/matSyringe.mat").WaitForCompletion()
+                },
+                new CustomRendererInfo
+                {
+                    childName = "MedkitModel",
+                    material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Medkit/matMedkit.mat").WaitForCompletion()
+                },
+                new CustomRendererInfo
+                {
                     childName = "SluggerClothModelL",
                     material = clothMat
                 },
@@ -304,6 +314,8 @@ namespace RobDriver.Modules.Survivors
             // hide the extra stuff
             childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
             childLocator.FindChild("ButtonModel").gameObject.SetActive(false);
+            childLocator.FindChild("SyringeModel").gameObject.SetActive(false);
+            childLocator.FindChild("MedkitModel").gameObject.SetActive(false);
             childLocator.FindChild("SluggerCloth").gameObject.SetActive(false);
             childLocator.FindChild("Tie").gameObject.SetActive(false);
             //childLocator.FindChild("SkateboardModel").gameObject.SetActive(false);
@@ -479,6 +491,12 @@ namespace RobDriver.Modules.Survivors
                     hitboxTransform,
                     hitboxTransform2
                 }, "Hammer");
+
+            hitboxTransform = childLocator.FindChild("KnifeHitbox");
+            Modules.Prefabs.SetupHitbox(model, new Transform[]
+                {
+                    hitboxTransform
+                }, "Knife");
         }
 
         private static void CreateSkills(GameObject prefab)
@@ -743,30 +761,6 @@ false);
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_PISTOL_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SteadyAim)),
-                activationStateMachineName = "Weapon",
-                baseMaxStock = 3,
-                baseRechargeInterval = 6f,
-                beginSkillCooldownOnSkillEnd = false,
-                canceledFromSprinting = false,
-                forceSprintDuringState = false,
-                fullRestockOnAssign = true,
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-                resetCooldownTimerOnUse = false,
-                isCombatSkill = true,
-                mustKeyPress = false,
-                cancelSprintingOnActivation = true,
-                rechargeStock = 1,
-                requiredStock = 0,
-                stockToConsume = 0,
-            });
-
-            SkillDef pissSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
-            {
-                skillName = prefix + "_DRIVER_BODY_SECONDARY_PISTOL_NAME",
-                skillNameToken = prefix + "_DRIVER_BODY_SECONDARY_PISTOL_NAME",
-                skillDescriptionToken = prefix + "_DRIVER_BODY_SECONDARY_PISTOL_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolSecondaryIcon"),
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.SteadyAim)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 3,
                 baseRechargeInterval = 6f,
@@ -1449,7 +1443,7 @@ false);
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ThrowGrenade)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
-                baseRechargeInterval = 8f,
+                baseRechargeInterval = 12f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -1473,7 +1467,7 @@ false);
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ThrowMolotov)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 2,
-                baseRechargeInterval = 8f,
+                baseRechargeInterval = 12f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -1490,14 +1484,14 @@ false);
 
             SkillDef knifeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_NAME",
-                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_NAME",
-                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_GRENADE_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texStunGrenadeIcon"),
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texKnifeIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SwingKnife)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
-                baseRechargeInterval = 18f,
+                baseRechargeInterval = 7f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -1608,14 +1602,62 @@ false);
                 stockToConsume = 1
             });
 
+            SkillDef healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_HEAL_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_HEAL_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_HEAL_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texStunGrenadeIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Heal)),
+                activationStateMachineName = "Body",
+                baseMaxStock = 1,
+                baseRechargeInterval = 24f,
+                beginSkillCooldownOnSkillEnd = true,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            SkillDef syringeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SYRINGE_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGE_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGE_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSyringeIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.UseSyringe)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 12f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
             if (Modules.Config.cursed.Value)
             {
-                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef/*, knifeSkillDef*/);
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef);
                 Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef, supplyDropUnlockableDef);
             }
             else
             {
-                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef/*, knifeSkillDef*/);
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef);
                 Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef);
             }
             #endregion
@@ -2341,11 +2383,24 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     {
                         if (self.body)
                         {
-                            self.body.AddTimedBuff(Modules.Buffs.dazedDebuff, 5f);
+                            self.body.AddTimedBuff(Modules.Buffs.dazedDebuff, 10f);
                         }
                     }
                 }
-            }   
+            }
+
+            if (damageInfo.damageType == DamageType.ApplyMercExpose)
+            {
+                if (damageInfo.attacker && damageInfo.attacker.name.Contains("RobDriverBody"))
+                {
+                    damageInfo.damageType = DamageType.Generic;
+
+                    if (self)
+                    {
+                        if (self.body) self.body.AddTimedBuff(Modules.Buffs.woundDebuff, 4f);
+                    }
+                }
+            }
             
             orig(self, damageInfo);
         }

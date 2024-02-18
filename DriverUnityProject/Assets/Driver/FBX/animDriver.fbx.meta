@@ -357,6 +357,8 @@ ModelImporter:
     7400146: Armature|EquipPistol
     7400148: Armature|ShootCriticalAlt
     7400150: Armature|ShootCriticalAlt2
+    7400152: Armature|StartHeal
+    7400154: Armature|UseSyringe
     9500000: //RootNode
     10800000: Light
     10800002: Light.001

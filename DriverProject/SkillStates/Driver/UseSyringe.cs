@@ -1,0 +1,109 @@
+﻿using UnityEngine;
+using UnityEngine.Networking;
+using RoR2;
+
+namespace RobDriver.SkillStates.Driver
+{
+    public class UseSyringe : BaseDriverSkillState
+    {
+        public float baseDuration = 1.2f;
+
+        protected override string prop => "SyringeModel";
+        private bool farded;
+        private float duration;
+        private Transform modelTransform;
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            this.duration = this.baseDuration / this.attackSpeedStat;
+            this.modelTransform = this.GetModelTransform();
+
+            base.PlayAnimation("Gesture, Override", "UseSyringe", "Action.playbackRate", this.duration);
+            Util.PlaySound("sfx_driver_foley_syringe", this.gameObject);
+        }
+
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+
+            if (!this.farded)
+            {
+                if (base.fixedAge >= (0.5f * this.duration))
+                {
+                    this.farded = true;
+
+                    Util.PlaySound("sfx_driver_injection", this.gameObject);
+                    Util.PlaySound("sfx_driver_syringe_buff", this.gameObject);
+
+                    if (NetworkServer.active)
+                    {
+                        int i = Random.Range(0, 3);
+                        switch (i)
+                        {
+                            case 0:
+                                this.characterBody.AddTimedBuff(Modules.Buffs.syringeDamageBuff, 6f);
+                                EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab, new EffectData
+                                {
+                                    origin = this.FindModelChild("PistolMuzzle").position,
+                                    rotation = Quaternion.identity
+                                }, true);
+                                if (this.modelTransform)
+                                {
+                                    TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
+                                    temporaryOverlay.duration = 6f;
+                                    temporaryOverlay.animateShaderAlpha = true;
+                                    temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                                    temporaryOverlay.destroyComponentOnEnd = true;
+                                    temporaryOverlay.originalMaterial = Modules.Assets.syringeDamageOverlayMat;
+                                    temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
+                                }
+                                break;
+                            case 1:
+                                this.characterBody.AddTimedBuff(Modules.Buffs.syringeAttackSpeedBuff, 6f);
+                                EffectManager.SpawnEffect(Modules.Assets.attackSpeedBuffEffectPrefab, new EffectData
+                                {
+                                    origin = this.FindModelChild("PistolMuzzle").position,
+                                    rotation = Quaternion.identity
+                                }, true);
+                                if (this.modelTransform)
+                                {
+                                    TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
+                                    temporaryOverlay.duration = 6f;
+                                    temporaryOverlay.animateShaderAlpha = true;
+                                    temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                                    temporaryOverlay.destroyComponentOnEnd = true;
+                                    temporaryOverlay.originalMaterial = Modules.Assets.syringeAttackSpeedOverlayMat;
+                                    temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
+                                }
+                                break;
+                            case 2:
+                                this.characterBody.AddTimedBuff(Modules.Buffs.syringeCritBuff, 6f);
+                                EffectManager.SpawnEffect(Modules.Assets.critBuffEffectPrefab, new EffectData
+                                {
+                                    origin = this.FindModelChild("PistolMuzzle").position,
+                                    rotation = Quaternion.identity
+                                }, true);
+                                if (this.modelTransform)
+                                {
+                                    TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
+                                    temporaryOverlay.duration = 6f;
+                                    temporaryOverlay.animateShaderAlpha = true;
+                                    temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                                    temporaryOverlay.destroyComponentOnEnd = true;
+                                    temporaryOverlay.originalMaterial = Modules.Assets.syringeCritOverlayMat;
+                                    temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+
+            if (base.fixedAge >= this.duration && base.isAuthority)
+            {
+                this.outer.SetNextStateToMain();
+            }
+        }
+    }
+}

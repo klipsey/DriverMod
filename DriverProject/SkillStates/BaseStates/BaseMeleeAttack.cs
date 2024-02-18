@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.BaseStates
 {
-    public class BaseMeleeAttack : Driver.BaseDriverSkillState
+    public class BaseMeleeAttack : SkillStates.Driver.BaseDriverSkillState
     {
         public int swingIndex;
 
@@ -42,7 +42,7 @@ namespace RobDriver.SkillStates.BaseStates
         protected OverlapAttack attack;
         private bool inHitPause;
         private bool hasHopped;
-        private float stopwatch;
+        protected float stopwatch;
         protected Animator animator;
         private BaseState.HitStopCachedState hitStopCachedState;
         private Vector3 storedVelocity;
@@ -53,13 +53,22 @@ namespace RobDriver.SkillStates.BaseStates
         {
             base.OnEnter();
             this.duration = this.baseDuration / this.attackSpeedStat;
-            this.earlyExitTime = this.baseEarlyExitTime / this.attackSpeedStat;
+            this.earlyExitTime = this.baseEarlyExitTime;// / this.attackSpeedStat;
             this.hasFired = false;
             this.animator = base.GetModelAnimator();
             base.StartAimMode(0.5f + this.duration, false);
             base.characterBody.outOfCombatStopwatch = 0f;
             this.animator.SetBool("attacking", true);
 
+            this.PlayAttackAnimation();
+
+            this.InitializeAttack();
+
+            //this.characterBody.isSprinting = false;
+        }
+
+        protected virtual void InitializeAttack()
+        {
             HitBoxGroup hitBoxGroup = null;
             Transform modelTransform = base.GetModelTransform();
 
@@ -67,8 +76,6 @@ namespace RobDriver.SkillStates.BaseStates
             {
                 hitBoxGroup = Array.Find<HitBoxGroup>(modelTransform.GetComponents<HitBoxGroup>(), (HitBoxGroup element) => element.groupName == this.hitboxName);
             }
-
-            this.PlayAttackAnimation();
 
             this.attack = new OverlapAttack();
             this.attack.damageType = this.damageType;
@@ -83,9 +90,10 @@ namespace RobDriver.SkillStates.BaseStates
             this.attack.hitBoxGroup = hitBoxGroup;
             this.attack.isCrit = base.RollCrit();
             this.attack.impactSound = this.impactSound;
+        }
 
-            this.characterBody.isSprinting = false;
-
+        protected virtual void FireShuriken()
+        {
             PrimarySkillShurikenBehavior shurikenComponent = this.GetComponent<PrimarySkillShurikenBehavior>();
             if (shurikenComponent) shurikenComponent.OnSkillActivated(this.skillLocator.primary);
         }
@@ -99,15 +107,20 @@ namespace RobDriver.SkillStates.BaseStates
         {
             if (!this.hasFired) this.FireAttack();
 
+            if (this.inHitPause)
+            {
+                this.ClearHitStop();
+            }
+
             base.OnExit();
         }
 
         protected virtual void PlaySwingEffect()
         {
-            EffectManager.SimpleMuzzleFlash(this.swingEffectPrefab, base.gameObject, this.muzzleString, true);
+            EffectManager.SimpleMuzzleFlash(this.swingEffectPrefab, base.gameObject, this.muzzleString, false);
         }
 
-        protected virtual void OnHitEnemyAuthority()
+        protected virtual void OnHitEnemyAuthority(int amount)
         {
             Util.PlaySound(this.hitSoundString, base.gameObject);
 
@@ -123,33 +136,39 @@ namespace RobDriver.SkillStates.BaseStates
 
             if (!this.inHitPause)
             {
-                this.storedVelocity = base.characterMotor.velocity;
-                this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Swing.playbackRate");
-                this.hitPauseTimer = this.hitStopDuration / this.attackSpeedStat;
-                this.inHitPause = true;
+                this.TriggerHitStop();
             }
         }
 
-        private void FireAttack()
+        protected virtual void TriggerHitStop()
+        {
+            this.storedVelocity = base.characterMotor.velocity;
+            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Slash.playbackRate");
+            this.hitPauseTimer = this.hitStopDuration / this.attackSpeedStat;
+            this.inHitPause = true;
+        }
+
+        protected virtual void FireAttack()
         {
             if (!this.hasFired)
             {
                 this.hasFired = true;
                 Util.PlayAttackSpeedSound(this.swingSoundString, base.gameObject, this.attackSpeedStat);
 
+                this.PlaySwingEffect();
+
                 if (base.isAuthority)
                 {
-                    this.PlaySwingEffect();
                     base.AddRecoil(-1f * this.attackRecoil, -2f * this.attackRecoil, -0.5f * this.attackRecoil, 0.5f * this.attackRecoil);
                 }
             }
 
             if (base.isAuthority)
             {
-                hitResults.Clear();
-                if (this.attack.Fire(hitResults))
+                this.hitResults.Clear();
+                if (this.attack.Fire(this.hitResults))
                 {
-                    this.OnHitEnemyAuthority();
+                    this.OnHitEnemyAuthority(this.hitResults.Count);
                 }
             }
         }
@@ -174,9 +193,7 @@ namespace RobDriver.SkillStates.BaseStates
 
             if (this.hitPauseTimer <= 0f && this.inHitPause)
             {
-                base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator);
-                this.inHitPause = false;
-                base.characterMotor.velocity = this.storedVelocity;
+                this.ClearHitStop();
             }
 
             if (!this.inHitPause)
@@ -186,7 +203,7 @@ namespace RobDriver.SkillStates.BaseStates
             else
             {
                 if (base.characterMotor) base.characterMotor.velocity = Vector3.zero;
-                if (this.animator) this.animator.SetFloat("Swing.playbackRate", 0f);
+                if (this.animator) this.animator.SetFloat("Slash.playbackRate", 0f);
             }
 
             if (this.stopwatch >= (this.duration * this.attackStartTime) && this.stopwatch <= (this.duration * this.attackEndTime))
@@ -194,7 +211,13 @@ namespace RobDriver.SkillStates.BaseStates
                 this.FireAttack();
             }
 
-            if (base.fixedAge >= (this.duration - this.earlyExitTime) && base.isAuthority)
+            if (base.fixedAge >= this.duration && base.isAuthority)
+            {
+                this.outer.SetNextStateToMain();
+                return;
+            }
+
+            if (base.fixedAge >= (this.duration * this.earlyExitTime) && base.isAuthority)
             {
                 if (base.inputBank.skill1.down)
                 {
@@ -203,12 +226,13 @@ namespace RobDriver.SkillStates.BaseStates
                     return;
                 }
             }
+        }
 
-            if (base.fixedAge >= this.duration && base.isAuthority)
-            {
-                this.outer.SetNextStateToMain();
-                return;
-            }
+        protected virtual void ClearHitStop()
+        {
+            base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator);
+            this.inHitPause = false;
+            base.characterMotor.velocity = this.storedVelocity;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
