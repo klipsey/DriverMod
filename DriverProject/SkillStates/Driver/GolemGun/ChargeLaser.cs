@@ -65,7 +65,7 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 			this.flashTimer = 0f;
 			this.laserOn = true;
 
-			base.PlayAnimation("Gesture, Override", "AimTwohand");
+			base.PlayCrossfade("Gesture, Override", "AimTwohand", 0.75f);
 			base.PlayAnimation("AimPitch", "ShotgunAimPitch");
 		}
 

@@ -18,7 +18,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.pushForce = 1000f;
             this.baseDuration = 1.8f;
             this.baseEarlyExitTime = 0.5f;
-            this.attackRecoil = 18f / this.attackSpeedStat;
+            this.attackRecoil = 9f / this.attackSpeedStat;
 
             this.attackStartTime = 0.2f;
             this.attackEndTime = 0.3f;

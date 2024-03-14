@@ -67,6 +67,7 @@ namespace RobDriver
 
             // add config
             Modules.Config.InitWeaponConfig(weaponDef);
+            Debug.Log("Added " + weaponDef.nameToken + " to catalog with index: " + weaponDef.index);
         }
 
         public static void AddWeaponDrop(string bodyName, DriverWeaponDef weaponDef, bool autoComplete = true)

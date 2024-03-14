@@ -1,107 +1,67 @@
 ﻿using RoR2;
 using UnityEngine;
-using EntityStates;
-using RobDriver.Modules.Components;
+using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver.GoldenGun
 {
-    public class LightsOut : BaseDriverSkillState
+    public class LightsOut : Revolver.LightsOut
     {
-        public static float damageCoefficient = 99.99f;
-        public static float procCoefficient = 1f;
-        public float baseDuration = 0.8f;
-
-        private float duration;
-        private bool kill;
-
-        public override void OnEnter()
+        protected override string shootSoundString => "sfx_driver_pistol_shoot_charged";
+        protected override void FireBullet()
         {
-            base.OnEnter();
-            this.characterBody.SetAimTimer(2f);
-            this.duration = this.baseDuration / this.attackSpeedStat;
+            Ray aimRay = base.GetAimRay();
 
-            base.PlayAnimation("Gesture, Override", "ShootLightsOut", "Action.playbackRate", this.duration);
-
-            if (this.iDrive) this.iDrive.weaponTimer = 0.1f;
-
-            this.Fire();
-        }
-
-        private void Fire()
-        {
-            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, "PistolMuzzle", false);
-
-            Util.PlaySound("sfx_driver_slug_shotgun_shoot_critical", this.gameObject);
-
-            if (base.isAuthority)
+            BulletAttack bulletAttack = new BulletAttack
             {
-                Ray aimRay = base.GetAimRay();
-                float recoil = 24f;
-                base.AddRecoil(-1f * recoil, -2f * recoil, -0.5f * recoil, 0.5f * recoil);
+                bulletCount = 1,
+                aimVector = aimRay.direction,
+                origin = aimRay.origin,
+                damage = LightsOut.damageCoefficient * this.damageStat,
+                damageColorIndex = DamageColorIndex.Default,
+                damageType = DamageType.BypassArmor,
+                falloffModel = BulletAttack.FalloffModel.None,
+                maxDistance = 9999f,
+                force = 9999f,
+                hitMask = LayerIndex.CommonMasks.bullet,
+                minSpread = 0f,
+                maxSpread = 0f,
+                isCrit = true,
+                owner = this.gameObject,
+                muzzleName = "PistolMuzzle",
+                smartCollision = true,
+                procChainMask = default(ProcChainMask),
+                procCoefficient = LightsOut.procCoefficient,
+                radius = 1f,
+                sniper = false,
+                stopperMask = LayerIndex.CommonMasks.bullet,
+                weapon = null,
+                tracerEffectPrefab = Shoot.critTracerEffectPrefab,
+                spreadPitchScale = 1f,
+                spreadYawScale = 1f,
+                queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
+                hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
+            };
 
-                new BulletAttack
-                {
-                    bulletCount = 1,
-                    aimVector = aimRay.direction,
-                    origin = aimRay.origin,
-                    damage = LightsOut.damageCoefficient * this.damageStat,
-                    damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.BypassArmor,
-                    falloffModel = BulletAttack.FalloffModel.None,
-                    maxDistance = 9999f,
-                    force = 9999f,
-                    hitMask = LayerIndex.CommonMasks.bullet,
-                    minSpread = 0f,
-                    maxSpread = 0f,
-                    isCrit = true,
-                    owner = this.gameObject,
-                    muzzleName = "PistolMuzzle",
-                    smartCollision = true,
-                    procChainMask = default(ProcChainMask),
-                    procCoefficient = LightsOut.procCoefficient,
-                    radius = 1f,
-                    sniper = false,
-                    stopperMask = LayerIndex.CommonMasks.bullet,
-                    weapon = null,
-                    tracerEffectPrefab = Shoot.critTracerEffectPrefab,
-                    spreadPitchScale = 1f,
-                    spreadYawScale = 1f,
-                    queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
-                    hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                }.Fire();
-            }
-
-            base.characterBody.AddSpreadBloom(1.25f);
-        }
-
-        public override void FixedUpdate()
-        {
-            base.FixedUpdate();
-
-            if (base.fixedAge >= (0.5f * this.duration))
+            bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
             {
-                if (!this.kill)
+                if (BulletAttack.IsSniperTargetHit(hitInfo))
                 {
-                    this.kill = true;
-                    if (this.iDrive) this.iDrive.weaponTimer = 0f;
-                    base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
+                    damageInfo.damage *= 2f;
+                    damageInfo.damageColorIndex = DamageColorIndex.Sniper;
+
+                    EffectData effectData = new EffectData
+                    {
+                        origin = hitInfo.point,
+                        rotation = Quaternion.LookRotation(-hitInfo.direction)
+                    };
+
+                    effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
+                    EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Junk/Common/VFX/WeakPointProcEffect.prefab").WaitForCompletion(), effectData, true);
+                    //RoR2.Util.PlaySound("Play_SniperClassic_headshot", base.gameObject);
                 }
-            }
+            };
 
-            if (base.fixedAge >= this.duration && base.isAuthority)
-            {
-                this.outer.SetNextStateToMain();
-            }
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.PrioritySkill;
+            bulletAttack.Fire();
         }
     }
 }

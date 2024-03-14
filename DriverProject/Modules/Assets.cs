@@ -15,9 +15,9 @@ using RobDriver.Modules.Components;
 
 namespace RobDriver.Modules
 {
-    internal static class Assets
+    public static class Assets
     {
-        internal static AssetBundle mainAssetBundle;
+        public static AssetBundle mainAssetBundle;
 
         internal static Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/HGStandard");
         internal static Material commandoMat;
@@ -51,6 +51,8 @@ namespace RobDriver.Modules
         public static GameObject circleCrosshairPrefab;
 
         public static GameObject weaponNotificationPrefab;
+        public static GameObject headshotOverlay;
+        public static GameObject headshotVisualizer;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -232,6 +234,18 @@ namespace RobDriver.Modules
 
             hammerImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_impact_hammer");
             knifeImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_knife_impact");
+
+            headshotOverlay = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerScopeLightOverlay.prefab").WaitForCompletion().InstantiateClone("DriverHeadshotOverlay", false);
+            SniperTargetViewer viewer = headshotOverlay.GetComponentInChildren<SniperTargetViewer>();
+            headshotOverlay.transform.Find("ScopeOverlay").gameObject.SetActive(false);
+
+            headshotVisualizer = viewer.visualizerPrefab.InstantiateClone("DriverHeadshotVisualizer", false);
+            Image headshotImage = headshotVisualizer.transform.Find("Scaler/Rectangle").GetComponent<Image>();
+            headshotVisualizer.transform.Find("Scaler/Outer").gameObject.SetActive(false);
+            headshotImage.color = Color.red;
+            //headshotImage.sprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Captain/texCaptainCrosshairInner.png").WaitForCompletion();
+
+            viewer.visualizerPrefab = headshotVisualizer;
 
             bool dynamicCrosshair = Modules.Config.dynamicCrosshair.Value;
 
@@ -1243,7 +1257,8 @@ namespace RobDriver.Modules
                 material = Assets.shotgunMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_shotgun",
-                configIdentifier = "Shotgun"
+                configIdentifier = "Shotgun",
+                buffType = DriverWeaponDef.BuffType.Damage
             });// now add it to the catalog here; catalog is necessary for networking
             DriverWeaponCatalog.AddWeapon(shotgunWeaponDef);
 
@@ -1261,7 +1276,8 @@ namespace RobDriver.Modules
                 material = Assets.riotShotgunMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_shotgun",
-                configIdentifier = "Riot Shotgun"
+                configIdentifier = "Riot Shotgun",
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(riotShotgunWeaponDef);
 
@@ -1279,7 +1295,8 @@ namespace RobDriver.Modules
                 material = Assets.slugShotgunMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_shotgun",
-                configIdentifier = "Slug Shotgun"
+                configIdentifier = "Slug Shotgun",
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(slugShotgunWeaponDef);
 
@@ -1297,7 +1314,8 @@ namespace RobDriver.Modules
                 material = Assets.machineGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_machine_gun",
-                configIdentifier = "Machine Gun"
+                configIdentifier = "Machine Gun",
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(machineGunWeaponDef);
 
@@ -1315,7 +1333,8 @@ namespace RobDriver.Modules
                 material = Assets.heavyMachineGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_hmg",
-                configIdentifier = "Heavy Machine Gun"
+                configIdentifier = "Heavy Machine Gun",
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(heavyMachineGunWeaponDef);
 
@@ -1333,7 +1352,8 @@ namespace RobDriver.Modules
                 material = Assets.sniperMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_sniper",
-                configIdentifier = "Sniper Rifle"
+                configIdentifier = "Sniper Rifle",
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(sniperWeaponDef);
 
@@ -1351,7 +1371,8 @@ namespace RobDriver.Modules
                 material = Assets.bazookaMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_rocket_launcher",
-                configIdentifier = "Bazooka"
+                configIdentifier = "Bazooka",
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(bazookaWeaponDef);
 
@@ -1369,7 +1390,8 @@ namespace RobDriver.Modules
                 material = Assets.grenadeLauncherMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_grenade_launcher",
-                configIdentifier = "Grenade Launcher"
+                configIdentifier = "Grenade Launcher",
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(grenadeLauncherWeaponDef);
 
@@ -1387,7 +1409,8 @@ namespace RobDriver.Modules
                 material = Assets.rocketLauncherMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_rocket_launcher",
-                configIdentifier = "Rocket Launcher"
+                configIdentifier = "Rocket Launcher",
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(rocketLauncherWeaponDef);
 
@@ -1405,7 +1428,8 @@ namespace RobDriver.Modules
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Behemoth/matBehemoth.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_rocket_launcher",
-                configIdentifier = "Brilliant Behemoth"
+                configIdentifier = "Brilliant Behemoth",
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(behemothWeaponDef);
             DriverWeaponCatalog.Behemoth = behemothWeaponDef;
@@ -1424,7 +1448,8 @@ namespace RobDriver.Modules
                 material = Assets.rocketLauncherAltMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_rocket_launcher",
-                configIdentifier = "Prototype Rocket Launcher"
+                configIdentifier = "Prototype Rocket Launcher",
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(rocketLauncherAltWeaponDef);
             DriverWeaponCatalog.PrototypeRocketLauncher = rocketLauncherAltWeaponDef;
@@ -1444,7 +1469,8 @@ namespace RobDriver.Modules
                 animationSet = DriverWeaponDef.AnimationSet.Default,
                 calloutSoundString = "sfx_driver_callout_generic",
                 configIdentifier = "Arm Cannon",
-                dropChance = 25f
+                dropChance = 25f,
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(armCannonWeaponDef);
             DriverWeaponCatalog.ArmCannon = armCannonWeaponDef;
@@ -1463,7 +1489,8 @@ namespace RobDriver.Modules
                 material = Assets.plasmaCannonMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_laser",
-                configIdentifier = "Super Plasma Cannon"
+                configIdentifier = "Super Plasma Cannon",
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(plasmaCannonWeaponDef);
             DriverWeaponCatalog.PlasmaCannon = plasmaCannonWeaponDef;
@@ -1482,7 +1509,8 @@ namespace RobDriver.Modules
                 material = Assets.badassShotgunMat,
                 animationSet = DriverWeaponDef.AnimationSet.Default,
                 calloutSoundString = "sfx_driver_callout_shotgun",
-                configIdentifier = "Badass Shotgun"
+                configIdentifier = "Badass Shotgun",
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(badassShotgunWeaponDef);
 
@@ -1501,7 +1529,8 @@ namespace RobDriver.Modules
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_generic",
                 configIdentifier = "Chimeric Cannon",
-                dropChance = 5f
+                dropChance = 5f,
+                buffType = DriverWeaponDef.BuffType.AttackSpeed
             });
             DriverWeaponCatalog.AddWeapon(lunarRifleWeaponDef);
             DriverWeaponCatalog.LunarRifle = lunarRifleWeaponDef;
@@ -1519,7 +1548,8 @@ namespace RobDriver.Modules
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Brother/matBrotherHammer.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.BigMelee,
                 calloutSoundString = "sfx_driver_callout_generic",
-                dropChance = 100f
+                dropChance = 100f,
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(lunarHammerWeaponDef);
             DriverWeaponCatalog.LunarHammer = lunarHammerWeaponDef;
@@ -1557,7 +1587,8 @@ namespace RobDriver.Modules
                 material = Assets.nemmercGunMat,
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_shotgun",
-                dropChance = 100f
+                dropChance = 100f,
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(nemmercGunWeaponDef);
             DriverWeaponCatalog.NemmercGun = nemmercGunWeaponDef;
@@ -1577,7 +1608,8 @@ namespace RobDriver.Modules
                 animationSet = DriverWeaponDef.AnimationSet.TwoHanded,
                 calloutSoundString = "sfx_driver_callout_generic",
                 configIdentifier = "Stone Cannon",
-                dropChance = 5f
+                dropChance = 5f,
+                buffType = DriverWeaponDef.BuffType.Damage
             });
             DriverWeaponCatalog.AddWeapon(golemGunWeaponDef);
             DriverWeaponCatalog.GolemRifle = golemGunWeaponDef;

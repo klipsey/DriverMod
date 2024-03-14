@@ -82,6 +82,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
 
+                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().cutAmmo = true;
+
                 NetworkServer.Spawn(weaponPickup);
             }
         }

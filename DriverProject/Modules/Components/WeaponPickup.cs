@@ -15,6 +15,7 @@ namespace RobDriver.Modules.Components
 		public DriverWeaponDef weaponDef;
 
 		public GameObject pickupEffect;
+		public bool cutAmmo = false;
 
 		private bool alive = true;
 
@@ -59,7 +60,7 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef);
+			this.SetWeapon(this.weaponDef, this.cutAmmo);
 		}
 
 		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
@@ -72,13 +73,14 @@ namespace RobDriver.Modules.Components
 				NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
 				if (!identity) return;
 
-				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index).Send(NetworkDestination.Clients);
+				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo).Send(NetworkDestination.Clients);
 			}
 		}
 
-		public void SetWeapon(DriverWeaponDef newWeapon)
+		public void SetWeapon(DriverWeaponDef newWeapon, bool _cutAmmo = false)
         {
 			this.weaponDef = newWeapon;
+			this.cutAmmo = _cutAmmo;
 
 			// wow this is awful!
 			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
@@ -93,26 +95,33 @@ namespace RobDriver.Modules.Components
 
 				textComponent.token = this.weaponDef.nameToken;
 
-				switch (this.weaponDef.tier)
+				if (this.cutAmmo)
                 {
-					case DriverWeaponTier.Common:
-						textComponent.textMeshPro.color = Modules.Helpers.whiteItemColor;
-						break;
-					case DriverWeaponTier.Uncommon:
-						textComponent.textMeshPro.color = Modules.Helpers.greenItemColor;
-						break;
-					case DriverWeaponTier.Legendary:
-						textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
-						break;
-					case DriverWeaponTier.Unique:
-						textComponent.textMeshPro.color = Modules.Helpers.yellowItemColor;
-						break;
-					case DriverWeaponTier.Lunar:
-						textComponent.textMeshPro.color = Modules.Helpers.lunarItemColor;
-						break;
-					case DriverWeaponTier.Void:
-						textComponent.textMeshPro.color = Modules.Helpers.voidItemColor;
-						break;
+					textComponent.textMeshPro.color = Modules.Helpers.badColor;
+				}
+				else
+                {
+					switch (this.weaponDef.tier)
+					{
+						case DriverWeaponTier.Common:
+							textComponent.textMeshPro.color = Modules.Helpers.whiteItemColor;
+							break;
+						case DriverWeaponTier.Uncommon:
+							textComponent.textMeshPro.color = Modules.Helpers.greenItemColor;
+							break;
+						case DriverWeaponTier.Legendary:
+							textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
+							break;
+						case DriverWeaponTier.Unique:
+							textComponent.textMeshPro.color = Modules.Helpers.yellowItemColor;
+							break;
+						case DriverWeaponTier.Lunar:
+							textComponent.textMeshPro.color = Modules.Helpers.lunarItemColor;
+							break;
+						case DriverWeaponTier.Void:
+							textComponent.textMeshPro.color = Modules.Helpers.voidItemColor;
+							break;
+					}
 				}
 			}
 		}
@@ -120,14 +129,14 @@ namespace RobDriver.Modules.Components
 		private void OnTriggerStay(Collider collider)
 		{
 			// can this run on every client? i don't know but let's find out
-			if (NetworkServer.active && this.alive && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex)
+			if (NetworkServer.active && this.alive/* && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex*/)
 			{
 				// well it can but it's not a fix.
 				DriverController iDrive = collider.GetComponent<DriverController>();
 				if (iDrive)
 				{
 					this.alive = false;
-					iDrive.ServerPickUpWeapon(this.weaponDef, iDrive);
+					iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 707127195
+CRC: 1495127200
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 5a967f446a93f33679056db944ff4f32
+    Hash: 59a1cab72eb6d1dc789a0a7a48fd293a
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7d97328b274e37b2c802bf15d37d4337
@@ -93,6 +93,7 @@ Assets:
 - Assets/Driver/Icons/Weapon/texSMGWeaponIcon.png
 - Assets/Driver/Animations/Hammer/RunL.anim
 - Assets/Driver/Icons/Weapon/texCommandoSMGWeaponIcon.png
+- Assets/Driver/Textures/texGuerilla.png
 - Assets/Driver/Textures/texSpecialForcesEmission.png
 - Assets/Driver/Animations/Default/RestEmoteLoop.anim
 - Assets/Driver/Animations/Default/JumpSprint.anim
@@ -174,6 +175,7 @@ Assets:
 - Assets/Driver/Materials/matShotgunShell.mat
 - Assets/Driver/Textures/texRiotShotgun.png
 - Assets/Driver/FBX/meshDriver.mesh
+- Assets/Driver/FBX/meshGuerrilla.mesh
 - Assets/Driver/Textures/texCrate2.png
 - Assets/Driver/Icons/texMonsoonSkin.png
 - Assets/Driver/Animations/Default/PressButton.anim
@@ -249,6 +251,7 @@ Assets:
 - Assets/Driver/Icons/Weapon/texGenericWeaponRed.png
 - Assets/Driver/Textures/texSkateboard.png
 - Assets/Driver/mdlDriver.prefab
+- Assets/Driver/Materials/matGuerrilla.mat
 - Assets/Driver/Icons/Weapon/texGolemGunWeaponIcon.png
 - Assets/Driver/FBX/meshBazooka.mesh
 - Assets/Driver/Materials/matSlugShotgun.mat
@@ -295,6 +298,7 @@ Assets:
 - Assets/Driver/Icons/Skill/texKnifeScepterIcon.png
 - Assets/Driver/Icons/Weapon/texArmCannonWeaponIcon.png
 - Assets/Driver/FBX/animDriverMachineGun.fbx
+- Assets/Driver/Textures/texGuerillaEmission.png
 - Assets/Driver/Materials/matNemmercGun.mat
 - Assets/Driver/WeaponPickupLegendary.prefab
 - Assets/Driver/Animations/maskDriverGesture.mask
@@ -362,6 +366,7 @@ Assets:
 - Assets/Driver/Icons/Skill/texSupplyDropScepterIcon.png
 - Assets/Driver/FBX/animDriverShotgun.fbx
 - Assets/Driver/Icons/Skill/texRocketLauncherIcon.png
+- Assets/Driver/FBX/Heal.anim
 - Assets/Driver/Textures/texMinecraftDriverEmission.png
 - Assets/Driver/Icons/Skill/texShotgunIcon.png
 - Assets/Driver/Animations/Default/Dance.anim
@@ -380,6 +385,7 @@ Assets:
 - Assets/Driver/Animations/maskDriverAim.mask
 - Assets/Driver/Textures/texDriverGreenEmission.png
 - Assets/Driver/Materials/matSawedOff.mat
+- Assets/Driver/Icons/texGuerrillaSkin.png
 - Assets/Driver/Animations/Hammer/Sprint.anim
 - Assets/Driver/Materials/matHeavyMachineGun.mat
 - Assets/Driver/Icons/Weapon/texLunarGrenadeWeaponIcon.png

@@ -50,15 +50,16 @@ namespace RobDriver.SkillStates.Driver
         private int cachedShots;
         private float cachedShotTimer;
         private PrimarySkillShurikenBehavior shurikenComponent;
+        private bool _autoFocus;
         private bool autoFocus;
         private bool cancelling;
+        private bool adaptiveFocus;
 
         private bool jamFlag; // fired shortly after entering state
 
         public override void OnEnter()
         {
             base.OnEnter();
-            this.chargeDuration = this.baseChargeDuration / this.attackSpeedStat;
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.5f);
 
             this.PlayAnim();
@@ -74,12 +75,13 @@ namespace RobDriver.SkillStates.Driver
             }
 
             this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
-            this.autoFocus = Modules.Config.autoFocus.Value;
+            this._autoFocus = Modules.Config.autoFocus.Value;
+            this.adaptiveFocus = Modules.Config.adaptiveFocus.Value;
 
-            if (Modules.Config.adaptiveFocus.Value)
-            {
-                if (this.chargeDuration <= 0.1f) this.autoFocus = true;
-            }
+            this.chargeDuration = this.baseChargeDuration / this.attackSpeedStat;
+            this.autoFocus = false;
+            if (this.adaptiveFocus && this.chargeDuration <= 0.1f) this.autoFocus = true;
+            if (this._autoFocus) this.autoFocus = true;
 
             this.FindModelChild("PistolSight").gameObject.SetActive(true);
         }
@@ -102,6 +104,10 @@ namespace RobDriver.SkillStates.Driver
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            this.chargeDuration = this.baseChargeDuration / this.attackSpeedStat;
+            this.autoFocus = false;
+            if (this.adaptiveFocus && this.chargeDuration <= 0.1f) this.autoFocus = true;
+            if (this._autoFocus) this.autoFocus = true;
             this.shotCooldown -= Time.fixedDeltaTime;
             this.cachedShotTimer -= Time.fixedDeltaTime;
             this.characterBody.outOfCombatStopwatch = 0f;
@@ -270,7 +276,7 @@ namespace RobDriver.SkillStates.Driver
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
-                base.AddRecoil(-1f * SteadyAim.recoil, -2f * SteadyAim.recoil, -0.5f * SteadyAim.recoil, 0.5f * SteadyAim.recoil);
+                base.AddRecoil2(-1f * SteadyAim.recoil, -2f * SteadyAim.recoil, -0.5f * SteadyAim.recoil, 0.5f * SteadyAim.recoil);
 
                 float dmg = Shoot.damageCoefficient;
 
@@ -368,7 +374,7 @@ namespace RobDriver.SkillStates.Driver
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
-                base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
+                base.AddRecoil2(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
 
                 float dmg = Shoot.damageCoefficient;
 

@@ -26,6 +26,8 @@ namespace RobDriver.Modules.Weapons
         public abstract GameObject crosshairPrefab { get; }
         public abstract DriverWeaponTier tier { get; }
         public abstract int shotCount { get; }
+
+        public abstract DriverWeaponDef.BuffType buffType { get; }
         public abstract SkillDef primarySkillDef { get; }
         public abstract SkillDef secondarySkillDef { get; }
         public abstract Mesh mesh { get; }
@@ -65,7 +67,8 @@ namespace RobDriver.Modules.Weapons
                 animationSet = animationSet,
                 calloutSoundString = calloutSoundString,
                 configIdentifier = configIdentifier,
-                dropChance = dropChance
+                dropChance = dropChance,
+                buffType = buffType
             });
             /*if (addToPool) */DriverWeaponCatalog.AddWeapon(weaponDef);
 

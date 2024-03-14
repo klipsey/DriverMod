@@ -8,7 +8,7 @@ namespace RobDriver.Modules.Weapons
     {
         public override string weaponNameToken => "BFG";
         public override string weaponName => "Preon Accelerator";
-        public override string weaponDesc => "Devastating blasts of particles.";
+        public override string weaponDesc => "Devastating blasts of condensed particles.";
         public override string iconName => "texPreonWeaponIcon";
         public override GameObject crosshairPrefab => Modules.Assets.grenadeLauncherCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Legendary;
@@ -16,6 +16,7 @@ namespace RobDriver.Modules.Weapons
         public override Mesh mesh => Modules.Assets.LoadMesh("meshArmBFG");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/BFG/matBFG.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;
+        public override DriverWeaponDef.BuffType buffType => DriverWeaponDef.BuffType.AttackSpeed;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "Preon Accelerator";
         public override float dropChance => 0f;

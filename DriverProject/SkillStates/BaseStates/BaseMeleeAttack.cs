@@ -58,7 +58,7 @@ namespace RobDriver.SkillStates.BaseStates
             this.animator = base.GetModelAnimator();
             base.StartAimMode(0.5f + this.duration, false);
             base.characterBody.outOfCombatStopwatch = 0f;
-            this.animator.SetBool("attacking", true);
+            //this.animator.SetBool("attacking", true);
 
             this.PlayAttackAnimation();
 
@@ -100,7 +100,7 @@ namespace RobDriver.SkillStates.BaseStates
 
         protected virtual void PlayAttackAnimation()
         {
-            base.PlayCrossfade("Gesture, Override", "Slash" + (1 + swingIndex), "Slash.playbackRate", this.duration, 0.05f);
+            base.PlayCrossfade("Gesture, Override", "Slash" + (1 + swingIndex), "Knife.playbackRate", this.duration, 0.05f);
         }
 
         public override void OnExit()
@@ -143,7 +143,7 @@ namespace RobDriver.SkillStates.BaseStates
         protected virtual void TriggerHitStop()
         {
             this.storedVelocity = base.characterMotor.velocity;
-            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Slash.playbackRate");
+            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Knife.playbackRate");
             this.hitPauseTimer = this.hitStopDuration / this.attackSpeedStat;
             this.inHitPause = true;
         }
@@ -203,7 +203,7 @@ namespace RobDriver.SkillStates.BaseStates
             else
             {
                 if (base.characterMotor) base.characterMotor.velocity = Vector3.zero;
-                if (this.animator) this.animator.SetFloat("Slash.playbackRate", 0f);
+                if (this.animator) this.animator.SetFloat("Knife.playbackRate", 0f);
             }
 
             if (this.stopwatch >= (this.duration * this.attackStartTime) && this.stopwatch <= (this.duration * this.attackEndTime))

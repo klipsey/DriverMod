@@ -359,6 +359,14 @@ ModelImporter:
     7400150: Armature|ShootCriticalAlt2
     7400152: Armature|StartHeal
     7400154: Armature|UseSyringe
+    7400156: Armature|DashF
+    7400158: Armature|DashB
+    7400160: Armature|DashL
+    7400162: Armature|DashR
+    7400164: Armature|AimLightsOutDown
+    7400166: Armature|AimLightsOutUp
+    7400168: Armature|RefreshPistol
+    7400170: Armature|Heal
     9500000: //RootNode
     10800000: Light
     10800002: Light.001

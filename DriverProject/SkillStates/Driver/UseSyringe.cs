@@ -52,10 +52,9 @@ namespace RobDriver.SkillStates.Driver
 
         protected virtual void ApplyBuff()
         {
-            int i = Random.Range(0, 3);
-            switch (i)
+            switch (this.iDrive.weaponDef.buffType)
             {
-                case 0:
+                case DriverWeaponDef.BuffType.Damage:
                     this.characterBody.AddTimedBuff(Modules.Buffs.syringeDamageBuff, 6f);
                     EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab, new EffectData
                     {
@@ -79,7 +78,7 @@ namespace RobDriver.SkillStates.Driver
                         temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
                     }
                     break;
-                case 1:
+                case DriverWeaponDef.BuffType.AttackSpeed:
                     this.characterBody.AddTimedBuff(Modules.Buffs.syringeAttackSpeedBuff, 6f);
                     EffectManager.SpawnEffect(Modules.Assets.attackSpeedBuffEffectPrefab, new EffectData
                     {
@@ -103,7 +102,7 @@ namespace RobDriver.SkillStates.Driver
                         temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
                     }
                     break;
-                case 2:
+                case DriverWeaponDef.BuffType.Crit:
                     this.characterBody.AddTimedBuff(Modules.Buffs.syringeCritBuff, 6f);
                     EffectManager.SpawnEffect(Modules.Assets.critBuffEffectPrefab, new EffectData
                     {

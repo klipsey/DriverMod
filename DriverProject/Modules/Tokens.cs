@@ -41,13 +41,17 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SUIT_SKIN_NAME", "Hitman");
             LanguageAPI.Add(prefix + "SUIT2_SKIN_NAME", "Hitman EX");
             LanguageAPI.Add(prefix + "SPECIALFORCES_SKIN_NAME", "Special Forces");
+            LanguageAPI.Add(prefix + "GUERRILLA_SKIN_NAME", "Guerrilla");
             LanguageAPI.Add(prefix + "GREEN_SKIN_NAME", "Green");
             LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion
 
             #region Passive
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Survivalist");
-            LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"Enemies killed by the Driver have a chance to drop a new <style=cIsUtility>weapon</style>. These give you <style=cIsDamage>powerful attacks</style> for a limited time!");
+            LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"Enemies have a chance to drop a new <style=cIsUtility>weapon</style>. These give you <style=cIsDamage>powerful attacks</style> for a limited time!");
+
+            LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Expert");
+            LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"<style=cIsHealth>Lose the ability to pick up weapons</style>. Instead, they give your pistol <style=cIsDamage>damage buffs</style> for a short time.");
 
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
             LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
@@ -184,19 +188,19 @@ namespace RobDriver.Modules
 
             #region Special
             LanguageAPI.Add(prefix + "SPECIAL_GRENADE_NAME", "Flashbang");
-            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>dazes</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>Dazed enemies aim in random directions for 5 seconds.</style>");
+            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>dazes</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>Dazed enemies aim in random directions for 10 seconds.</style>");
 
             LanguageAPI.Add(prefix + "SPECIAL_GRENADE_SCEPTER_NAME", "Molotov");
-            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>dazes</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>Dazed enemies aim in random directions for 5 seconds.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
+            LanguageAPI.Add(prefix + "SPECIAL_GRENADE_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>dazes</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>Dazed enemies aim in random directions for 10 seconds.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
 
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_NAME", "Supply Drop");
-            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.greenItemHex}>random weapon</color>.");
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.greenItemHex}>random weapon</color>. <style=cIsHealth>Weapon comes with only half its ammo.</style>");
 
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_NAME", "Supply Drop (Legacy)");
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.yellowItemHex}>Prototype Rocket Launcher</color>. <style=cIsUtility>You can only request one per stage.</style>");
 
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_SCEPTER_NAME", "Call of the Void");
-            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_SCEPTER_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.greenItemHex}>random weapon</color>." + Helpers.ScepterDescription("Summon a <color=#" + Helpers.voidItemHex + ">voidborn weapon</color> instead."));
+            LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_SCEPTER_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.greenItemHex}>random weapon</color>. <style=cIsHealth>Weapon comes with only half its ammo.</style>" + Helpers.ScepterDescription("Summon a <color=#" + Helpers.voidItemHex + ">voidborn weapon</color> instead."));
 
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_NAME", "Call of the Void");
             LanguageAPI.Add(prefix + "SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_DESCRIPTION", $"Call down a briefcase containing a <color=#{Helpers.yellowItemHex}>Prototype Rocket Launcher</color>." + Helpers.ScepterDescription("Summon a <color=#" + Helpers.voidItemHex + ">voidborn weapon</color> instead."));
@@ -211,11 +215,11 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SPECIAL_KNIFE_SCEPTER_DESCRIPTION", $"Slash nearby enemies with a serrated blade, dealing <style=cIsDamage>470% damage</style> and <style=cIsHealth>wounding</style> them, <style=cIsDamage>lowering their armor</style> for <style=cIsUtility>4 seconds</style>."
                 + Helpers.ScepterDescription("Cooldown is halved and gain an extra stock."));
 
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Suspicious Syringe");
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a random <style=cIsDamage>offensive buff</style> for the next <style=cIsUtility>6 seconds</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Adaptive Syringe");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a an <style=cIsDamage>offensive buff</style> based on your weapon for the next <style=cIsUtility>6 seconds</style>.");
 
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_NAME", "Perfected Syringe");
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a random <style=cIsDamage>offensive buff</style> for the next <style=cIsUtility>6 seconds</style>."
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you an <style=cIsDamage>offensive buff</style> based on your weapon for the next <style=cIsUtility>6 seconds</style>."
                 + Helpers.ScepterDescription("Applies all three buffs at once."));
             #endregion
 

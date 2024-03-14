@@ -4,7 +4,7 @@ using EntityStates;
 
 namespace RobDriver.SkillStates.Driver
 {
-	public class Slide : BaseState
+	public class Slide : BaseDriverSkillState
 	{
 		private Vector3 forwardDirection;
 		private GameObject slideEffectInstance;
@@ -32,6 +32,15 @@ namespace RobDriver.SkillStates.Driver
 			}
 
 			base.characterBody.SetSpreadBloom(0f, false);
+
+			if (this.iDrive && this.iDrive.weaponDef)
+            {
+				if (this.iDrive.weaponDef.animationSet == DriverWeaponDef.AnimationSet.TwoHanded)
+                {
+					this.animator.SetBool("holding", true);
+					base.PlayAnimation("Gesture, Override", "HoldGun");
+                }
+            }
 
 			if (!this.startedStateGrounded)
 			{
@@ -114,6 +123,8 @@ namespace RobDriver.SkillStates.Driver
 		{
 			this.PlayImpactAnimation();
 			if (this.slideEffectInstance) EntityState.Destroy(this.slideEffectInstance);
+
+			this.animator.SetBool("holding", false);
 
 			base.OnExit();
 		}

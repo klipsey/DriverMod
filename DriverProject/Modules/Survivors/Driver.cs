@@ -1434,7 +1434,31 @@ false);
                 stockToConsume = 1
             });
 
-            Modules.Skills.AddUtilitySkills(prefab, slideSkillDef/*, skateboardSkillDef*/);
+            SkillDef dashSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_UTILITY_DASH_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_UTILITY_DASH_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_UTILITY_DASH_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlideIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Dash)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 2,
+                baseRechargeInterval = 5f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = true,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            Modules.Skills.AddUtilitySkills(prefab, slideSkillDef/*, dashSkillDef/*, skateboardSkillDef*/);
             #endregion
 
             #region Special
@@ -1895,6 +1919,42 @@ false);
             };
 
             skins.Add(specialForcesSkin);
+            #endregion
+
+            #region GuerrillaSkin
+            SkinDef guerrillaSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_GUERRILLA_SKIN_NAME",
+    Assets.mainAssetBundle.LoadAsset<Sprite>("texGuerrillaSkin"),
+    SkinRendererInfos(defaultRenderers, new Material[]
+    {
+                    Modules.Assets.CreateMaterial("matGuerrilla", 1f, Color.white)
+    }),
+    mainRenderer,
+    model);
+
+            guerrillaSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    renderer = mainRenderer,
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshGuerrilla")
+                }
+            };
+
+            guerrillaSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = sluggerCloth,
+                    shouldActivate = false
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = tie,
+                    shouldActivate = false
+                }
+            };
+
+            skins.Add(guerrillaSkin);
             #endregion
 
             #region SuitSkin

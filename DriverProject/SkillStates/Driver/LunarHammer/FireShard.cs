@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RobDriver.SkillStates.Driver.LunarHammer
 {
-    public class FireShard : BaseSkillState
+    public class FireShard : BaseDriverSkillState
     {
         public static float damageCoefficient = 1.8f;
         public static float baseDuration = 0.1f;
@@ -44,7 +44,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             base.PlayAnimation("LeftArm, Override", "FireShard", "Shard.playbackRate", this.duration * 5f);
 
             float recoil = FireShard.recoilAmplitude / this.attackSpeedStat;
-            base.AddRecoil(-0.4f * recoil, -0.8f * recoil, -0.3f * recoil, 0.3f * recoil);
+            base.AddRecoil2(-0.4f * recoil, -0.8f * recoil, -0.3f * recoil, 0.3f * recoil);
             base.characterBody.AddSpreadBloom(FireShard.spreadBloomValue);
 
             EffectManager.SimpleMuzzleFlash(Modules.Assets.lunarShardMuzzleFlash, base.gameObject, "HandL", false);

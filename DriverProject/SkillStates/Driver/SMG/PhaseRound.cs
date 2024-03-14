@@ -57,7 +57,7 @@ namespace RobDriver.SkillStates.Driver.SMG
 
                 float recoilAmplitude = Shoot.recoil / this.attackSpeedStat;
 
-                base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
+                base.AddRecoil2(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
                 this.characterBody.AddSpreadBloom(12f);
                 EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/MuzzleflashFMJ.prefab").WaitForCompletion(), this.gameObject, this.muzzleString, false);
 

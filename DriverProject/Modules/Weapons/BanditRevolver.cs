@@ -16,6 +16,7 @@ namespace RobDriver.Modules.Weapons
         public override Mesh mesh => Modules.Assets.LoadMesh("meshRevolver");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Bandit2/matBandit2Revolver.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;
+        public override DriverWeaponDef.BuffType buffType => DriverWeaponDef.BuffType.Crit;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "Outlaws Revolver";
         public override float dropChance => 100f;

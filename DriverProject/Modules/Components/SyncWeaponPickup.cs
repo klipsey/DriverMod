@@ -10,21 +10,24 @@ namespace RobDriver.Modules.Components
     {
         private NetworkInstanceId netId;
         private ushort weapon;
+        private bool cutAmmo;
 
         public SyncWeaponPickup()
         {
         }
 
-        public SyncWeaponPickup(NetworkInstanceId netId, ushort augh)
+        public SyncWeaponPickup(NetworkInstanceId netId, ushort augh, bool ough)
         {
             this.netId = netId;
             this.weapon = augh;
+            this.cutAmmo = ough;
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.netId = reader.ReadNetworkId();
             this.weapon = reader.ReadUInt16();
+            this.cutAmmo = reader.ReadBoolean();
         }
 
         public void OnReceived()
@@ -33,13 +36,14 @@ namespace RobDriver.Modules.Components
             if (!pickupObject) return;
 
             WeaponPickup pickupComponent = pickupObject.GetComponentInChildren<WeaponPickup>();
-            if (pickupComponent) pickupComponent.SetWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon));
+            if (pickupComponent) pickupComponent.SetWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.cutAmmo);
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(this.netId);
             writer.Write(this.weapon);
+            writer.Write(this.cutAmmo);
         }
     }
 }

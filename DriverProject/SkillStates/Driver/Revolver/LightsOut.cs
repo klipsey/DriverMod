@@ -1,6 +1,8 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
+using RoR2.UI;
+using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver.Revolver
 {
@@ -10,8 +12,17 @@ namespace RobDriver.SkillStates.Driver.Revolver
         public static float procCoefficient = 1f;
         public float baseDuration = 0.8f;
 
+        protected virtual string shootSoundString
+        {
+            get
+            {
+                return "Play_bandit2_R_fire";
+            }
+        }
+
         private float duration;
         private bool kill;
+        private CrosshairUtils.OverrideRequest crosshairOverrideRequest;
 
         public override void OnEnter()
         {
@@ -24,53 +35,82 @@ namespace RobDriver.SkillStates.Driver.Revolver
             if (this.iDrive) this.iDrive.weaponTimer = 0.1f;
 
             this.Fire();
+
+            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolverFire.prefab").WaitForCompletion(), CrosshairUtils.OverridePriority.Skill);
         }
 
         private void Fire()
         {
             EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, "PistolMuzzle", false);
 
-            Util.PlaySound("Play_bandit2_R_fire", this.gameObject);
+            Util.PlaySound(this.shootSoundString, this.gameObject);
 
             if (base.isAuthority)
             {
-                Ray aimRay = base.GetAimRay();
                 float recoil = 24f;
-                base.AddRecoil(-1f * recoil, -2f * recoil, -0.5f * recoil, 0.5f * recoil);
+                base.AddRecoil2(-1f * recoil, -2f * recoil, -0.5f * recoil, 0.5f * recoil);
 
-                new BulletAttack
-                {
-                    bulletCount = 1,
-                    aimVector = aimRay.direction,
-                    origin = aimRay.origin,
-                    damage = LightsOut.damageCoefficient * this.damageStat,
-                    damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Generic,
-                    falloffModel = BulletAttack.FalloffModel.None,
-                    maxDistance = 9999f,
-                    force = 9999f,
-                    hitMask = LayerIndex.CommonMasks.bullet,
-                    minSpread = 0f,
-                    maxSpread = 0f,
-                    isCrit = this.RollCrit(),
-                    owner = this.gameObject,
-                    muzzleName = "PistolMuzzle",
-                    smartCollision = true,
-                    procChainMask = default(ProcChainMask),
-                    procCoefficient = LightsOut.procCoefficient,
-                    radius = 1f,
-                    sniper = false,
-                    stopperMask = LayerIndex.CommonMasks.bullet,
-                    weapon = null,
-                    tracerEffectPrefab = Shoot.critTracerEffectPrefab,
-                    spreadPitchScale = 1f,
-                    spreadYawScale = 1f,
-                    queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
-                    hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                }.Fire();
+                this.FireBullet();
             }
 
             base.characterBody.AddSpreadBloom(1.25f);
+        }
+
+        protected virtual void FireBullet()
+        {
+            Ray aimRay = base.GetAimRay();
+
+            BulletAttack bulletAttack = new BulletAttack
+            {
+                bulletCount = 1,
+                aimVector = aimRay.direction,
+                origin = aimRay.origin,
+                damage = LightsOut.damageCoefficient * this.damageStat,
+                damageColorIndex = DamageColorIndex.Default,
+                damageType = DamageType.Generic,
+                falloffModel = BulletAttack.FalloffModel.None,
+                maxDistance = 9999f,
+                force = 9999f,
+                hitMask = LayerIndex.CommonMasks.bullet,
+                minSpread = 0f,
+                maxSpread = 0f,
+                isCrit = this.RollCrit(),
+                owner = this.gameObject,
+                muzzleName = "PistolMuzzle",
+                smartCollision = true,
+                procChainMask = default(ProcChainMask),
+                procCoefficient = LightsOut.procCoefficient,
+                radius = 1f,
+                sniper = false,
+                stopperMask = LayerIndex.CommonMasks.bullet,
+                weapon = null,
+                tracerEffectPrefab = Shoot.critTracerEffectPrefab,
+                spreadPitchScale = 1f,
+                spreadYawScale = 1f,
+                queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
+                hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
+            };
+
+            bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
+            {
+                if (BulletAttack.IsSniperTargetHit(hitInfo))
+                {
+                    damageInfo.damage *= 2f;
+                    damageInfo.damageColorIndex = DamageColorIndex.Sniper;
+
+                    EffectData effectData = new EffectData
+                    {
+                        origin = hitInfo.point,
+                        rotation = Quaternion.LookRotation(-hitInfo.direction)
+                    };
+
+                    effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
+                    EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Junk/Common/VFX/WeakPointProcEffect.prefab").WaitForCompletion(), effectData, true);
+                    //RoR2.Util.PlaySound("Play_SniperClassic_headshot", base.gameObject);
+                }
+            };
+
+            bulletAttack.Fire();
         }
 
         public override void FixedUpdate()
@@ -82,8 +122,16 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 if (!this.kill)
                 {
                     this.kill = true;
-                    if (this.iDrive) this.iDrive.weaponTimer = 0f;
-                    base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
+                    if (this.iDrive)
+                    {
+                        if (this.iDrive.weaponTimer == 0.1f)
+                        {
+                            this.iDrive.weaponTimer = 0f;
+                            base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
+                        }
+                        else base.PlayAnimation("Gesture, Override", "RefreshPistol");
+                    }
+                    
                 }
             }
 
@@ -96,6 +144,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
         public override void OnExit()
         {
             base.OnExit();
+            if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

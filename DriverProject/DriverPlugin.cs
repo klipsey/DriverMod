@@ -38,7 +38,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.4.1";
+        public const string MODVERSION = "1.4.4";
 
         public const string developerPrefix = "ROB";
 
@@ -76,6 +76,7 @@ namespace RobDriver
             //NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeaponPickup>();
             // kill me
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncOverlay>();
+            NetworkingAPI.RegisterMessageType<Modules.Components.SyncStoredWeapon>();
 
             Hook();
 
@@ -120,29 +121,29 @@ namespace RobDriver
 
             if (self && self.HasBuff(Modules.Buffs.woundDebuff))
             {
-                self.armor -= 20f;
+                self.armor -= 40f;
             }
 
             if (self && self.HasBuff(Modules.Buffs.syringeDamageBuff))
             {
-                self.damage += self.level * 1.5f;
+                self.damage += self.level * 2f;
             }
 
             if (self && self.HasBuff(Modules.Buffs.syringeAttackSpeedBuff))
             {
-                self.attackSpeed += 0.3f;
+                self.attackSpeed += 0.5f;
             }
 
             if (self && self.HasBuff(Modules.Buffs.syringeCritBuff))
             {
-                self.crit += 25f;
+                self.crit += 30f;
             }
 
             if (self && self.HasBuff(Modules.Buffs.syringeScepterBuff))
             {
-                self.damage += self.level * 1.5f;
-                self.attackSpeed += 0.3f;
-                self.crit += 25f;
+                self.damage += self.level * 2f;
+                self.attackSpeed += 0.5f;
+                self.crit += 30f;
             }
         }
 

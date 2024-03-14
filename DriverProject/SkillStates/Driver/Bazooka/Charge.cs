@@ -36,7 +36,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             }
 
             base.PlayAnimation("AimPitch", "ShotgunAimPitch");
-            base.PlayAnimation("Gesture, Override", "AimTwohand");
+            base.PlayCrossfade("Gesture, Override", "AimTwohand", 0.6f);
         }
 
         private float CalcCharge()

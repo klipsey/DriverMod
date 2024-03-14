@@ -5,6 +5,12 @@ namespace RobDriver.SkillStates.Driver
 {
     public class BaseDriverSkillState : BaseSkillState
     {
+        public virtual void AddRecoil2(float x1, float x2, float y1, float y2)
+        {
+            if (!Modules.Config.enableRecoil.Value) return;
+            this.AddRecoil(x1, x2, y1, y2);
+        }
+
         protected virtual bool hideGun
         {
             get

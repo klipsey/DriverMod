@@ -7,7 +7,7 @@ namespace RobDriver.SkillStates.Driver.SMG
 {
     public class Shoot : BaseDriverSkillState
     {
-        public static float damageCoefficient = 2.1f;
+        public static float damageCoefficient = 2.4f;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.21f;
         public static float force = 20f;
@@ -61,7 +61,7 @@ namespace RobDriver.SkillStates.Driver.SMG
 
                 float recoilAmplitude = Shoot.recoil / this.attackSpeedStat;
 
-                base.AddRecoil(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
+                base.AddRecoil2(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
 
                 new BulletAttack
                 {
@@ -71,7 +71,7 @@ namespace RobDriver.SkillStates.Driver.SMG
                     damage = Shoot.damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
                     damageType = DamageType.Generic,
-                    falloffModel = BulletAttack.FalloffModel.Buckshot,
+                    falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
                     hitMask = LayerIndex.CommonMasks.bullet,

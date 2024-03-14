@@ -19,6 +19,7 @@ namespace RobDriver.Modules
         internal static Color yellowItemColor = new Color(1f, 1f, 0f);
         internal static Color lunarItemColor = new Color(0f, 102f / 255f, 1f);
         internal static Color voidItemColor = new Color(198f / 255f, 120f / 255f, 180f / 255f);
+        internal static Color badColor = new Color(127f / 255f, 0f, 0f);
 
         internal static string ScepterDescription(string desc)
         {

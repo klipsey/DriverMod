@@ -29,6 +29,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
+        public static ConfigEntry<bool> enableRecoil;
         public static ConfigEntry<int> defaultWeaponIndex;
         public static ConfigEntry<bool> cursed;
 
@@ -153,6 +154,12 @@ false,
 "Old Critical Shot",
 false,
 "If set to true, will use the old critical animation which spins the gun BEFORE shooting.");
+
+            enableRecoil
+= Config.BindAndOptions("01 - General",
+"Enable Recoil",
+true,
+"Set to false to disable recoil from shooting guns.");
 
             defaultWeaponIndex
 = Config.BindAndOptions("01 - General",

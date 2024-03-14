@@ -53,7 +53,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                 if (base.isAuthority)
                 {
                     //EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/LoaderSwingBasic.prefab").WaitForCompletion(), base.gameObject, hitboxString, true);
-                    base.AddRecoil(-0.5f * Bash.recoilAmplitude * 3f, -0.5f * Bash.recoilAmplitude * 3f, -0.5f * Bash.recoilAmplitude * 8f, 0.5f * Bash.recoilAmplitude * 3f);
+                    base.AddRecoil2(-0.5f * Bash.recoilAmplitude * 3f, -0.5f * Bash.recoilAmplitude * 3f, -0.5f * Bash.recoilAmplitude * 8f, 0.5f * Bash.recoilAmplitude * 3f);
 
                     BlastAttack blastAttack = new BlastAttack();
                     blastAttack.radius = Bash.hitboxRadius;

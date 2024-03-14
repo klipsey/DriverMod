@@ -140,6 +140,28 @@ ___
 
 ## Changelog
 
+`1.4.4`
+- Added a config option to disable all weapon recoil
+- Supply Drop weapon drop now have half their maximum ammo capacity
+- Suspicious Syringe renamed to Adaptive Syringe- now gives you a buff that synergizes with your currently equipped weapon
+- Revolver's secondary now deals double damage on weakpoints
+- SMG damage: 210% > 240%, damage falloff lessened
+- Fixed awkward slide animations for two-handed weapons
+
+`1.4.3`
+- Added skin: Guerilla
+- Syringe damage buff: player level * 1.5 > player level * 2
+- Syringe attack speed buff: 30% > 50%
+- Syringe crit buff: 25% > 30%
+- Combat Knife armor reduction: 20 > 40
+- Adjusted knife swing and cancel frames to feel a bit more fluid
+- Fixed logbook model using the wrong idle animation
+- Fixed weapon pickups dropped from ally deaths being unable to grab
+
+`1.4.2`
+- Weapon catalog now inputs a message in the console telling you the index when a weapon is added
+- Fixed Sceptered Syringe giving the wrong buff
+
 `1.4.1`
 - Driver's held weapon now finally persists between stages :-)
 - Nullifier primary damage: 300% > 500%

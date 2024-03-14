@@ -18,14 +18,14 @@ namespace RobDriver.SkillStates.Driver
 
             this.damageCoefficient = 4.7f;
             this.pushForce = 200f;
-            this.baseDuration = 0.8f;
+            this.baseDuration = 1.2f;
             this.baseEarlyExitTime = 0.5f;
             this.attackRecoil = 5f / this.attackSpeedStat;
 
-            this.attackStartTime = 0.2f;
+            this.attackStartTime = 0.13f;
             this.attackEndTime = 0.5f;
 
-            this.hitStopDuration = 0.12f;
+            this.hitStopDuration = 0.18f;
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_driver_swing_knife";
@@ -94,11 +94,17 @@ namespace RobDriver.SkillStates.Driver
 
         protected override void PlayAttackAnimation()
         {
-            base.PlayCrossfade("Gesture, Override", "SwingKnife", "Action.playbackRate", this.duration, 0.1f);
+            base.PlayCrossfade("Gesture, Override", "SwingKnife", "Knife.playbackRate", this.duration, 0.1f);
         }
 
         protected override void SetNextState()
         {
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            if (this.stopwatch >= (0.5f * this.duration)) return InterruptPriority.Any;
+            else return InterruptPriority.Pain;
         }
     }
 }

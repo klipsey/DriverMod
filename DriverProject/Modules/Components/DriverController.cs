@@ -352,7 +352,7 @@ new EffectData
             {
                 if (this.IsItemGoldenGun(itemIndex))
                 {
-                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, this);
+                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, false, this);
                 }
             }
 
@@ -360,13 +360,13 @@ new EffectData
             {
                 if (this.IsItemGoldenGun2(itemIndex))
                 {
-                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, this);
+                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, false, this);
                 }
             }
 
             if (itemIndex == RoR2Content.Items.Behemoth.itemIndex)
             {
-                this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth, this);
+                this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth, false, this);
             }
         }
 
@@ -514,7 +514,7 @@ new EffectData
         public void ServerResetTimer()
         {
             // just pick up the same weapon again cuz i don't feel like writing even more netcode to sync this
-            this.ServerPickUpWeapon(this.weaponDef, this);
+            this.ServerPickUpWeapon(this.weaponDef, false, this);
         }
 
         public void ServerGetStoredWeapon(DriverWeaponDef newWeapon, float ammo, DriverController driverController)
@@ -525,12 +525,12 @@ new EffectData
             new SyncStoredWeapon(identity.netId, newWeapon.index, ammo).Send(NetworkDestination.Clients);
         }
 
-        public void ServerPickUpWeapon(DriverWeaponDef newWeapon, DriverController driverController)
+        public void ServerPickUpWeapon(DriverWeaponDef newWeapon, bool cutAmmo, DriverController driverController)
         {
             NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
             if (!identity) return;
 
-            new SyncWeapon(identity.netId, newWeapon.index).Send(NetworkDestination.Clients);
+            new SyncWeapon(identity.netId, newWeapon.index, cutAmmo).Send(NetworkDestination.Clients);
         }
 
         private void ReturnToDefaultWeapon()

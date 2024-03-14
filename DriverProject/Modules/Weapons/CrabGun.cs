@@ -16,6 +16,7 @@ namespace RobDriver.Modules.Weapons
         public override Mesh mesh => Modules.Assets.LoadMesh("meshCrabGun");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidMegaCrab.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.TwoHanded;
+        public override DriverWeaponDef.BuffType buffType => DriverWeaponDef.BuffType.AttackSpeed;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "Nullifier";
         public override float dropChance => 25f;

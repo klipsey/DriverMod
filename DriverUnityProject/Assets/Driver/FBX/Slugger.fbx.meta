@@ -75,6 +75,7 @@ ModelImporter:
     100138: meshTie
     100140: meshSniperRifle
     100142: meshSpecialForces
+    100144: meshGuerrilla
     400000: Armature
     400002: base
     400004: Bone
@@ -147,10 +148,12 @@ ModelImporter:
     400138: meshTie
     400140: meshSniperRifle
     400142: meshSpecialForces
+    400144: meshGuerrilla
     2100000: matDefault
     2100002: matSlugger
     2100004: ConvSniper_MATINST.001
     2100006: matSlugger.001
+    2100008: matSlugger.002
     2300000: meshTie
     3300000: meshTie
     4300000: meshPistol
@@ -161,6 +164,7 @@ ModelImporter:
     4300010: meshSuit2
     4300012: meshSniperRifle
     4300014: meshSpecialForces
+    4300016: meshGuerrilla
     9500000: //RootNode
     10800000: Light
     10800002: Light.001
@@ -171,6 +175,7 @@ ModelImporter:
     13700008: meshSuit2
     13700010: meshSniperRifle
     13700012: meshSpecialForces
+    13700014: meshGuerrilla
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

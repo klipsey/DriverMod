@@ -12,6 +12,13 @@ public class DriverWeaponDef : ScriptableObject
         BigMelee
     }
 
+    public enum BuffType
+    {
+        Crit,
+        Damage,
+        AttackSpeed
+    }
+
     [Header("General")]
     public string nameToken = "";
     public string descriptionToken = "";
@@ -19,6 +26,7 @@ public class DriverWeaponDef : ScriptableObject
     public GameObject crosshairPrefab = null;
     public DriverWeaponTier tier = DriverWeaponTier.Common;
     public int shotCount = 8;
+    public BuffType buffType = BuffType.Damage;
 
     [Header("Skills")]
     public SkillDef primarySkillDef;
@@ -83,6 +91,7 @@ public class DriverWeaponDef : ScriptableObject
         weaponDef.crosshairPrefab = weaponDefInfo.crosshairPrefab;
         weaponDef.tier = weaponDefInfo.tier;
         weaponDef.shotCount = weaponDefInfo.shotCount;
+        weaponDef.buffType = weaponDefInfo.buffType;
 
         weaponDef.primarySkillDef = weaponDefInfo.primarySkillDef;
         weaponDef.secondarySkillDef = weaponDefInfo.secondarySkillDef;
@@ -108,6 +117,7 @@ public struct DriverWeaponDefInfo
     public GameObject crosshairPrefab;
     public DriverWeaponTier tier;
     public int shotCount;
+    public DriverWeaponDef.BuffType buffType;
 
     public SkillDef primarySkillDef;
     public SkillDef secondarySkillDef;

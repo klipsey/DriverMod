@@ -2,6 +2,9 @@
 using RoR2;
 using EntityStates;
 using UnityEngine.AddressableAssets;
+using static RoR2.CameraTargetParams;
+using RoR2.UI;
+using RoR2.HudOverlay;
 
 namespace RobDriver.SkillStates.Driver.Revolver
 {
@@ -12,11 +15,17 @@ namespace RobDriver.SkillStates.Driver.Revolver
         private float duration;
         private GameObject effectInstance;
         private uint spinPlayID;
+        private CameraParamsOverrideHandle camParamsOverrideHandle;
+        private CrosshairUtils.OverrideRequest crosshairOverrideRequest;
+        private OverlayController overlayController;
+        private Animator animator;
 
         public override void OnEnter()
         {
             base.OnEnter();
             this.duration = AimLightsOut.baseDuration / this.attackSpeedStat;
+            this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.9f * this.duration);
+            this.animator = this.GetModelAnimator();
 
             this.effectInstance = GameObject.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/CommandoReloadFX.prefab").WaitForCompletion());
             this.effectInstance.transform.parent = this.FindModelChild("Pistol");
@@ -26,12 +35,21 @@ namespace RobDriver.SkillStates.Driver.Revolver
             this.spinPlayID = Util.PlaySound("sfx_driver_pistol_spin", this.gameObject);
 
             base.PlayAnimation("Gesture, Override", "AimLightsOut", "Action.playbackRate", this.duration);
+
+            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolver.prefab").WaitForCompletion(), CrosshairUtils.OverridePriority.Skill);
+
+            this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
+            {
+                prefab = Modules.Assets.headshotOverlay,
+                childLocatorEntry = "ScopeContainer"
+            });
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
             base.StartAimMode(0.5f);
+            this.animator.SetFloat("aimY", this.inputBank.aimDirection.y);
 
             if (base.fixedAge >= (0.9f * this.duration))
             {
@@ -48,14 +66,36 @@ namespace RobDriver.SkillStates.Driver.Revolver
             {
                 if (!this.inputBank.skill2.down)
                 {
-                    this.outer.SetNextState(new LightsOut());
+                    this.SetNextState();
                 }
+            }
+        }
+
+        protected virtual void SetNextState()
+        {
+            this.outer.SetNextState(new LightsOut());
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            if (this.effectInstance)
+            {
+                if (this.spinPlayID != 0u) AkSoundEngine.StopPlayingID(this.spinPlayID);
+                EntityState.Destroy(this.effectInstance);
+            }
+            this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
+            if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
+            if (this.overlayController != null)
+            {
+                HudOverlayManager.RemoveOverlay(this.overlayController);
+                this.overlayController = null;
             }
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.PrioritySkill;
+            return InterruptPriority.Pain;
         }
     }
 }

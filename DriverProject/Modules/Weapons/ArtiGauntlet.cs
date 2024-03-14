@@ -16,6 +16,7 @@ namespace RobDriver.Modules.Weapons
         public override Mesh mesh => Modules.Assets.LoadMesh("meshArtiGauntlet");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Mage/matMage.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;
+        public override DriverWeaponDef.BuffType buffType => DriverWeaponDef.BuffType.Damage;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "NanoGauntlet";
         public override float dropChance => 100f;

@@ -70,7 +70,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
                 float recoilAmplitude = Shoot.recoil / this.attackSpeedStat;
 
-                base.AddRecoil(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
+                base.AddRecoil2(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
 
                 new BulletAttack
                 {

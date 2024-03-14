@@ -60,7 +60,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
                 if (base.isAuthority)
                 {
-                    base.AddRecoil(-1f * this.recoil, -2f * this.recoil, -0.5f * this.recoil, 0.5f * this.recoil);
+                    base.AddRecoil2(-1f * this.recoil, -2f * this.recoil, -0.5f * this.recoil, 0.5f * this.recoil);
 
                     Ray aimRay = base.GetAimRay();
 

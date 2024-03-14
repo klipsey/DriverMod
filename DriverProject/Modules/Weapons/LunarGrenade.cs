@@ -16,6 +16,7 @@ namespace RobDriver.Modules.Weapons
         public override Mesh mesh => Modules.Assets.LoadMesh("meshLunarGrenade");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarGolem/matLunarGolem.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.TwoHanded;
+        public override DriverWeaponDef.BuffType buffType => DriverWeaponDef.BuffType.Damage;
         public override string calloutSoundString => "sfx_driver_callout_generic";
         public override string configIdentifier => "Lunar Launcher";
         public override float dropChance => 5f;
