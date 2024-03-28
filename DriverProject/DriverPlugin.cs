@@ -38,7 +38,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.4.4";
+        public const string MODVERSION = "1.5.0";
 
         public const string developerPrefix = "ROB";
 
@@ -77,6 +77,7 @@ namespace RobDriver
             // kill me
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncOverlay>();
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncStoredWeapon>();
+            NetworkingAPI.RegisterMessageType<Modules.Components.SyncDecapitation>();
 
             Hook();
 

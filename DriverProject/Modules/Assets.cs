@@ -12,6 +12,7 @@ using TMPro;
 using RoR2.UI;
 using UnityEngine.UI;
 using RobDriver.Modules.Components;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace RobDriver.Modules
 {
@@ -44,15 +45,22 @@ namespace RobDriver.Modules
 
         public static GameObject defaultCrosshairPrefab;
         public static GameObject pistolAimCrosshairPrefab;
+        public static GameObject revolverCrosshairPrefab;
+        public static GameObject smgCrosshairPrefab;
         public static GameObject bazookaCrosshairPrefab;
         public static GameObject rocketLauncherCrosshairPrefab;
         public static GameObject grenadeLauncherCrosshairPrefab;
         public static GameObject needlerCrosshairPrefab;
+        public static GameObject shotgunCrosshairPrefab;
         public static GameObject circleCrosshairPrefab;
 
         public static GameObject weaponNotificationPrefab;
         public static GameObject headshotOverlay;
         public static GameObject headshotVisualizer;
+
+        public static GameObject ammoPickupModel;
+        public static GameObject bloodExplosionEffect;
+        public static GameObject bloodSpurtEffect;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -336,6 +344,20 @@ namespace RobDriver.Modules
             chargeRing.transform.GetChild(0).gameObject.AddComponent<Modules.Components.CrosshairChargeRing>().crosshairController = pistolAimCrosshairPrefab.GetComponent<RoR2.UI.CrosshairController>();
             #endregion
 
+            #region Revolver Crosshair
+            revolverCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverRevolverCrosshair", false);
+            revolverCrosshairPrefab.GetComponent<RawImage>().enabled = false;
+            if (dynamicCrosshair) revolverCrosshairPrefab.AddComponent<DynamicCrosshair>();
+            revolverCrosshairPrefab.AddComponent<CrosshairStartRotate>();
+            #endregion
+
+            #region SMG Crosshair
+            smgCrosshairPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/StandardCrosshair.prefab").WaitForCompletion().InstantiateClone("DriverSMGCrosshair", false);
+            if (!Modules.Config.enableCrosshairDot.Value) smgCrosshairPrefab.GetComponent<RawImage>().enabled = false;
+            if (dynamicCrosshair) smgCrosshairPrefab.AddComponent<DynamicCrosshair>();
+            smgCrosshairPrefab.transform.GetChild(2).gameObject.SetActive(false);
+            #endregion
+
             #region Bazooka Crosshair
             bazookaCrosshairPrefab = PrefabAPI.InstantiateClone(LoadCrosshair("ToolbotGrenadeLauncher"), "DriverBazookaCrosshair", false);
             CrosshairController crosshair = bazookaCrosshairPrefab.GetComponent<CrosshairController>();
@@ -454,6 +476,38 @@ namespace RobDriver.Modules
 
             DriverPlugin.Destroy(needlerCrosshairPrefab.transform.GetChild(0).gameObject);
             DriverPlugin.Destroy(needlerCrosshairPrefab.transform.GetChild(1).gameObject);
+            #endregion
+
+            #region Shotgun Crosshair
+            shotgunCrosshairPrefab = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Crosshair/LoaderCrosshair"), "DriverShotgunCrosshair", false);
+            DriverPlugin.Destroy(shotgunCrosshairPrefab.GetComponent<LoaderHookCrosshairController>());
+            if (dynamicCrosshair) shotgunCrosshairPrefab.AddComponent<DynamicCrosshair>();
+
+            shotgunCrosshairPrefab.GetComponent<RawImage>().enabled = false;
+
+            control = shotgunCrosshairPrefab.GetComponent<CrosshairController>();
+
+            control.maxSpreadAlpha = 0;
+            control.maxSpreadAngle = 3;
+            control.minSpreadAlpha = 0;
+            control.spriteSpreadPositions = new CrosshairController.SpritePosition[]
+            {
+                new CrosshairController.SpritePosition
+                {
+                    target = shotgunCrosshairPrefab.transform.GetChild(2).GetComponent<RectTransform>(),
+                    zeroPosition = new Vector3(-20f, 0, 0),
+                    onePosition = new Vector3(-48f, 0, 0)
+                },
+                new CrosshairController.SpritePosition
+                {
+                    target = shotgunCrosshairPrefab.transform.GetChild(3).GetComponent<RectTransform>(),
+                    zeroPosition = new Vector3(20f, 0, 0),
+                    onePosition = new Vector3(48f, 0, 0)
+                }
+            };
+
+            DriverPlugin.Destroy(shotgunCrosshairPrefab.transform.GetChild(0).gameObject);
+            DriverPlugin.Destroy(shotgunCrosshairPrefab.transform.GetChild(1).gameObject);
             #endregion
 
             circleCrosshairPrefab = CreateCrosshair();
@@ -1000,6 +1054,30 @@ namespace RobDriver.Modules
                 }
             }
             AddNewEffectDef(scepterSyringeBuffEffectPrefab2);
+
+            bloodExplosionEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion().InstantiateClone("DriverBloodExplosion", false);
+
+            Material bloodMat = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matBloodHumanLarge.mat").WaitForCompletion();
+            Material bloodMat2 = Addressables.LoadAssetAsync<Material>("RoR2/Base/moon2/matBloodSiphon.mat").WaitForCompletion();
+
+            bloodExplosionEffect.transform.Find("Particles/LongLifeNoiseTrails").GetComponent<ParticleSystemRenderer>().material = bloodMat;
+            bloodExplosionEffect.transform.Find("Particles/LongLifeNoiseTrails, Bright").GetComponent<ParticleSystemRenderer>().material = bloodMat;
+            bloodExplosionEffect.transform.Find("Particles/Dash").GetComponent<ParticleSystemRenderer>().material = bloodMat;
+            bloodExplosionEffect.transform.Find("Particles/Dash, Bright").GetComponent<ParticleSystemRenderer>().material = bloodMat;
+            bloodExplosionEffect.transform.Find("Particles/DashRings").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/moon2/matBloodSiphon.mat").WaitForCompletion();
+            bloodExplosionEffect.GetComponentInChildren<Light>().gameObject.SetActive(false);
+
+            bloodExplosionEffect.GetComponentInChildren<PostProcessVolume>().sharedProfile = Addressables.LoadAssetAsync<PostProcessProfile>("RoR2/Base/title/ppLocalGold.asset").WaitForCompletion();
+
+            AddNewEffectDef(bloodExplosionEffect);
+
+            bloodSpurtEffect = mainAssetBundle.LoadAsset<GameObject>("BloodSpurtEffect");
+
+            bloodSpurtEffect.transform.Find("Blood").GetComponent<ParticleSystemRenderer>().material = bloodMat2;
+            bloodSpurtEffect.transform.Find("Trails").GetComponent<ParticleSystemRenderer>().trailMaterial = bloodMat2;
+
+            ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup");
+            ConvertAllRenderersToHopooShader(ammoPickupModel);
         }
 
         private static GameObject CreateTracer(string originalTracerName, string newTracerName)
@@ -1248,7 +1326,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_SHOTGUN_NAME",
                 descriptionToken = "ROB_DRIVER_SHOTGUN_DESC",
                 icon = Assets.shotgunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("SMG"),
+                crosshairPrefab = shotgunCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 shotCount = 8,
                 primarySkillDef = Survivors.Driver.shotgunPrimarySkillDef,
@@ -1267,7 +1345,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_RIOT_SHOTGUN_NAME",
                 descriptionToken = "ROB_DRIVER_RIOT_SHOTGUN_DESC",
                 icon = Assets.riotShotgunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("SMG"),
+                crosshairPrefab = shotgunCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 shotCount = 8,
                 primarySkillDef = Survivors.Driver.riotShotgunPrimarySkillDef,
@@ -1286,7 +1364,7 @@ namespace RobDriver.Modules
                 nameToken = "ROB_DRIVER_SLUG_SHOTGUN_NAME",
                 descriptionToken = "ROB_DRIVER_SLUG_SHOTGUN_DESC",
                 icon = Assets.slugShotgunWeaponIcon,
-                crosshairPrefab = Assets.LoadCrosshair("SMG"),
+                crosshairPrefab = shotgunCrosshairPrefab,
                 tier = DriverWeaponTier.Uncommon,
                 shotCount = 8,
                 primarySkillDef = Survivors.Driver.slugShotgunPrimarySkillDef,

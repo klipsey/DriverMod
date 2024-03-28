@@ -49,6 +49,7 @@ namespace RobDriver.Modules.Components
         {
             writer.Write(this.netId);
             writer.Write(this.weapon);
+            writer.Write(this.cutAmmo);
         }
     }
 }

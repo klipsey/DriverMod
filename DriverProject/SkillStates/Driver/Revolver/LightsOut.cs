@@ -106,7 +106,8 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
                     effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
                     EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Junk/Common/VFX/WeakPointProcEffect.prefab").WaitForCompletion(), effectData, true);
-                    //RoR2.Util.PlaySound("Play_SniperClassic_headshot", base.gameObject);
+                    Util.PlaySound("sfx_driver_headshot", base.gameObject);
+                    hitInfo.hitHurtBox.healthComponent.gameObject.AddComponent<Modules.Components.DriverHeadshotTracker>();
                 }
             };
 

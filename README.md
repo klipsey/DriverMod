@@ -134,11 +134,20 @@ Big thanks to everyone in the community for all the valuable feedback and critic
 - Unique secondary skills for each weapon; these are difficult to come up with, so feel free to hit me with any ideas!
 
 ## Known Issues
-- Some weapons are missing descriptions for their abilities
+- Some weapons are missing icons or descriptions for their abilities
 
 ___
 
 ## Changelog
+
+`1.5.0`
+- Added a new unlockable passive
+- Updated crosshairs for a handful of guns
+- Revolver's secondary now has an awesome headshot kill effect
+- Fixed Supply Drop resetting secondary stocks (courtesy of tsuyoikenko!)
+
+`1.4.5`
+- Multiplayer fix
 
 `1.4.4`
 - Added a config option to disable all weapon recoil

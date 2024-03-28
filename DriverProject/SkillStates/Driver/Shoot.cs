@@ -87,6 +87,8 @@ namespace RobDriver.SkillStates.Driver
 
                 this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration * 1.5f);
             }
+
+            if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
         }
 
         public override void OnExit()
@@ -224,6 +226,12 @@ namespace RobDriver.SkillStates.Driver
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
+                if (this.iDrive.passive.isPistolOnly)
+                {
+                    this.outer.SetNextState(new WaitForReload());
+                    return;
+                }
+
                 this.outer.SetNextStateToMain();
                 return;
             }

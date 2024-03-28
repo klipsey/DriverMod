@@ -10,7 +10,7 @@ namespace RobDriver.Modules.Weapons
         public override string weaponName => "Revolver";
         public override string weaponDesc => "High damage shots with a lethal finisher.";
         public override string iconName => "texRevolverWeaponIcon";
-        public override GameObject crosshairPrefab => Modules.Assets.defaultCrosshairPrefab;
+        public override GameObject crosshairPrefab => Modules.Assets.revolverCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Uncommon;
         public override int shotCount => 6;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshRevolver");

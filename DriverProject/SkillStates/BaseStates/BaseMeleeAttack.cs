@@ -159,7 +159,7 @@ namespace RobDriver.SkillStates.BaseStates
 
                 if (base.isAuthority)
                 {
-                    base.AddRecoil(-1f * this.attackRecoil, -2f * this.attackRecoil, -0.5f * this.attackRecoil, 0.5f * this.attackRecoil);
+                    base.AddRecoil2(-1f * this.attackRecoil, -2f * this.attackRecoil, -0.5f * this.attackRecoil, 0.5f * this.attackRecoil);
                 }
             }
 

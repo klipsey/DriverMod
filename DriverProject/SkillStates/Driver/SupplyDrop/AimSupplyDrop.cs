@@ -14,6 +14,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
 
         private CameraParamsOverrideHandle camParamsOverrideHandle;
         protected GameObject areaIndicatorInstance { get; set; }
+        private int storedSecondaryStock;
+        private float storedSecondaryRechargeStopwatch;
 
         public override void OnEnter()
         {
@@ -32,6 +34,9 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 this.areaIndicatorInstance = UnityEngine.Object.Instantiate<GameObject>(EntityStates.Huntress.ArrowRain.areaIndicatorPrefab);
                 this.areaIndicatorInstance.transform.localScale = Vector3.zero;
             }
+
+            this.storedSecondaryStock = this.skillLocator.secondary.stock;
+            this.storedSecondaryRechargeStopwatch = this.skillLocator.secondary.rechargeStopwatch;
 
             this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Network);
             this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Network);
@@ -145,6 +150,9 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             this.skillLocator.primary.UnsetSkillOverride(this.skillLocator.primary, Modules.Survivors.Driver.confirmSkillDef, GenericSkill.SkillOverridePriority.Network);
             this.skillLocator.secondary.UnsetSkillOverride(this.skillLocator.secondary, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Network);
             //this.skillLocator.special.UnsetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+
+            this.skillLocator.secondary.stock = this.storedSecondaryStock;
+            this.skillLocator.secondary.rechargeStopwatch = this.storedSecondaryRechargeStopwatch;
         }
 
         protected virtual void HideButton()

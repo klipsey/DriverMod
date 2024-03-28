@@ -50,8 +50,8 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Survivalist");
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"Enemies have a chance to drop a new <style=cIsUtility>weapon</style>. These give you <style=cIsDamage>powerful attacks</style> for a limited time!");
 
-            LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Expert");
-            LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"<style=cIsHealth>Lose the ability to pick up weapons</style>. Instead, they give your pistol <style=cIsDamage>damage buffs</style> for a short time.");
+            LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Marksman");
+            LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
             LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
@@ -63,6 +63,9 @@ namespace RobDriver.Modules
             #region Primary
             LanguageAPI.Add(prefix + "PRIMARY_PISTOL_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * SkillStates.Driver.Shoot.damageCoefficient}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
+
+            LanguageAPI.Add(prefix + "PRIMARY_RELOAD_NAME", "Reload");
+            LanguageAPI.Add(prefix + "PRIMARY_RELOAD_DESCRIPTION", $"Reload your pistol.");
 
             LanguageAPI.Add(prefix + "PRIMARY_PYRITE_PISTOL_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_PYRITE_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * 2.5f}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
@@ -239,6 +242,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Locked and Loaded");
             LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Locked and Loaded");
             LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, complete a teleporter event without letting any briefcases despawn.");
+
+            LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Professional Killer");
+            LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Professional Killer");
+            LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, complete a teleporter event without picking up any weapons.");
 
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");

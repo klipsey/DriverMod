@@ -10,7 +10,7 @@ namespace RobDriver.Modules.Weapons
         public override string weaponName => "Worn SMG";
         public override string weaponDesc => "An SMG that's seen better days.";
         public override string iconName => "texCommandoSMGWeaponIcon";
-        public override GameObject crosshairPrefab => Modules.Assets.defaultCrosshairPrefab;
+        public override GameObject crosshairPrefab => Modules.Assets.smgCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Unique;
         public override int shotCount => 64;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshCommandoGun");

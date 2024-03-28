@@ -367,6 +367,8 @@ ModelImporter:
     7400166: Armature|AimLightsOutUp
     7400168: Armature|RefreshPistol
     7400170: Armature|Heal
+    7400172: Armature|ReloadPistol
+    7400174: Armature|ReloadPistolAim
     9500000: //RootNode
     10800000: Light
     10800002: Light.001

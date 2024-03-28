@@ -3,6 +3,8 @@ using RoR2;
 using EntityStates;
 using static RoR2.CameraTargetParams;
 using UnityEngine.Networking;
+using RoR2.HudOverlay;
+using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -15,6 +17,8 @@ namespace RobDriver.SkillStates.Driver
         public static float recoil = 0.5f;
 
         protected bool lastCharge;
+
+        public bool skipAnim = false;
 
         protected virtual bool isPiercing
         {
@@ -41,7 +45,8 @@ namespace RobDriver.SkillStates.Driver
             }
         }
 
-        private CameraParamsOverrideHandle camParamsOverrideHandle;
+        public CameraParamsOverrideHandle camParamsOverrideHandle;
+        private OverlayController overlayController;
         private float shotCooldown;
         private float chargeTimer;
         private float chargeDuration;
@@ -54,15 +59,15 @@ namespace RobDriver.SkillStates.Driver
         private bool autoFocus;
         private bool cancelling;
         private bool adaptiveFocus;
+        private bool reloading;
 
         private bool jamFlag; // fired shortly after entering state
 
         public override void OnEnter()
         {
             base.OnEnter();
-            this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.5f);
+            if (!this.camParamsOverrideHandle.isValid) this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.5f);
 
-            this.PlayAnim();
             base.PlayAnimation("AimPitch", "SteadyAimPitch");
 
             if (NetworkServer.active) this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
@@ -83,7 +88,22 @@ namespace RobDriver.SkillStates.Driver
             if (this.adaptiveFocus && this.chargeDuration <= 0.1f) this.autoFocus = true;
             if (this._autoFocus) this.autoFocus = true;
 
+            if (!this.skipAnim)
+            {
+                this.PlayAnim();
+                Util.PlaySound("sfx_driver_aim_foley", this.gameObject);
+            }
+
             this.FindModelChild("PistolSight").gameObject.SetActive(true);
+
+            if (this.iDrive.passive.isPistolOnly)
+            {
+                this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
+                {
+                    prefab = Modules.Assets.headshotOverlay,
+                    childLocatorEntry = "ScopeContainer"
+                });
+            }
         }
 
         protected virtual void PlayAnim()
@@ -124,6 +144,12 @@ namespace RobDriver.SkillStates.Driver
                 return;
             }
 
+            if (this.reloading && this.shotCooldown <= 0f)
+            {
+                this.reloading = false;
+                this.iDrive.FinishReload();
+            }
+
             if (this.skillLocator.secondary.stock < 1)
             {
                 this.isCharged = false;
@@ -143,33 +169,56 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (this.shotCooldown <= 0f && base.isAuthority)
+            if (this.iDrive.weaponTimer <= 0f && this.iDrive.passive.isPistolOnly)
             {
-                if (this.autoFocus)
+                if (this.shotCooldown <= 0f)
                 {
-                    if (this.inputBank.skill1.down)
+                    if (this.inputBank.skill1.down && base.isAuthority)
                     {
-                        if (this.skillLocator.secondary.stock > 0)
+                        this.outer.SetNextState(new ReloadPistol
                         {
-                            if (this.isCharged)
+                            animString = "SteadyAimReload",
+                            camParamsOverrideHandle = this.camParamsOverrideHandle,
+                            aiming = true
+                        });
+                        this.reloading = true;
+                        /*this.shotCooldown = 2.4f / this.attackSpeedStat;
+                        this.reloading = true;
+                        base.PlayCrossfade("Gesture, Override", "SteadyAimReload", "Action.playbackRate", this.shotCooldown, 0.1f);
+                        Util.PlaySound("sfx_driver_reload_01", this.gameObject);*/
+                    }
+                }
+            }
+            else
+            {
+                if (this.shotCooldown <= 0f && base.isAuthority)
+                {
+                    if (this.autoFocus)
+                    {
+                        if (this.inputBank.skill1.down)
+                        {
+                            if (this.skillLocator.secondary.stock > 0)
+                            {
+                                if (this.isCharged)
+                                {
+                                    this.isCrit = this.RollCrit();
+                                    this.Fire();
+                                }
+                            }
+                            else
                             {
                                 this.isCrit = this.RollCrit();
                                 this.Fire();
                             }
                         }
-                        else
+                    }
+                    else
+                    {
+                        if (this.inputBank.skill1.down)
                         {
                             this.isCrit = this.RollCrit();
                             this.Fire();
                         }
-                    }
-                }
-                else
-                {
-                    if (this.inputBank.skill1.down)
-                    {
-                        this.isCrit = this.RollCrit();
-                        this.Fire();
                     }
                 }
             }
@@ -183,7 +232,7 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (!this.inputBank.skill2.down && base.isAuthority)
+            if (!this.inputBank.skill2.down && base.isAuthority && !this.reloading)
             {
                 if (this.jamFlag && this.shotCooldown > 0f)
                 {
@@ -198,6 +247,11 @@ namespace RobDriver.SkillStates.Driver
                     }
                 }
 
+                if (this.iDrive.passive.isPistolOnly && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
+                {
+                    this.outer.SetNextState(new WaitForReload());
+                    return;
+                }
                 this.outer.SetNextStateToMain();
             }
 
@@ -241,6 +295,8 @@ namespace RobDriver.SkillStates.Driver
 
         public virtual void Fire()
         {
+            if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
+
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
             if (base.fixedAge <= 0.25f) this.jamFlag = true;
@@ -327,7 +383,7 @@ namespace RobDriver.SkillStates.Driver
                 }
                 else
                 {
-                    new BulletAttack
+                    BulletAttack bulletAttack = new BulletAttack
                     {
                         bulletCount = 1,
                         aimVector = aimRay.direction,
@@ -356,7 +412,35 @@ namespace RobDriver.SkillStates.Driver
                         spreadYawScale = 0f,
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                    }.Fire();
+                    };
+
+                    if (this.iDrive.passive.isPistolOnly)
+                    {
+                        bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
+                        {
+                            if (BulletAttack.IsSniperTargetHit(hitInfo))
+                            {
+                                damageInfo.damage *= 2f;
+                                damageInfo.damageColorIndex = DamageColorIndex.Sniper;
+
+                                if (wasCharged)
+                                {
+                                    EffectData effectData = new EffectData
+                                    {
+                                        origin = hitInfo.point,
+                                        rotation = Quaternion.LookRotation(-hitInfo.direction)
+                                    };
+
+                                    effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
+                                    EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Junk/Common/VFX/WeakPointProcEffect.prefab").WaitForCompletion(), effectData, true);
+                                    Util.PlaySound("sfx_driver_headshot", base.gameObject);
+                                    hitInfo.hitHurtBox.healthComponent.gameObject.AddComponent<Modules.Components.DriverHeadshotTracker>();
+                                }
+                            }
+                        };
+                    }
+
+                    bulletAttack.Fire();
                 }
             }
         }
@@ -388,7 +472,7 @@ namespace RobDriver.SkillStates.Driver
 
                 GameObject tracerPrefab = Shoot.critTracerEffectPrefab;
 
-                new BulletAttack
+                BulletAttack bulletAttack = new BulletAttack
                 {
                     bulletCount = (uint)bulletCount,
                     aimVector = aimRay.direction,
@@ -417,7 +501,35 @@ namespace RobDriver.SkillStates.Driver
                     spreadYawScale = 0f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                }.Fire();
+                };
+
+                if (this.iDrive.passive.isPistolOnly)
+                {
+                    bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
+                    {
+                        if (BulletAttack.IsSniperTargetHit(hitInfo))
+                        {
+                            damageInfo.damage *= 2f;
+                            damageInfo.damageColorIndex = DamageColorIndex.Sniper;
+
+                            if (this.lastCharge)
+                            {
+                                EffectData effectData = new EffectData
+                                {
+                                    origin = hitInfo.point,
+                                    rotation = Quaternion.LookRotation(-hitInfo.direction)
+                                };
+
+                                effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
+                                EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Junk/Common/VFX/WeakPointProcEffect.prefab").WaitForCompletion(), effectData, true);
+                                Util.PlaySound("sfx_driver_headshot", base.gameObject);
+                                hitInfo.hitHurtBox.healthComponent.gameObject.AddComponent<Modules.Components.DriverHeadshotTracker>();
+                            }
+                        }
+                    };
+                }
+
+                bulletAttack.Fire();
             }
         }
 
@@ -431,11 +543,17 @@ namespace RobDriver.SkillStates.Driver
 
             this.PlayExitAnim();
             base.PlayAnimation("AimPitch", "AimPitch");
-            this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
+            if (!this.reloading) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
 
             if (this.characterBody.master && this.characterBody.master.inventory)
             {
                 this.characterBody.master.inventory.onInventoryChanged -= Inventory_onInventoryChanged;
+            }
+
+            if (this.overlayController != null)
+            {
+                HudOverlayManager.RemoveOverlay(this.overlayController);
+                this.overlayController = null;
             }
 
             if (!this.cancelling) this.characterBody._defaultCrosshairPrefab = this.iDrive.crosshairPrefab;

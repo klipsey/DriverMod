@@ -59,6 +59,7 @@ namespace RobDriver.Modules.Components
 
         public float maxWeaponTimer;
         public float weaponTimer;
+        public DriverPassive passive;
         private float comboDecay = 1f;
         private DriverWeaponDef pistolWeaponDef;
         private SkinnedMeshRenderer weaponRenderer;
@@ -89,6 +90,7 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef lastWeaponDef;
         private WeaponNotificationQueue notificationQueue;
+        private bool needReload;
 
         public float ammo
         {
@@ -107,6 +109,7 @@ namespace RobDriver.Modules.Components
             }*/
             // probably won't be used but who knows
 
+            this.passive = this.GetComponent<DriverPassive>();
             this.characterBody = this.GetComponent<CharacterBody>();
             ModelLocator modelLocator = this.GetComponent<ModelLocator>();
             this.childLocator = modelLocator.modelBaseTransform.GetComponentInChildren<ChildLocator>();
@@ -159,6 +162,12 @@ namespace RobDriver.Modules.Components
         private void Start()
         {
             this.InitShells();
+
+            if (this.passive.isPistolOnly)
+            {
+                this.maxWeaponTimer = 13f;
+                this.weaponTimer = 13f;
+            }
         }
 
         private void SetInventoryHook()
@@ -481,7 +490,18 @@ new EffectData
 
             if (this.weaponTimer <= 0f && this.maxWeaponTimer > 0f)
             {
-                this.ReturnToDefaultWeapon();
+                if (this.passive.isPistolOnly)
+                {
+                    if (!this.needReload)
+                    {
+                        this.needReload = true;
+                        this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    }
+                }
+                else
+                {
+                    this.ReturnToDefaultWeapon();
+                }
             }
 
             this.CheckSupplyDrop();
@@ -549,9 +569,26 @@ new EffectData
             newEffect.transform.rotation = this.characterBody.modelLocator.modelTransform.rotation;
             newEffect.transform.position = this.childLocator.FindChild("Pistol").position + (Vector3.up * 0.5f);
         }
+        
+        public void FinishReload()
+        {
+            if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+
+            this.needReload = false;
+            this.weaponTimer = 13f;
+            this.maxWeaponTimer = 13f;
+        }
 
         public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f)
         {
+            if (this.passive.isPistolOnly)
+            {
+                this.FinishReload();
+                return;
+            }
+
+            if (this.weaponDef != newWeapon) Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
+
             this.timerStarted = false;
             this.weaponDef = newWeapon;
 
@@ -668,6 +705,8 @@ new EffectData
 
             if (this.weaponDef.tier == DriverWeaponTier.Common) duration = 0f;
             if (this.weaponDef.shotCount == 0) duration = 0f;
+
+            if (this.passive.isPistolOnly) duration = 13f;
 
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;

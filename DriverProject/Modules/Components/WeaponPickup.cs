@@ -43,6 +43,40 @@ namespace RobDriver.Modules.Components
 				}
 			}
 
+			// swap to ammo visuals
+			foreach (LocalUser i in LocalUserManager.readOnlyLocalUsersList)
+			{
+				if (i.cachedBody.hasEffectiveAuthority)
+				{
+					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken)
+                    {
+						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly)
+						{
+							RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
+							if (textComponent)
+							{
+								textComponent.gameObject.SetActive(false);
+							}
+
+							BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+							if (blinker)
+							{
+								foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
+								{
+									h.enabled = false;
+								}
+
+								GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+								p.transform.localPosition = Vector3.zero;
+								p.transform.localRotation = Quaternion.identity;
+							}
+						}
+                    }
+					
+					break;
+				}
+			}
+
 			// uh will this work?
 			/*if (Run.instance)
 			{

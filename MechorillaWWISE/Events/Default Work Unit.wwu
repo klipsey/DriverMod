@@ -817,6 +817,72 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_blood_gurgle" ID="{167849B7-2E53-4482-A39B-84BFD300A2E6}">
+					<ChildrenList>
+						<Action Name="" ID="{FE76F7B5-F5DD-473B-96C8-6D874F83AFFA}" ShortID="389277084">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_blood_gurgle" ID="{59432486-C2C4-4622-8909-C828B782CC74}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_headshot" ID="{A4A654E6-7C5C-4053-A69C-D6C13C018A18}">
+					<ChildrenList>
+						<Action Name="" ID="{8B392660-5B3C-4512-9EBC-906578807899}" ShortID="665334496">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_headshot" ID="{EF9453B1-E36D-4760-B57B-44308EC3E029}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_aim_foley" ID="{4E23BF9E-538B-4EA0-A039-6510958D42A8}">
+					<ChildrenList>
+						<Action Name="" ID="{7AD36FC0-D14C-4CB0-87E6-1502F392D973}" ShortID="587257016">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_aim_foley" ID="{2171215D-E251-4C80-9D1E-955D3B9699D1}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_reload_01" ID="{56F9D462-2896-44B9-94BF-D790FDAF68FE}">
+					<ChildrenList>
+						<Action Name="" ID="{BE749076-11C6-4DAF-A1AA-A3C07B753CF1}" ShortID="1001905111">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_reload_01" ID="{F6660C01-EFCC-4D72-A77F-61BAFF91C4DF}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_reload_02" ID="{77EC6318-3274-40FB-A92B-A8FC379669B1}">
+					<ChildrenList>
+						<Action Name="" ID="{278EB648-F0F9-48E4-8ED9-6E205F3259EA}" ShortID="183668169">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_reload_02" ID="{36B7863D-C76A-402F-B99C-7AE98BFC6724}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_reload_03" ID="{3F13C98F-3E49-485D-92BD-BB6107DD4040}">
+					<ChildrenList>
+						<Action Name="" ID="{2D266137-2966-48A4-A04A-0EB8A9BC5B3E}" ShortID="632920794">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_reload_03" ID="{ED43E91D-A4A6-47C8-AFAA-19343FCC4FF8}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

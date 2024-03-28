@@ -239,8 +239,8 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         };
 
                         effectData.SetHurtBoxReference(hitInfo.hitHurtBox);
-                        //EffectManager.SpawnEffect(BaseSnipeState.headshotEffectPrefab, effectData, true);
-                        //RoR2.Util.PlaySound("Play_SniperClassic_headshot", base.gameObject);
+                        EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Junk/Common/VFX/WeakPointProcEffect.prefab").WaitForCompletion(), effectData, true);
+                        Util.PlaySound("sfx_driver_headshot", base.gameObject);
                     }
                 };
 

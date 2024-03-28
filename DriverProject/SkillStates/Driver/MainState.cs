@@ -69,7 +69,7 @@ namespace RobDriver.SkillStates.Driver
 
 		private void FindLocalUser()
 		{
-			if (localUser == null)
+			if (this.localUser == null)
 			{
 				if (base.characterBody)
 				{

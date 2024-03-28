@@ -21,8 +21,8 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             base.OnEnter();
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_SNIPER, 0.2f);
 
-            base.PlayAnimation("Gesture, Override", "AimTwohand");
-            base.PlayAnimation("AimPitch", "ShotgunAimPitch");
+            base.PlayCrossfade("Gesture, Override", "AimTwohand", 0.2f);
+            base.PlayCrossfade("AimPitch", "ShotgunAimPitch", 0.1f);
 
             this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 

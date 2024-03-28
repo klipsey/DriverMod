@@ -1,5 +1,6 @@
 ﻿using EntityStates;
 using R2API;
+using RobDriver.Modules.Components;
 using RoR2;
 using RoR2.Skills;
 using System;
@@ -23,6 +24,12 @@ namespace RobDriver.Modules
             }
 
             SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
+
+            DriverPassive passive = targetPrefab.GetComponent<DriverPassive>();
+            if (passive)
+            {
+                passive.passiveSkillSlot = CreateGenericSkillWithSkillFamily(targetPrefab, "Passive");
+            }
 
             if ((families & (1 << 0)) != 0) {
                 skillLocator.primary = CreateGenericSkillWithSkillFamily(targetPrefab, "Primary");
@@ -86,6 +93,10 @@ namespace RobDriver.Modules
         }
         public static void AddSpecialSkills(GameObject targetPrefab, params SkillDef[] skillDefs) {
             AddSkillsToFamily(targetPrefab.GetComponent<SkillLocator>().special.skillFamily, skillDefs);
+        }
+        public static void AddPassiveSkills(SkillFamily passiveSkillFamily, params SkillDef[] skillDefs)
+        {
+            AddSkillsToFamily(passiveSkillFamily, skillDefs);
         }
 
         /// <summary>

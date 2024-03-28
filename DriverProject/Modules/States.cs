@@ -18,6 +18,8 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.JammedGun));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.BaseDriverSkillState));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Shoot));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.WaitForReload));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.ReloadPistol));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Slide));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SteadyAim));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ThrowGrenade));

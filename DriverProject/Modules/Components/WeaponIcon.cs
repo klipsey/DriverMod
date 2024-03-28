@@ -54,7 +54,13 @@ namespace RobDriver.Modules.Components
 
 		private void UpdateDisplay()
         {
-			if (this.iDrive.weaponTimer > 0f)
+			if (this.iDrive.passive.isPistolOnly)
+            {
+				this.durationDisplay.SetActive(false);
+				return;
+            }
+
+			if (this.iDrive.maxWeaponTimer > 0f)
             {
 				this.durationDisplay.SetActive(true);
 

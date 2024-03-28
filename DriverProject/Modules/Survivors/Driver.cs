@@ -15,6 +15,7 @@ using System.Linq;
 using RobDriver.Modules.Components;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
+using UnityEngine.UI;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -49,6 +50,7 @@ namespace RobDriver.Modules.Survivors
         internal static UnlockableDef suitUnlockableDef;
 
         internal static UnlockableDef supplyDropUnlockableDef;
+        internal static UnlockableDef pistolPassiveUnlockableDef;
 
         // skill overrides
         internal static SkillDef lunarPistolPrimarySkillDef;
@@ -123,6 +125,8 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef golemGunPrimarySkillDef;
         internal static SkillDef golemGunSecondarySkillDef;
 
+        internal static SkillDef pistolReloadSkillDef;
+
         internal static SkillDef confirmSkillDef;
         internal static SkillDef cancelSkillDef;
 
@@ -151,6 +155,7 @@ namespace RobDriver.Modules.Survivors
                 suitUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SuitAchievement>();
 
                 supplyDropUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SupplyDropAchievement>();
+                pistolPassiveUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverPistolPassiveAchievement>();
 
                 if (!forceUnlock.Value) characterUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverUnlockAchievement>();
 
@@ -505,15 +510,40 @@ namespace RobDriver.Modules.Survivors
 
         private static void CreateSkills(GameObject prefab)
         {
+            DriverPassive passive = prefab.AddComponent<DriverPassive>();
             Modules.Skills.CreateSkillFamilies(prefab);
 
             string prefix = DriverPlugin.developerPrefix;
             SkillLocator skillLocator = prefab.GetComponent<SkillLocator>();
 
-            skillLocator.passiveSkill.enabled = true;
-            skillLocator.passiveSkill.skillNameToken = prefix + "_DRIVER_BODY_PASSIVE_NAME";
-            skillLocator.passiveSkill.skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE_DESCRIPTION";
-            skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
+            skillLocator.passiveSkill.enabled = false;
+            //skillLocator.passiveSkill.skillNameToken = prefix + "_DRIVER_BODY_PASSIVE_NAME";
+            //skillLocator.passiveSkill.skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE_DESCRIPTION";
+            //skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
+
+            Driver.pistolReloadSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_RELOAD_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_RELOAD_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_RELOAD_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texConfirmIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ReloadPistol)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+            });
 
             Driver.confirmSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
@@ -562,6 +592,65 @@ namespace RobDriver.Modules.Survivors
                 requiredStock = 1,
                 stockToConsume = 0,
             });
+
+
+            #region Passive
+            passive.defaultPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_PASSIVE_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PASSIVE_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
+            passive.pistolOnlyPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE2_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texAltPassiveIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
+            Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                passive.defaultPassive,
+                passive.pistolOnlyPassive
+            });
+
+            Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
+                null, pistolPassiveUnlockableDef);
+            #endregion
 
             #region Primary
             Modules.Skills.AddPrimarySkills(prefab,
@@ -1611,7 +1700,7 @@ false);
                 skillName = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropIcon"),
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropLegacyIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SupplyDrop.AimSupplyDrop)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -1635,7 +1724,7 @@ false);
                 skillName = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_SCEPTER_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropScepterIcon"),
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSupplyDropLegacyScepterIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SupplyDrop.Scepter.AimVoidDrop)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -2582,6 +2671,19 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 // weapon drops
                 if (isDriverOnPlayerTeam)
                 {
+                    // headshot first
+                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                    {
+                        if (damageReport.victim.GetComponent<DriverHeadshotTracker>())
+                        {
+                            NetworkIdentity identity = damageReport.victim.gameObject.GetComponent<NetworkIdentity>();
+                            if (identity)
+                            {
+                                new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
+                            }
+                        }
+                    }
+
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
                     bool fuckMyAss = chance >= 100f;
@@ -2748,6 +2850,41 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 _new.notificationQueue = hud.targetMaster.gameObject.AddComponent<WeaponNotificationQueue>();
 
                 _old.enabled = false;
+
+
+
+                // ammo display for alt passive
+
+                Transform healthbarContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster");
+
+                if (!hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("AmmoTracker"))
+                {
+                    GameObject ammoTracker = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+                    ammoTracker.name = "AmmoTracker";
+                    ammoTracker.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
+
+                    GameObject.DestroyImmediate(ammoTracker.transform.GetChild(0).gameObject);
+                    MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<LevelText>());
+                    MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<ExpBar>());
+
+                    AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
+                    ammoTrackerComponent.targetHUD = hud;
+                    ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
+
+                    ammoTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
+
+                    //ammoTracker.transform.Find("ExpBarRoot").GetChild(0).GetComponent<Image>().enabled = true;
+
+                    ammoTracker.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
+
+                    rect = ammoTracker.GetComponent<RectTransform>();
+                    rect.localScale = new Vector3(0.8f, 0.8f, 1f);
+                    rect.anchorMin = new Vector2(0f, 0f);
+                    rect.anchorMax = new Vector2(0f, 0f);
+                    rect.pivot = new Vector2(0.5f, 0f);
+                    rect.anchoredPosition = new Vector2(50f, 0f);
+                    rect.localPosition = new Vector3(50f, -95f, 0f);
+                }
             }
         }
 

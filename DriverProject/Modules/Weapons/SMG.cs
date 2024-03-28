@@ -10,7 +10,7 @@ namespace RobDriver.Modules.Weapons
         public override string weaponName => "Submachine Gun";
         public override string weaponDesc => "Close-range gun with high damage and equally high spread.";
         public override string iconName => "texSMGWeaponIcon";
-        public override GameObject crosshairPrefab => Modules.Assets.defaultCrosshairPrefab;
+        public override GameObject crosshairPrefab => Modules.Assets.smgCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Uncommon;
         public override int shotCount => 48;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshCommandoGun");
