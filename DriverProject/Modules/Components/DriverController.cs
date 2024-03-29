@@ -165,8 +165,8 @@ namespace RobDriver.Modules.Components
 
             if (this.passive.isPistolOnly)
             {
-                this.maxWeaponTimer = 13f;
-                this.weaponTimer = 13f;
+                this.maxWeaponTimer = 26f;
+                this.weaponTimer = 26f;
             }
         }
 
@@ -575,8 +575,8 @@ new EffectData
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
 
             this.needReload = false;
-            this.weaponTimer = 13f;
-            this.maxWeaponTimer = 13f;
+            this.weaponTimer = 26f;
+            this.maxWeaponTimer = 26f;
         }
 
         public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f)
@@ -705,8 +705,6 @@ new EffectData
 
             if (this.weaponDef.tier == DriverWeaponTier.Common) duration = 0f;
             if (this.weaponDef.shotCount == 0) duration = 0f;
-
-            if (this.passive.isPistolOnly) duration = 13f;
 
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;

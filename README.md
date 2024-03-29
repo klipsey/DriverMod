@@ -111,6 +111,8 @@ Swuff - Code help, feedback, networking help
 
 Bog - Code for Shuriken interaction fix
 
+tsuyoikenko - Code for Supply Drop bugfix
+
 Hyperinvox - Briefcases, Plasma Cannon model
 
 Bruh - Riot Shotgun, Golden Gun, Nemesis gun models
@@ -140,11 +142,17 @@ ___
 
 ## Changelog
 
+`1.5.1`
+- Pistol reload time reduced by 50%
+- Pistol mag size increased from 13 to 26
+
 `1.5.0`
 - Added a new unlockable passive
+- Added an ammo display below the crosshair
 - Updated crosshairs for a handful of guns
 - Revolver's secondary now has an awesome headshot kill effect
 - Fixed Supply Drop resetting secondary stocks (courtesy of tsuyoikenko!)
+- Probably some other misc things I'm forgetting
 
 `1.4.5`
 - Multiplayer fix
