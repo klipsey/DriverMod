@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "T2UtDgb8WP0XjPxMWSTppyfmwrP2QIvSJ99cF6CxgTM296Ky45PrvTHi4Wq4sBU3KXhOVBAtP7nzBVSRc2ZnmA==",
+  "dgSpecHash": "20VOO12FPgFRSjdx6n4c+y/KsQGu3f211TSOcs//CrWyVBMEIcqCQosrscyPhtbUAcIMwsCYoz2diRqMsm0lQg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\mario\\source\\repos\\DriverMod\\DriverProject\\DriverMod.csproj",
+  "projectFilePath": "C:\\Users\\mario\\Desktop\\repos\\DriverProject\\DriverMod.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mario\\.nuget\\packages\\bepinex.analyzers\\1.0.8\\bepinex.analyzers.1.0.8.nupkg.sha512",
     "C:\\Users\\mario\\.nuget\\packages\\bepinex.baselib\\5.4.19\\bepinex.baselib.5.4.19.nupkg.sha512",

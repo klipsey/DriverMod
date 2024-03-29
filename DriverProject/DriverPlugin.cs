@@ -152,9 +152,11 @@ namespace RobDriver
             if (self && self.baseNameToken == Driver.bodyNameToken)
             {
                 DriverController iDrive = self.GetComponent<DriverController>();
-                if(iDrive != null)
+                BuffDef buff;
+                if (Modules.Buffs.bulletDefs[iDrive.currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit" && iDrive != null)
                 {
-                    if(Modules.Buffs.bulletDefs[iDrive.currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit") self.crit += 50f;
+                    buff = Modules.Buffs.bulletDefs[iDrive.currentBulletIndex];
+                    if (self.HasBuff(buff)) self.crit += 50;
                 }
             }
         }
