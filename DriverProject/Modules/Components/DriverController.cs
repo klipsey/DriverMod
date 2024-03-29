@@ -626,6 +626,7 @@ new EffectData
 
             if(this.passive.isBullets)
             {
+                this.timerStarted = false;
                 this.LoadBullets();
                 return;
             }
@@ -678,8 +679,8 @@ new EffectData
 
             bulletDamageType = Buffs.allowedDamageTypes[currentBulletIndex];
 
-            this.maxWeaponTimer = (9 * Mathf.Round((this.characterBody.attackSpeed * 9) / 9));
-            this.weaponTimer = maxWeaponTimer;
+            this.maxWeaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
+            this.weaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
 
             if (NetworkServer.active)
             {
