@@ -2986,14 +2986,14 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mario\\Source\\Repos\\DriverMod\\DriverProject\\DriverMod.csproj",
+      "projectUniqueName": "C:\\Users\\mario\\Desktop\\repos\\DriverMod\\DriverProject\\DriverMod.csproj",
       "projectName": "DriverMod",
-      "projectPath": "C:\\Users\\mario\\Source\\Repos\\DriverMod\\DriverProject\\DriverMod.csproj",
+      "projectPath": "C:\\Users\\mario\\Desktop\\repos\\DriverMod\\DriverProject\\DriverMod.csproj",
       "packagesPath": "C:\\Users\\mario\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mario\\Source\\Repos\\DriverMod\\DriverProject\\obj\\",
+      "outputPath": "C:\\Users\\mario\\Desktop\\repos\\DriverMod\\DriverProject\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\mario\\Source\\Repos\\DriverMod\\NuGet.Config",
+        "C:\\Users\\mario\\Desktop\\repos\\DriverMod\\NuGet.Config",
         "C:\\Users\\mario\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

@@ -167,6 +167,8 @@ namespace RobDriver.Modules
 
         public static GameObject lunarShardMuzzleFlash;
 
+        public static List<GameObject> bulletTrails = new List<GameObject>();
+
         internal static DriverWeaponDef pistolWeaponDef;
         internal static DriverWeaponDef goldenGunWeaponDef;
         internal static DriverWeaponDef pyriteGunWeaponDef;

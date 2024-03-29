@@ -8,11 +8,12 @@ namespace RobDriver.Modules
     public static class DamageTypes
     {
         //For later modded damagetypes
-        /*
         public static DamageAPI.ModdedDamageType Empty;
+        public static DamageAPI.ModdedDamageType HookShot;
         internal static void Init()
         {
             Empty = DamageAPI.ReserveDamageType();
+            HookShot = DamageAPI.ReserveDamageType();
             Hook();
         }
         private static void Hook()
@@ -24,6 +25,11 @@ namespace RobDriver.Modules
         {
             orig.Invoke(self, damageInfo, victim);
             CharacterBody victimBody = victim.GetComponent<CharacterBody>();
+            CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
+            if (NetworkServer.active)
+            {
+                if(attackerBody.HasBuff())
+            }
         }
 
         private static void GlobalEventManager_onServerDamageDealt(DamageReport damageReport)
@@ -42,6 +48,5 @@ namespace RobDriver.Modules
             {
             }
         }
-        */
     }
 }
