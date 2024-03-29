@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using R2API;
 using RoR2;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,6 +12,7 @@ namespace RobDriver.Modules
     public static class Buffs
     {
         internal static List<BuffDef> buffDefs = new List<BuffDef>();
+        internal static List<BuffDef> bulletDefs = new List<BuffDef>();
 
         internal static BuffDef dazedDebuff;
         internal static BuffDef woundDebuff;
@@ -18,6 +20,30 @@ namespace RobDriver.Modules
         internal static BuffDef syringeAttackSpeedBuff;
         internal static BuffDef syringeCritBuff;
         internal static BuffDef syringeScepterBuff;
+        internal static BuffDef bulletsOn;
+
+        internal static List<DamageType> allowedDamageTypes = new List<DamageType>();
+        //store this shit somewhere else... Needs to load before buff defs tho..
+        internal static DamageType[] bannedDamageTypes = new DamageType[]
+        {
+            DamageType.Generic,
+            DamageType.NonLethal,
+            DamageType.BypassArmor,
+            DamageType.WeakPointHit,
+            DamageType.BypassBlock,
+            DamageType.Silent,
+            DamageType.BypassOneShotProtection,
+            DamageType.FallDamage,
+            DamageType.PercentIgniteOnHit,
+            DamageType.ApplyMercExpose,
+            DamageType.Shock5s,
+            DamageType.LunarSecondaryRootOnHit,
+            DamageType.OutOfBounds,
+            DamageType.GiveSkullOnKill,
+            DamageType.VoidDeath,
+            DamageType.DoT,
+            DamageType.AOE
+        };
 
         internal static void RegisterBuffs()
         {
@@ -27,10 +53,140 @@ namespace RobDriver.Modules
             syringeAttackSpeedBuff = AddNewBuff("RobDriverSyringeAttackSpeedBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 170f / 255f, 45f / 255f), false, false);
             syringeCritBuff = AddNewBuff("RobDriverSyringeCritBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 80f / 255f, 17f / 255f), false, false);
             syringeScepterBuff = AddNewBuff("RobDriverSyringeScepterBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), Modules.Survivors.Driver.characterColor, false, false);
+            bulletsOn = AddNewBuff("RobDriverBulletsBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), Color.white, false, false);
+            InitValidDamageTypes();
+        }
+
+        //I am sorry rob.
+        internal static void InitValidDamageTypes()
+        {
+            bool remove = false;
+
+            //To make this work for modded damagetypes, create a dict with DamageAPI.ModdedDamageType that devs can add their moddeddamagetype, the name and a color the loop through it
+            /*
+            * for(int i = 0; i < BulletsCatalog.moddedBullets.length; i++)
+            * {
+            * etc...
+            * 
+            * }
+            */
+            foreach (DamageType i in Enum.GetValues(typeof(DamageType)))
+            {
+                remove = false;
+                foreach (DamageType j in bannedDamageTypes)
+                {
+                    if (i == j) remove = true;
+                }
+                if (remove != true)
+                {
+                    allowedDamageTypes.Add(i);
+                }
+            }
+
+
+            //I am sorry. Ill make a list later.
+            /*For modded damage types add afterward
+            for(int j = 0; j < BulletsCatalog.moddedBullets.length; j++)
+            {
+                damageTypeToColor.Add(BulletsCatalog.moddedBullets.string, BulletsCatalog.moddedBullets.Color);
+                count++;
+            } 
+             */
+            int count = 0;
+            bool found;
+            foreach (DamageType type in Enum.GetValues(typeof(DamageType)))
+            {
+                found = false;
+                if (count > allowedDamageTypes.Count - 1) break;
+                if (allowedDamageTypes[count] == type)
+                {
+                    string i = Enum.GetName(typeof(DamageType), type);
+                    if (i == "ResetCooldownsOnKill")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), UnityEngine.Color.red, false, false, true);
+                        found = true;
+                    }
+                    if (i == "SlowOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), UnityEngine.Color.yellow, false, false, true);
+                        found = true;
+                    }
+                    if (i == "Stun1s")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), UnityEngine.Color.gray, false, false, true);
+                        found = true;
+                    }
+                    if (i == "IgniteOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(255 / 255, 127 / 255, 80 / 255), false, false, true);
+                        found = true;
+                    }
+                    if (i == "Freeze2s")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), UnityEngine.Color.cyan, false, false, true);
+                        found = true;
+                    }
+                    if (i == "ClayGoo")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), UnityEngine.Color.black, false, false, true);
+                        found = true;
+                    }
+                    if (i == "BleedOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), DamageColor.FindColor(DamageColorIndex.Bleed), false, false, true);
+                        found = true;
+                    }
+                    if (i == "PoisonOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), UnityEngine.Color.green, false, false, true);
+                        found = true;
+                    }
+                    if (i == "WeakOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(220 / 255, 237 / 255, 159 / 255), false, false, true);
+                        found = true;
+                    }
+                    if (i == "Nullify")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), DamageColor.FindColor(DamageColorIndex.Void), false, false, true);
+                        found = true;
+                    }
+                    if (i == "BonusToLowHealth")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), DamageColor.FindColor(DamageColorIndex.Fragile), false, false, true);
+                        found = true;
+                    }
+                    if (i == "BlightOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(222 / 255, 85 / 255, 230 / 255), false, false, true);
+                        found = true;
+                    }
+                    if (i == "CrippleOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(48 / 255, 205 / 255, 217 / 255), false, false, true);
+                        found = true;
+                    }
+                    if (i == "SuperBleedOnCrit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), DamageColor.FindColor(DamageColorIndex.SuperBleed), false, false, true);
+                        found = true;
+                    }
+                    if (i == "FruitOnHit")
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(255 / 255, 191 / 255, 225 / 255), false, false, true);
+                        found = true;
+                    }
+                    if (found != true)
+                    {
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), UnityEngine.Color.white, false, false, true);
+                    }
+                    count++;
+                }
+            }
         }
 
         // simple helper method
-        internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff)
+        internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff, bool bullet = false)
         {
             BuffDef buffDef = ScriptableObject.CreateInstance<BuffDef>();
             buffDef.name = buffName;
@@ -40,7 +196,8 @@ namespace RobDriver.Modules
             buffDef.eliteDef = null;
             buffDef.iconSprite = buffIcon;
 
-            buffDefs.Add(buffDef);
+            if (bullet) bulletDefs.Add(buffDef);
+            else buffDefs.Add(buffDef);
 
             return buffDef;
         }

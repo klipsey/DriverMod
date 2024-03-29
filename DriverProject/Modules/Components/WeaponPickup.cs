@@ -50,7 +50,7 @@ namespace RobDriver.Modules.Components
 				{
 					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken)
                     {
-						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly)
+						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly || i.cachedBody.GetComponent<DriverController>().passive.isBullets)
 						{
 							RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
 							if (textComponent)

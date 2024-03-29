@@ -54,7 +54,7 @@ namespace RobDriver.Modules.Components
 
 		private void UpdateDisplay()
         {
-			if (this.iDrive.passive.isPistolOnly)
+			if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
             {
 				this.durationDisplay.SetActive(false);
 				return;
@@ -86,26 +86,25 @@ namespace RobDriver.Modules.Components
 
 			this.DoStockFlash();
 
-			if (this.displayRoot) this.displayRoot.SetActive(true);
-			if (this.isReadyPanelObject) this.isReadyPanelObject.SetActive(true);
+            if (this.displayRoot) this.displayRoot.SetActive(true); 
+            if (this.isReadyPanelObject) this.isReadyPanelObject.SetActive(true);
 
-			if (this.iconImage)
+            if (this.iconImage)
 			{
 				this.iconImage.texture = this.iDrive.weaponDef.icon;
 				this.iconImage.color = Color.white;
 				this.iconImage.enabled = true;
 			}
-
-			if (this.tooltipProvider)
+            if (this.tooltipProvider)
 			{
 				this.tooltipProvider.titleToken = this.iDrive.weaponDef.nameToken;
 				this.tooltipProvider.bodyToken = this.iDrive.weaponDef.descriptionToken;
 				this.tooltipProvider.titleColor = Modules.Survivors.Driver.characterColor;
 				this.tooltipProvider.bodyColor = Color.gray;
 			}
-		}
+        }
 
-		private void DoReminderFlash()
+        private void DoReminderFlash()
 		{
 			if (this.reminderFlashPanelObject)
 			{

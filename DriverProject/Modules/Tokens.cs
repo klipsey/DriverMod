@@ -53,6 +53,9 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Marksman");
             LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
+            LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
+            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"My words are my <style=cIsHealth>bullets</style>.");
+
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
             LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
 

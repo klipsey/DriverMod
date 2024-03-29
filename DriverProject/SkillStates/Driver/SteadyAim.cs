@@ -5,6 +5,7 @@ using static RoR2.CameraTargetParams;
 using UnityEngine.Networking;
 using RoR2.HudOverlay;
 using UnityEngine.AddressableAssets;
+using RobDriver.Modules;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -96,7 +97,7 @@ namespace RobDriver.SkillStates.Driver
 
             this.FindModelChild("PistolSight").gameObject.SetActive(true);
 
-            if (this.iDrive.passive.isPistolOnly)
+            if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets)
             {
                 this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
                 {
@@ -169,7 +170,7 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
-            if (this.iDrive.weaponTimer <= 0f && this.iDrive.passive.isPistolOnly)
+            if (this.iDrive.weaponTimer <= 0f && (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
             {
                 if (this.shotCooldown <= 0f)
                 {
@@ -247,7 +248,7 @@ namespace RobDriver.SkillStates.Driver
                     }
                 }
 
-                if (this.iDrive.passive.isPistolOnly && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets) && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;
@@ -296,6 +297,8 @@ namespace RobDriver.SkillStates.Driver
         public virtual void Fire()
         {
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
+
+            if (this.iDrive.passive.isBullets && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
 
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
@@ -357,7 +360,7 @@ namespace RobDriver.SkillStates.Driver
                         origin = aimRay.origin,
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
+                        damageType = iDrive.bulletDamageType,
                         falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
@@ -390,7 +393,7 @@ namespace RobDriver.SkillStates.Driver
                         origin = aimRay.origin,
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
+                        damageType = iDrive.bulletDamageType,
                         falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
@@ -414,7 +417,7 @@ namespace RobDriver.SkillStates.Driver
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                     };
 
-                    if (this.iDrive.passive.isPistolOnly)
+                    if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
                     {
                         bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                         {
@@ -479,7 +482,7 @@ namespace RobDriver.SkillStates.Driver
                     origin = aimRay.origin,
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Generic,
+                    damageType = iDrive.bulletDamageType,
                     falloffModel = falloffModel,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -503,7 +506,7 @@ namespace RobDriver.SkillStates.Driver
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
 
-                if (this.iDrive.passive.isPistolOnly)
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
                 {
                     bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                     {

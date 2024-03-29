@@ -643,9 +643,34 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
+            passive.isBulletsPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_PASSIVE3_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PASSIVE3_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE3_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlugShotgunIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
             Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
                 passive.defaultPassive,
-                passive.pistolOnlyPassive
+                passive.pistolOnlyPassive,
+                passive.isBulletsPassive
             });
 
             Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,

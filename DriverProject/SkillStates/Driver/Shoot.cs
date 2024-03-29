@@ -1,4 +1,5 @@
 ﻿using EntityStates;
+using RobDriver.Modules;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -89,6 +90,8 @@ namespace RobDriver.SkillStates.Driver
             }
 
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
+
+            if (this.iDrive.passive.isBullets && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
         }
 
         public override void OnExit()
@@ -134,7 +137,7 @@ namespace RobDriver.SkillStates.Driver
                     origin = aimRay.origin,
                     damage = this._damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Generic,
+                    damageType = iDrive.bulletDamageType,
                     falloffModel = this.falloff,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -226,7 +229,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                if (this.iDrive.passive.isPistolOnly)
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;

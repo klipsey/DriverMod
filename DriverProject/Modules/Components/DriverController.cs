@@ -1,9 +1,11 @@
-﻿using R2API.Networking;
+﻿using R2API;
+using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
@@ -50,6 +52,7 @@ namespace RobDriver.Modules.Components
         private SkillLocator skillLocator;
 
         public int maxShellCount = 12;
+        public int currentBulletIndex;
         private int currentShell;
         private int currentSlug;
         private GameObject[] shellObjects;
@@ -59,6 +62,7 @@ namespace RobDriver.Modules.Components
 
         public float maxWeaponTimer;
         public float weaponTimer;
+        public DamageType bulletDamageType = DamageType.Generic;
         public DriverPassive passive;
         private float comboDecay = 1f;
         private DriverWeaponDef pistolWeaponDef;
@@ -167,6 +171,12 @@ namespace RobDriver.Modules.Components
             {
                 this.maxWeaponTimer = 13f;
                 this.weaponTimer = 13f;
+            }
+
+            if (this.passive.isBullets)
+            {
+                this.maxWeaponTimer = 10f;
+                this.weaponTimer = 10f;
             }
         }
 
@@ -498,6 +508,23 @@ new EffectData
                         this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
                     }
                 }
+                else if(this.passive.isBullets)
+                {
+                    if(NetworkServer.active)
+                    {
+                        if (this.characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
+                        {
+                            characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
+                            if (Buffs.bulletDefs[currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit") this.characterBody.crit -= 100f;
+                        }
+                    }
+                    if(!this.needReload)
+                    {
+                        this.bulletDamageType = DamageType.Generic;
+                        this.needReload = true;
+                        this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    }
+                }
                 else
                 {
                     this.ReturnToDefaultWeapon();
@@ -575,8 +602,18 @@ new EffectData
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
 
             this.needReload = false;
-            this.weaponTimer = 13f;
-            this.maxWeaponTimer = 13f;
+
+            if(this.passive.isPistolOnly)
+            {
+                this.weaponTimer = 13f;
+                this.maxWeaponTimer = 13f;
+            }
+
+            if(this.passive.isBullets)
+            {
+                this.maxWeaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
+                this.weaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
+            }
         }
 
         public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f)
@@ -584,6 +621,12 @@ new EffectData
             if (this.passive.isPistolOnly)
             {
                 this.FinishReload();
+                return;
+            }
+
+            if(this.passive.isBullets)
+            {
+                this.LoadBullets();
                 return;
             }
 
@@ -604,6 +647,46 @@ new EffectData
             this.onWeaponUpdate(this);
         }
 
+        public void LoadBullets()
+        {
+            if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+
+            if(NetworkServer.active)
+            {
+                if (characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
+                {
+                    characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
+                    if (Buffs.bulletDefs[currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit") this.characterBody.crit -= 100f;
+                }
+            }
+
+            this.needReload = false;
+
+            int num = Buffs.allowedDamageTypes.Count - 1;
+            //int moddedNums = The count of modded DamageTypes
+            //int totalNum = num + moddedNums
+            System.Random rnd = new System.Random();
+            //replace num with totalNum
+             currentBulletIndex = rnd.Next(0, num);
+            /*if(num2 > num)
+            {
+            num2 = num2 - num;
+            bulletModdedDamageType = the dict index's ModdedDamageType
+            bulletDamageType = DamageType.Generic
+            }
+            */
+
+            bulletDamageType = Buffs.allowedDamageTypes[currentBulletIndex];
+
+            this.maxWeaponTimer = (9 * Mathf.Round((this.characterBody.attackSpeed * 9) / 9));
+            this.weaponTimer = maxWeaponTimer;
+
+            if (NetworkServer.active)
+            {
+                this.characterBody.AddBuff(Buffs.bulletDefs[currentBulletIndex]);
+                if (Buffs.bulletDefs[currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit") this.characterBody.crit += 100f;
+            }
+        }
         private void TryPickupNotification(bool force = false)
         {
             if (!Modules.Config.enablePickupNotifications.Value) return;
@@ -707,6 +790,8 @@ new EffectData
             if (this.weaponDef.shotCount == 0) duration = 0f;
 
             if (this.passive.isPistolOnly) duration = 13f;
+
+            if (this.passive.isBullets) duration = (10 * Mathf.Round(this.characterBody.attackSpeed * 10) / 10);
 
             this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
             this.weaponTimer = duration;//this.weaponDef.baseDuration;
