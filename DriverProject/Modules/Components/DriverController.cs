@@ -52,6 +52,7 @@ namespace RobDriver.Modules.Components
         private SkillLocator skillLocator;
 
         public int maxShellCount = 12;
+        public int basePistolAmmo = 10;
         public int currentBulletIndex;
         private int currentShell;
         private int currentSlug;
@@ -173,11 +174,7 @@ namespace RobDriver.Modules.Components
                 this.weaponTimer = 13f;
             }
 
-            if (this.passive.isBullets)
-            {
-                this.maxWeaponTimer = 10f;
-                this.weaponTimer = 10f;
-            }
+            if (this.passive.isBullets) SetBulletAmmo();
         }
 
         private void SetInventoryHook()
@@ -493,6 +490,16 @@ new EffectData
             }
         }
 
+        private void SetBulletAmmo()
+        {
+            float num = basePistolAmmo;
+
+            if (this.characterBody.attackSpeed > 1) num += 5 * Mathf.Round(this.characterBody.attackSpeed - 1);
+
+            this.maxWeaponTimer = num;
+            this.weaponTimer = num;
+        }
+
         private void FixedUpdate()
         {
             if (this.timerStarted) this.weaponTimer -= Time.fixedDeltaTime;
@@ -608,11 +615,7 @@ new EffectData
                 this.maxWeaponTimer = 13f;
             }
 
-            if(this.passive.isBullets)
-            {
-                this.maxWeaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
-                this.weaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
-            }
+            if(this.passive.isBullets) SetBulletAmmo();
         }
 
         public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f)
@@ -623,7 +626,8 @@ new EffectData
                 return;
             }
 
-            if(this.passive.isBullets)
+            if(this.passive.
+                )
             {
                 this.timerStarted = false;
                 this.LoadBullets();
@@ -677,8 +681,7 @@ new EffectData
 
             bulletDamageType = Buffs.allowedDamageTypes[currentBulletIndex];
 
-            this.maxWeaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
-            this.weaponTimer = (10 * Mathf.Round((this.characterBody.attackSpeed * 10) / 10));
+            SetBulletAmmo();
 
             if (NetworkServer.active)
             {
@@ -789,10 +792,7 @@ new EffectData
 
             if (this.passive.isPistolOnly) duration = 13f;
 
-            if (this.passive.isBullets) duration = (10 * Mathf.Round(this.characterBody.attackSpeed * 10) / 10);
-
-            this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
-            this.weaponTimer = duration;//this.weaponDef.baseDuration;
+            if(this.passive.isBullets) SetBulletAmmo();
             if (ammo != -1f) this.weaponTimer = ammo;
 
             // crosshair

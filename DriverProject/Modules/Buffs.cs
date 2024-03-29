@@ -118,7 +118,7 @@ namespace RobDriver.Modules
                     }
                     if (i == "IgniteOnHit")
                     {
-                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(255, 127, 80), false, false, true);
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(255f / 255f, 127f / 255f, 80 / 255f), false, false, true);
                         found = true;
                     }
                     if (i == "Freeze2s")
@@ -143,7 +143,7 @@ namespace RobDriver.Modules
                     }
                     if (i == "WeakOnHit")
                     {
-                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(220, 237, 159), false, false, true);
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(220f / 255f, 237f / 255f, 159f / 255f), false, false, true);
                         found = true;
                     }
                     if (i == "Nullify")
@@ -158,12 +158,12 @@ namespace RobDriver.Modules
                     }
                     if (i == "BlightOnHit")
                     {
-                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(222, 85, 230), false, false, true);
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(222f / 255f, 85f / 255f, 230f / 255f), false, false, true);
                         found = true;
                     }
                     if (i == "CrippleOnHit")
                     {
-                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(48, 205, 217), false, false, true);
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(48f / 255f, 205f / 255f, 217f / 255f), false, false, true);
                         found = true;
                     }
                     if (i == "SuperBleedOnCrit")
@@ -173,7 +173,7 @@ namespace RobDriver.Modules
                     }
                     if (i == "FruitOnHit")
                     {
-                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(255, 191, 225), false, false, true);
+                        Buffs.AddNewBuff("RobDriverBulletsBuff" + i, Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator"), new UnityEngine.Color(255f / 255f, 191f / 255f, 225f / 255f), false, false, true);
                         found = true;
                     }
                     if (found != true)
