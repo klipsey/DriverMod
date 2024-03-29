@@ -515,7 +515,6 @@ new EffectData
                         if (this.characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
                         {
                             characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
-                            if (Buffs.bulletDefs[currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit") this.characterBody.crit -= 100f;
                         }
                     }
                     if(!this.needReload)
@@ -657,7 +656,6 @@ new EffectData
                 if (characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
                 {
                     characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
-                    if (Buffs.bulletDefs[currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit") this.characterBody.crit -= 100f;
                 }
             }
 
@@ -685,7 +683,6 @@ new EffectData
             if (NetworkServer.active)
             {
                 this.characterBody.AddBuff(Buffs.bulletDefs[currentBulletIndex]);
-                if (Buffs.bulletDefs[currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit") this.characterBody.crit += 100f;
             }
         }
         private void TryPickupNotification(bool force = false)
