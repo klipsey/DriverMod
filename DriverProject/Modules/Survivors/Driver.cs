@@ -2694,6 +2694,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 }
 
                 // weapon drops
+                bool bonusChance = false;
                 if (isDriverOnPlayerTeam)
                 {
                     // headshot first
@@ -2707,10 +2708,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                             }
                         }
+                        if (damageReport.attackerBody.GetComponent<DriverController>().passive.isBulletsPassive) bonusChance = true;
                     }
 
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
+                    if (bonusChance) chance += Mathf.Clamp((DamageTypes.bulletTypes.Count - 16), 0, 50);
                     bool fuckMyAss = chance >= 100f;
 
                     // higher chance if it's a big guy
