@@ -173,8 +173,8 @@ namespace RobDriver.Modules.Components
 
             if (this.passive.isPistolOnly)
             {
-                this.maxWeaponTimer = 13f;
-                this.weaponTimer = 13f;
+                this.maxWeaponTimer = 26f;
+                this.weaponTimer = 26f;
             }
 
             if (this.passive.isBullets) SetBulletAmmo();
@@ -615,8 +615,8 @@ new EffectData
 
             if(this.passive.isPistolOnly)
             {
-                this.weaponTimer = 13f;
-                this.maxWeaponTimer = 13f;
+                this.weaponTimer = 26f;
+                this.maxWeaponTimer = 26f;
             }
 
             if (this.passive.isBullets)
@@ -799,6 +799,10 @@ new EffectData
             if (this.passive.isPistolOnly) duration = 13f;
 
             if(this.passive.isBullets) SetBulletAmmo();
+            this.weaponTimer = duration;//this.weaponDef.baseDuration;
+            this.weaponTimer = duration;//this.weaponDef.baseDuration;
+            this.weaponTimer = duration;//this.weaponDef.baseDuration;
+            this.weaponTimer = duration;//this.weaponDef.baseDuration;
             if (ammo != -1f) this.weaponTimer = ammo;
 
             // crosshair
