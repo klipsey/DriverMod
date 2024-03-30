@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using RoR2.HudOverlay;
 using UnityEngine.AddressableAssets;
 using RobDriver.Modules;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -353,7 +354,7 @@ namespace RobDriver.SkillStates.Driver
 
                 if (this.isPiercing)
                 {
-                    new BulletAttack
+                    BulletAttack bulletAttack = new BulletAttack
                     {
                         bulletCount = 1,
                         aimVector = aimRay.direction,
@@ -382,7 +383,9 @@ namespace RobDriver.SkillStates.Driver
                         spreadYawScale = 0f,
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                    }.Fire();
+                    };
+                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.Fire();
                 }
                 else
                 {
@@ -416,6 +419,7 @@ namespace RobDriver.SkillStates.Driver
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                     };
+                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
                     if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
                     {
@@ -423,7 +427,8 @@ namespace RobDriver.SkillStates.Driver
                         {
                             if (BulletAttack.IsSniperTargetHit(hitInfo))
                             {
-                                damageInfo.damage *= 2f;
+                                if (this.iDrive.passive.isPistolOnly) damageInfo.damage *= 2f;
+                                else damageInfo.damage *= 1.5f;
                                 damageInfo.damageColorIndex = DamageColorIndex.Sniper;
 
                                 if (wasCharged)
@@ -505,6 +510,7 @@ namespace RobDriver.SkillStates.Driver
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
+                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
                 if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
                 {

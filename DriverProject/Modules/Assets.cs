@@ -13,6 +13,7 @@ using RoR2.UI;
 using UnityEngine.UI;
 using RobDriver.Modules.Components;
 using UnityEngine.Rendering.PostProcessing;
+using Moonstorm.Starstorm2.Survivors;
 
 namespace RobDriver.Modules
 {
@@ -152,6 +153,10 @@ namespace RobDriver.Modules
         internal static Texture nemmercGunWeaponIcon;
         internal static Texture golemGunWeaponIcon;
 
+        public static List<GameObject> bulletTypeTrails = new List<GameObject>();
+        public static GameObject defaultMuzzleTrail;
+        public static Sprite bulletSprite;
+        
         public static GameObject shotgunTracer;
         public static GameObject shotgunTracerCrit;
 
@@ -166,8 +171,6 @@ namespace RobDriver.Modules
         public static GameObject nemmercTracer;
 
         public static GameObject lunarShardMuzzleFlash;
-
-        public static List<GameObject> bulletTrails = new List<GameObject>();
 
         internal static DriverWeaponDef pistolWeaponDef;
         internal static DriverWeaponDef goldenGunWeaponDef;
@@ -812,6 +815,19 @@ namespace RobDriver.Modules
             nemmercGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNemmercWeaponIcon");
             golemGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGolemGunWeaponIcon");
 
+            GameObject obj = new GameObject();
+            defaultMuzzleTrail = obj.InstantiateClone("PassiveMuzzleTrail", false);
+            TrailRenderer trail = defaultMuzzleTrail.AddComponent<TrailRenderer>();
+            trail.startWidth = 0.045f;
+            trail.endWidth = 0f;
+            trail.time = 0.5f;
+            trail.emitting = true;
+            trail.numCornerVertices = 0;
+            trail.numCapVertices = 0;
+            trail.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matSmokeTrail.mat").WaitForCompletion();
+            trail.startColor = Color.white;
+            trail.endColor = Color.gray;
+            bulletSprite = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator");
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
 

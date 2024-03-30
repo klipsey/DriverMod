@@ -6,6 +6,7 @@ using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
@@ -64,6 +65,7 @@ namespace RobDriver.Modules.Components
         public float maxWeaponTimer;
         public float weaponTimer;
         public DamageType bulletDamageType = DamageType.Generic;
+        public DamageAPI.ModdedDamageType moddedBulletType = DamageTypes.Generic;
         public DriverPassive passive;
         private float comboDecay = 1f;
         private DriverWeaponDef pistolWeaponDef;
@@ -86,6 +88,7 @@ namespace RobDriver.Modules.Components
         private SkateboardState skateboardState;// this could have easily been a bool
         private GameObject skateboardObject;
         private GameObject skateboardBackObject;
+        private GameObject muzzleTrail;
 
         public ParticleSystem machineGunVFX;
 
@@ -404,7 +407,6 @@ new EffectData
             if (itemIndex == ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef.itemIndex) return true;
             return false;
         }
-
         private void CreateHammerEffect()
         {
             #region clone mithrix effect
@@ -494,7 +496,7 @@ new EffectData
         {
             float num = basePistolAmmo;
 
-            if (this.characterBody.attackSpeed > 1) num += 5 * Mathf.Round(this.characterBody.attackSpeed - 1);
+            if (this.characterBody.attackSpeed > 1) num += Mathf.Round(this.characterBody.attackSpeed - 1) * 5;
 
             this.maxWeaponTimer = num;
             this.weaponTimer = num;
@@ -522,11 +524,14 @@ new EffectData
                         if (this.characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
                         {
                             characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
+                            UnityEngine.Object.Destroy(muzzleTrail.gameObject);
+                            muzzleTrail = null;
                         }
                     }
                     if(!this.needReload)
                     {
                         this.bulletDamageType = DamageType.Generic;
+                        this.moddedBulletType = DamageTypes.Generic;
                         this.needReload = true;
                         this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
                     }
@@ -536,7 +541,6 @@ new EffectData
                     this.ReturnToDefaultWeapon();
                 }
             }
-
             this.CheckSupplyDrop();
         }
 
@@ -615,7 +619,10 @@ new EffectData
                 this.maxWeaponTimer = 13f;
             }
 
-            if(this.passive.isBullets) SetBulletAmmo();
+            if (this.passive.isBullets)
+            {
+                SetBulletAmmo();
+            }
         }
 
         public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f)
@@ -626,8 +633,7 @@ new EffectData
                 return;
             }
 
-            if(this.passive.
-                )
+            if(this.passive.isBullets)
             {
                 this.timerStarted = false;
                 this.LoadBullets();
@@ -651,9 +657,15 @@ new EffectData
             this.onWeaponUpdate(this);
         }
 
-        public void LoadBullets()
+        private void LoadBullets()
         {
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+ 
+            if(muzzleTrail)
+            {
+                UnityEngine.Object.Destroy(muzzleTrail);
+                muzzleTrail = null;
+            }
 
             if(NetworkServer.active)
             {
@@ -664,22 +676,12 @@ new EffectData
             }
 
             this.needReload = false;
-
-            int num = Buffs.allowedDamageTypes.Count - 1;
-            //int moddedNums = The count of modded DamageTypes
-            //int totalNum = num + moddedNums
+             
             System.Random rnd = new System.Random();
-            //replace num with totalNum
-             currentBulletIndex = rnd.Next(0, num);
-            /*if(num2 > num)
-            {
-            num2 = num2 - num;
-            bulletModdedDamageType = the dict index's ModdedDamageType
-            bulletDamageType = DamageType.Generic
-            }
-            */
+            currentBulletIndex = rnd.Next(Buffs.bulletDefs.Count);
 
-            bulletDamageType = Buffs.allowedDamageTypes[currentBulletIndex];
+            bulletDamageType = DamageTypes.bulletTypes[currentBulletIndex].bulletType;
+            moddedBulletType = DamageTypes.bulletTypes[currentBulletIndex].moddedBulletType;
 
             SetBulletAmmo();
 
@@ -687,6 +689,10 @@ new EffectData
             {
                 this.characterBody.AddBuff(Buffs.bulletDefs[currentBulletIndex]);
             }
+            muzzleTrail = Assets.defaultMuzzleTrail;
+            muzzleTrail.GetComponent<TrailRenderer>().startColor = Buffs.bulletDefs[currentBulletIndex].buffColor;
+            muzzleTrail = UnityEngine.Object.Instantiate(muzzleTrail, this.childLocator.FindChild("PistolMuzzle"));
+
         }
         private void TryPickupNotification(bool force = false)
         {
