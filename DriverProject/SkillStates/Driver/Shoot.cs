@@ -92,7 +92,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
 
-            if (this.iDrive.passive.isBullets && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
         }
 
         public override void OnExit()
@@ -122,7 +122,7 @@ namespace RobDriver.SkillStates.Driver
 
         private void Fire()
         {
-            if (this.iDrive.passive.isBulletsPassive)
+            if (this.iDrive.passive.isBullets|| this.iDrive.passive.isRyan)
             {
                 GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
                 var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
@@ -240,7 +240,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;

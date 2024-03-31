@@ -4,6 +4,7 @@ using EntityStates;
 using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.ArtiGauntlet
 {
@@ -64,7 +65,12 @@ namespace RobDriver.SkillStates.Driver.ArtiGauntlet
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
-                    ProjectileManager.instance.FireProjectile(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageFireboltBasic.prefab").WaitForCompletion(), aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
+                    GameObject modify = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageFireboltBasic.prefab").WaitForCompletion();
+                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                    if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                    ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
+                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
                 }
             }
         }

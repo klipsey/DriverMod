@@ -153,7 +153,6 @@ namespace RobDriver.Modules
         internal static Texture nemmercGunWeaponIcon;
         internal static Texture golemGunWeaponIcon;
 
-        public static List<GameObject> bulletTypeTrails = new List<GameObject>();
         public static GameObject defaultMuzzleTrail;
         public static Sprite bulletSprite;
         

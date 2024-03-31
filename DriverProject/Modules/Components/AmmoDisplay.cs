@@ -40,7 +40,7 @@ namespace RobDriver.Modules.Components
                     }
                     else
                     {
-                        if (this.passive.isBullets)
+                        if (this.passive.isBullets || this.passive.isRyan)
                         {
                             if(NetworkServer.active)
                             {

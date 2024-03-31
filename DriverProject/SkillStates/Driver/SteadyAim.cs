@@ -98,7 +98,7 @@ namespace RobDriver.SkillStates.Driver
 
             this.FindModelChild("PistolSight").gameObject.SetActive(true);
 
-            if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets)
+            if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
             {
                 this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
                 {
@@ -170,8 +170,8 @@ namespace RobDriver.SkillStates.Driver
                     Util.PlaySound("sfx_driver_pistol_ready", this.gameObject);
                 }
             }
-
-            if (this.iDrive.weaponTimer <= 0f && (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
+                
+            if (this.iDrive.weaponTimer <= 0f && (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
             {
                 if (this.shotCooldown <= 0f)
                 {
@@ -249,7 +249,7 @@ namespace RobDriver.SkillStates.Driver
                     }
                 }
 
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets) && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;
@@ -299,7 +299,7 @@ namespace RobDriver.SkillStates.Driver
         {
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
 
-            if (this.iDrive.passive.isBullets && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
 
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
@@ -421,7 +421,7 @@ namespace RobDriver.SkillStates.Driver
                     };
                     bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
-                    if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
+                    if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
                     {
                         bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                         {
@@ -512,7 +512,7 @@ namespace RobDriver.SkillStates.Driver
                 };
                 bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
                 {
                     bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                     {
