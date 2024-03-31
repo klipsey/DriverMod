@@ -41,7 +41,7 @@ namespace RobDriver.Modules
 
         public static DamageAPI.ModdedDamageType Generic;
         public static DamageAPI.ModdedDamageType HookShot;
-        public static DamageAPI.ModdedDamageType MissleShot;
+        public static DamageAPI.ModdedDamageType MissileShot;
         public static DamageAPI.ModdedDamageType VoidMissileShot;
         public static DamageAPI.ModdedDamageType ExplosiveRounds;
         public static DamageAPI.ModdedDamageType FlameTornadoShot;
@@ -67,7 +67,7 @@ namespace RobDriver.Modules
         {
             Generic = DamageAPI.ReserveDamageType();
             HookShot = DamageAPI.ReserveDamageType();
-            MissleShot = DamageAPI.ReserveDamageType();
+            MissileShot = DamageAPI.ReserveDamageType();
             VoidMissileShot = DamageAPI.ReserveDamageType();
             ExplosiveRounds = DamageAPI.ReserveDamageType();
             FlameTornadoShot = DamageAPI.ReserveDamageType();
@@ -163,7 +163,7 @@ namespace RobDriver.Modules
 
             DamageTypes.AddNewModdedBullet("Hook Shot", DamageTypes.HookShot, Color.grey, null, legendary);
 
-            DamageTypes.AddNewModdedBullet("Missle Shot", DamageTypes.MissleShot, new UnityEngine.Color(219 / 255f, 132 / 255f, 11 / 255f), null, legendary);
+            DamageTypes.AddNewModdedBullet("Missle Shot", DamageTypes.MissileShot, new UnityEngine.Color(219 / 255f, 132 / 255f, 11 / 255f), null, legendary);
 
             DamageTypes.AddNewModdedBullet("Void Rounds", DamageTypes.VoidMissileShot, new UnityEngine.Color(122 / 255f, 69 / 255f, 173 / 255f), null, uncommon);
 
@@ -277,7 +277,7 @@ namespace RobDriver.Modules
                         }
                         CollectionPool<HurtBox, List<HurtBox>>.ReturnCollection(list);
                     }
-                    if(damageInfo.HasModdedDamageType(MissleShot))
+                    if(damageInfo.HasModdedDamageType(MissileShot))
                     {
                         if (Util.CheckRoll(10f * damageInfo.procCoefficient, attackerBody.master))
                         {
