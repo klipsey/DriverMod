@@ -16,6 +16,7 @@ namespace RobDriver.Modules.Components
 
 		public GameObject pickupEffect;
 		public bool cutAmmo = false;
+		public bool isAmmoBox = false;
 
 		private bool alive = true;
 
@@ -50,7 +51,7 @@ namespace RobDriver.Modules.Components
 				{
 					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken)
                     {
-						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly || i.cachedBody.GetComponent<DriverController>().passive.isBullets)
+						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly || i.cachedBody.GetComponent<DriverController>().passive.isBullets || i.cachedBody.GetComponent<DriverController>().passive.isRyan && this.isAmmoBox == true)
 						{
 							RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
 							if (textComponent)
@@ -94,7 +95,7 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.cutAmmo);
+			this.SetWeapon(this.weaponDef, this.cutAmmo, this.isAmmoBox);
 		}
 
 		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
@@ -111,10 +112,11 @@ namespace RobDriver.Modules.Components
 			}
 		}
 
-		public void SetWeapon(DriverWeaponDef newWeapon, bool _cutAmmo = false)
+		public void SetWeapon(DriverWeaponDef newWeapon, bool _cutAmmo = false, bool _isAmmoBox = false)
         {
 			this.weaponDef = newWeapon;
 			this.cutAmmo = _cutAmmo;
+			this.isAmmoBox = _isAmmoBox;
 
 			// wow this is awful!
 			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
@@ -170,7 +172,7 @@ namespace RobDriver.Modules.Components
 				if (iDrive)
 				{
 					this.alive = false;
-					iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive);
+                    iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive, this.isAmmoBox);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}

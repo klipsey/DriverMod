@@ -40,7 +40,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.5.0";
+        public const string MODVERSION = "1.5.1";
 
         public const string developerPrefix = "ROB";
 
@@ -66,6 +66,7 @@ namespace RobDriver
             Modules.Assets.PopulateAssets();
             Modules.CameraParams.InitializeParams();
             Modules.States.RegisterStates();
+            Modules.DamageTypes.Init();
             Modules.Buffs.RegisterBuffs();
             Modules.Projectiles.RegisterProjectiles();
             Modules.Tokens.AddTokens();
@@ -153,7 +154,7 @@ namespace RobDriver
             {
                 DriverController iDrive = self.GetComponent<DriverController>();
                 BuffDef buff;
-                if (Modules.Buffs.bulletDefs[iDrive.currentBulletIndex].name == "RobDriverBulletsBuffSuperBleedOnCrit" && iDrive != null)
+                if (Modules.Buffs.bulletDefs[iDrive.currentBulletIndex].name == "Hemorrhaging Rounds" && iDrive != null)
                 {
                     buff = Modules.Buffs.bulletDefs[iDrive.currentBulletIndex];
                     if (self.HasBuff(buff)) self.crit += 50;

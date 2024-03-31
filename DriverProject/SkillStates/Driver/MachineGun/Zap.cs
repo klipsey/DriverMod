@@ -3,6 +3,7 @@ using RoR2;
 using EntityStates;
 using UnityEngine.AddressableAssets;
 using RobDriver.Modules.Components;
+using RoR2.Projectile;
 
 namespace RobDriver.SkillStates.Driver.MachineGun
 {

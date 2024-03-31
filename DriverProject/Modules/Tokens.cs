@@ -56,6 +56,9 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
             LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"My words are my <style=cIsHealth>bullets</style>.");
 
+            LanguageAPI.Add(prefix + "PASSIVE4_NAME", "Godsling");
+            LanguageAPI.Add(prefix + "PASSIVE4_DESCRIPTION", $"I <style=cIsHealth>drive</style>.");
+
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
             LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
 
@@ -249,6 +252,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Professional Killer");
             LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Professional Killer");
             LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, complete a teleporter event without picking up any weapons.");
+
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Professional Killer");
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Professional Killer");
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Typhoon or Eclipse without picking up any weapons.\n<color=#8888>(Counts any difficulty Typhoon or higher)</color>.");
 
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");

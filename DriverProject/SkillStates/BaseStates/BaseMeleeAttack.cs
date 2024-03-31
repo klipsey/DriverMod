@@ -1,4 +1,6 @@
 ﻿using EntityStates;
+using LostInTransit.DamageTypes;
+using R2API;
 using RoR2;
 using RoR2.Audio;
 using System;
@@ -15,6 +17,7 @@ namespace RobDriver.SkillStates.BaseStates
         protected string hitboxName = "Sword";
 
         protected DamageType damageType = DamageType.Generic;
+        protected List<DamageAPI.ModdedDamageType> moddedDamageTypeHolder = new List<DamageAPI.ModdedDamageType>();
         protected float damageCoefficient = 3.5f;
         protected float procCoefficient = 1f;
         protected float pushForce = 300f;
@@ -79,6 +82,11 @@ namespace RobDriver.SkillStates.BaseStates
 
             this.attack = new OverlapAttack();
             this.attack.damageType = this.damageType;
+            foreach(DamageAPI.ModdedDamageType i in moddedDamageTypeHolder)
+            {
+                this.attack.AddModdedDamageType(i);
+            }
+            moddedDamageTypeHolder.Clear();
             this.attack.attacker = base.gameObject;
             this.attack.inflictor = base.gameObject;
             this.attack.teamIndex = base.GetTeam();

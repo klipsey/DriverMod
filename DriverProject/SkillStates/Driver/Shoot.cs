@@ -1,6 +1,7 @@
 ﻿using EntityStates;
 using RobDriver.Modules;
 using RoR2;
+using R2API;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -91,7 +92,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
 
-            if (this.iDrive.passive.isBullets && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
         }
 
         public override void OnExit()
@@ -121,7 +122,15 @@ namespace RobDriver.SkillStates.Driver
 
         private void Fire()
         {
-            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
+            if (this.iDrive.passive.isBullets|| this.iDrive.passive.isRyan)
+            {
+                GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
+                var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
+                col.startColor = Buffs.bulletDefs[iDrive.currentBulletIndex].buffColor;
+                EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
+            }
+            else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
+
 
             Util.PlaySound(this.shootSoundString, this.gameObject);
 
@@ -130,7 +139,7 @@ namespace RobDriver.SkillStates.Driver
                 Ray aimRay = base.GetAimRay();
                 base.AddRecoil2(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
 
-                new BulletAttack
+                BulletAttack attack = new BulletAttack
                 {
                     bulletCount = 1,
                     aimVector = aimRay.direction,
@@ -159,7 +168,9 @@ namespace RobDriver.SkillStates.Driver
                     spreadYawScale = 1f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                }.Fire();
+                };
+                attack.AddModdedDamageType(iDrive.moddedBulletType);
+                attack.Fire();
             }
 
             base.characterBody.AddSpreadBloom(1.25f);
@@ -229,7 +240,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;

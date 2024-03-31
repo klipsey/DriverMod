@@ -6,6 +6,7 @@ using RobDriver.Modules.Components;
 using RoR2.UI;
 using RoR2.HudOverlay;
 using UnityEngine.AddressableAssets;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.SniperRifle
 {
@@ -201,7 +202,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     origin = aimRay.origin,
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Stun1s,
+                    damageType = DamageType.Stun1s | iDrive.bulletDamageType,
                     falloffModel = BulletAttack.FalloffModel.None,
                     maxDistance = 2000f,
                     force = 1000f,
@@ -224,7 +225,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-
+                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
                 bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                 {
                     if (BulletAttack.IsSniperTargetHit(hitInfo))

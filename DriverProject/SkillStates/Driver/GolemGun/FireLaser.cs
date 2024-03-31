@@ -2,6 +2,7 @@
 using UnityEngine;
 using EntityStates;
 using UnityEngine.AddressableAssets;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.GolemGun
 {
@@ -50,18 +51,21 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 					vector = raycastHit.point;
 				}
 
-				new BlastAttack
+				BlastAttack blastAttack = new BlastAttack
 				{
 					attacker = base.gameObject,
 					inflictor = base.gameObject,
 					teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
 					baseDamage = this.damageStat * FireLaser.damageCoefficient,
+					damageType = iDrive.bulletDamageType,
 					baseForce = FireLaser.force * 0.2f,
 					position = vector,
 					radius = FireLaser.blastRadius,
 					falloffModel = BlastAttack.FalloffModel.None,
 					bonusForce = FireLaser.force * this.modifiedAimRay.direction
-				}.Fire();
+				};
+				blastAttack.AddModdedDamageType(iDrive.moddedBulletType);
+				blastAttack.Fire();
 
 				Vector3 origin = this.modifiedAimRay.origin;
 				if (modelTransform)

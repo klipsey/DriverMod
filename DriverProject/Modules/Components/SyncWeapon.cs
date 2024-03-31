@@ -11,16 +11,18 @@ namespace RobDriver.Modules.Components
         private NetworkInstanceId netId;
         private ushort weapon;
         private bool cutAmmo;
+        private bool isAmmoBox;
 
         public SyncWeapon()
         {
         }
 
-        public SyncWeapon(NetworkInstanceId netId, ushort augh, bool ough)
+        public SyncWeapon(NetworkInstanceId netId, ushort augh, bool ough, bool isAmmoBox)
         {
             this.netId = netId;
             this.weapon = augh;
             this.cutAmmo = ough;
+            this.isAmmoBox = isAmmoBox;
         }
 
         public void Deserialize(NetworkReader reader)
@@ -28,6 +30,7 @@ namespace RobDriver.Modules.Components
             this.netId = reader.ReadNetworkId();
             this.weapon = reader.ReadUInt16();
             this.cutAmmo = reader.ReadBoolean();
+            this.isAmmoBox = reader.ReadBoolean();
         }
 
         public void OnReceived()
@@ -42,7 +45,9 @@ namespace RobDriver.Modules.Components
             float ammo = -1f;
             if (this.cutAmmo) ammo = weaponDef.shotCount * 0.5f;
 
-            if (iDrive) iDrive.PickUpWeapon(weaponDef, ammo);
+            bool isAmmoBox = this.isAmmoBox;
+
+            if (iDrive) iDrive.PickUpWeapon(weaponDef, ammo, isAmmoBox);
         }
 
         public void Serialize(NetworkWriter writer)
@@ -50,6 +55,7 @@ namespace RobDriver.Modules.Components
             writer.Write(this.netId);
             writer.Write(this.weapon);
             writer.Write(this.cutAmmo);
+            writer.Write(this.isAmmoBox);
         }
     }
 }

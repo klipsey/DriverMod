@@ -1,6 +1,7 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.SniperRifle
 {
@@ -73,13 +74,13 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     float radius = 1f;
 
                     LayerMask stopperMask = LayerIndex.CommonMasks.bullet;
-                    DamageType damageType = DamageType.Generic;
+                    DamageType damageType = iDrive.bulletDamageType;
                     if (this.aiming)
                     {
                         maxSpread = 0f;
                         minSpread = 0f;
                         stopperMask = LayerIndex.world.mask;
-                        damageType = DamageType.Stun1s;
+                        damageType = DamageType.Stun1s | iDrive.bulletDamageType;
                         tracer = Modules.Assets.sniperTracer;
                         radius = 0.25f;
                     }
@@ -115,6 +116,8 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         minSpread = minSpread,
                         bulletCount = 1
                     };
+
+                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
                     if (this.aiming)
                     {
