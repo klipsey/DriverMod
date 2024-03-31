@@ -255,7 +255,7 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Ryan Godsling");
             LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Ryan Godsling");
-            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Typhoon or Eclipse without picking up any weapons.\n<color=#8888>(Counts any difficulty Typhoon or higher)</color>.");
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Monsoon or higher without picking up any weapons.\n<color=#8888>(Counts any difficulty Monsoon or higher)</color>.");
 
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");

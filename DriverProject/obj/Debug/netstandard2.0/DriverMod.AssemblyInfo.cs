@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DriverMod")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+28215c5e54e5271acda16cc1ac5e0f9109fb959e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b61c28f3596a44c8619e7c7143aa8f6849bdba28")]
 [assembly: System.Reflection.AssemblyProductAttribute("DriverMod")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DriverMod")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
