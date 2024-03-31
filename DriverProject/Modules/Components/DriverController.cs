@@ -692,6 +692,7 @@ new EffectData
             else if(this.needReload && this.passive.isRyan)
             {
                 this.needReload = false;
+                this.timerStarted = false;
             }
 
             if (this.weaponDef != newWeapon)
