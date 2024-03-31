@@ -2818,6 +2818,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
                                 Log.Debug("AMMOOOOOOO");
                             }
+                            else
+                            {
+                                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = false;
+                            }
                             weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponPickup, position, UnityEngine.Random.rotation);
 
                             TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
