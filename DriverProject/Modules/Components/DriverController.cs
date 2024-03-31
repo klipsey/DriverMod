@@ -674,14 +674,24 @@ new EffectData
 
             if(this.passive.isBullets || this.passive.isRyan && isAmmoBox)
             {
-                this.timerStarted = false;
-                LoadBullets();
-                return;
+                if(weaponDef.name == "ROB_DRIVER_PISTOL_NAME")
+                {
+                    this.needReload = false;
+                    this.timerStarted = false;
+                    LoadBullets(true);
+                    return;
+                }
+                else
+                {
+                    this.needReload = false;
+                    this.timerStarted = false;
+                    LoadBullets(false);
+                    return;
+                }
             }
-            else if(this.needReload)
+            else if(this.needReload && this.passive.isRyan)
             {
                 this.needReload = false;
-                return;
             }
 
             if (this.weaponDef != newWeapon)

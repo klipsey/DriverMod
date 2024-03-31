@@ -621,30 +621,6 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
-            passive.pistolOnlyPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
-            {
-                skillName = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
-                skillNameToken = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
-                skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE2_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon"),
-                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
-                activationStateMachineName = "",
-                baseMaxStock = 1,
-                baseRechargeInterval = 0f,
-                beginSkillCooldownOnSkillEnd = false,
-                canceledFromSprinting = false,
-                forceSprintDuringState = false,
-                fullRestockOnAssign = true,
-                interruptPriority = EntityStates.InterruptPriority.Any,
-                resetCooldownTimerOnUse = false,
-                isCombatSkill = false,
-                mustKeyPress = false,
-                cancelSprintingOnActivation = false,
-                rechargeStock = 1,
-                requiredStock = 2,
-                stockToConsume = 1
-            });
-
             passive.bulletsPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_PASSIVE3_NAME",
@@ -693,15 +669,38 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
+            passive.pistolOnlyPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE2_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texAltPassiveIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
             Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
                 passive.defaultPassive,
-                passive.pistolOnlyPassive,
                 passive.bulletsPassive,
-                passive.godslingPassive
+                passive.godslingPassive,
+                passive.pistolOnlyPassive,
             });
 
             Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
-                null, pistolPassiveUnlockableDef, null, godslingPassiveUnlockableDef);
+                null, godslingPassiveUnlockableDef, null, pistolPassiveUnlockableDef );
             #endregion
 
             #region Primary
@@ -2743,7 +2742,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
-                    if (bonusChance) chance += Mathf.Clamp((DamageTypes.bulletTypes.Count - 16), 0, 50);
+                    if (bonusChance) chance += Mathf.Clamp((DamageTypes.bulletTypes.Distinct().Count() - 30), 0, 30);
                     bool fuckMyAss = chance >= 100f;
 
                     // higher chance if it's a big guy
