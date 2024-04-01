@@ -223,7 +223,7 @@ namespace RobDriver.Modules
                 System.Random rnd = new System.Random();
                 int num = rnd.Next(Buffs.bulletDefs.Count);
 
-                damageInfo.damageType = DamageTypes.bulletTypes[num].bulletType;
+                damageInfo.damageType |= DamageTypes.bulletTypes[num].bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);
                 damageInfo.AddModdedDamageType(DamageTypes.bulletTypes[num].moddedBulletType);
             }
