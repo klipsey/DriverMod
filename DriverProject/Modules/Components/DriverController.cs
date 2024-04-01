@@ -563,13 +563,13 @@ new EffectData
                     this.moddedBulletType = DamageTypes.Generic;
                     if (!this.needReload && this.weaponDef.name == "ROB_DRIVER_PISTOL_NAME")
                     {
-                        Log.Debug("Pistol Reload Started");
+                        //Log.Debug("Pistol Reload Started");
                         this.needReload = true;
                         this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
                     }
                     else if(!this.needReload)
                     {
-                        Log.Debug("Not Pistol Reload Started");
+                        ////Log.debug("Not Pistol Reload Started");
                         this.needReload = true;
                         this.ReturnToDefaultWeapon();
                     }
@@ -634,7 +634,7 @@ new EffectData
             if (this.hasPickedUpHammer) this.PickUpWeapon(DriverWeaponCatalog.LunarHammer);
             else
             {
-                Log.Debug("PickUpWeapon ran with " + this.defaultWeaponDef.name);
+                //Log.debug("PickUpWeapon ran with " + this.defaultWeaponDef.name);
                 this.PickUpWeapon(this.defaultWeaponDef);
             }
         }

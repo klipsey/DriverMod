@@ -525,8 +525,8 @@ namespace RobDriver.Modules.Survivors
 
             Driver.pistolReloadSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_DRIVER_BODY_RELOAD_NAME",
-                skillNameToken = prefix + "_DRIVER_BODY_RELOAD_NAME",
+                skillName = prefix + "_DRIVER_BODY_PRIMARY_RELOAD_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PRIMARY_RELOAD_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_RELOAD_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texConfirmIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ReloadPistol)),
@@ -2735,7 +2735,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                             }
                         }
-                        Log.Debug("chance checking");
+                        //Log.debug("chance checking");
                         if (damageReport.attackerBody.GetComponent<DriverController>().passive.isBullets) bonusChance = true;
                         if(damageReport.attackerBody.GetComponent<DriverController>().passive.isRyan) godSlingChance = true;
                     }
@@ -2808,7 +2808,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                         if(godSlingChance)
                         {
-                            Log.Debug("godslingchanceactivated");
+                            //Log.debug("godslingchanceactivated");
                             GameObject weaponPickup = weaponDef.pickupPrefab;
                             float splitChance = Modules.Config.godslingDropRateSplit.Value;
                             System.Random rnd = new System.Random();
@@ -2816,7 +2816,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                             if (num >= splitChance)
                             {
                                 weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
-                                Log.Debug("AMMOOOOOOO");
+                                //Log.debug("AMMOOOOOOO");
                             }
                             else
                             {
