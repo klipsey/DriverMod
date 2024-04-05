@@ -22,7 +22,6 @@ namespace RobDriver.SkillStates.Driver
         {
             base.OnEnter();
             this.duration = this.baseDuration / this.attackSpeedStat;
-
             this.GetModelAnimator().SetFloat("aimBlend", 1f);
             base.PlayCrossfade("Gesture, Override", this.animString, "Action.playbackRate", this.duration, 0.1f);
             Util.PlaySound("sfx_driver_reload_01", this.gameObject);

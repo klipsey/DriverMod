@@ -1,9 +1,13 @@
-﻿using R2API.Networking;
+﻿using R2API;
+using R2API.Networking;
 using R2API.Networking.Interfaces;
+using RobDriver.Modules.Survivors;
 using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
@@ -20,14 +24,6 @@ using UnityEngine.SceneManagement;
     RocketLauncher
 }*/
 // my wrongs have finally been righted
-
-// and heeeeere we go again
-public enum SkateboardState
-{
-    Inactive,
-    Transitioning,
-    Active
-}
 
 namespace RobDriver.Modules.Components
 {
@@ -50,6 +46,8 @@ namespace RobDriver.Modules.Components
         private SkillLocator skillLocator;
 
         public int maxShellCount = 12;
+        public int basePistolAmmo = 14;
+        public int currentBulletIndex;
         private int currentShell;
         private int currentSlug;
         private GameObject[] shellObjects;
@@ -59,6 +57,8 @@ namespace RobDriver.Modules.Components
 
         public float maxWeaponTimer;
         public float weaponTimer;
+        public DamageType bulletDamageType = DamageType.Generic;
+        public DamageAPI.ModdedDamageType moddedBulletType = DamageTypes.Generic;
         public DriverPassive passive;
         private float comboDecay = 1f;
         private DriverWeaponDef pistolWeaponDef;
@@ -78,9 +78,7 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef defaultWeaponDef;
 
-        private SkateboardState skateboardState;// this could have easily been a bool
-        private GameObject skateboardObject;
-        private GameObject skateboardBackObject;
+        private GameObject muzzleTrail;
 
         public ParticleSystem machineGunVFX;
 
@@ -129,10 +127,8 @@ namespace RobDriver.Modules.Components
 
             this.availableSupplyDrops = 1;
 
-            this.skateboardObject = this.childLocator.FindChild("SkateboardModel").gameObject;
-            this.skateboardBackObject = this.childLocator.FindChild("SkateboardBackModel").gameObject;
-
-            this.ToggleSkateboard(SkateboardState.Inactive);
+            // swag
+            this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
 
             this.CreateHammerEffect();
 
@@ -168,6 +164,8 @@ namespace RobDriver.Modules.Components
                 this.maxWeaponTimer = 26f;
                 this.weaponTimer = 26f;
             }
+
+            if (this.passive.isBullets || this.passive.isRyan) SetBulletAmmo(true);
         }
 
         private void SetInventoryHook()
@@ -397,7 +395,6 @@ new EffectData
             if (itemIndex == ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef.itemIndex) return true;
             return false;
         }
-
         private void CreateHammerEffect()
         {
             #region clone mithrix effect
@@ -459,27 +456,44 @@ new EffectData
             this.ConsumeAmmo(amount, scaleWithAttackSpeed);
         }
 
-        public void ToggleSkateboard(SkateboardState newState)
+        private void SetBulletAmmo(bool isPistol, float ammo = -1f)
         {
-            return;
+            float num = basePistolAmmo;
 
-            this.skateboardState = newState;
-
-            this.skateboardObject.SetActive(false);
-            this.skateboardBackObject.SetActive(false);
-
-            if (this.skillLocator.utility.skillDef.skillNameToken != DriverPlugin.developerPrefix + "UTILITY_SKATEBOARD_NAME") return;
-
-            switch (this.skateboardState)
+            if (!isPistol)
             {
-                case SkateboardState.Inactive:
-                    this.skateboardObject.SetActive(false);
-                    this.skateboardBackObject.SetActive(true);
-                    break;
-                case SkateboardState.Active:
-                    this.skateboardObject.SetActive(true);
-                    this.skateboardBackObject.SetActive(false);
-                    break;
+                num = this.weaponDef.shotCount;
+
+                if (Modules.Config.backupMagExtendDuration.Value)
+                {
+                    if (this.characterBody && this.characterBody.inventory)
+                    {
+                        num += (0.5f * this.characterBody.inventory.GetItemCount(RoR2Content.Items.SecondarySkillMagazine));
+                    }
+                }
+
+                if (Modules.Config.GetWeaponConfig(this.weaponDef)) num = Modules.Config.GetWeaponConfigShotCount(this.weaponDef);
+
+                if (this.weaponDef.tier == DriverWeaponTier.Common) num = 0f;
+                if (this.weaponDef.shotCount == 0) num = 0f;
+
+                this.weaponTimer = num;
+                if (ammo != -1f) this.weaponTimer = ammo;
+                this.maxWeaponTimer = this.weaponTimer;
+            }
+            else
+            {
+                if (this.characterBody.attackSpeed > 1) num += Mathf.Round(this.characterBody.attackSpeed - 1) * 5;
+
+                if (Modules.Config.backupMagExtendDuration.Value)
+                {
+                    if (this.characterBody && this.characterBody.inventory)
+                    {
+                        num += (0.5f * this.characterBody.inventory.GetItemCount(RoR2Content.Items.SecondarySkillMagazine));
+                    }
+                }
+                this.weaponTimer = num;
+                this.maxWeaponTimer = num;
             }
         }
 
@@ -498,12 +512,37 @@ new EffectData
                         this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
                     }
                 }
+                else if(this.passive.isBullets || this.passive.isRyan)
+                {
+                    if (NetworkServer.active)
+                    {
+                        if (this.characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
+                        {
+                            this.characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
+                            UnityEngine.Object.Destroy(muzzleTrail.gameObject);
+                            this.muzzleTrail = null;
+                        }
+                    }
+                    this.bulletDamageType = DamageType.Generic;
+                    this.moddedBulletType = DamageTypes.Generic;
+                    if (!this.needReload && this.weaponDef.name == "ROB_DRIVER_PISTOL_NAME")
+                    {
+                        //Log.Debug("Pistol Reload Started");
+                        this.needReload = true;
+                        this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    }
+                    else if(!this.needReload)
+                    {
+                        ////Log.debug("Not Pistol Reload Started");
+                        this.needReload = true;
+                        this.ReturnToDefaultWeapon();
+                    }
+                }
                 else
                 {
                     this.ReturnToDefaultWeapon();
                 }
             }
-
             this.CheckSupplyDrop();
         }
 
@@ -545,20 +584,23 @@ new EffectData
             new SyncStoredWeapon(identity.netId, newWeapon.index, ammo).Send(NetworkDestination.Clients);
         }
 
-        public void ServerPickUpWeapon(DriverWeaponDef newWeapon, bool cutAmmo, DriverController driverController)
+        public void ServerPickUpWeapon(DriverWeaponDef newWeapon, bool cutAmmo, DriverController driverController, bool isAmmoBox = false)
         {
             NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
             if (!identity) return;
 
-            new SyncWeapon(identity.netId, newWeapon.index, cutAmmo).Send(NetworkDestination.Clients);
+            new SyncWeapon(identity.netId, newWeapon.index, cutAmmo, isAmmoBox).Send(NetworkDestination.Clients);
         }
 
         private void ReturnToDefaultWeapon()
         {
             this.DiscardWeapon();
-
             if (this.hasPickedUpHammer) this.PickUpWeapon(DriverWeaponCatalog.LunarHammer);
-            else this.PickUpWeapon(this.defaultWeaponDef);
+            else
+            {
+                //Log.debug("PickUpWeapon ran with " + this.defaultWeaponDef.name);
+                this.PickUpWeapon(this.defaultWeaponDef);
+            }
         }
 
         private void DiscardWeapon()
@@ -574,12 +616,19 @@ new EffectData
         {
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
 
-            this.needReload = false;
-            this.weaponTimer = 26f;
-            this.maxWeaponTimer = 26f;
+            if(this.passive.isPistolOnly)
+            {
+                this.weaponTimer = 26f;
+                this.maxWeaponTimer = 26f;
+            }
+
+            if (this.passive.isBullets || this.passive.isRyan)
+            {
+                SetBulletAmmo(true);
+            }
         }
 
-        public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f)
+        public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool isAmmoBox = false)
         {
             if (this.passive.isPistolOnly)
             {
@@ -587,7 +636,34 @@ new EffectData
                 return;
             }
 
-            if (this.weaponDef != newWeapon) Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
+            if(this.passive.isBullets || this.passive.isRyan && isAmmoBox)
+            {
+                if(weaponDef.name == "ROB_DRIVER_PISTOL_NAME")
+                {
+                    this.needReload = false;
+                    this.timerStarted = false;
+                    LoadBullets(true);
+                    return;
+                }
+                else
+                {
+                    this.needReload = false;
+                    this.timerStarted = false;
+                    LoadBullets(false);
+                    return;
+                }
+            }
+            else if(this.needReload && this.passive.isRyan)
+            {
+                this.needReload = false;
+                this.timerStarted = false;
+            }
+
+            if (this.weaponDef != newWeapon)
+            {
+                Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
+                Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
+            }
 
             this.timerStarted = false;
             this.weaponDef = newWeapon;
@@ -604,6 +680,46 @@ new EffectData
             this.onWeaponUpdate(this);
         }
 
+        private void LoadBullets(bool isPistol = true, float ammo = -1f)
+        {
+            if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+ 
+            if(muzzleTrail)
+            {
+                UnityEngine.Object.Destroy(muzzleTrail);
+                muzzleTrail = null;
+            }
+
+            if(NetworkServer.active)
+            {
+                if (characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
+                {
+                    characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
+                }
+            }
+
+            this.needReload = false;
+             
+            System.Random rnd = new System.Random();
+            currentBulletIndex = rnd.Next(Buffs.bulletDefs.Count);
+
+            bulletDamageType = DamageTypes.bulletTypes[currentBulletIndex].bulletType;
+            moddedBulletType = DamageTypes.bulletTypes[currentBulletIndex].moddedBulletType;
+
+            SetBulletAmmo(isPistol, ammo);
+
+            if (NetworkServer.active)
+            {
+                this.characterBody.AddBuff(Buffs.bulletDefs[currentBulletIndex]);
+            }
+
+            Transform muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
+            if (!isPistol) muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
+            muzzleTrail = Assets.defaultMuzzleTrail;
+            muzzleTrail.GetComponent<TrailRenderer>().startColor = Buffs.bulletDefs[currentBulletIndex].buffColor;
+            muzzleTrail = UnityEngine.Object.Instantiate(muzzleTrail, muzzleTransform);
+
+        }
         private void TryPickupNotification(bool force = false)
         {
             if (!Modules.Config.enablePickupNotifications.Value) return;
@@ -706,9 +822,15 @@ new EffectData
             if (this.weaponDef.tier == DriverWeaponTier.Common) duration = 0f;
             if (this.weaponDef.shotCount == 0) duration = 0f;
 
-            this.maxWeaponTimer = duration;//this.weaponDef.baseDuration;
+            if (this.passive.isPistolOnly) duration = 26f;
+
+            if(this.passive.isBullets || this.passive.isRyan && this.weaponDef.nameToken == "ROB_DRIVER_PISTOL_NAME") duration = basePistolAmmo;
+
             this.weaponTimer = duration;//this.weaponDef.baseDuration;
+
             if (ammo != -1f) this.weaponTimer = ammo;
+
+            this.maxWeaponTimer = weaponTimer;
 
             // crosshair
             this.crosshairPrefab = this.weaponDef.crosshairPrefab;

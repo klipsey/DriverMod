@@ -2,6 +2,7 @@
 using UnityEngine;
 using EntityStates;
 using RobDriver.Modules.Components;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.RiotShotgun
 {
@@ -84,7 +85,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                         origin = aimRay.origin,
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
+                        damageType = iDrive.bulletDamageType,
                         falloffModel = BulletAttack.FalloffModel.None,
                         maxDistance = bulletRange,
                         force = force,
@@ -106,6 +107,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                         HitEffectNormal = false,
                     };
+                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;

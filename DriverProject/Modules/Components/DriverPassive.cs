@@ -8,6 +8,8 @@ namespace RobDriver.Modules.Components
     {
         public SkillDef defaultPassive;
         public SkillDef pistolOnlyPassive;
+        public SkillDef bulletsPassive;
+        public SkillDef godslingPassive;
         public GenericSkill passiveSkillSlot;
 
         public bool isPistolOnly
@@ -19,6 +21,31 @@ namespace RobDriver.Modules.Components
                     return this.passiveSkillSlot.skillDef == this.pistolOnlyPassive;
                 }
 
+                return false;
+            }
+        }
+
+
+        public bool isBullets
+        {
+            get
+            {
+                if (this.bulletsPassive && this.passiveSkillSlot)
+                {
+                    return this.passiveSkillSlot.skillDef == this.bulletsPassive;
+                }
+                return false;
+            }
+        }
+
+        public bool isRyan
+        {
+            get
+            {
+                if (this.godslingPassive && this.passiveSkillSlot)
+                {
+                    return this.passiveSkillSlot.skillDef == this.godslingPassive;
+                }
                 return false;
             }
         }

@@ -53,6 +53,12 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Marksman");
             LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
+            LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
+            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"My words are my <style=cIsHealth>bullets</style>.");
+
+            LanguageAPI.Add(prefix + "PASSIVE4_NAME", "Godsling");
+            LanguageAPI.Add(prefix + "PASSIVE4_DESCRIPTION", $"I <style=cIsHealth>drive</style>.");
+
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
             LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
 
@@ -186,7 +192,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "UTILITY_SLIDE_DESCRIPTION", "<style=cIsUtility>Slide</style> on the ground for a short distance. You can <style=cIsDamage>fire while sliding.</style>");
 
             LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_NAME", "Skateboard");
-            LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_DESCRIPTION", "Ride your <style=cIsUtility>skateboard</style>. You can <style=cIsDamage>fire while skating.</style>");
+            LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_DESCRIPTION", "Ride your <style=cIsUtility>skateboard</style>.");
             #endregion
 
             #region Special
@@ -246,6 +252,10 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Professional Killer");
             LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Professional Killer");
             LanguageAPI.Add(prefix + "PISTOLPASSIVE_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, complete a teleporter event without picking up any weapons.");
+
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Ryan Godsling");
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Ryan Godsling");
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Monsoon or higher without picking up any weapons.\n<color=#8888>(Counts any difficulty Monsoon or higher)</color>.");
 
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");
