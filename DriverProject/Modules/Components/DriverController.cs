@@ -78,13 +78,7 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef defaultWeaponDef;
 
-
-
-
-
-
         private GameObject muzzleTrail;
-
 
         public ParticleSystem machineGunVFX;
 
@@ -462,32 +456,6 @@ new EffectData
             this.ConsumeAmmo(amount, scaleWithAttackSpeed);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private void SetBulletAmmo(bool isPistol, float ammo = -1f)
         {
             float num = basePistolAmmo;
@@ -529,7 +497,6 @@ new EffectData
             }
         }
 
->>>>>>> 2db2f9d7994088667bd57dcacf6d13d2222ea1f1
         private void FixedUpdate()
         {
             if (this.timerStarted) this.weaponTimer -= Time.fixedDeltaTime;
