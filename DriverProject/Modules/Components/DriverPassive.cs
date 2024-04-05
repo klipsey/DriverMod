@@ -12,6 +12,19 @@ namespace RobDriver.Modules.Components
         public SkillDef godslingPassive;
         public GenericSkill passiveSkillSlot;
 
+        public bool isDefault
+        {
+            get
+            {
+                if (this.defaultPassive && this.passiveSkillSlot)
+                {
+                    return this.passiveSkillSlot.skillDef == this.defaultPassive;
+                }
+
+                return false;
+            }
+        }
+
         public bool isPistolOnly
         {
             get

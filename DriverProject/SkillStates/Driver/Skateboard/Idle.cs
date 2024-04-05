@@ -13,10 +13,22 @@ namespace RobDriver.SkillStates.Driver.Skateboard
         private Vector3 idealDirection;
         private uint skatePlayID = 0u;
         private bool isSprinting;
+        private bool wasSprinting;
+        private FootstepHandler footstep;
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            this.footstep = this.modelLocator.modelTransform.GetComponent<FootstepHandler>();
+            this.footstep.enabled = false;
+            this.modelLocator.normalizeToFloor = true;
+        }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+
+            if (this.footstep) this.footstep.enabled = false;
 
             if (base.isAuthority)
             {
@@ -28,10 +40,7 @@ namespace RobDriver.SkillStates.Driver.Skateboard
                     return;
                 }
 
-                if (this.inputBank.sprint.justPressed)
-                {
-                    this.isSprinting = !this.isSprinting;
-                }
+                this.isSprinting = this.inputBank.moveVector != Vector3.zero;
 
                 this.UpdateSkateDirection();
 
@@ -45,28 +54,28 @@ namespace RobDriver.SkillStates.Driver.Skateboard
                 }
             }
 
-            bool wasSprinting = this.characterBody.isSprinting;
-
             this.characterBody.isSprinting = this.isSprinting;
 
-            if (!wasSprinting && this.isSprinting) base.PlayAnimation("FullBody, Override", "SkateAccelerate");
+            if (!this.wasSprinting && this.isSprinting && this.isGrounded) base.PlayCrossfade("FullBody, Override", "SkateAccelerate", 0.1f);
+            this.wasSprinting = this.isSprinting;
 
             //sound
             if (base.isGrounded)
             {
                 if (this.skatePlayID == 0u)
                 {
-                    Util.PlaySound("Landing", this.gameObject);
-                    this.skatePlayID = Util.PlaySound("rollconcrete02", this.gameObject);
+                    Util.PlaySound("sfx_driver_skateboard_land", this.gameObject);
+                    this.skatePlayID = Util.PlaySound("sfx_driver_skateboard_roll", this.gameObject);
                 }
 
-                AkSoundEngine.SetRTPCValue("Skateboard_Speed", Util.Remap(base.characterMotor.velocity.magnitude, 7f, 60f, 1f, 4f));
+                AkSoundEngine.SetRTPCValue("Driver_SkateSpeed", Util.Remap(base.characterMotor.velocity.magnitude, 6f, 30f, 0f, 100f));
             }
             else
             {
                 if (this.skatePlayID != 0u)
                 {
-                    if (base.characterMotor.velocity.y >= 0.1f) Util.PlaySound("Ollie", this.gameObject);
+                    base.PlayCrossfade("FullBody, Override", "SkateJump", 0.05f);
+                    if (base.characterMotor.velocity.y >= 0.1f) Util.PlaySound("sfx_driver_skateboard_ollie", this.gameObject);
                     AkSoundEngine.StopPlayingID(this.skatePlayID);
                     this.skatePlayID = 0u;
                 }
@@ -77,6 +86,8 @@ namespace RobDriver.SkillStates.Driver.Skateboard
         {
             base.OnExit();
 
+            this.footstep.enabled = true;
+            this.modelLocator.normalizeToFloor = false;
             if (this.skatePlayID != 0u)
             {
                 AkSoundEngine.StopPlayingID(this.skatePlayID);

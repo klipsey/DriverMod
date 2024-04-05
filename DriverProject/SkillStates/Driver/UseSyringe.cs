@@ -52,80 +52,27 @@ namespace RobDriver.SkillStates.Driver
 
         protected virtual void ApplyBuff()
         {
-            switch (this.iDrive.weaponDef.buffType)
+            this.characterBody.AddTimedBuff(Modules.Buffs.syringeNewBuff, 6f);
+            /*EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab, new EffectData
             {
-                case DriverWeaponDef.BuffType.Damage:
-                    this.characterBody.AddTimedBuff(Modules.Buffs.syringeDamageBuff, 6f);
-                    EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab, new EffectData
-                    {
-                        origin = this.FindModelChild("PistolMuzzle").position,
-                        rotation = Quaternion.identity
-                    }, true);
-                    EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab2, new EffectData
-                    {
-                        origin = this.transform.position + new Vector3(0f, 0.5f, 0f),
-                        rotation = Quaternion.identity,
-                        rootObject = this.gameObject
-                    }, true);
-                    if (this.modelTransform)
-                    {
-                        TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                        temporaryOverlay.duration = 12f;
-                        temporaryOverlay.animateShaderAlpha = true;
-                        temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                        temporaryOverlay.destroyComponentOnEnd = true;
-                        temporaryOverlay.originalMaterial = Modules.Assets.syringeDamageOverlayMat;
-                        temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
-                    }
-                    break;
-                case DriverWeaponDef.BuffType.AttackSpeed:
-                    this.characterBody.AddTimedBuff(Modules.Buffs.syringeAttackSpeedBuff, 6f);
-                    EffectManager.SpawnEffect(Modules.Assets.attackSpeedBuffEffectPrefab, new EffectData
-                    {
-                        origin = this.FindModelChild("PistolMuzzle").position,
-                        rotation = Quaternion.identity
-                    }, true);
-                    EffectManager.SpawnEffect(Modules.Assets.attackSpeedBuffEffectPrefab2, new EffectData
-                    {
-                        origin = this.transform.position + new Vector3(0f, 0.5f, 0f),
-                        rotation = Quaternion.identity,
-                        rootObject = this.gameObject
-                    }, true);
-                    if (this.modelTransform)
-                    {
-                        TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                        temporaryOverlay.duration = 12f;
-                        temporaryOverlay.animateShaderAlpha = true;
-                        temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                        temporaryOverlay.destroyComponentOnEnd = true;
-                        temporaryOverlay.originalMaterial = Modules.Assets.syringeAttackSpeedOverlayMat;
-                        temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
-                    }
-                    break;
-                case DriverWeaponDef.BuffType.Crit:
-                    this.characterBody.AddTimedBuff(Modules.Buffs.syringeCritBuff, 6f);
-                    EffectManager.SpawnEffect(Modules.Assets.critBuffEffectPrefab, new EffectData
-                    {
-                        origin = this.FindModelChild("PistolMuzzle").position,
-                        rotation = Quaternion.identity
-                    }, true);
-                    EffectManager.SpawnEffect(Modules.Assets.critBuffEffectPrefab2, new EffectData
-                    {
-                        origin = this.transform.position + new Vector3(0f, 0.5f, 0f),
-                        rotation = Quaternion.identity,
-                        rootObject = this.gameObject
-                    }, true);
-                    if (this.modelTransform)
-                    {
-                        TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                        temporaryOverlay.duration = 12f;
-                        temporaryOverlay.animateShaderAlpha = true;
-                        temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                        temporaryOverlay.destroyComponentOnEnd = true;
-                        temporaryOverlay.originalMaterial = Modules.Assets.syringeCritOverlayMat;
-                        temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
-                    }
-                    break;
+                origin = this.FindModelChild("PistolMuzzle").position,
+                rotation = Quaternion.identity
+            }, true);*/
+            EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab2, new EffectData
+            {
+                origin = this.transform.position + new Vector3(0f, 0.5f, 0f),
+                rotation = Quaternion.identity,
+                rootObject = this.gameObject
+            }, true);
+            if (this.modelTransform)
+            {
+                TemporaryOverlay temporaryOverlay = this.modelTransform.gameObject.AddComponent<TemporaryOverlay>();
+                temporaryOverlay.duration = 12f;
+                temporaryOverlay.animateShaderAlpha = true;
+                temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                temporaryOverlay.destroyComponentOnEnd = true;
+                temporaryOverlay.originalMaterial = Modules.Assets.syringeDamageOverlayMat;
+                temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
             }
         }
 

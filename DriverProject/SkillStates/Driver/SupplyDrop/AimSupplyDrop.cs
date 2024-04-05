@@ -17,6 +17,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         protected GameObject areaIndicatorInstance { get; set; }
         private int storedSecondaryStock;
         private float storedSecondaryRechargeStopwatch;
+        private bool isSkate;
 
         public override void OnEnter()
         {
@@ -44,6 +45,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             //this.skillLocator.special.SetSkillOverride(this.skillLocator.special, Modules.Survivors.Driver.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
 
             Util.PlaySound("sfx_driver_foley", this.gameObject);
+
+            this.isSkate = this.skillLocator.utility.defaultSkillDef == Modules.Survivors.Driver.skateboardSkillDef;
         }
 
         protected virtual void ShowButton()
@@ -82,7 +85,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 }
             }
 
-            if ((this.inputBank.skill2.down || this.inputBank.skill3.down || this.inputBank.skill4.justPressed) && base.isAuthority)
+            if ((this.inputBank.skill2.down || this.inputBank.skill3.down || (this.isSkate && this.inputBank.skill4.down)) && base.isAuthority)
             {
                 if (base.fixedAge >= 0.1f)
                 {

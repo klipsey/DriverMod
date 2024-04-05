@@ -103,6 +103,10 @@ If you enjoy my work and would like to support me, you can donate to my [Ko-fi](
 ## Credits
 rob - Mostly everything
 
+tsuyoikenko - Leadfoot passive
+
+.score - Fixed up Skateboard skill and made it fun
+
 TheTimesweeper - Maintaining everything in my absence, making it super easy to get back on my feet, lots of code help and feedback
 
 Moffein - Also maintained things :-) Riot Shotgun SFX, networking help and great feedback
@@ -141,6 +145,24 @@ Big thanks to everyone in the community for all the valuable feedback and critic
 ___
 
 ## Changelog
+
+`1.6.1`
+- Player model is now normalized to the floor while skating
+
+`1.6.0`
+- Big thanks to tsuyoikenko and .score for this update, the new content is all them
+- Added skill: Sidestep
+- ^trade map traversal for in combat dodges
+- Added skill: Skateboard (fixed up and made functional by .score!)
+- ^trade combat mobility for crazy map traversal
+- Added passive: Leadfoot (made by tsuyoikenko!)
+- ^ammo pickups now give you unique bullets, over 15 different types with support for other mod devs to add their own
+- Added passive: Godsling (also made by tsuyoikenko!)
+- ^combines the two passives, but comes with a difficult unlock condition
+- Changed Marksman passive to a legacy skill (hidden behind cursed config)
+- Adapative Syringe reworked again into Experimental Syringe- now gives attack speed and increased health regen, making it a unique sustain option
+- Added legacy skill: Suspicious Syringe
+- Combat Knife now stuns on hit, making it less of a flight risk
 
 `1.5.1`
 - Pistol reload time reduced by 50%

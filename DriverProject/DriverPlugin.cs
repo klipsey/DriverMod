@@ -40,7 +40,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.5.1";
+        public const string MODVERSION = "1.6.1";
 
         public const string developerPrefix = "ROB";
 
@@ -143,11 +143,18 @@ namespace RobDriver
                 self.crit += 30f;
             }
 
+            if (self && self.HasBuff(Modules.Buffs.syringeNewBuff))
+            {
+                self.attackSpeed += 0.5f;
+                self.regen += 5f;
+            }
+
             if (self && self.HasBuff(Modules.Buffs.syringeScepterBuff))
             {
-                self.damage += self.level * 2f;
-                self.attackSpeed += 0.5f;
-                self.crit += 30f;
+                self.damage += self.level * 2.5f;
+                self.attackSpeed += 0.75f;
+                self.crit += 40f;
+                self.regen += 10f;
             }
 
             if (self && self.baseNameToken == Driver.bodyNameToken)

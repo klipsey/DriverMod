@@ -39,7 +39,14 @@ namespace RobDriver.Modules.Achievements
             base.OnInstall();
 
             Run.onClientGameOverGlobal += this.ClearCheck;
+            Run.onRunStartGlobal += this.Reset;
         }
+
+        private void Reset(Run run)
+        {
+            weaponPickedUpHard = false;
+        }
+
         public void ClearCheck(Run run, RunReport runReport)
         {
             if (run is null) return;
@@ -61,12 +68,12 @@ namespace RobDriver.Modules.Achievements
             }
         }
 
-
         public override void OnUninstall()
         {
             base.OnUninstall();
 
             Run.onClientGameOverGlobal -= this.ClearCheck;
+            Run.onRunStartGlobal -= this.Reset;
         }
     }
 }

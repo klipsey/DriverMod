@@ -50,7 +50,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Survivalist");
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"Enemies have a chance to drop a new <style=cIsUtility>weapon</style>. These give you <style=cIsDamage>powerful attacks</style> for a limited time!");
 
-            LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Marksman");
+            LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Marksman (Legacy)");
             LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
             LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
@@ -191,8 +191,13 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "UTILITY_SLIDE_NAME", "Combat Slide");
             LanguageAPI.Add(prefix + "UTILITY_SLIDE_DESCRIPTION", "<style=cIsUtility>Slide</style> on the ground for a short distance. You can <style=cIsDamage>fire while sliding.</style>");
 
+            LanguageAPI.Add(prefix + "UTILITY_DASH_NAME", "Sidestep");
+            LanguageAPI.Add(prefix + "UTILITY_DASH_DESCRIPTION", "<style=cIsUtility>Dash</style> a short distance. You can <style=cIsUtility>hold up to 2 charges.</style>");
+
             LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_NAME", "Skateboard");
             LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_DESCRIPTION", "Ride your <style=cIsUtility>skateboard</style>.");
+
+            LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD2_DESCRIPTION", "Get off your <style=cIsUtility>skateboard</style>.");
             #endregion
 
             #region Special
@@ -224,11 +229,18 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SPECIAL_KNIFE_SCEPTER_DESCRIPTION", $"Slash nearby enemies with a serrated blade, dealing <style=cIsDamage>470% damage</style> and <style=cIsHealth>wounding</style> them, <style=cIsDamage>lowering their armor</style> for <style=cIsUtility>4 seconds</style>."
                 + Helpers.ScepterDescription("Cooldown is halved and gain an extra stock."));
 
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Adaptive Syringe");
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a an <style=cIsDamage>offensive buff</style> based on your weapon for the next <style=cIsUtility>6 seconds</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Experimental Syringe");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>.");
 
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_NAME", "Perfected Syringe");
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you an <style=cIsDamage>offensive buff</style> based on your weapon for the next <style=cIsUtility>6 seconds</style>."
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>."
+                + Helpers.ScepterDescription("Increases damage and critical chance and strengthens buffs."));
+
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_NAME", "Suspicious Syringe (Legacy)");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a <style=cIsDamage>random offensive buff</style> for the next <style=cIsUtility>6 seconds</style>.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_SCEPTER_NAME", "Perfected Syringe (Legacy)");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a <style=cIsDamage>random offensive buff</style> for the next <style=cIsUtility>6 seconds</style>."
                 + Helpers.ScepterDescription("Applies all three buffs at once."));
             #endregion
 
@@ -255,7 +267,7 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Ryan Godsling");
             LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Ryan Godsling");
-            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Monsoon or higher without picking up any weapons.\n<color=#8888>(Counts any difficulty Monsoon or higher)</color>.");
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Monsoon or higher without picking up any weapons.");
 
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");

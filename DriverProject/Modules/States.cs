@@ -26,6 +26,7 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ThrowMolotov));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SwingKnife));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.UseSyringe));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.UseSyringeLegacy));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SwingKnifeScepter));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.UseSyringeScepter));
 

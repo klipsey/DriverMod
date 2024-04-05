@@ -138,6 +138,7 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef scepterSupplyDropSkillDef;
         internal static SkillDef scepterSupplyDropLegacySkillDef;
         internal static SkillDef scepterSyringeSkillDef;
+        internal static SkillDef scepterSyringeLegacySkillDef;
         internal static SkillDef scepterKnifeSkillDef;
 
         internal static string bodyNameToken;
@@ -626,7 +627,7 @@ namespace RobDriver.Modules.Survivors
                 skillName = prefix + "_DRIVER_BODY_PASSIVE3_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_PASSIVE3_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE3_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlugShotgunIcon"),
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texLeadfootIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
                 activationStateMachineName = "",
                 baseMaxStock = 1,
@@ -674,7 +675,7 @@ namespace RobDriver.Modules.Survivors
                 skillName = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE2_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texAltPassiveIcon"),
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texAltPassiveLegacyIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
                 activationStateMachineName = "",
                 baseMaxStock = 1,
@@ -692,15 +693,30 @@ namespace RobDriver.Modules.Survivors
                 requiredStock = 2,
                 stockToConsume = 1
             });
-            Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
-                passive.defaultPassive,
-                passive.bulletsPassive,
-                passive.godslingPassive,
-                passive.pistolOnlyPassive,
-            });
 
-            Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
-                null, godslingPassiveUnlockableDef, null, pistolPassiveUnlockableDef );
+            if (Modules.Config.cursed.Value)
+            {
+                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                    passive.defaultPassive,
+                    passive.bulletsPassive,
+                    passive.godslingPassive,
+                    passive.pistolOnlyPassive,
+                });
+
+                Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
+                null, pistolPassiveUnlockableDef, godslingPassiveUnlockableDef, pistolPassiveUnlockableDef);
+            }
+            else
+            {
+                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                    passive.defaultPassive,
+                    passive.bulletsPassive,
+                    passive.godslingPassive
+                });
+
+                Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
+                null, pistolPassiveUnlockableDef, godslingPassiveUnlockableDef);
+            }
             #endregion
 
             #region Primary
@@ -1531,7 +1547,7 @@ false);
                 skillName = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlideIcon"),
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSkateboardIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Skateboard.Start)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -1554,7 +1570,7 @@ false);
             {
                 skillName = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_NAME",
-                skillDescriptionToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD_DESCRIPTION",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_UTILITY_SKATEBOARD2_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texCancelIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Skateboard.Stop)),
                 activationStateMachineName = "Weapon",
@@ -1579,16 +1595,16 @@ false);
                 skillName = prefix + "_DRIVER_BODY_UTILITY_DASH_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_UTILITY_DASH_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_UTILITY_DASH_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlideIcon"),
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texDashIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Dash)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 2,
-                baseRechargeInterval = 5f,
+                baseRechargeInterval = 4f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = true,
                 fullRestockOnAssign = true,
-                interruptPriority = EntityStates.InterruptPriority.Skill,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
                 resetCooldownTimerOnUse = true,
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -1598,7 +1614,7 @@ false);
                 stockToConsume = 1
             });
 
-            Modules.Skills.AddUtilitySkills(prefab, slideSkillDef,/* dashSkillDef,*/ skateboardSkillDef);
+            Modules.Skills.AddUtilitySkills(prefab, slideSkillDef, dashSkillDef, skateboardSkillDef);
             #endregion
 
             #region Special
@@ -1866,9 +1882,57 @@ false);
                 stockToConsume = 1
             });
 
+            SkillDef syringeLegacySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SYRINGELEGACY_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGELEGACY_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGELEGACY_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSyringeLegacyIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.UseSyringeLegacy)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 12f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
+            scepterSyringeLegacySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_SYRINGELEGACY_SCEPTER_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGELEGACY_SCEPTER_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_SYRINGELEGACY_SCEPTER_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSyringeLegacyScepterIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.UseSyringeScepter)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 12f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
             if (Modules.Config.cursed.Value)
             {
-                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef);
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef, syringeLegacySkillDef);
                 Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef, supplyDropUnlockableDef);
             }
             else
@@ -1893,6 +1957,7 @@ false);
                 AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSupplyDropLegacySkillDef, bodyName, SkillSlot.Special, 2);
                 AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterKnifeSkillDef, bodyName, SkillSlot.Special, 3);
                 AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSyringeSkillDef, bodyName, SkillSlot.Special, 4);
+                AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterSyringeLegacySkillDef, bodyName, SkillSlot.Special, 5);
             }
             else
             {
@@ -2656,7 +2721,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             {
                 if (damageInfo.attacker && damageInfo.attacker.name.Contains("RobDriverBody"))
                 {
-                    damageInfo.damageType = DamageType.Generic;
+                    damageInfo.damageType = DamageType.Stun1s;
 
                     if (self)
                     {

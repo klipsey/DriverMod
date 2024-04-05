@@ -8,7 +8,7 @@ namespace RobDriver.SkillStates.Driver
 {
     public class ReloadPistol : BaseDriverSkillState
     {
-        public float baseDuration = 1.2f;
+        public float baseDuration = 2.4f;
         public string animString = "ReloadPistol";
         public InterruptPriority interruptPriority = InterruptPriority.PrioritySkill;
         public CameraParamsOverrideHandle camParamsOverrideHandle;
@@ -21,6 +21,7 @@ namespace RobDriver.SkillStates.Driver
         public override void OnEnter()
         {
             base.OnEnter();
+            if (this.iDrive.passive.isPistolOnly) this.baseDuration *= 0.5f;
             this.duration = this.baseDuration / this.attackSpeedStat;
             this.GetModelAnimator().SetFloat("aimBlend", 1f);
             base.PlayCrossfade("Gesture, Override", this.animString, "Action.playbackRate", this.duration, 0.1f);

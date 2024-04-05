@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1531203617
+CRC: 3931334695
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: beb8db1fbf70c3cd88cae0dd9913b618
+    Hash: b58f87adfc88bdf33ca24925321d2719
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 7d97328b274e37b2c802bf15d37d4337
+    Hash: f52b2c0afe00909773d984e09103a331
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -42,7 +42,7 @@ ClassTypes:
 - Class: 108
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 67079b849227b734694872d8810229b8, type: 3}
 - Class: 114
@@ -73,12 +73,14 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 319
   Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Driver/Icons/Skill/texSlugShotgunIcon.png
 - Assets/Driver/FBX/meshCommandoGun.mesh
 - Assets/Driver/Animations/Skateboard/SkateFastest.anim
 - Assets/Driver/Animations/animDriverCSS.controller
 - Assets/Driver/Animations/Hammer/SprintFast.anim
+- Assets/Driver/Icons/Skill/texDashIcon.png
 - Assets/Driver/Materials/matSkateboard.mat
 - Assets/Driver/Icons/Weapon/texBanditRevolverWeaponIcon.png
 - Assets/Driver/Icons/Weapon/texSniperRifleWeaponIcon.png
@@ -147,6 +149,7 @@ Assets:
 - Assets/Driver/FBX/Boombox.fbx
 - Assets/Driver/FBX/meshRiotShotgun.mesh
 - Assets/Driver/Icons/Skill/texPlasmaCannonIcon.png
+- Assets/Driver/Icons/Skill/texAltPassiveLegacyIcon.png
 - Assets/Driver/Animations/Skateboard/SkateAccelerate.anim
 - Assets/Driver/Textures/texPlasmaCannonEmission.png
 - Assets/Driver/Animations/Default/CSSIdleIn.anim
@@ -179,6 +182,7 @@ Assets:
 - Assets/Driver/Materials/matShotgunShell.mat
 - Assets/Driver/Textures/texRiotShotgun.png
 - Assets/Driver/FBX/meshDriver.mesh
+- Assets/Driver/Icons/Skill/texSkateboardIcon.png
 - Assets/Driver/FBX/meshGuerrilla.mesh
 - Assets/Driver/Textures/texCrate2.png
 - Assets/Driver/Icons/texMonsoonSkin.png
@@ -241,6 +245,7 @@ Assets:
 - Assets/Driver/Icons/Weapon/texHeavyMachineGunWeaponIcon.png
 - Assets/Driver/Textures/texLunarBriefcase.png
 - Assets/Driver/FBX/meshSuit.mesh
+- Assets/Driver/Icons/Skill/texSyringeLegacyScepterIcon.png
 - Assets/Driver/FBX/meshRevolver.mesh
 - Assets/Driver/Textures/texMinecraftDriver.png
 - Assets/Driver/VFX/DriverMissileGhost.prefab
@@ -262,6 +267,7 @@ Assets:
 - Assets/Driver/Materials/matSlugShotgun.mat
 - Assets/Driver/Textures/texSuit.png
 - Assets/Driver/FBX/meshLunarHammer.mesh
+- Assets/Driver/Icons/Skill/texLeadfootIcon.png
 - Assets/Driver/Textures/texGoldenGun.png
 - Assets/Driver/Materials/matKnife.mat
 - Assets/Driver/Textures/texPistol.png
@@ -309,6 +315,7 @@ Assets:
 - Assets/Driver/WeaponPickupLegendary.prefab
 - Assets/Driver/Animations/maskDriverGesture.mask
 - Assets/Driver/Textures/texSluggerEmission.png
+- Assets/Driver/Icons/Skill/texSyringeLegacyIcon.png
 - Assets/Driver/Icons/Weapon/texNemmercWeaponIcon.png
 - Assets/Driver/FBX/briefcase.fbx
 - Assets/Driver/Animations/maskDriverLeftArm.mask
@@ -410,5 +417,6 @@ Assets:
 - Assets/Driver/Icons/Skill/texSupplyDropLegacyIcon.png
 - Assets/Driver/Animations/Skateboard/SkateSlow.anim
 - Assets/Driver/Animations/Shotgun/RunB.anim
+- Assets/Driver/Icons/Skill/texLegacyOverlay.png
 - Assets/Driver/HUD/Textures/texWhite.png
 Dependencies: []

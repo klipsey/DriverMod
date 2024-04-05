@@ -7,8 +7,8 @@ namespace RobDriver.SkillStates.Driver
     public class Dash : BaseState
     {
         protected Vector3 slipVector = Vector3.zero;
-        public float duration = 0.45f;
-        public float speedCoefficient = 5f;
+        public float duration = 0.3f;
+        public float speedCoefficient = 7f;
         private Vector3 cachedForward;
 
         public override void OnEnter()
@@ -26,10 +26,10 @@ namespace RobDriver.SkillStates.Driver
             anim.SetFloat("dashF", num);
             anim.SetFloat("dashR", num2);
 
-            base.PlayCrossfade("FullBody, Override", "Dash", "Dash.playbackRate", this.duration * 1.2f, 0.05f);
-            //base.PlayAnimation("Gesture, Override", "BufferEmpty");
+            base.PlayCrossfade("FullBody, Override", "Dash", "Dash.playbackRate", this.duration * 1.5f, 0.05f);
+            base.PlayAnimation("Gesture, Override", "BufferEmpty");
 
-            //Util.PlaySound(EntityStates.BrotherMonster.BaseSlideState.soundString, base.gameObject);
+            Util.PlaySound("sfx_driver_dash", this.gameObject);
 
             this.ApplyBuff();
             this.CreateDashEffect();
@@ -53,7 +53,7 @@ namespace RobDriver.SkillStates.Driver
         {
             base.FixedUpdate();
             base.characterMotor.velocity = Vector3.zero;
-            base.characterMotor.rootMotion = this.slipVector * (this.moveSpeedStat * this.speedCoefficient * Time.fixedDeltaTime) * Mathf.Cos(base.fixedAge / (this.duration * 1.3f) * 1.57079637f);
+            base.characterMotor.rootMotion = this.slipVector * (this.moveSpeedStat * this.speedCoefficient * Time.fixedDeltaTime) * Mathf.Cos(base.fixedAge / this.duration * 1.57079637f);
 
             if (base.isAuthority)
             {
@@ -71,7 +71,7 @@ namespace RobDriver.SkillStates.Driver
 
         public virtual void DampenVelocity()
         {
-            base.characterMotor.velocity *= 0.4f;
+            base.characterMotor.velocity *= 0.8f;
         }
 
         public override void OnExit()

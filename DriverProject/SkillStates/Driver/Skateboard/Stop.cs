@@ -19,6 +19,7 @@ namespace RobDriver.SkillStates.Driver.Skateboard
 
             this.skillLocator.utility.UnsetSkillOverride(this.skillLocator.utility, Modules.Survivors.Driver.skateCancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
 
+            Util.PlaySound("sfx_driver_foley_syringe", this.gameObject);
             this.PlayAnimation("FullBody, Override", "StopSkate", "Slide.playbackRate", 0.6f / attackSpeedStat);
             this.SmallHop(this.characterMotor, 10f);
         }

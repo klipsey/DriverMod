@@ -883,6 +883,61 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_skateboard_roll" ID="{7EC10AE3-0B11-421F-BF70-617BAB5EA628}">
+					<ChildrenList>
+						<Action Name="" ID="{35843032-DAD7-4CF8-9D6F-E459878513B1}" ShortID="295140841">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_skateboard_roll" ID="{4355FF30-F94B-4D5C-96BE-D04F4AECFE86}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_skateboard_land" ID="{2D001877-C40B-4578-AF6D-0AD339DD2BB4}">
+					<ChildrenList>
+						<Action Name="" ID="{F5FD3B64-29DE-4C4C-BA48-178C2841C781}" ShortID="762329491">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_skateboard_land" ID="{6875EC66-69DB-48C1-B045-CBD6FC027F61}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_skateboard_ollie" ID="{7C485043-61AE-42F4-8355-A58AF0D03444}">
+					<ChildrenList>
+						<Action Name="" ID="{0415CA30-8A45-41F1-8F01-239DEDC400E2}" ShortID="169382765">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_skateboard_ollie" ID="{8F9141C0-7964-4D31-95F9-BEC7815EF50F}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_knife_hit" ID="{E44DA7D5-836A-4E2B-83AE-9E9154ADDA23}">
+					<ChildrenList>
+						<Action Name="" ID="{1BC883D4-1891-4CCD-823E-4BECCA787456}" ShortID="181852790">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_knife_hit" ID="{F36302BC-30AC-42A5-B4B5-F8369F76BB69}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_dash" ID="{31340C02-8113-42D5-9F2C-2A7645F1A864}">
+					<ChildrenList>
+						<Action Name="" ID="{D5A432DA-0AA0-4DD0-9E7B-EC22B518C72D}" ShortID="925052195">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_dash" ID="{3A8EA895-EBA9-42D0-B96E-DC1D6B09AF6C}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

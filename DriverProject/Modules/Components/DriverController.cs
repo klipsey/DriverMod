@@ -13,18 +13,6 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
-// this is definitely the worst way to do this
-// please make a system for this eventually
-// don't just stack on a thousand entries in this fucking enum
-/*public enum DriverWeapon
-{
-    Default,
-    Shotgun,
-    MachineGun,
-    RocketLauncher
-}*/
-// my wrongs have finally been righted
-
 namespace RobDriver.Modules.Components
 {
     public class DriverController : MonoBehaviour
@@ -127,9 +115,6 @@ namespace RobDriver.Modules.Components
 
             this.availableSupplyDrops = 1;
 
-            // swag
-            this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
-
             this.CreateHammerEffect();
 
             this.Invoke("SetInventoryHook", 0.5f);
@@ -170,6 +155,9 @@ namespace RobDriver.Modules.Components
 
         private void SetInventoryHook()
         {
+            // swag
+            if (this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
+
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
                 this.characterBody.master.inventory.onItemAddedClient += this.Inventory_onItemAddedClient;
@@ -295,6 +283,7 @@ namespace RobDriver.Modules.Components
 
         private bool TryUpgradeWeapon(DriverWeaponDef newWeaponDef)
         {
+            if (this.passive && this.passive.isDefault) return false;
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
             this.pistolWeaponDef = newWeaponDef;
@@ -636,9 +625,9 @@ new EffectData
                 return;
             }
 
-            if(this.passive.isBullets || this.passive.isRyan && isAmmoBox)
+            if (this.passive.isBullets || this.passive.isRyan && isAmmoBox)
             {
-                if(weaponDef.name == "ROB_DRIVER_PISTOL_NAME")
+                if (this.weaponDef == this.defaultWeaponDef)
                 {
                     this.needReload = false;
                     this.timerStarted = false;
@@ -653,7 +642,7 @@ new EffectData
                     return;
                 }
             }
-            else if(this.needReload && this.passive.isRyan)
+            else if (this.needReload && this.passive.isRyan)
             {
                 this.needReload = false;
                 this.timerStarted = false;

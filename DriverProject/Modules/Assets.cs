@@ -246,7 +246,7 @@ namespace RobDriver.Modules
             woundOverlayMat.SetColor("_TintColor", Color.red);
 
             hammerImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_impact_hammer");
-            knifeImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_knife_impact");
+            knifeImpactSoundDef = CreateNetworkSoundEventDef("sfx_driver_knife_hit");
 
             headshotOverlay = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerScopeLightOverlay.prefab").WaitForCompletion().InstantiateClone("DriverHeadshotOverlay", false);
             SniperTargetViewer viewer = headshotOverlay.GetComponentInChildren<SniperTargetViewer>();
