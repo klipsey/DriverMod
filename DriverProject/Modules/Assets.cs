@@ -107,6 +107,7 @@ namespace RobDriver.Modules
         public static Material nemmandoGunMat;
         public static Material nemmercGunMat;
 
+        public static Material skateboardMat;
         public static Material knifeMat;
         public static Material briefcaseMat;
         public static Material briefcaseGoldMat;
@@ -558,6 +559,7 @@ namespace RobDriver.Modules
             nemmercGunMat = CreateMaterial("matNemmercGun", 5f, Color.white, 1f);
 
             knifeMat = CreateMaterial("matKnife");
+            skateboardMat = CreateMaterial("matSkateboard");
 
             shotgunShell = mainAssetBundle.LoadAsset<GameObject>("ShotgunShell");
             shotgunShell.GetComponentInChildren<MeshRenderer>().material = CreateMaterial("matShotgunShell");

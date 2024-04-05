@@ -1,5 +1,7 @@
-﻿using R2API.Networking;
+﻿using R2API;
+using R2API.Networking;
 using R2API.Networking.Interfaces;
+using RobDriver.Modules.Survivors;
 using RoR2;
 using RoR2.Skills;
 using System;
@@ -20,14 +22,6 @@ using UnityEngine.SceneManagement;
     RocketLauncher
 }*/
 // my wrongs have finally been righted
-
-// and heeeeere we go again
-public enum SkateboardState
-{
-    Inactive,
-    Transitioning,
-    Active
-}
 
 namespace RobDriver.Modules.Components
 {
@@ -78,10 +72,6 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef defaultWeaponDef;
 
-        private SkateboardState skateboardState;// this could have easily been a bool
-        private GameObject skateboardObject;
-        private GameObject skateboardBackObject;
-
         public ParticleSystem machineGunVFX;
 
         private bool hasPickedUpHammer;
@@ -129,10 +119,8 @@ namespace RobDriver.Modules.Components
 
             this.availableSupplyDrops = 1;
 
-            this.skateboardObject = this.childLocator.FindChild("SkateboardModel").gameObject;
-            this.skateboardBackObject = this.childLocator.FindChild("SkateboardBackModel").gameObject;
-
-            this.ToggleSkateboard(SkateboardState.Inactive);
+            // swag
+            this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
 
             this.CreateHammerEffect();
 
@@ -457,30 +445,6 @@ new EffectData
             //this.timerStarted = true;
 
             this.ConsumeAmmo(amount, scaleWithAttackSpeed);
-        }
-
-        public void ToggleSkateboard(SkateboardState newState)
-        {
-            return;
-
-            this.skateboardState = newState;
-
-            this.skateboardObject.SetActive(false);
-            this.skateboardBackObject.SetActive(false);
-
-            if (this.skillLocator.utility.skillDef.skillNameToken != DriverPlugin.developerPrefix + "UTILITY_SKATEBOARD_NAME") return;
-
-            switch (this.skateboardState)
-            {
-                case SkateboardState.Inactive:
-                    this.skateboardObject.SetActive(false);
-                    this.skateboardBackObject.SetActive(true);
-                    break;
-                case SkateboardState.Active:
-                    this.skateboardObject.SetActive(true);
-                    this.skateboardBackObject.SetActive(false);
-                    break;
-            }
         }
 
         private void FixedUpdate()

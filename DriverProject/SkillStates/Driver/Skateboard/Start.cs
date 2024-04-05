@@ -8,6 +8,9 @@ namespace RobDriver.SkillStates.Driver.Skateboard
     {
         public float baseDuration = 0.5f;
 
+        protected override bool hideGun => true;
+        protected override string prop => "SkateboardModel";
+
         private float duration;
 
         public override void OnEnter()
@@ -15,26 +18,20 @@ namespace RobDriver.SkillStates.Driver.Skateboard
             base.OnEnter();
             this.duration = this.baseDuration / this.attackSpeedStat;
 
-            if (this.iDrive) this.iDrive.ToggleSkateboard(SkateboardState.Transitioning);
+            this.skillLocator.utility.SetSkillOverride(this.skillLocator.utility, Modules.Survivors.Driver.skateCancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+            this.GetModelChildLocator().FindChild("SkateboardBackModel").gameObject.SetActive(false);
 
-            this.PlayAnimation("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration);
+            // pistol has good animation blending, others dont
+            if (iDrive.weaponDef != DriverWeaponCatalog.Pistol || 
+                iDrive.weaponDef != DriverWeaponCatalog.VoidPistol || 
+                iDrive.weaponDef != DriverWeaponCatalog.LunarPistol)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+            }
+
+            base.PlayAnimation("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration);
 
             this.SmallHop(this.characterMotor, 10f);
-
-            this.skillLocator.utility.SetSkillOverride(this.skillLocator.utility, Modules.Survivors.Driver.skateCancelSkillDef, GenericSkill.SkillOverridePriority.Replacement);
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            if (this.outer.destroying)
-            {
-                if (this.iDrive) this.iDrive.ToggleSkateboard(SkateboardState.Inactive);
-            }
-            else
-            {
-                if (this.iDrive) this.iDrive.ToggleSkateboard(SkateboardState.Active);
-            }
         }
 
         public override void FixedUpdate()
@@ -49,7 +46,7 @@ namespace RobDriver.SkillStates.Driver.Skateboard
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Skill;
+            return InterruptPriority.Death;
         }
     }
 }

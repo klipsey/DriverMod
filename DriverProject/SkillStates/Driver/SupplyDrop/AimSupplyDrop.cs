@@ -5,6 +5,7 @@ using static RoR2.CameraTargetParams;
 using RobDriver.Modules.Components;
 using RoR2.UI;
 using UnityEngine.Networking;
+using RobDriver.Modules.Survivors;
 
 namespace RobDriver.SkillStates.Driver.SupplyDrop
 {
@@ -81,7 +82,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 }
             }
 
-            if ((this.inputBank.skill2.down || this.inputBank.skill4.justPressed) && base.isAuthority)
+            if ((this.inputBank.skill2.down || this.inputBank.skill3.down || this.inputBank.skill4.justPressed) && base.isAuthority)
             {
                 if (base.fixedAge >= 0.1f)
                 {

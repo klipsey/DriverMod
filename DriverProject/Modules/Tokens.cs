@@ -186,7 +186,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "UTILITY_SLIDE_DESCRIPTION", "<style=cIsUtility>Slide</style> on the ground for a short distance. You can <style=cIsDamage>fire while sliding.</style>");
 
             LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_NAME", "Skateboard");
-            LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_DESCRIPTION", "Ride your <style=cIsUtility>skateboard</style>. You can <style=cIsDamage>fire while skating.</style>");
+            LanguageAPI.Add(prefix + "UTILITY_SKATEBOARD_DESCRIPTION", "Ride your <style=cIsUtility>skateboard</style>.");
             #endregion
 
             #region Special

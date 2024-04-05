@@ -6,7 +6,10 @@ namespace RobDriver.SkillStates.Driver.Skateboard
 {
     public class Idle : BaseDriverSkillState
     {
-        private float skateSpeedMultiplier = 0.5f;
+        protected override bool hideGun => true;
+        protected override string prop => "SkateboardModel";
+
+        private float skateSpeedMultiplier = 0.8f;
         private Vector3 idealDirection;
         private uint skatePlayID = 0u;
         private bool isSprinting;
@@ -17,8 +20,14 @@ namespace RobDriver.SkillStates.Driver.Skateboard
 
             if (base.isAuthority)
             {
-                //base.characterBody.isSprinting = true;
-                
+                // this sucks but it works
+                if (this.inputBank.skill1.down || this.inputBank.skill2.down || this.inputBank.skill4.down ||
+                    (this.inputBank.skill3.justPressed && this.skillLocator.utility.stock > 0))
+                {
+                    outer.SetNextState(new Stop());
+                    return;
+                }
+
                 if (this.inputBank.sprint.justPressed)
                 {
                     this.isSprinting = !this.isSprinting;
@@ -33,13 +42,6 @@ namespace RobDriver.SkillStates.Driver.Skateboard
                     {
                         base.characterMotor.rootMotion += this.GetIdealVelocity() * Time.fixedDeltaTime;
                     }
-                }
-
-                if (base.isGrounded)
-                {
-                    //slope shit
-                    //Vector3 dir = modelLocator.modelTransform.up;
-                    //base.characterMotor.ApplyForce(dir * skateGravity);
                 }
             }
 
@@ -74,11 +76,17 @@ namespace RobDriver.SkillStates.Driver.Skateboard
         public override void OnExit()
         {
             base.OnExit();
+
             if (this.skatePlayID != 0u)
             {
                 AkSoundEngine.StopPlayingID(this.skatePlayID);
                 this.skatePlayID = 0u;
             }
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Death;
         }
 
         private void UpdateSkateDirection()
