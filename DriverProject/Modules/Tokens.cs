@@ -70,8 +70,8 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PRIMARY_PISTOL_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * SkillStates.Driver.Shoot.damageCoefficient}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");
 
-            LanguageAPI.Add(prefix + "PRIMARY_RELOAD_NAME", "Reload");
-            LanguageAPI.Add(prefix + "PRIMARY_RELOAD_DESCRIPTION", $"Reload your pistol.");
+            LanguageAPI.Add(prefix + "RELOAD_NAME", "Reload");
+            LanguageAPI.Add(prefix + "RELOAD_DESCRIPTION", $"Reload your gun.");
 
             LanguageAPI.Add(prefix + "PRIMARY_PYRITE_PISTOL_NAME", "Shoot");
             LanguageAPI.Add(prefix + "PRIMARY_PYRITE_PISTOL_DESCRIPTION", $"Fire your pistol for <style=cIsDamage>{100f * 2.5f}% damage</style>.\n<style=cIsDamage>Critical hits shoot twice.</style>");

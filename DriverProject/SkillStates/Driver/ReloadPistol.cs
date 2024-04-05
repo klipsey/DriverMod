@@ -10,7 +10,7 @@ namespace RobDriver.SkillStates.Driver
     {
         public float baseDuration = 1.2f;
         public string animString = "ReloadPistol";
-        public InterruptPriority interruptPriority = InterruptPriority.Death;
+        public InterruptPriority interruptPriority = InterruptPriority.PrioritySkill;
         public CameraParamsOverrideHandle camParamsOverrideHandle;
         public bool aiming;
 
