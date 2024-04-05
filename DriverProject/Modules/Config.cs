@@ -18,6 +18,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> sharedPickupVisuals;
         public static ConfigEntry<bool> oldPickupModel;
         public static ConfigEntry<float> baseDropRate;
+        public static ConfigEntry<float> godslingDropRateSplit;
         public static ConfigEntry<bool> weaponCallouts;
         public static ConfigEntry<bool> backupMagExtendDuration;
         public static ConfigEntry<bool> classicDodgeSound;
@@ -88,6 +89,12 @@ false,
 "Base Drop Rate",
 7f,
 "Base chance for weapons to drop on kill", 0f, 100f);
+
+            godslingDropRateSplit
+= Config.BindAndOptionsSlider("01 - General",
+"Percentage for gun vs ammo drop with alt passive 3",
+75f,
+"Base chance for gun over ammo", 0f, 100f);
 
             weaponCallouts
 = Config.BindAndOptions("01 - General",

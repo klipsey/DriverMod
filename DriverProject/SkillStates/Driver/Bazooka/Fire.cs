@@ -1,4 +1,5 @@
 ﻿using EntityStates;
+using R2API;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
@@ -82,13 +83,23 @@ namespace RobDriver.SkillStates.Driver.Bazooka
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.bazookaProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
+                            GameObject modify = Modules.Projectiles.bazookaProjectilePrefab;
+                            modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                            if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                            ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
+                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.bazookaProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
+                        GameObject modify = Modules.Projectiles.bazookaProjectilePrefab;
+                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                        if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                        ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
+                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
                     }
                 }
             }

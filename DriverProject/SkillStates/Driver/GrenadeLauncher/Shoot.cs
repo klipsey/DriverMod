@@ -3,6 +3,7 @@ using UnityEngine;
 using EntityStates;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.GrenadeLauncher
 {
@@ -76,13 +77,23 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
+                            GameObject modify = Modules.Projectiles.hmgGrenadeProjectilePrefab;
+                            modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                            if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                            ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
+                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(Modules.Projectiles.hmgGrenadeProjectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
+                        GameObject modify = Modules.Projectiles.hmgGrenadeProjectilePrefab;
+                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                        if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                        ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
+                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
                     }
                 }
             }

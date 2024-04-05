@@ -4,6 +4,7 @@ using EntityStates;
 using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.SMG
 {
@@ -94,13 +95,13 @@ namespace RobDriver.SkillStates.Driver.SMG
                 float thiccness = 1f;
                 float force = 50;
 
-                new BulletAttack
+                BulletAttack bulletAttack = new BulletAttack
                 {
                     aimVector = aimRay.direction,
                     origin = aimRay.origin,
                     damage = damage,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Stun1s,
+                    damageType = DamageType.Stun1s | iDrive.bulletDamageType,
                     falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                     maxDistance = 1000f,
                     force = force,// RiotShotgun.bulletForce,
@@ -121,7 +122,9 @@ namespace RobDriver.SkillStates.Driver.SMG
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                     HitEffectNormal = false,
-                }.Fire();
+                };
+                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.Fire();
 
                 //this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
             }

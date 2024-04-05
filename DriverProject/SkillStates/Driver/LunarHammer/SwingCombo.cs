@@ -32,7 +32,8 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
 
-            this.damageType = DamageType.Stun1s;
+            this.damageType = DamageType.Stun1s | iDrive.bulletDamageType;
+            this.moddedDamageTypeHolder.Add(iDrive.moddedBulletType);
 
             if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
             else this.muzzleString = "SwingCenter2";

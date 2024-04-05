@@ -1,4 +1,5 @@
 ﻿using EntityStates;
+using R2API;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -63,14 +64,14 @@ namespace RobDriver.SkillStates.Driver.SMG
 
                 base.AddRecoil2(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
 
-                new BulletAttack
+                BulletAttack bulletAttack = new BulletAttack
                 {
                     bulletCount = 1,
                     aimVector = aimRay.direction,
                     origin = aimRay.origin,
                     damage = Shoot.damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Generic,
+                    damageType = iDrive.bulletDamageType,
                     falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -92,7 +93,9 @@ namespace RobDriver.SkillStates.Driver.SMG
                     spreadYawScale = 1f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                }.Fire();
+                };
+                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.Fire();
             }
 
             base.characterBody.AddSpreadBloom(0.7f);

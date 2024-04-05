@@ -5,6 +5,8 @@ using static RoR2.CameraTargetParams;
 using UnityEngine.Networking;
 using RoR2.HudOverlay;
 using UnityEngine.AddressableAssets;
+using RobDriver.Modules;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -96,7 +98,7 @@ namespace RobDriver.SkillStates.Driver
 
             this.FindModelChild("PistolSight").gameObject.SetActive(true);
 
-            if (this.iDrive.passive.isPistolOnly)
+            if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
             {
                 this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
                 {
@@ -168,8 +170,8 @@ namespace RobDriver.SkillStates.Driver
                     Util.PlaySound("sfx_driver_pistol_ready", this.gameObject);
                 }
             }
-
-            if (this.iDrive.weaponTimer <= 0f && this.iDrive.passive.isPistolOnly)
+                
+            if (this.iDrive.weaponTimer <= 0f && (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
             {
                 if (this.shotCooldown <= 0f)
                 {
@@ -247,7 +249,7 @@ namespace RobDriver.SkillStates.Driver
                     }
                 }
 
-                if (this.iDrive.passive.isPistolOnly && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;
@@ -296,6 +298,8 @@ namespace RobDriver.SkillStates.Driver
         public virtual void Fire()
         {
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
+
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
 
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
@@ -350,14 +354,14 @@ namespace RobDriver.SkillStates.Driver
 
                 if (this.isPiercing)
                 {
-                    new BulletAttack
+                    BulletAttack bulletAttack = new BulletAttack
                     {
                         bulletCount = 1,
                         aimVector = aimRay.direction,
                         origin = aimRay.origin,
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
+                        damageType = iDrive.bulletDamageType,
                         falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
@@ -379,7 +383,9 @@ namespace RobDriver.SkillStates.Driver
                         spreadYawScale = 0f,
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                    }.Fire();
+                    };
+                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.Fire();
                 }
                 else
                 {
@@ -390,7 +396,7 @@ namespace RobDriver.SkillStates.Driver
                         origin = aimRay.origin,
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
+                        damageType = iDrive.bulletDamageType,
                         falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
@@ -413,14 +419,16 @@ namespace RobDriver.SkillStates.Driver
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                     };
+                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
-                    if (this.iDrive.passive.isPistolOnly)
+                    if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
                     {
                         bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                         {
                             if (BulletAttack.IsSniperTargetHit(hitInfo))
                             {
-                                damageInfo.damage *= 2f;
+                                if (this.iDrive.passive.isPistolOnly) damageInfo.damage *= 2f;
+                                else damageInfo.damage *= 1.5f;
                                 damageInfo.damageColorIndex = DamageColorIndex.Sniper;
 
                                 if (wasCharged)
@@ -479,7 +487,7 @@ namespace RobDriver.SkillStates.Driver
                     origin = aimRay.origin,
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Generic,
+                    damageType = iDrive.bulletDamageType,
                     falloffModel = falloffModel,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -502,8 +510,9 @@ namespace RobDriver.SkillStates.Driver
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
+                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
 
-                if (this.iDrive.passive.isPistolOnly)
+                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
                 {
                     bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                     {
