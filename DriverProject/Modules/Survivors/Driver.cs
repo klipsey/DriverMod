@@ -51,6 +51,7 @@ namespace RobDriver.Modules.Survivors
 
         internal static UnlockableDef supplyDropUnlockableDef;
         internal static UnlockableDef pistolPassiveUnlockableDef;
+        internal static UnlockableDef godslingPassiveUnlockableDef;
 
         // skill overrides
         internal static SkillDef lunarPistolPrimarySkillDef;
@@ -157,6 +158,7 @@ namespace RobDriver.Modules.Survivors
 
                 supplyDropUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SupplyDropAchievement>();
                 pistolPassiveUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverPistolPassiveAchievement>();
+                godslingPassiveUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverGodslingPassiveAchievement>();
 
                 if (!forceUnlock.Value) characterUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverUnlockAchievement>();
 
@@ -523,8 +525,8 @@ namespace RobDriver.Modules.Survivors
 
             Driver.pistolReloadSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_DRIVER_BODY_RELOAD_NAME",
-                skillNameToken = prefix + "_DRIVER_BODY_RELOAD_NAME",
+                skillName = prefix + "_DRIVER_BODY_PRIMARY_RELOAD_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PRIMARY_RELOAD_NAME",
                 skillDescriptionToken = prefix + "_DRIVER_BODY_RELOAD_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texConfirmIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.ReloadPistol)),
@@ -619,6 +621,54 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
+            passive.bulletsPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_PASSIVE3_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PASSIVE3_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE3_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlugShotgunIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
+            passive.godslingPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_PASSIVE4_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_PASSIVE4_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE4_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texAltPassiveIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
             passive.pistolOnlyPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_PASSIVE2_NAME",
@@ -642,14 +692,15 @@ namespace RobDriver.Modules.Survivors
                 requiredStock = 2,
                 stockToConsume = 1
             });
-
             Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
                 passive.defaultPassive,
-                passive.pistolOnlyPassive
+                passive.bulletsPassive,
+                passive.godslingPassive,
+                passive.pistolOnlyPassive,
             });
 
             Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
-                null, pistolPassiveUnlockableDef);
+                null, godslingPassiveUnlockableDef, null, pistolPassiveUnlockableDef );
             #endregion
 
             #region Primary
@@ -2669,6 +2720,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 }
 
                 // weapon drops
+                bool bonusChance = false;
+                bool godSlingChance = false;
                 if (isDriverOnPlayerTeam)
                 {
                     // headshot first
@@ -2682,10 +2735,14 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                             }
                         }
+                        //Log.debug("chance checking");
+                        if (damageReport.attackerBody.GetComponent<DriverController>().passive.isBullets) bonusChance = true;
+                        if(damageReport.attackerBody.GetComponent<DriverController>().passive.isRyan) godSlingChance = true;
                     }
 
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
+                    if (bonusChance) chance += Mathf.Clamp((DamageTypes.bulletTypes.Distinct().Count() - 30), 0, 30);
                     bool fuckMyAss = chance >= 100f;
 
                     // higher chance if it's a big guy
@@ -2749,12 +2806,38 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                             if (Util.CheckRoll(newWeapon.dropChance)) weaponDef = newWeapon;
                         }
 
-                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+                        if(godSlingChance)
+                        {
+                            //Log.debug("godslingchanceactivated");
+                            GameObject weaponPickup = weaponDef.pickupPrefab;
+                            float splitChance = Modules.Config.godslingDropRateSplit.Value;
+                            System.Random rnd = new System.Random();
+                            float num = rnd.Next(0, 100);
+                            if (num >= splitChance)
+                            {
+                                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
+                                //Log.debug("AMMOOOOOOO");
+                            }
+                            else
+                            {
+                                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = false;
+                            }
+                            weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponPickup, position, UnityEngine.Random.rotation);
 
-                        TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
-                        if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+                            TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
+                            if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
-                        NetworkServer.Spawn(weaponPickup);
+                            NetworkServer.Spawn(weaponPickup);
+                        }
+                        else
+                        {
+                            GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+
+                            TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
+                            if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+
+                            NetworkServer.Spawn(weaponPickup);
+                        }
                     }
                     else
                     {

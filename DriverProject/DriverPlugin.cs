@@ -6,6 +6,8 @@ using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
 using R2API.Networking;
+using RobDriver.Modules.Components;
+using RobDriver.Modules.Survivors;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -64,6 +66,7 @@ namespace RobDriver
             Modules.Assets.PopulateAssets();
             Modules.CameraParams.InitializeParams();
             Modules.States.RegisterStates();
+            Modules.DamageTypes.Init();
             Modules.Buffs.RegisterBuffs();
             Modules.Projectiles.RegisterProjectiles();
             Modules.Tokens.AddTokens();
@@ -145,6 +148,17 @@ namespace RobDriver
                 self.damage += self.level * 2f;
                 self.attackSpeed += 0.5f;
                 self.crit += 30f;
+            }
+
+            if (self && self.baseNameToken == Driver.bodyNameToken)
+            {
+                DriverController iDrive = self.GetComponent<DriverController>();
+                BuffDef buff;
+                if (Modules.Buffs.bulletDefs[iDrive.currentBulletIndex].name == "Hemorrhaging Rounds" && iDrive != null)
+                {
+                    buff = Modules.Buffs.bulletDefs[iDrive.currentBulletIndex];
+                    if (self.HasBuff(buff)) self.crit += 50;
+                }
             }
         }
 
