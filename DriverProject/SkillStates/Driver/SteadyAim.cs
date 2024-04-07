@@ -249,7 +249,7 @@ namespace RobDriver.SkillStates.Driver
                     }
                 }
 
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
+                if (this.iDrive.passive.isPistolOnly && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;

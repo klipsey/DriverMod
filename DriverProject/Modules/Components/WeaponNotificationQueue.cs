@@ -7,7 +7,7 @@ using System;
 namespace RobDriver.Modules.Components
 {
 	public class WeaponNotificationQueue : MonoBehaviour
-    {
+	{
 		public const float firstNotificationLengthSeconds = 6f;
 		public const float repeatNotificationLengthSeconds = 6f;
 		private CharacterMaster master;
@@ -44,7 +44,7 @@ namespace RobDriver.Modules.Components
 				DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(weaponIndex);
 
 				if (weaponDef)
-                {
+				{
 					notificationQueueForMaster.PushNotification(new CharacterMasterNotificationQueue.NotificationInfo(weaponDef, null), 3.5f);
 				}
 			}
@@ -71,7 +71,7 @@ namespace RobDriver.Modules.Components
 
 		public CharacterMasterNotificationQueue.NotificationInfo GetCurrentNotification()
 		{
-			return this.notification.notification;
+			return this.notification?.notification;
 		}
 	}
 }

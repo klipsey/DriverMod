@@ -146,6 +146,11 @@ ___
 
 ## Changelog
 
+`1.6.2`
+- Various bugfixes courtesy of .score
+- Skateboard cooldown: 0.5s > 1s, flying no longer possible- wasn't really a fun mechanic to begin with
+- Nerfs to proc rates of most ammo types
+
 `1.6.1`
 - Player model is now normalized to the floor while skating
 

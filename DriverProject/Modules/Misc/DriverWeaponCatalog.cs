@@ -81,6 +81,11 @@ namespace RobDriver
             weaponDrops.Add(bodyName, weaponDef);
         }
 
+        public static bool IsWeaponPistol(DriverWeaponDef weaponDef)
+        {
+            return weaponDef == Pistol || weaponDef == LunarPistol || weaponDef == VoidPistol;
+        }
+
         public static DriverWeaponDef GetWeaponFromIndex(int index)
         {
             return weaponDefs[index];
