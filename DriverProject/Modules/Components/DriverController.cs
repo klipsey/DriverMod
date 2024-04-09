@@ -445,7 +445,7 @@ namespace RobDriver.Modules.Components
             this.ConsumeAmmo(amount, scaleWithAttackSpeed);
         }
 
-        private void SetBulletAmmo()
+        private void SetBulletAmmo(float ammo = -1)
         {
             float shotCount;
             if (!DriverWeaponCatalog.IsWeaponPistol(weaponDef))
@@ -468,7 +468,8 @@ namespace RobDriver.Modules.Components
                 }
             }
 
-            this.weaponTimer = shotCount;
+            // nerf supply drop the quick and lazy way
+            this.weaponTimer = ammo == -1 ? shotCount : shotCount * 0.5f;
             this.maxWeaponTimer = shotCount;
         }
 
@@ -616,12 +617,19 @@ namespace RobDriver.Modules.Components
             }
 
             // ignore newWeapon, just reset ammo
-            if (this.passive.isBullets || this.passive.isRyan)
+            if (this.passive.isBullets)
             {
                 // change ammo type
-                if (isAmmoBox) LoadNewBullets();
+                if (isAmmoBox) LoadNewBullets(ammo);
                 // picked up bandolier or resetting rounds, keep ammo type
                 else SetBulletAmmo();
+                return;
+            }
+
+            // hope this works!
+            if (this.passive.isRyan && isAmmoBox)
+            {
+                LoadNewBullets(ammo);
                 return;
             }
 
@@ -646,7 +654,7 @@ namespace RobDriver.Modules.Components
             this.onWeaponUpdate(this);
         }
 
-        private void LoadNewBullets()
+        private void LoadNewBullets(float ammo = -1)
         {
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
             needReload = false;
@@ -671,7 +679,7 @@ namespace RobDriver.Modules.Components
             bulletDamageType = DamageTypes.bulletTypes[currentBulletIndex].bulletType;
             moddedBulletType = DamageTypes.bulletTypes[currentBulletIndex].moddedBulletType;
 
-            SetBulletAmmo();
+            SetBulletAmmo(ammo);
 
             if (NetworkServer.active)
             {

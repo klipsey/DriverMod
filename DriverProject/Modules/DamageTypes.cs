@@ -36,7 +36,6 @@ namespace RobDriver.Modules
             DamageType.BonusToLowHealth,
             DamageType.BlightOnHit,
             DamageType.CrippleOnHit,
-            DamageType.SuperBleedOnCrit,
             DamageType.FruitOnHit
         };
 
@@ -54,6 +53,7 @@ namespace RobDriver.Modules
         public static DamageAPI.ModdedDamageType VoidLightning;
         public static DamageAPI.ModdedDamageType CoinShot;
         public static DamageAPI.ModdedDamageType MysteryShot;
+        public static DamageAPI.ModdedDamageType Hemorrhage;
 
         public struct DriverBulletInfo
         {
@@ -80,6 +80,7 @@ namespace RobDriver.Modules
             VoidLightning = DamageAPI.ReserveDamageType();
             CoinShot = DamageAPI.ReserveDamageType();
             MysteryShot = DamageAPI.ReserveDamageType();
+            Hemorrhage = DamageAPI.ReserveDamageType();
 
             InitializeBullets();
             Hook();
@@ -91,6 +92,7 @@ namespace RobDriver.Modules
             On.RoR2.GlobalEventManager.OnHitEnemy += new On.RoR2.GlobalEventManager.hook_OnHitEnemy(GlobalEventManager_OnHitEnemy);
             On.RoR2.GlobalEventManager.OnHitAll += new On.RoR2.GlobalEventManager.hook_OnHitAll(GlobalEventManager_OnHitAll);
         }
+
         public static void InitializeBullets()
         {
             int common = 5;
@@ -98,67 +100,64 @@ namespace RobDriver.Modules
             int legendary = 1;
             foreach (DamageType i in allowedDamageTypes)
             {
-                string name = Enum.GetName(typeof(DamageType), i);
                 //Renaming
-                if (name == "ResetCooldownsOnKill")
+                switch (i)
                 {
-                    DamageTypes.AddNewBullet("Resetting Rounds", i, Color.red);
-                }
-                if (name == "SlowOnHit")
-                {
-                    DamageTypes.AddNewBullet("Slowing Rounds", i, UnityEngine.Color.yellow);
-                }
-                if (name == "Stun1s")
-                {
-                    DamageTypes.AddNewBullet("Stunning Rounds", i, UnityEngine.Color.gray);
-                }
-                if (name == "IgniteOnHit")
-                {
-                    DamageTypes.AddNewBullet("Incendiary Rounds", i, new UnityEngine.Color(255f / 255f, 127f / 255f, 80 / 255f));
-                }
-                if (name == "Freeze2s")
-                {
-                    DamageTypes.AddNewBullet("Frostbite Rounds", i, UnityEngine.Color.cyan, null, uncommon);
-                }
-                if (name == "ClayGoo")
-                {
-                    DamageTypes.AddNewBullet("Goo Rounds", i, UnityEngine.Color.black);
-                }
-                if (name == "BleedOnHit")
-                {
-                    DamageTypes.AddNewBullet("Serrated Rounds", i, DamageColor.FindColor(DamageColorIndex.Bleed));
-                }
-                if (name == "PoisonOnHit")
-                {
-                    DamageTypes.AddNewBullet("Poison Rounds", i, UnityEngine.Color.green);
-                }
-                if (name == "WeakOnHit")
-                {
-                    DamageTypes.AddNewBullet("Weakening Rounds", i, new UnityEngine.Color(220f / 255f, 237f / 255f, 159f / 255f));
-                }
-                if (name == "Nullify")
-                {
-                    DamageTypes.AddNewBullet("Nullifying Rounds", i, DamageColor.FindColor(DamageColorIndex.Void));
-                }
-                if (name == "BonusToLowHealth")
-                {
-                    DamageTypes.AddNewBullet("Executing Rounds", i, DamageColor.FindColor(DamageColorIndex.Fragile));
-                }
-                if (name == "BlightOnHit")
-                {
-                    DamageTypes.AddNewBullet("Blighting Rounds", i, new UnityEngine.Color(222f / 255f, 85f / 255f, 230f / 255f), null);
-                }
-                if (name == "CrippleOnHit")
-                {
-                    DamageTypes.AddNewBullet("Crippling Rounds", i, new UnityEngine.Color(48f / 255f, 205f / 255f, 217f / 255f));
-                }
-                if (name == "SuperBleedOnCrit")
-                {
-                    DamageTypes.AddNewBullet("Hemorrhaging Rounds", i, DamageColor.FindColor(DamageColorIndex.SuperBleed), null, uncommon);
-                }
-                if (name == "FruitOnHit")
-                {
-                    DamageTypes.AddNewBullet("Fruitful Rounds", i, new UnityEngine.Color(255f / 255f, 191f / 255f, 225f / 255f));
+                    case DamageType.ResetCooldownsOnKill:
+                        DamageTypes.AddNewBullet("Resetting Rounds", i, Color.red);
+                        break;
+
+                    case DamageType.SlowOnHit:
+                        DamageTypes.AddNewBullet("Slowing Rounds", i, UnityEngine.Color.yellow);
+                        break;
+
+                    case DamageType.Stun1s:
+                        DamageTypes.AddNewBullet("Stunning Rounds", i, UnityEngine.Color.gray);
+                        break;
+
+                    case DamageType.IgniteOnHit:
+                        DamageTypes.AddNewBullet("Incendiary Rounds", i, new UnityEngine.Color(255f / 255f, 127f / 255f, 80 / 255f));
+                        break;
+
+                    case DamageType.Freeze2s:
+                        DamageTypes.AddNewBullet("Frostbite Rounds", i, UnityEngine.Color.cyan, null, uncommon);
+                        break;
+
+                    case DamageType.ClayGoo:
+                        DamageTypes.AddNewBullet("Goo Rounds", i, UnityEngine.Color.black);
+                        break;
+
+                    case DamageType.BleedOnHit:
+                        DamageTypes.AddNewBullet("Serrated Rounds", i, DamageColor.FindColor(DamageColorIndex.Bleed));
+                        break;
+
+                    case DamageType.PoisonOnHit:
+                        DamageTypes.AddNewBullet("Poison Rounds", i, UnityEngine.Color.green);
+                        break;
+
+                    case DamageType.WeakOnHit:
+                        DamageTypes.AddNewBullet("Weakening Rounds", i, new UnityEngine.Color(220f / 255f, 237f / 255f, 159f / 255f));
+                        break;
+
+                    case DamageType.Nullify:
+                        DamageTypes.AddNewBullet("Nullifying Rounds", i, DamageColor.FindColor(DamageColorIndex.Void));
+                        break;
+
+                    case DamageType.BonusToLowHealth:
+                        DamageTypes.AddNewBullet("Executing Rounds", i, DamageColor.FindColor(DamageColorIndex.Fragile));
+                        break;
+
+                    case DamageType.BlightOnHit:
+                        DamageTypes.AddNewBullet("Blighting Rounds", i, new UnityEngine.Color(222f / 255f, 85f / 255f, 230f / 255f), null);
+                        break;
+
+                    case DamageType.CrippleOnHit:
+                        DamageTypes.AddNewBullet("Crippling Rounds", i, new UnityEngine.Color(48f / 255f, 205f / 255f, 217f / 255f));
+                        break;
+
+                    case DamageType.FruitOnHit:
+                        DamageTypes.AddNewBullet("Fruitful Rounds", i, new UnityEngine.Color(255f / 255f, 191f / 255f, 225f / 255f));
+                        break;
                 }
             }
 
@@ -166,7 +165,7 @@ namespace RobDriver.Modules
 
             DamageTypes.AddNewModdedBullet("Missle Shot", DamageTypes.MissileShot, new UnityEngine.Color(219 / 255f, 132 / 255f, 11 / 255f), null, uncommon);
 
-            DamageTypes.AddNewModdedBullet("Void Rounds", DamageTypes.VoidMissileShot, new UnityEngine.Color(122 / 255f, 69 / 255f, 173 / 255f), null, uncommon);
+            DamageTypes.AddNewModdedBullet("Void Missile Rounds", DamageTypes.VoidMissileShot, new UnityEngine.Color(122 / 255f, 69 / 255f, 173 / 255f), null, uncommon);
 
             DamageTypes.AddNewModdedBullet("Explosive Rounds", DamageTypes.ExplosiveRounds, Color.yellow, null, uncommon);
 
@@ -182,12 +181,13 @@ namespace RobDriver.Modules
 
             DamageTypes.AddNewModdedBullet("Sticky Shot", DamageTypes.StickyShot, new UnityEngine.Color(255 / 255f, 117 / 255f, 48 / 255f), null, common);
 
-            DamageTypes.AddNewModdedBullet("Void Strike Rounds", DamageTypes.VoidLightning, new UnityEngine.Color(194 / 255f, 115 / 255f, 255 / 255f), null, uncommon);
+            DamageTypes.AddNewModdedBullet("Void Lightning Rounds", DamageTypes.VoidLightning, new UnityEngine.Color(194 / 255f, 115 / 255f, 255 / 255f), null, uncommon);
 
             DamageTypes.AddNewModdedBullet("Coin Shot", DamageTypes.CoinShot, new UnityEngine.Color(255 / 255f, 212 / 255f, 94 / 255f), null, common);
 
             DamageTypes.AddNewModdedBullet("Mystery Shot", DamageTypes.MysteryShot, new UnityEngine.Color(30 / 255f, 51 / 255f, 45 / 255f), null, uncommon);
 
+            DamageTypes.AddNewModdedBullet("Hemorrhaging Rounds", DamageTypes.Hemorrhage, DamageColor.FindColor(DamageColorIndex.SuperBleed), null, uncommon);
         }
         public static void AddNewModdedBullet(string name, DamageAPI.ModdedDamageType bulletType, Color color, Sprite icon, int chance)
         {
@@ -303,9 +303,8 @@ namespace RobDriver.Modules
                         missileCount = attackerBody.inventory.GetItemCount(RoR2Content.Items.Missile);
                     }
 
-                    float icbmDamageCoefficient = 1f + 0.5f * (icbmCount - 1);
                     float damageCoefficient = 0.4f + 0.4f * (missileCount + missileVoidCount);
-                    float damageValue = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient) * icbmDamageCoefficient;
+                    float damageValue = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient) * DriverPlugin.GetICBMDamageMult(attackerBody);
 
                     for (int i = 0; i < (icbmCount == 0 ? 1 : 3); i++)
                     {
@@ -425,25 +424,39 @@ namespace RobDriver.Modules
 
                 if (damageInfo.HasModdedDamageType(MissileShot) && CheckRoll(procChance, attackerBody.master))
                 {
-                    float damageCoefficient = 3f + attackerBody.inventory.GetItemCount(RoR2Content.Items.Missile);
-                    float missileDamage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient);
+                    int icbmCount = 0;
+                    int missileVoidCount = 0;
+                    int missileCount = 0;
 
-                    MissileUtils.FireMissile(
-                        attackerBody.corePosition,
-                        attackerBody,
-                        damageInfo.procChainMask,
-                        victim, 
-                        missileDamage,
-                        damageInfo.crit,
-                        Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/MissileProjectile.prefab").WaitForCompletion(), 
-                        DamageColorIndex.Item, 
-                        true /*addMissileProc*/);
+                    if (attackerBody.inventory)
+                    {
+                        icbmCount = attackerBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile);
+                        missileVoidCount = attackerBody.inventory.GetItemCount(DLC1Content.Items.MissileVoid);
+                        missileCount = attackerBody.inventory.GetItemCount(RoR2Content.Items.Missile);
+                    }
+
+                    float damageCoefficient = 1.5f + 1.5f * (missileCount + missileVoidCount);
+                    float missileDamage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient) * DriverPlugin.GetICBMDamageMult(attackerBody);
+
+                    for (int i = 0; i < (icbmCount == 0 ? 1 : 3); i++)
+                    {
+                        MissileUtils.FireMissile(
+                            attackerBody.corePosition,
+                            attackerBody,
+                            damageInfo.procChainMask,
+                            victim,
+                            missileDamage,
+                            damageInfo.crit,
+                            Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/MissileProjectile.prefab").WaitForCompletion(),
+                            DamageColorIndex.Item,
+                            true /*addMissileProc*/);
+                    }
                 } // end atg
 
                 if (damageInfo.HasModdedDamageType(LightningStrikeRounds) && CheckRoll(procChance, attackerBody.master))
                 {
                     float damageValue = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, 
-                        5f + 5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.LightningStrikeOnHit));
+                        2.5f + 2.5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.LightningStrikeOnHit));
                     ProcChainMask procChainMask = damageInfo.procChainMask;
                     procChainMask.AddProc(ProcType.LightningStrikeOnHit);
 
@@ -467,43 +480,39 @@ namespace RobDriver.Modules
                 
                 if (damageInfo.HasModdedDamageType(FireballRounds) && CheckRoll(procChance, attackerBody.master))
                 {
-                    //Vector3 vector3 = (inputBank ? inputBank.aimDirection : victim.transform.forward);
-                    if (Util.CheckRoll(25f * damageInfo.procCoefficient, attackerBody.master))
+                    Vector3 origin = (attackerBody.characterMotor ? (victim.transform.position + Vector3.up * (attackerBody.characterMotor.capsuleHeight * 0.5f + 2f)) : (victim.transform.position + Vector3.up * 2f));
+                    EffectData effectData = new EffectData
                     {
-                        Vector3 origin = (attackerBody.characterMotor ? (victim.transform.position + Vector3.up * (attackerBody.characterMotor.capsuleHeight * 0.5f + 2f)) : (victim.transform.position + Vector3.up * 2f));
-                        EffectData effectData = new EffectData
-                        {
-                            scale = 1f,
-                            origin = origin
-                        };
-                        EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/MuzzleFlashes/MuzzleflashFireMeatBall"), effectData, transmit: true);
-                        float damageCoefficient = 1.5f + 1.5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.FireballsOnHit);
-                        ProcChainMask procChainMask = damageInfo.procChainMask;
-                        procChainMask.AddProc(ProcType.Meatball);
+                        scale = 1f,
+                        origin = origin
+                    };
+                    EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/MuzzleFlashes/MuzzleflashFireMeatBall"), effectData, transmit: true);
+                    float damageCoefficient = 1.5f + 1.5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.FireballsOnHit);
+                    ProcChainMask procChainMask = damageInfo.procChainMask;
+                    procChainMask.AddProc(ProcType.Meatball);
 
-                        int fireballCount = 3;
-                        Vector3 rotation = Vector3.up;
-                        for (int i = 0; i < fireballCount; i++)
+                    int fireballCount = 3;
+                    Vector3 rotation = Vector3.up;
+                    for (int i = 0; i < fireballCount; i++)
+                    {
+                        float offset = i * (float)Math.PI * 2f / fireballCount;
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
                         {
-                            float offset = i * (float)Math.PI * 2f / fireballCount;
-                            ProjectileManager.instance.FireProjectile(new FireProjectileInfo
-                            {
-                                projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/FireMeatBall"),
-                                position = origin + new Vector3(Mathf.Sin(offset), 0f, Mathf.Cos(offset)),
-                                rotation = Util.QuaternionSafeLookRotation(rotation),
-                                procChainMask = procChainMask,
-                                target = victim,
-                                owner = attackerBody.gameObject,
-                                damage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient),
-                                crit = damageInfo.crit,
-                                force = 200f,
-                                damageColorIndex = DamageColorIndex.Item,
-                                speedOverride = UnityEngine.Random.Range(15f, 30f),
-                                useSpeedOverride = true
-                            });
-                            rotation.x += Mathf.Sin(offset + UnityEngine.Random.Range(-20f, 20f));
-                            rotation.z += Mathf.Cos(offset + UnityEngine.Random.Range(-20f, 20f));
-                        }
+                            projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/FireMeatBall"),
+                            position = origin + new Vector3(Mathf.Sin(offset), 0f, Mathf.Cos(offset)),
+                            rotation = Util.QuaternionSafeLookRotation(rotation),
+                            procChainMask = procChainMask,
+                            target = victim,
+                            owner = attackerBody.gameObject,
+                            damage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient),
+                            crit = damageInfo.crit,
+                            force = 200f,
+                            damageColorIndex = DamageColorIndex.Item,
+                            speedOverride = UnityEngine.Random.Range(15f, 30f),
+                            useSpeedOverride = true
+                        });
+                        rotation.x += Mathf.Sin(offset + UnityEngine.Random.Range(-20f, 20f));
+                        rotation.z += Mathf.Cos(offset + UnityEngine.Random.Range(-20f, 20f));
                     }
                 } // end merf
                 
@@ -514,8 +523,15 @@ namespace RobDriver.Modules
                     float damage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, 1.8f);
 
                     ProjectileManager.instance.FireProjectile(LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/StickyBomb"),
-                        damageInfo.position, rotation, damageInfo.attacker, damage, 100f, damageInfo.crit, DamageColorIndex.Item,
-                        null /*target*/, attackerBody.healthComponent.alive ? forward.magnitude * 5f : -1f);
+                        damageInfo.position,
+                        rotation, 
+                        damageInfo.attacker,
+                        damage, 
+                        100f, 
+                        damageInfo.crit, 
+                        DamageColorIndex.Item,
+                        null /*target*/, 
+                        attackerBody.healthComponent.alive ? forward.magnitude * 5f : -1f);
                 } // end sticky
                 
                 if (damageInfo.HasModdedDamageType(VoidLightning) && CheckRoll(procChance, attackerBody.master))
@@ -551,8 +567,21 @@ namespace RobDriver.Modules
                         goldAmount = (uint)(2f * Run.instance.difficultyCoefficient)
                     };
                     OrbManager.instance.AddOrb(goldOrb);
-                    EffectManager.SimpleImpactEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/CoinImpact"), damageInfo.position, Vector3.up, transmit: true);
+                    EffectManager.SimpleImpactEffect(
+                        LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/CoinImpact"), 
+                        damageInfo.position, 
+                        Vector3.up, 
+                        transmit: true);
                 } // end moneyshot
+
+                if (damageInfo.HasModdedDamageType(Hemorrhage) && CheckRoll(procChance, attackerBody.master))
+                {
+                    DotController.InflictDot(
+                        victim, 
+                        damageInfo.attacker, 
+                        DotController.DotIndex.SuperBleed,
+                        15f * damageInfo.procCoefficient);
+                } // end superbleed
             }
         }
 
