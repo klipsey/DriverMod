@@ -13,6 +13,7 @@ using UnityEngine.AddressableAssets;
 using RoR2.Projectile;
 using UnityEngine.UIElements;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace RobDriver.Modules
 {
@@ -145,7 +146,7 @@ namespace RobDriver.Modules
                 }
                 if (name == "BlightOnHit")
                 {
-                    DamageTypes.AddNewBullet("Blighting Rounds", i, new UnityEngine.Color(222f / 255f, 85f / 255f, 230f / 255f));
+                    DamageTypes.AddNewBullet("Blighting Rounds", i, new UnityEngine.Color(222f / 255f, 85f / 255f, 230f / 255f), null);
                 }
                 if (name == "CrippleOnHit")
                 {
@@ -163,7 +164,7 @@ namespace RobDriver.Modules
 
             DamageTypes.AddNewModdedBullet("Hook Shot", DamageTypes.HookShot, Color.grey, null, legendary);
 
-            DamageTypes.AddNewModdedBullet("Missle Shot", DamageTypes.MissileShot, new UnityEngine.Color(219 / 255f, 132 / 255f, 11 / 255f), null, legendary);
+            DamageTypes.AddNewModdedBullet("Missle Shot", DamageTypes.MissileShot, new UnityEngine.Color(219 / 255f, 132 / 255f, 11 / 255f), null, uncommon);
 
             DamageTypes.AddNewModdedBullet("Void Rounds", DamageTypes.VoidMissileShot, new UnityEngine.Color(122 / 255f, 69 / 255f, 173 / 255f), null, uncommon);
 
@@ -179,16 +180,16 @@ namespace RobDriver.Modules
 
             DamageTypes.AddNewModdedBullet("Fireball Rounds", DamageTypes.FireballRounds, new UnityEngine.Color(255f / 255f, 127f / 255f, 80 / 255f), null, legendary);
 
-            DamageTypes.AddNewModdedBullet("Sticky Shot", DamageTypes.StickyShot, new UnityEngine.Color(255 / 255f, 117 / 255f, 48 / 255f));
+            DamageTypes.AddNewModdedBullet("Sticky Shot", DamageTypes.StickyShot, new UnityEngine.Color(255 / 255f, 117 / 255f, 48 / 255f), null, common);
 
             DamageTypes.AddNewModdedBullet("Void Strike Rounds", DamageTypes.VoidLightning, new UnityEngine.Color(194 / 255f, 115 / 255f, 255 / 255f), null, uncommon);
 
-            DamageTypes.AddNewModdedBullet("Coin Shot", DamageTypes.CoinShot, new UnityEngine.Color(255 / 255f, 212 / 255f, 94 / 255f));
+            DamageTypes.AddNewModdedBullet("Coin Shot", DamageTypes.CoinShot, new UnityEngine.Color(255 / 255f, 212 / 255f, 94 / 255f), null, common);
 
-            DamageTypes.AddNewModdedBullet("Mystery Shot", DamageTypes.MysteryShot, new UnityEngine.Color(30 / 255f, 51 / 255f, 45 / 255f));
+            DamageTypes.AddNewModdedBullet("Mystery Shot", DamageTypes.MysteryShot, new UnityEngine.Color(30 / 255f, 51 / 255f, 45 / 255f), null, uncommon);
 
         }
-        public static void AddNewModdedBullet(string name, DamageAPI.ModdedDamageType bulletType, Color color, Sprite icon = null, int chance = 1)
+        public static void AddNewModdedBullet(string name, DamageAPI.ModdedDamageType bulletType, Color color, Sprite icon, int chance)
         {
             if (icon == null) icon = Assets.bulletSprite;
             DriverBulletInfo bulletDef = new DriverBulletInfo
@@ -197,7 +198,7 @@ namespace RobDriver.Modules
                 moddedBulletType = bulletType,
                 bulletType = DamageType.Generic,
                 icon = icon,
-                trailColor = color
+                trailColor = color  
             };
             for (int i = 0; i < chance; i++) bulletTypes.Add(bulletDef);
         }
@@ -216,9 +217,19 @@ namespace RobDriver.Modules
             for (int i = 0; i < chance; i++) bulletTypes.Add(bulletDef);
         }
 
+        private static bool CheckRoll(float procChance, CharacterMaster characterMaster)
+        {
+            // small optimization but probably does fuck all for performance, oh well
+            return procChance >= 100f || Util.CheckRoll(procChance, characterMaster);
+        }
+
         private static void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
         {
-            if (damageInfo.HasModdedDamageType(MysteryShot))
+
+            CharacterBody attackerBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;
+
+            if (attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && 
+                damageInfo.HasModdedDamageType(MysteryShot))
             {
                 System.Random rnd = new System.Random();
                 int bulletIndex = rnd.Next(Buffs.bulletDefs.Count);
@@ -226,25 +237,19 @@ namespace RobDriver.Modules
                 damageInfo.damageType |= DamageTypes.bulletTypes[bulletIndex].bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);
                 damageInfo.AddModdedDamageType(DamageTypes.bulletTypes[bulletIndex].moddedBulletType);
-            }
+            } // end mysteryshot
 
             orig.Invoke(self, damageInfo, victim);
 
-            CharacterBody victimBody = victim ? victim.GetComponent<CharacterBody>() : null;
-            CharacterBody attackerBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;
-            if (NetworkServer.active && attackerBody)
+            // double check that we are doing this for a player controlled driver
+            if (NetworkServer.active && attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && damageInfo.procCoefficient != 0f)
             {
+                CharacterBody victimBody = victim ? victim.GetComponent<CharacterBody>() : null;
                 TeamComponent attackerTeam = attackerBody.GetComponent<TeamComponent>();
                 TeamIndex attackerTeamIndex = attackerTeam ? attackerTeam.teamIndex : TeamIndex.Neutral;
+                float procChance = 100f * damageInfo.procCoefficient;
 
-                // 25% chance to proc a lot of the strongest effects seems like a good compromise
-                bool passesReducedRngCheck = Util.CheckRoll(25f * damageInfo.procCoefficient, attackerBody.master);
-
-                // proc coefficents < 1
-                bool passesRngCheck = true;
-                if (damageInfo.procCoefficient < 1f) passesRngCheck = Util.CheckRoll(100f * damageInfo.procCoefficient, attackerBody.master);
-
-                if (damageInfo.HasModdedDamageType(HookShot) && passesRngCheck)
+                if (damageInfo.HasModdedDamageType(HookShot) && CheckRoll(procChance, attackerBody.master))
                 {
                     List<HurtBox> targets = CollectionPool<HurtBox, List<HurtBox>>.RentCollection();
                     List<HealthComponent> exclusions = CollectionPool<HealthComponent, List<HealthComponent>>.RentCollection();
@@ -283,9 +288,9 @@ namespace RobDriver.Modules
                         }
                     }
                     CollectionPool<HurtBox, List<HurtBox>>.ReturnCollection(targets);
-                }
+                } // end hookshot
 
-                if (damageInfo.HasModdedDamageType(VoidMissileShot))
+                if (damageInfo.HasModdedDamageType(VoidMissileShot) && CheckRoll(procChance, attackerBody.master))
                 {
                     int icbmCount = 0;
                     int missileVoidCount = 0;
@@ -323,9 +328,9 @@ namespace RobDriver.Modules
                             OrbManager.instance.AddOrb(missileVoidOrb);
                         }
                     }
-                }
+                } // end plimp
 
-                if (damageInfo.HasModdedDamageType(FlameTornadoShot) && passesRngCheck)
+                if (damageInfo.HasModdedDamageType(FlameTornadoShot) && CheckRoll(procChance, attackerBody.master))
                 {
                     GameObject gameObject = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/FireTornado");
                     float resetInterval = gameObject.GetComponent<ProjectileOverlapAttack>().resetInterval;
@@ -364,9 +369,9 @@ namespace RobDriver.Modules
                         speedOverride = speedOverride,
                         target = null
                     });
-                }
+                } // end kjaro
 
-                if (damageInfo.HasModdedDamageType(IceBlastShot) && passesRngCheck)
+                if (damageInfo.HasModdedDamageType(IceBlastShot) && CheckRoll(procChance, attackerBody.master))
                 {
                     float damageCoefficient = 1.25f + 1.25f * attackerBody.inventory.GetItemCount(RoR2Content.Items.IceRing);
                     float damage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient);
@@ -387,11 +392,11 @@ namespace RobDriver.Modules
                         inflictor = null,
                         position = damageInfo.position,
                         procChainMask = procChainMask,
-                        procCoefficient = 1f
+                        procCoefficient = 0f
                     });
-                }
+                } // end runald
 
-                if (damageInfo.HasModdedDamageType(DaggerShot) && passesRngCheck)
+                if (damageInfo.HasModdedDamageType(DaggerShot) && CheckRoll(procChance, attackerBody.master))
                 {
                     Vector3 position = Vector3.zero;
                     Transform victimTransform = victimBody.gameObject.transform;
@@ -406,22 +411,39 @@ namespace RobDriver.Modules
                     Quaternion rotation = Util.QuaternionSafeLookRotation(Vector3.up + UnityEngine.Random.insideUnitSphere * 0.1f);
                     float damageValue = Util.OnKillProcDamage(attackerBody.damage, 1.5f + 1.5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.Dagger));
                     float force = 200f;
-                    ProjectileManager.instance.FireProjectile(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Dagger/DaggerProjectile.prefab").WaitForCompletion(),
-                        position, rotation, attackerBody.gameObject, damageValue, force, Util.CheckRoll(attackerBody.crit, attackerBody.master), DamageColorIndex.Item);
-                }
 
-                if (damageInfo.HasModdedDamageType(MissileShot) && passesReducedRngCheck)
+                    ProjectileManager.instance.FireProjectile(
+                        Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Dagger/DaggerProjectile.prefab").WaitForCompletion(),
+                        position, 
+                        rotation, 
+                        attackerBody.gameObject, 
+                        damageValue, 
+                        force, 
+                        Util.CheckRoll(attackerBody.crit, attackerBody.master), 
+                        DamageColorIndex.Item);
+                } // end daggers
+
+                if (damageInfo.HasModdedDamageType(MissileShot) && CheckRoll(procChance, attackerBody.master))
                 {
-                    float damageCoefficient = 1f + attackerBody.inventory.GetItemCount(RoR2Content.Items.Missile);
+                    float damageCoefficient = 3f + attackerBody.inventory.GetItemCount(RoR2Content.Items.Missile);
                     float missileDamage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient);
-                    MissileUtils.FireMissile(attackerBody.corePosition, attackerBody, damageInfo.procChainMask, victim, missileDamage, damageInfo.crit,
-                        Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/MissileProjectile.prefab").WaitForCompletion(), DamageColorIndex.Item, addMissileProc: true);
-                }
 
+                    MissileUtils.FireMissile(
+                        attackerBody.corePosition,
+                        attackerBody,
+                        damageInfo.procChainMask,
+                        victim, 
+                        missileDamage,
+                        damageInfo.crit,
+                        Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/MissileProjectile.prefab").WaitForCompletion(), 
+                        DamageColorIndex.Item, 
+                        true /*addMissileProc*/);
+                } // end atg
 
-                if (damageInfo.HasModdedDamageType(LightningStrikeRounds) && passesReducedRngCheck)
+                if (damageInfo.HasModdedDamageType(LightningStrikeRounds) && CheckRoll(procChance, attackerBody.master))
                 {
-                    float damageValue = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, 2.5f + 2.5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.LightningStrikeOnHit));
+                    float damageValue = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, 
+                        5f + 5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.LightningStrikeOnHit));
                     ProcChainMask procChainMask = damageInfo.procChainMask;
                     procChainMask.AddProc(ProcType.LightningStrikeOnHit);
 
@@ -441,9 +463,9 @@ namespace RobDriver.Modules
                         procCoefficient = 1f,
                         target = target
                     });
-                }
-
-                if (damageInfo.HasModdedDamageType(FireballRounds) && passesReducedRngCheck)
+                } // end cherf
+                
+                if (damageInfo.HasModdedDamageType(FireballRounds) && CheckRoll(procChance, attackerBody.master))
                 {
                     //Vector3 vector3 = (inputBank ? inputBank.aimDirection : victim.transform.forward);
                     if (Util.CheckRoll(25f * damageInfo.procCoefficient, attackerBody.master))
@@ -483,9 +505,9 @@ namespace RobDriver.Modules
                             rotation.z += Mathf.Cos(offset + UnityEngine.Random.Range(-20f, 20f));
                         }
                     }
-                }
-
-                if (damageInfo.HasModdedDamageType(StickyShot) && passesReducedRngCheck)
+                } // end merf
+                
+                if (damageInfo.HasModdedDamageType(StickyShot) && CheckRoll(procChance, attackerBody.master))
                 {
                     Vector3 forward = victimBody.corePosition - damageInfo.position;
                     Quaternion rotation = forward.magnitude != 0f ? Util.QuaternionSafeLookRotation(forward) : UnityEngine.Random.rotationUniform;
@@ -494,9 +516,9 @@ namespace RobDriver.Modules
                     ProjectileManager.instance.FireProjectile(LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/StickyBomb"),
                         damageInfo.position, rotation, damageInfo.attacker, damage, 100f, damageInfo.crit, DamageColorIndex.Item,
                         null /*target*/, attackerBody.healthComponent.alive ? forward.magnitude * 5f : -1f);
-                }
-
-                if (damageInfo.HasModdedDamageType(VoidLightning) && passesReducedRngCheck)
+                } // end sticky
+                
+                if (damageInfo.HasModdedDamageType(VoidLightning) && CheckRoll(procChance, attackerBody.master))
                 {
                     VoidLightningOrb voidLightningOrb = new VoidLightningOrb
                     {
@@ -518,9 +540,9 @@ namespace RobDriver.Modules
                         voidLightningOrb.target = victimBody.mainHurtBox;
                         OrbManager.instance.AddOrb(voidLightningOrb);
                     }
-                }
-
-                if (damageInfo.HasModdedDamageType(CoinShot))
+                } // end polylute
+                
+                if (damageInfo.HasModdedDamageType(CoinShot) && CheckRoll(procChance, attackerBody.master))
                 {
                     GoldOrb goldOrb = new GoldOrb
                     {
@@ -530,7 +552,7 @@ namespace RobDriver.Modules
                     };
                     OrbManager.instance.AddOrb(goldOrb);
                     EffectManager.SimpleImpactEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/CoinImpact"), damageInfo.position, Vector3.up, transmit: true);
-                }
+                } // end moneyshot
             }
         }
 
@@ -558,7 +580,7 @@ namespace RobDriver.Modules
                 return;
             }
 
-            if (damageInfo.HasModdedDamageType(ExplosiveRounds))
+            if (attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && damageInfo.HasModdedDamageType(ExplosiveRounds))
             {
                 float radius = (1.5f + 2.5f * inventory.GetItemCount(RoR2Content.Items.Behemoth)) * damageInfo.procCoefficient;
                 float damageCoefficient = 0.6f;

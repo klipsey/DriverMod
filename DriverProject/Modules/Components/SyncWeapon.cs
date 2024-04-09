@@ -40,14 +40,17 @@ namespace RobDriver.Modules.Components
 
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
 
-            DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(this.weapon);
+            if (iDrive)
+            {
+                DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(this.weapon);
 
-            float ammo = -1f;
-            if (this.cutAmmo) ammo = weaponDef.shotCount * 0.5f;
+                float ammo = -1f;
+                if (this.cutAmmo) ammo = weaponDef.shotCount * 0.5f;
 
-            bool isAmmoBox = this.isAmmoBox;
-
-            if (iDrive) iDrive.PickUpWeapon(weaponDef, ammo, isAmmoBox);
+                // fuck thissssss
+                bool isAmmoBox = iDrive.passive.isBullets || this.isAmmoBox;
+                iDrive.PickUpWeapon(weaponDef, ammo, isAmmoBox);
+            }
         }
 
         public void Serialize(NetworkWriter writer)
