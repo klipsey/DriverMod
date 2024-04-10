@@ -2712,6 +2712,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             }
         }
 
+
         private static void BaseAIState_AimInDirection(On.EntityStates.AI.BaseAIState.orig_AimInDirection orig, EntityStates.AI.BaseAIState self, ref BaseAI.BodyInputs dest, Vector3 aimDirection)
         {
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
@@ -2931,6 +2932,9 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                             TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                             if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+
+                            // surely this wont cause problems!
+                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
 
                             NetworkServer.Spawn(weaponPickup);
                         }

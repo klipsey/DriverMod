@@ -156,17 +156,6 @@ namespace RobDriver
                 self.crit += 40f;
                 self.regen += 10f;
             }
-
-            if (self && self.baseNameToken == Driver.bodyNameToken)
-            {
-                DriverController iDrive = self.GetComponent<DriverController>();
-                BuffDef buff;
-                if (Modules.Buffs.bulletDefs[iDrive.currentBulletIndex].name == "Hemorrhaging Rounds" && iDrive != null)
-                {
-                    buff = Modules.Buffs.bulletDefs[iDrive.currentBulletIndex];
-                    if (self.HasBuff(buff)) self.crit += 50;
-                }
-            }
         }
 
         private void CrosshairController_Awake(On.RoR2.UI.CrosshairController.orig_Awake orig, RoR2.UI.CrosshairController self)
