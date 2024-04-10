@@ -32,6 +32,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> enableRecoil;
         public static ConfigEntry<int> defaultWeaponIndex;
+        public static ConfigEntry<bool> badass;
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<float> baseHealth;
@@ -92,9 +93,9 @@ false,
 
             godslingDropRateSplit
 = Config.BindAndOptionsSlider("01 - General",
-"Percentage for gun vs ammo drop with alt passive 3",
+"Godsling Drop Rate Split",
 75f,
-"Base chance for gun over ammo", 0f, 100f);
+"Controls whether ammo or guns drop while using the Godsling passive, higher number means higher chance for guns", 0f, 100f);
 
             weaponCallouts
 = Config.BindAndOptions("01 - General",
@@ -173,6 +174,12 @@ true,
 "Default Weapon Index",
 0,
 "Change the index of the default weapon Driver uses. Purely for fun, don't ask me what the indices are because I don't know, they're generated at runtime.");
+
+            badass
+= Config.BindAndOptions("01 - General",
+"Badass Mode",
+false,
+"Makes the mod BadAss.", true);
 
             cursed
 = Config.BindAndOptions("01 - General",

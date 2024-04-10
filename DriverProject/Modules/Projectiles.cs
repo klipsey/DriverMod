@@ -126,17 +126,26 @@ namespace RobDriver.Modules
             ProjectileImpactExplosion impactExplosion = hmgGrenadeProjectilePrefab.GetComponent<ProjectileImpactExplosion>();
             InitializeImpactExplosion(impactExplosion);
 
-            GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion2", true);
-            fuckMyLife.AddComponent<NetworkIdentity>();
+            GameObject fuckMyLife = null;
+            if (Modules.Config.badass.Value)
+            {
+                fuckMyLife = Modules.Assets.badassSmallExplosionEffect;
+                fuckMyLife.AddComponent<NetworkIdentity>();
+            }
+            else
+            {
+                fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion2", true);
+                fuckMyLife.AddComponent<NetworkIdentity>();
 
-            GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
-            GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
-            radiusIndicator.transform.parent = fuckMyLife.transform;
-            radiusIndicator.transform.localPosition = Vector3.zero;
-            radiusIndicator.transform.localScale = Vector3.one;
-            radiusIndicator.transform.localRotation = Quaternion.identity;
+                GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
+                GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
+                radiusIndicator.transform.parent = fuckMyLife.transform;
+                radiusIndicator.transform.localPosition = Vector3.zero;
+                radiusIndicator.transform.localScale = Vector3.one;
+                radiusIndicator.transform.localRotation = Quaternion.identity;
 
-            Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_grenade_explosion");
+                Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_grenade_explosion");
+            }
 
             impactExplosion.blastRadius = 6f;
             impactExplosion.destroyOnEnemy = true;
@@ -189,17 +198,26 @@ namespace RobDriver.Modules
             ProjectileImpactExplosion impactExplosion = projectilePrefab.GetComponent<ProjectileImpactExplosion>();
             InitializeImpactExplosion(impactExplosion);
 
-            GameObject fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
-            fuckMyLife.AddComponent<NetworkIdentity>();
+            GameObject fuckMyLife = null;
+            if (Modules.Config.badass.Value)
+            {
+                fuckMyLife = Modules.Assets.badassExplosionEffect;
+                fuckMyLife.AddComponent<NetworkIdentity>();
+            }
+            else
+            {
+                fuckMyLife = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
+                fuckMyLife.AddComponent<NetworkIdentity>();
 
-            GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
-            GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
-            radiusIndicator.transform.parent = fuckMyLife.transform;
-            radiusIndicator.transform.localPosition = Vector3.zero;
-            radiusIndicator.transform.localScale = Vector3.one;
-            radiusIndicator.transform.localRotation = Quaternion.identity;
+                GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
+                GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
+                radiusIndicator.transform.parent = fuckMyLife.transform;
+                radiusIndicator.transform.localPosition = Vector3.zero;
+                radiusIndicator.transform.localScale = Vector3.one;
+                radiusIndicator.transform.localRotation = Quaternion.identity;
 
-            Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_explosion");
+                Assets.AddNewEffectDef(fuckMyLife, "sfx_driver_explosion");
+            }
 
             impactExplosion.blastRadius = 10f;
             impactExplosion.destroyOnEnemy = true;

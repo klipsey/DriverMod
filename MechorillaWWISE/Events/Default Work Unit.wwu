@@ -938,6 +938,28 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_driver_explosion_badass" ID="{2F4738A5-B3E6-4082-9AB4-6B8B726301BF}">
+					<ChildrenList>
+						<Action Name="" ID="{45D033B6-4648-468D-AEAB-F8BDCA5424DD}" ShortID="818362676">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_explosion_badass" ID="{E9CEC474-41A0-4FAC-9FC9-296FC4A7F468}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_driver_grenade_explosion_badass" ID="{6ED60735-A69F-4B29-B6EA-0FA0FA41A7B4}">
+					<ChildrenList>
+						<Action Name="" ID="{91CC30DF-CBCF-4649-8AE1-A6EFD895A22D}" ShortID="943215489">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_driver_grenade_explosion_badass" ID="{79E4A85C-50FC-45C7-8B03-971E40128F18}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

@@ -146,6 +146,12 @@ ___
 
 ## Changelog
 
+`1.6.3`
+- Another handful of bugfixes from .score
+- Godsling passive is now disabled in multiplayer due to balance concerns
+- Added Badass Mode (must be toggled via config)
+- Fixed Godsling unlock not working
+
 `1.6.2`
 - Various bugfixes courtesy of .score
 - Skateboard cooldown: 0.5s > 1s, flying no longer possible- wasn't really a fun mechanic to begin with

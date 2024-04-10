@@ -30,6 +30,9 @@ namespace RobDriver.Modules
         internal static NetworkSoundEventDef hammerImpactSoundDef;
         internal static NetworkSoundEventDef knifeImpactSoundDef;
 
+        public static GameObject badassExplosionEffect;
+        public static GameObject badassSmallExplosionEffect;
+
         public static GameObject jammedEffectPrefab;
         public static GameObject upgradeEffectPrefab;
         public static GameObject damageBuffEffectPrefab;
@@ -500,16 +503,19 @@ namespace RobDriver.Modules
                 new CrosshairController.SpritePosition
                 {
                     target = shotgunCrosshairPrefab.transform.GetChild(2).GetComponent<RectTransform>(),
-                    zeroPosition = new Vector3(-20f, 0, 0),
-                    onePosition = new Vector3(-48f, 0, 0)
+                    zeroPosition = new Vector3(-32f, 0, 0),
+                    onePosition = new Vector3(-75f, 0, 0)
                 },
                 new CrosshairController.SpritePosition
                 {
                     target = shotgunCrosshairPrefab.transform.GetChild(3).GetComponent<RectTransform>(),
-                    zeroPosition = new Vector3(20f, 0, 0),
-                    onePosition = new Vector3(48f, 0, 0)
+                    zeroPosition = new Vector3(32f, 0, 0),
+                    onePosition = new Vector3(75f, 0, 0)
                 }
             };
+
+            control.transform.Find("Bracket (2)").GetComponent<RectTransform>().localScale = new Vector3(1.25f, 1.75f, 1f);
+            control.transform.Find("Bracket (3)").GetComponent<RectTransform>().localScale = new Vector3(1.25f, 1.75f, 1f);
 
             DriverPlugin.Destroy(shotgunCrosshairPrefab.transform.GetChild(0).gameObject);
             DriverPlugin.Destroy(shotgunCrosshairPrefab.transform.GetChild(1).gameObject);
@@ -815,6 +821,30 @@ namespace RobDriver.Modules
             nemmandoGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNemmandoWeaponIcon");
             nemmercGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texNemmercWeaponIcon");
             golemGunWeaponIcon = mainAssetBundle.LoadAsset<Texture>("texGolemGunWeaponIcon");
+
+
+            badassExplosionEffect = LoadEffect("BigExplosion", "sfx_driver_explosion_badass", false);
+            badassExplosionEffect.transform.Find("Shockwave").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matDistortion.mat").WaitForCompletion();
+            ShakeEmitter shake = badassExplosionEffect.AddComponent<ShakeEmitter>();
+            ShakeEmitter shake2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BFG/BeamSphereExplosion.prefab").WaitForCompletion().GetComponent<ShakeEmitter>();
+            shake.shakeOnStart = true;
+            shake.shakeOnEnable = false;
+            shake.wave = shake2.wave;
+            shake.duration = 0.5f;
+            shake.radius = 200f;
+            shake.scaleShakeRadiusWithLocalScale = false;
+            shake.amplitudeTimeDecay = true;
+
+            badassSmallExplosionEffect = LoadEffect("SmallExplosion", "sfx_driver_grenade_explosion_badass", false);
+            badassSmallExplosionEffect.transform.Find("Shockwave").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matDistortion.mat").WaitForCompletion();
+            shake = badassSmallExplosionEffect.AddComponent<ShakeEmitter>();
+            shake.shakeOnStart = true;
+            shake.shakeOnEnable = false;
+            shake.wave = shake2.wave;
+            shake.duration = 0.5f;
+            shake.radius = 60f;
+            shake.scaleShakeRadiusWithLocalScale = false;
+            shake.amplitudeTimeDecay = true;
 
             GameObject obj = new GameObject();
             defaultMuzzleTrail = obj.InstantiateClone("PassiveMuzzleTrail", false);

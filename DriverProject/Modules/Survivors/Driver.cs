@@ -2668,6 +2668,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
             RoR2.UI.HUD.onHudTargetChangedGlobal += HUDSetup;
 
+            On.RoR2.UI.HGButton.Start += HGButton_Start;
+
             On.RoR2.SkillLocator.ApplyAmmoPack += SkillLocator_ApplyAmmoPack;
             On.RoR2.SkillLocator.ResetSkills += SkillLocator_ResetSkills;
 
@@ -2681,6 +2683,33 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
             On.EntityStates.AI.BaseAIState.AimAt += BaseAIState_AimAt;
             On.EntityStates.AI.BaseAIState.AimInDirection += BaseAIState_AimInDirection;
+
+            On.RoR2.UI.LoadoutPanelController.Rebuild += LoadoutPanelController_Rebuild;// the most useless hook ever.
+        }
+
+        private static void LoadoutPanelController_Rebuild(On.RoR2.UI.LoadoutPanelController.orig_Rebuild orig, LoadoutPanelController self)
+        {
+            orig(self);
+
+            // this is beyond stupid lmfao who let this monkey code
+            if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("RobDriverBody"))
+            {
+                foreach (LanguageTextMeshController i in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>())
+                {
+                    if (i && i.token == "LOADOUT_SKILL_MISC") i.token = "Passive";
+                }
+            }
+        }
+
+        private static void HGButton_Start(On.RoR2.UI.HGButton.orig_Start orig, HGButton self)
+        {
+            orig(self);
+
+            // this is literally the worst thing ever
+            if (self && self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+            {
+                self.gameObject.SetActive(false);
+            }
         }
 
         private static void BaseAIState_AimInDirection(On.EntityStates.AI.BaseAIState.orig_AimInDirection orig, EntityStates.AI.BaseAIState self, ref BaseAI.BodyInputs dest, Vector3 aimDirection)

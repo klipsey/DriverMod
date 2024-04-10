@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3931334695
+CRC: 3650185100
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b58f87adfc88bdf33ca24925321d2719
+    Hash: 670bb4fe19af6b655baa614ec9061f56
   TypeTreeHash:
     serializedVersion: 2
     Hash: f52b2c0afe00909773d984e09103a331
@@ -123,9 +123,11 @@ Assets:
 - Assets/Driver/VFX/ShotgunShell.prefab
 - Assets/Driver/Animations/Default/SprintFast.anim
 - Assets/Driver/Textures/texPlasmaCannon.png
+- Assets/Driver/VFX/Badass/BigExplosion.prefab
 - Assets/Driver/Animations/Default/RunB.anim
 - Assets/Driver/Icons/Weapon/texSlugShotgunWeaponIcon.png
 - Assets/Driver/Textures/texSniperRifle.png
+- Assets/Driver/VFX/Badass/MetalHitEffect.prefab
 - Assets/Driver/FBX/meshNemmandoGun.mesh
 - Assets/Driver/Animations/Default/RunR.anim
 - Assets/Driver/Icons/Weapon/texRocketLauncherAltWeaponIcon.png
@@ -134,6 +136,7 @@ Assets:
 - Assets/Driver/Textures/texDriver.png
 - Assets/Driver/Animations/Shotgun/Descend.anim
 - Assets/Driver/WeaponPickupUnique.prefab
+- Assets/Driver/VFX/BackWeapon.prefab
 - Assets/Driver/Icons/texSuitSkin.png
 - Assets/Driver/VFX/matShockwave2.mat
 - Assets/Driver/Animations/Default/Idle.anim
@@ -141,6 +144,7 @@ Assets:
 - Assets/Driver/Materials/matSniperRifle.mat
 - Assets/Driver/Icons/Weapon/texLunarPistolWeaponIcon.png
 - Assets/Driver/FBX/WeaponCrate.fbx
+- Assets/Driver/VFX/Badass/StoneHitEffect.prefab
 - Assets/Driver/Icons/Skill/texStunGrenadeScepterIcon.png
 - Assets/Driver/Icons/Weapon/texMachineGunWeaponIcon.png
 - Assets/Driver/Animations/Shotgun/Idle.anim
@@ -291,6 +295,8 @@ Assets:
 - Assets/Driver/Icons/Weapon/texGoldenGunWeaponIcon.png
 - Assets/Driver/Materials/matPlasmaCannon.mat
 - Assets/Driver/Animations/Default/ReadyVoidButtonLoop.anim
+- Assets/Driver/VFX/Badass/TinyExplosion.prefab
+- Assets/Driver/VFX/Badass/SandHitEffect.prefab
 - Assets/Driver/Animations/Shotgun/Reload.anim
 - Assets/Driver/Animations/Skateboard/SkateFast.anim
 - Assets/Driver/FBX/meshLunarPistol.mesh
@@ -378,6 +384,8 @@ Assets:
 - Assets/Driver/Materials/matAmmoPickup.mat
 - Assets/Driver/Icons/Skill/texCancelIcon.png
 - Assets/Driver/FBX/meshSniperRifle.mesh
+- Assets/Driver/VFX/Badass/WoodHitEffect.prefab
+- Assets/Driver/VFX/Badass/SmallExplosion.prefab
 - Assets/Driver/Icons/Skill/texSupplyDropScepterIcon.png
 - Assets/Driver/FBX/animDriverShotgun.fbx
 - Assets/Driver/Icons/Skill/texRocketLauncherIcon.png

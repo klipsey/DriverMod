@@ -172,7 +172,11 @@ namespace RobDriver.Modules.Components
 				if (iDrive)
 				{
 					this.alive = false;
-                    iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive, this.isAmmoBox);
+
+					Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
+					Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
+
+					iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive, this.isAmmoBox);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}

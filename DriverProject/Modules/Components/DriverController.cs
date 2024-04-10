@@ -621,12 +621,6 @@ namespace RobDriver.Modules.Components
                 return;
             }
 
-            if (this.weaponDef != newWeapon)
-            {
-                Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
-                Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
-            }
-
             //this.timerStarted = false;
             this.weaponDef = newWeapon;
 
