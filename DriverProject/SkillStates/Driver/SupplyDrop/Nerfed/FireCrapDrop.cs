@@ -18,6 +18,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop.Nerfed
                 GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(_weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 
                 weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().cutAmmo = true;
+                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = iDrive.passive.isBullets;
 
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;

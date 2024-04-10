@@ -37,6 +37,8 @@ namespace RobDriver.SkillStates.Driver
 
             if (this.camParamsOverrideHandle.isValid && !this.aiming) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
             if (NetworkServer.active && this.aiming) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+            //AHHHHH
+            if (this.inputBank.skill3.down && this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef) base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
         }
 
         public override void FixedUpdate()
@@ -54,12 +56,6 @@ namespace RobDriver.SkillStates.Driver
                 if (this.camParamsOverrideHandle.isValid) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
                 this.GetModelAnimator().SetFloat("aimBlend", 0f);
                 if (NetworkServer.active) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
-            }
-
-            if (!this.aiming && this.wasAiming && base.fixedAge >= (0.8f * this.duration) && !this.heheheha)
-            {
-                this.heheheha = true;
-                base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
             }
 
             if (!this.aiming && this.wasAiming && base.fixedAge >= (0.8f * this.duration) && !this.heheheha)
