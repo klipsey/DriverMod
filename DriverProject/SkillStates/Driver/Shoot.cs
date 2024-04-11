@@ -16,7 +16,7 @@ namespace RobDriver.SkillStates.Driver
         public static float baseCritDuration2 = 1.4f;
         public static float force = 200f;
         public static float recoil = 2f;
-        public static float range = 256f;
+        public static float range = 2000f;
         public static GameObject tracerEffectPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerGoldGat");
         public static GameObject critTracerEffectPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCaptainShotgun");
 

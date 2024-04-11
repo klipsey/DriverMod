@@ -15,6 +15,7 @@ namespace RobDriver.SkillStates.Driver.Skateboard
         private bool isSprinting;
         private bool wasSprinting;
         private FootstepHandler footstep;
+        private GameObject weaponEffectInstance;
 
         public override void OnEnter()
         {
@@ -22,6 +23,12 @@ namespace RobDriver.SkillStates.Driver.Skateboard
             this.footstep = this.modelLocator.modelTransform.GetComponent<FootstepHandler>();
             this.footstep.enabled = false;
             this.modelLocator.normalizeToFloor = true;
+
+            this.weaponEffectInstance = GameObject.Instantiate(Modules.Assets.backWeaponEffect);
+            this.weaponEffectInstance.GetComponent<Modules.Components.BackWeaponComponent>().Init(this.cachedWeaponDef);
+            this.weaponEffectInstance.transform.parent = this.FindModelChild("BackWeapon");
+            this.weaponEffectInstance.transform.localRotation = Quaternion.identity;
+            this.weaponEffectInstance.transform.localPosition = Vector3.zero;
         }
 
         public override void FixedUpdate()
@@ -54,6 +61,8 @@ namespace RobDriver.SkillStates.Driver.Skateboard
                 }
             }
 
+            if (this.iDrive.weaponDef != this.cachedWeaponDef && this.weaponEffectInstance) this.weaponEffectInstance.GetComponent<Modules.Components.BackWeaponComponent>().Init(this.cachedWeaponDef);
+
             this.characterBody.isSprinting = this.isSprinting;
 
             if (!this.wasSprinting && this.isSprinting && this.isGrounded) base.PlayCrossfade("FullBody, Override", "SkateAccelerate", 0.1f);
@@ -85,6 +94,8 @@ namespace RobDriver.SkillStates.Driver.Skateboard
         public override void OnExit()
         {
             base.OnExit();
+
+            if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
 
             this.footstep.enabled = true;
             this.modelLocator.normalizeToFloor = false;

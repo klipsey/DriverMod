@@ -128,6 +128,8 @@ namespace RobDriver.Modules
 
         public static GameObject weaponPickupEffect;
         public static GameObject discardedWeaponEffect;
+        public static GameObject backWeaponEffect;
+
         internal static GameObject knifeImpactEffect;
         internal static GameObject knifeSwingEffect;
 
@@ -1001,6 +1003,10 @@ namespace RobDriver.Modules
             discardedWeaponEffect = mainAssetBundle.LoadAsset<GameObject>("DiscardedWeapon");
             Modules.Components.DiscardedWeaponComponent discardComponent = discardedWeaponEffect.AddComponent<Modules.Components.DiscardedWeaponComponent>();
             discardedWeaponEffect.gameObject.layer = LayerIndex.ragdoll.intVal;
+
+            backWeaponEffect = mainAssetBundle.LoadAsset<GameObject>("BackWeapon");
+            Modules.Components.BackWeaponComponent backComponent = backWeaponEffect.AddComponent<Modules.Components.BackWeaponComponent>();
+            backWeaponEffect.gameObject.layer = LayerIndex.ragdoll.intVal;
 
             knifeSwingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlash.prefab").WaitForCompletion().InstantiateClone("DriverKnifeSwing", false);
             knifeSwingEffect.transform.GetChild(0).GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Huntress/matHuntressSwingTrail.mat").WaitForCompletion();

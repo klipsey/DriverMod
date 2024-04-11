@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3650185100
+CRC: 899038160
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 670bb4fe19af6b655baa614ec9061f56
+    Hash: 4542aa3ac46e44b2e808573866994e54
   TypeTreeHash:
     serializedVersion: 2
     Hash: f52b2c0afe00909773d984e09103a331
@@ -175,6 +175,7 @@ Assets:
 - Assets/Driver/Textures/texSawedOff.png
 - Assets/Driver/Textures/texDualShotgun.png
 - Assets/Driver/Textures/texCrate1.png
+- Assets/Driver/FBX/SteadyAim2.anim
 - Assets/Driver/FBX/lunarbrief.fbx
 - Assets/Driver/Animations/animDriver.controller
 - Assets/Driver/FBX/meshSlugShotgun.mesh
@@ -262,6 +263,7 @@ Assets:
 - Assets/Driver/Animations/Hammer/RestIdle.anim
 - Assets/Driver/Textures/texBriefcase.png
 - Assets/Driver/WeaponPickup.prefab
+- Assets/Driver/VFX/GunLight.prefab
 - Assets/Driver/Icons/Weapon/texGenericWeaponRed.png
 - Assets/Driver/Textures/texSkateboard.png
 - Assets/Driver/mdlDriver.prefab

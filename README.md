@@ -141,10 +141,17 @@ Big thanks to everyone in the community for all the valuable feedback and critic
 
 ## Known Issues
 - Some weapons are missing icons or descriptions for their abilities
+- Goat Hoof display is backwards
+- Incompatibility with MirroredStages
 
 ___
 
 ## Changelog
+
+`1.6.4`
+- Actually implemented the previous bugfixes
+- Added unique animations for aiming with any of the pistol focused passives
+- Held weapon is now shown on your back while skateboarding
 
 `1.6.3`
 - Another handful of bugfixes from .score

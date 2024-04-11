@@ -35,6 +35,7 @@ namespace RobDriver.SkillStates.Driver
         {
             base.OnExit();
 
+            if (base.fixedAge <= this.duration && this.camParamsOverrideHandle.isValid) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
             if (this.camParamsOverrideHandle.isValid && !this.aiming) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
             if (NetworkServer.active && this.aiming) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
             //AHHHHH

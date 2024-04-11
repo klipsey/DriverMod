@@ -5,7 +5,6 @@ using static RoR2.CameraTargetParams;
 using UnityEngine.Networking;
 using RoR2.HudOverlay;
 using UnityEngine.AddressableAssets;
-using RobDriver.Modules;
 using R2API;
 
 namespace RobDriver.SkillStates.Driver
@@ -62,12 +61,15 @@ namespace RobDriver.SkillStates.Driver
         private bool cancelling;
         private bool adaptiveFocus;
         private bool reloading;
+        private GameObject lightEffectInstance;
+        private Animator animator;
 
         private bool jamFlag; // fired shortly after entering state
 
         public override void OnEnter()
         {
             base.OnEnter();
+            this.animator = this.GetModelAnimator();
             if (!this.camParamsOverrideHandle.isValid) this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, DriverCameraParams.AIM_PISTOL, 0.5f);
 
             base.PlayAnimation("AimPitch", "SteadyAimPitch");
@@ -105,7 +107,12 @@ namespace RobDriver.SkillStates.Driver
                     prefab = Modules.Assets.headshotOverlay,
                     childLocatorEntry = "ScopeContainer"
                 });
+
+                this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 1f);
             }
+            else this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 0f);
+
+            this.lightEffectInstance = GameObject.Instantiate(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("GunLight"));
         }
 
         protected virtual void PlayAnim()
@@ -123,6 +130,18 @@ namespace RobDriver.SkillStates.Driver
             this.shurikenComponent = this.GetComponent<PrimarySkillShurikenBehavior>();
         }
 
+        private void UpdateLightEffect()
+        {
+            Ray ray = this.GetAimRay();
+            RaycastHit raycastHit;
+            if (Physics.Raycast(ray.origin, ray.direction, out raycastHit, Shoot.range, LayerIndex.CommonMasks.bullet))
+            {
+                this.lightEffectInstance.SetActive(true);
+                this.lightEffectInstance.transform.position = raycastHit.point + (ray.direction * -0.3f);
+            }
+            else this.lightEffectInstance.SetActive(false);
+        }
+
         public override void FixedUpdate()
         {
             base.FixedUpdate();
@@ -138,6 +157,8 @@ namespace RobDriver.SkillStates.Driver
             this.attackSpeedStat = this.characterBody.attackSpeed;
             this.damageStat = this.characterBody.damage;
             this.critStat = this.characterBody.crit;
+
+            this.UpdateLightEffect();
 
             if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
             {
@@ -299,7 +320,7 @@ namespace RobDriver.SkillStates.Driver
         {
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
 
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Modules.Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
 
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
@@ -545,6 +566,8 @@ namespace RobDriver.SkillStates.Driver
         public override void OnExit()
         {
             base.OnExit();
+
+            if (this.lightEffectInstance) Destroy(this.lightEffectInstance);
 
             if (this.iDrive) this.iDrive.chargeValue = 0f;
 
