@@ -82,7 +82,11 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
 
+                var bulletIndex = Modules.DamageTypes.GetRandomBulletIndexFromTier(DriverWeaponTier.Legendary);
+
                 weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().cutAmmo = true;
+                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().ammoIndex = bulletIndex;
+                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isNewAmmoType = false;
 
                 NetworkServer.Spawn(weaponPickup);
             }

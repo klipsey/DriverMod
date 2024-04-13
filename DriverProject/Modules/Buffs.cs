@@ -74,18 +74,18 @@ namespace RobDriver.Modules
         internal static void RemoveBuff(CharacterBody body, int bulletIndex)
         {
             var buff = bulletDefs.ElementAtOrDefault(bulletIndex - 1);
-            if (NetworkServer.active && !(buff is null) && body.HasBuff(bulletDefs[bulletIndex]))
+            if (NetworkServer.active && !(buff is null) && body.HasBuff(buff))
             {
-                body.RemoveBuff(bulletDefs[bulletIndex]);
+                body.RemoveBuff(buff);
             }
         }
 
         internal static void GiveBuff(CharacterBody body, int bulletIndex)
         {
             var buff = bulletDefs.ElementAtOrDefault(bulletIndex - 1);
-            if (NetworkServer.active && !(buff is null) && !body.HasBuff(bulletDefs[bulletIndex]))
+            if (NetworkServer.active && !(buff is null) && !body.HasBuff(buff))
             {
-                body.AddBuff(bulletDefs[bulletIndex]);
+                body.AddBuff(buff);
             }
         }
     }

@@ -33,7 +33,7 @@ namespace RobDriver.Modules
 
         #region Fields
 
-        public static List<DriverBulletInfo> bulletTypes { get; set; } = new List<DriverBulletInfo>();
+        public static List<DriverBulletInfo> bulletTypes { get; private set; } = new List<DriverBulletInfo>();
 
         public static DriverBulletInfo GenericBulletInfo => new DriverBulletInfo 
         { 
@@ -154,7 +154,9 @@ namespace RobDriver.Modules
             int common = (int)DriverWeaponTier.Common;
             int uncommon = (int)DriverWeaponTier.Uncommon;
             int legendary = (int)DriverWeaponTier.Legendary;
+
             bulletTypes.Add(GenericBulletInfo);
+
             foreach (DamageType i in allowedDamageTypes)
             {
                 //Renaming
@@ -291,12 +293,11 @@ namespace RobDriver.Modules
             if (attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && 
                 damageInfo.HasModdedDamageType(MysteryShot))
             {
-                System.Random rnd = new System.Random();
-                int bulletIndex = rnd.Next(1, Buffs.bulletDefs.Count);
+                var bulletInfo = DamageTypes.GetRandomBulletInfo();
 
-                damageInfo.damageType |= DamageTypes.bulletTypes[bulletIndex].bulletType;
+                damageInfo.damageType |= bulletInfo.bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);
-                damageInfo.AddModdedDamageType(DamageTypes.bulletTypes[bulletIndex].moddedBulletType);
+                damageInfo.AddModdedDamageType(bulletInfo.moddedBulletType);
             } // end mysteryshot
 
             orig.Invoke(self, damageInfo, victim);

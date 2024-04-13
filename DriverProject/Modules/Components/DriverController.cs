@@ -503,7 +503,7 @@ namespace RobDriver.Modules.Components
                     if (!this.needReload)
                     {
                         this.needReload = true;
-                        this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                        this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
                     }
                 }
                 else if(this.passive.isBullets || this.passive.isRyan)
@@ -522,7 +522,7 @@ namespace RobDriver.Modules.Components
                         if (!needReload)
                         {
                             this.needReload = true;
-                            this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                            this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
                         }
                     }
                     else
@@ -629,15 +629,12 @@ namespace RobDriver.Modules.Components
         // network interface
         public void PickUpWeaponDrop(DriverWeaponDef newWeapon, float ammo, int ammoIndex, bool isNewAmmoType)
         {
-            Debug.Log("PickupWeaponDrop " + newWeapon.index + " " + ammo + " " + ammoIndex + " " + isNewAmmoType);
             if (this.passive.isPistolOnly)
             {
-                // just reset mag
                 this.FinishReload();
             }
             else if (this.passive.isBullets)
             {
-                // change ammo type
                 LoadNewBullets(ammoIndex, ammo);
             }
             else if (this.passive.isRyan)
@@ -678,9 +675,6 @@ namespace RobDriver.Modules.Components
                 UnityEngine.Object.Destroy(muzzleTrail);
                 muzzleTrail = null;
             }
-
-            Debug.Log("Driver new bullet index " + newAmmoIndex);
-            Debug.Log("Driver old bullet index " + currentBulletType.index);
 
             Buffs.RemoveBuff(this.characterBody, this.BulletIndex);
             Buffs.GiveBuff(this.characterBody, newAmmoIndex);

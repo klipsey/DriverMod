@@ -41,6 +41,8 @@ namespace RobDriver.Modules.Components
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
             if (iDrive)
             {
+                // yes, this is a dumb way to do it
+                iDrive.PickUpWeaponDrop(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f, ammoIndex, false);
                 iDrive.PickUpWeaponDrop(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f, ammoIndex, true);
             }
         }
