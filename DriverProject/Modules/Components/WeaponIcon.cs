@@ -54,7 +54,7 @@ namespace RobDriver.Modules.Components
 
 		private void UpdateDisplay()
         {
-			if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
+			if (this.iDrive.passive.isPistolOnly)
             {
 				this.durationDisplay.SetActive(false);
 				return;

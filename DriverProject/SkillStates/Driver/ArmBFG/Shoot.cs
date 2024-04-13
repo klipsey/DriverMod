@@ -39,7 +39,7 @@ namespace RobDriver.SkillStates.Driver.ArmBFG
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         protected virtual float _damageCoefficient

@@ -192,56 +192,50 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
                 
-            if (this.iDrive.weaponTimer <= 0f && (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+            if (this.iDrive.weaponTimer <= 0f && this.iDrive.maxWeaponTimer > 0)
             {
-                if (this.shotCooldown <= 0f)
+                if (this.shotCooldown <= 0f && this.inputBank.skill1.down && base.isAuthority)
                 {
-                    if (this.inputBank.skill1.down && base.isAuthority)
+                    this.outer.SetNextState(new ReloadPistol
                     {
-                        this.outer.SetNextState(new ReloadPistol
-                        {
-                            animString = "SteadyAimReload",
-                            camParamsOverrideHandle = this.camParamsOverrideHandle,
-                            aiming = true
-                        });
-                        this.reloading = true;
-                        /*this.shotCooldown = 2.4f / this.attackSpeedStat;
-                        this.reloading = true;
-                        base.PlayCrossfade("Gesture, Override", "SteadyAimReload", "Action.playbackRate", this.shotCooldown, 0.1f);
-                        Util.PlaySound("sfx_driver_reload_01", this.gameObject);*/
-                    }
+                        animString = "SteadyAimReload",
+                        camParamsOverrideHandle = this.camParamsOverrideHandle,
+                        aiming = true
+                    });
+                    this.reloading = true;
+                    /*this.shotCooldown = 2.4f / this.attackSpeedStat;
+                    this.reloading = true;
+                    base.PlayCrossfade("Gesture, Override", "SteadyAimReload", "Action.playbackRate", this.shotCooldown, 0.1f);
+                    Util.PlaySound("sfx_driver_reload_01", this.gameObject);*/
                 }
             }
-            else
+            else if (shotCooldown <= 0f && base.isAuthority)
             {
-                if (this.shotCooldown <= 0f && base.isAuthority)
+                if (this.autoFocus)
                 {
-                    if (this.autoFocus)
+                    if (this.inputBank.skill1.down)
                     {
-                        if (this.inputBank.skill1.down)
+                        if (this.skillLocator.secondary.stock > 0)
                         {
-                            if (this.skillLocator.secondary.stock > 0)
-                            {
-                                if (this.isCharged)
-                                {
-                                    this.isCrit = this.RollCrit();
-                                    this.Fire();
-                                }
-                            }
-                            else
+                            if (this.isCharged)
                             {
                                 this.isCrit = this.RollCrit();
                                 this.Fire();
                             }
                         }
-                    }
-                    else
-                    {
-                        if (this.inputBank.skill1.down)
+                        else
                         {
                             this.isCrit = this.RollCrit();
                             this.Fire();
                         }
+                    }
+                }
+                else
+                {
+                    if (this.inputBank.skill1.down)
+                    {
+                        this.isCrit = this.RollCrit();
+                        this.Fire();
                     }
                 }
             }

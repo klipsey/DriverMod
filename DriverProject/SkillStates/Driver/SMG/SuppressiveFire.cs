@@ -72,7 +72,7 @@ namespace RobDriver.SkillStates.Driver.SMG
 
         public virtual void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer(3f / this.baseShotCount);
+            if (this.iDrive) this.iDrive.ConsumeAmmo(3f / this.baseShotCount);
 
             base.PlayAnimation("Gesture, Override", "ShootSubmission", "Shoot.playbackRate", 1.4f / this.attackSpeedStat);
 

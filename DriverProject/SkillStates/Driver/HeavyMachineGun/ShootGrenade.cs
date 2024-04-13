@@ -39,7 +39,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void Fire()

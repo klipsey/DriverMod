@@ -65,7 +65,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer(this.ammoMod);
+            if (this.iDrive) this.iDrive.ConsumeAmmo(this.ammoMod);
         }
 
         protected virtual float _damageCoefficient

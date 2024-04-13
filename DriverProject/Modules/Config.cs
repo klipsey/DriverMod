@@ -35,6 +35,10 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> badass;
         public static ConfigEntry<bool> cursed;
 
+        public static ConfigEntry<bool> enableMagneticPickups;
+        public static ConfigEntry<float> pickupSpeed;
+        public static ConfigEntry<float> pickupRadius;
+
         public static ConfigEntry<float> baseHealth;
         public static ConfigEntry<float> healthGrowth;
         public static ConfigEntry<float> baseDamage;
@@ -186,6 +190,33 @@ false,
 "Cursed",
 false,
 "Enables unfinished, stupid and old content.", true);
+            #endregion
+
+            #region Pickups
+
+            enableMagneticPickups = Config.BindAndOptions(
+                "01 - General",
+                "Enable Magnetic Pickups",
+                false,
+                "Makes weapon and ammo drops move towards the player when they get close.",
+                true);
+
+            pickupSpeed = Config.BindAndOptionsSlider(
+                "01 - General",
+                "PickupSpeed",
+                50,
+                "The speed with which the pickups will move towards players.",
+                25f,
+                75);
+
+            pickupRadius = Config.BindAndOptionsSlider(
+                "01 - General", 
+                "PickupRadius",
+                10,
+                "How close a pickup must be before it will begin to move towards a player.",
+                0f,
+                50f);
+
             #endregion
 
             #region Emotes

@@ -83,7 +83,6 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
 
                 weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().cutAmmo = true;
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = iDrive.passive.isBullets;
 
                 NetworkServer.Spawn(weaponPickup);
             }

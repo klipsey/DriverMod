@@ -41,7 +41,7 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
             base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", this.duration * 3f);
             base.PlayAnimation("AimPitch", "Shoot");
 
-            this.iDrive.StartTimer();
+            this.iDrive.ConsumeAmmo();
 
             this.fireDuration = 0;
         }

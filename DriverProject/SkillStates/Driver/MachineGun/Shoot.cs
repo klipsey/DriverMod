@@ -46,7 +46,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
             if (this.iDrive)
             {
-                this.iDrive.StartTimer();
+                this.iDrive.ConsumeAmmo();
                 this.iDrive.machineGunVFX.Play();
             }
         }

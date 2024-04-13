@@ -19,7 +19,19 @@ namespace RobDriver.Modules
 {
     public static class DamageTypes
     {
-        public static List<DriverBulletInfo> bulletTypes = new List<DriverBulletInfo>();
+        public struct DriverBulletInfo
+        {
+            public string nameToken;
+            public DamageType bulletType;
+            public DamageAPI.ModdedDamageType moddedBulletType;
+            public Sprite icon;
+            public Color trailColor;
+            public DriverWeaponTier tier;
+        }
+
+        #region Fields
+
+        public static List<DriverBulletInfo> bulletTypes { get; set; } = new List<DriverBulletInfo>();
 
         internal static DamageType[] allowedDamageTypes = new DamageType[]
         {
@@ -39,30 +51,23 @@ namespace RobDriver.Modules
             DamageType.FruitOnHit
         };
 
-        public static DamageAPI.ModdedDamageType Generic;
-        public static DamageAPI.ModdedDamageType HookShot;
-        public static DamageAPI.ModdedDamageType MissileShot;
-        public static DamageAPI.ModdedDamageType VoidMissileShot;
-        public static DamageAPI.ModdedDamageType ExplosiveRounds;
-        public static DamageAPI.ModdedDamageType FlameTornadoShot;
-        public static DamageAPI.ModdedDamageType IceBlastShot;
-        public static DamageAPI.ModdedDamageType DaggerShot;
-        public static DamageAPI.ModdedDamageType LightningStrikeRounds;
-        public static DamageAPI.ModdedDamageType FireballRounds;
-        public static DamageAPI.ModdedDamageType StickyShot;
-        public static DamageAPI.ModdedDamageType VoidLightning;
-        public static DamageAPI.ModdedDamageType CoinShot;
-        public static DamageAPI.ModdedDamageType MysteryShot;
-        public static DamageAPI.ModdedDamageType Hemorrhage;
+        internal static DamageAPI.ModdedDamageType Generic;
+        internal static DamageAPI.ModdedDamageType HookShot;
+        internal static DamageAPI.ModdedDamageType MissileShot;
+        internal static DamageAPI.ModdedDamageType VoidMissileShot;
+        internal static DamageAPI.ModdedDamageType ExplosiveRounds;
+        internal static DamageAPI.ModdedDamageType FlameTornadoShot;
+        internal static DamageAPI.ModdedDamageType IceBlastShot;
+        internal static DamageAPI.ModdedDamageType DaggerShot;
+        internal static DamageAPI.ModdedDamageType LightningStrikeRounds;
+        internal static DamageAPI.ModdedDamageType FireballRounds;
+        internal static DamageAPI.ModdedDamageType StickyShot;
+        internal static DamageAPI.ModdedDamageType VoidLightning;
+        internal static DamageAPI.ModdedDamageType CoinShot;
+        internal static DamageAPI.ModdedDamageType MysteryShot;
+        internal static DamageAPI.ModdedDamageType Hemorrhage;
 
-        public struct DriverBulletInfo
-        {
-            public string nameToken;
-            public DamageType bulletType;
-            public DamageAPI.ModdedDamageType moddedBulletType;
-            public Sprite icon;
-            public Color trailColor;
-        }
+        #endregion //Fields
 
         internal static void Init()
         {
@@ -86,6 +91,40 @@ namespace RobDriver.Modules
             Hook();
         }
 
+        #region Public Methods
+
+        public static DriverBulletInfo GetBulletInfoFromIndex(int index)
+        {
+            return bulletTypes[index];
+        }
+
+        public static DriverBulletInfo GetRandomBulletInfo()
+        {
+            return bulletTypes[UnityEngine.Random.Range(0, bulletTypes.Count())];
+        }
+
+        // this sucks and is gross but i cant be bothered to think about it any longer
+        public static DriverWeaponTier GetWeightedBulletTier()
+        {
+            int commonWeight = 5;
+            int uncommonWeight = 3;
+            int legendaryWeight = 1;
+            int rnd = UnityEngine.Random.Range(0, commonWeight + uncommonWeight + legendaryWeight);
+
+            if (rnd < commonWeight) return DriverWeaponTier.Common;
+            if (rnd < commonWeight + uncommonWeight) return DriverWeaponTier.Uncommon;
+            return DriverWeaponTier.Legendary;
+        }
+
+        public static DriverBulletInfo GetRandomWeaponFromTier(DriverWeaponTier tier)
+        {
+            return bulletTypes.Where(bullet => bullet.tier == tier).ElementAtOrDefault(UnityEngine.Random.Range(0, bulletTypes.Count()));
+        }
+
+        #endregion //Public Methods
+
+        #region Private Methods
+
         private static void Hook()
         {
             GlobalEventManager.onServerDamageDealt += GlobalEventManager_onServerDamageDealt;
@@ -93,11 +132,11 @@ namespace RobDriver.Modules
             On.RoR2.GlobalEventManager.OnHitAll += new On.RoR2.GlobalEventManager.hook_OnHitAll(GlobalEventManager_OnHitAll);
         }
 
-        public static void InitializeBullets()
+        private static void InitializeBullets()
         {
-            int common = 5;
-            int uncommon = 3;
-            int legendary = 1;
+            int common = (int)DriverWeaponTier.Common;
+            int uncommon = (int)DriverWeaponTier.Uncommon;
+            int legendary = (int)DriverWeaponTier.Legendary;
             foreach (DamageType i in allowedDamageTypes)
             {
                 //Renaming
@@ -189,21 +228,21 @@ namespace RobDriver.Modules
 
             DamageTypes.AddNewModdedBullet("Hemorrhaging Rounds", DamageTypes.Hemorrhage, DamageColor.FindColor(DamageColorIndex.SuperBleed), null, uncommon);
         }
-        public static void AddNewModdedBullet(string name, DamageAPI.ModdedDamageType bulletType, Color color, Sprite icon, int chance)
+
+        private static void AddNewModdedBullet(string name, DamageAPI.ModdedDamageType bulletType, Color color, Sprite icon, int tier)
         {
             if (icon == null) icon = Assets.bulletSprite;
-            DriverBulletInfo bulletDef = new DriverBulletInfo
+            bulletTypes.Add(new DriverBulletInfo
             {
                 nameToken = name,
                 moddedBulletType = bulletType,
                 bulletType = DamageType.Generic,
                 icon = icon,
                 trailColor = color  
-            };
-            for (int i = 0; i < chance; i++) bulletTypes.Add(bulletDef);
+            });
         }
 
-        public static void AddNewBullet(string name, DamageType bulletType, Color color, Sprite icon = null, int chance = 5)
+        private static void AddNewBullet(string name, DamageType bulletType, Color color, Sprite icon = null, int chance = 5)
         {
             if (icon == null) icon = Assets.bulletSprite;
             DriverBulletInfo bulletDef = new DriverBulletInfo
@@ -658,5 +697,7 @@ namespace RobDriver.Modules
             {
             }
         }
+
+        #endregion //Private Methods
     }
 }

@@ -6,7 +6,7 @@
         {
             base.FixedUpdate();
 
-            if (base.fixedAge >= 2f && base.isAuthority)
+            if (base.fixedAge >= 1f && base.isAuthority)
             {
                 if (this.iDrive.weaponTimer == this.iDrive.maxWeaponTimer || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
                 {

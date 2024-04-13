@@ -89,7 +89,7 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 				}
 			}
 
-			if (this.iDrive) this.iDrive.StartTimer(2f);
+			if (this.iDrive) this.iDrive.ConsumeAmmo(2f);
 
 			float recoilAmplitude = FireLaser.recoil / this.attackSpeedStat;
 

@@ -75,7 +75,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 
         public virtual void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer(this.ammoMod * (2f / this.baseRocketCount));
+            if (this.iDrive) this.iDrive.ConsumeAmmo(this.ammoMod * (2f / this.baseRocketCount));
 
             base.PlayAnimation("Gesture, Override", "FireBazooka", "Shoot.playbackRate", 1.4f);
             base.PlayAnimation("AimPitch", "Shoot");

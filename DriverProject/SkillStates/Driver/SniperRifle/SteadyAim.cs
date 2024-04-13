@@ -177,7 +177,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
             this.chargeTimer = 0f;
 
-            if (this.iDrive) this.iDrive.StartTimer(1f + value);
+            if (this.iDrive) this.iDrive.ConsumeAmmo(1f + value);
 
             if (base.isAuthority)
             {

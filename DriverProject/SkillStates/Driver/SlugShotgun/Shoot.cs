@@ -45,7 +45,7 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void FireBullet()

@@ -37,7 +37,7 @@ namespace RobDriver.SkillStates.Driver.LunarGrenade
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void Fire()
