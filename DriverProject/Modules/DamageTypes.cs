@@ -14,6 +14,7 @@ using RoR2.Projectile;
 using UnityEngine.UIElements;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace RobDriver.Modules
 {
@@ -27,11 +28,23 @@ namespace RobDriver.Modules
             public Sprite icon;
             public Color trailColor;
             public DriverWeaponTier tier;
+            public int index;
         }
 
         #region Fields
 
         public static List<DriverBulletInfo> bulletTypes { get; set; } = new List<DriverBulletInfo>();
+
+        public static DriverBulletInfo GenericBulletInfo => new DriverBulletInfo 
+        { 
+            nameToken = "Generic",
+            bulletType = DamageType.Generic,
+            moddedBulletType = Generic,
+            icon = null,
+            trailColor = default,
+            tier = DriverWeaponTier.Unique,
+            index = 0
+        };
 
         internal static DamageType[] allowedDamageTypes = new DamageType[]
         {
@@ -95,6 +108,7 @@ namespace RobDriver.Modules
 
         public static DriverBulletInfo GetBulletInfoFromIndex(int index)
         {
+            if (index < 0 || index >= bulletTypes.Count()) return GenericBulletInfo;
             return bulletTypes[index];
         }
 
@@ -116,9 +130,12 @@ namespace RobDriver.Modules
             return DriverWeaponTier.Legendary;
         }
 
-        public static DriverBulletInfo GetRandomWeaponFromTier(DriverWeaponTier tier)
+        public static int GetRandomBulletIndexFromTier(DriverWeaponTier tier)
         {
-            return bulletTypes.Where(bullet => bullet.tier == tier).ElementAtOrDefault(UnityEngine.Random.Range(0, bulletTypes.Count()));
+            var validBullets = bulletTypes.Where(bullet => bullet.tier == tier);
+            if (validBullets is null || !validBullets.Any()) return -1;
+
+            return validBullets.Select(bullet => bullet.index).ElementAtOrDefault(UnityEngine.Random.Range(0, validBullets.Count()));
         }
 
         #endregion //Public Methods
@@ -137,6 +154,7 @@ namespace RobDriver.Modules
             int common = (int)DriverWeaponTier.Common;
             int uncommon = (int)DriverWeaponTier.Uncommon;
             int legendary = (int)DriverWeaponTier.Legendary;
+            bulletTypes.Add(GenericBulletInfo);
             foreach (DamageType i in allowedDamageTypes)
             {
                 //Renaming
@@ -238,22 +256,25 @@ namespace RobDriver.Modules
                 moddedBulletType = bulletType,
                 bulletType = DamageType.Generic,
                 icon = icon,
-                trailColor = color  
+                trailColor = color,
+                tier = (DriverWeaponTier)tier,
+                index = bulletTypes.Count
             });
         }
 
-        private static void AddNewBullet(string name, DamageType bulletType, Color color, Sprite icon = null, int chance = 5)
+        private static void AddNewBullet(string name, DamageType bulletType, Color color, Sprite icon = null, int tier = 0)
         {
             if (icon == null) icon = Assets.bulletSprite;
-            DriverBulletInfo bulletDef = new DriverBulletInfo
+            bulletTypes.Add(new DriverBulletInfo
             {
                 nameToken = name,
                 bulletType = bulletType,
                 moddedBulletType = Generic,
                 icon = icon,
-                trailColor = color
-            };
-            for (int i = 0; i < chance; i++) bulletTypes.Add(bulletDef);
+                trailColor = color,
+                tier = (DriverWeaponTier)tier,
+                index = bulletTypes.Count
+            });
         }
 
         private static bool CheckRoll(float procChance, CharacterMaster characterMaster)
@@ -271,7 +292,7 @@ namespace RobDriver.Modules
                 damageInfo.HasModdedDamageType(MysteryShot))
             {
                 System.Random rnd = new System.Random();
-                int bulletIndex = rnd.Next(Buffs.bulletDefs.Count);
+                int bulletIndex = rnd.Next(1, Buffs.bulletDefs.Count);
 
                 damageInfo.damageType |= DamageTypes.bulletTypes[bulletIndex].bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);

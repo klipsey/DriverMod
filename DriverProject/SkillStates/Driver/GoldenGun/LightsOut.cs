@@ -19,7 +19,7 @@ namespace RobDriver.SkillStates.Driver.GoldenGun
                 origin = aimRay.origin,
                 damage = LightsOut.damageCoefficient * this.damageStat,
                 damageColorIndex = DamageColorIndex.Default,
-                damageType = DamageType.BypassArmor | iDrive.bulletDamageType,
+                damageType = DamageType.BypassArmor | iDrive.DamageType,
                 falloffModel = BulletAttack.FalloffModel.None,
                 maxDistance = 9999f,
                 force = 9999f,
@@ -42,7 +42,7 @@ namespace RobDriver.SkillStates.Driver.GoldenGun
                 queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                 hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
             };
-            bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+            bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
             bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
             {

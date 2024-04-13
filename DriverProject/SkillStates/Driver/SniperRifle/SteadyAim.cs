@@ -202,7 +202,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     origin = aimRay.origin,
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Stun1s | iDrive.bulletDamageType,
+                    damageType = DamageType.Stun1s | iDrive.DamageType,
                     falloffModel = BulletAttack.FalloffModel.None,
                     maxDistance = 2000f,
                     force = 1000f,
@@ -225,7 +225,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                 bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                 {
                     if (BulletAttack.IsSniperTargetHit(hitInfo))

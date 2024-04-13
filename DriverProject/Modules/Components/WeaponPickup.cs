@@ -16,7 +16,8 @@ namespace RobDriver.Modules.Components
 
 		public GameObject pickupEffect;
 		public bool cutAmmo = false;
-		public int ammoIndex = -1;
+		public int ammoIndex = 0;
+		public bool isNewAmmoType = false;
 
 		private bool alive = true;
 
@@ -49,7 +50,10 @@ namespace RobDriver.Modules.Components
 			{
 				if (i.cachedBody.hasEffectiveAuthority)
 				{
-					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && this.ammoIndex != -1)
+					var driverController = i.cachedBody.GetComponent<DriverController>();
+					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController && 
+						(driverController.passive.isPistolOnly || driverController.passive.isBullets || 
+						(driverController.passive.isRyan && this.isNewAmmoType)))
 					{
 						RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
 						if (textComponent)
@@ -92,10 +96,9 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.cutAmmo);
+			this.SetWeapon(this.weaponDef, this.cutAmmo, this.ammoIndex, this.isNewAmmoType);
 		}
 
-		/*
 		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
         {
 			// this didn't work lole
@@ -106,16 +109,16 @@ namespace RobDriver.Modules.Components
 				NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
 				if (!identity) return;
 
-				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo).Send(NetworkDestination.Clients);
+				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo, (short)this.ammoIndex, this.isNewAmmoType).Send(NetworkDestination.Clients);
 			}
-		}*/
+		}
 
-		public void SetWeapon(DriverWeaponDef newWeapon, bool _cutAmmo = false, short ammoIndex = -1)
+		public void SetWeapon(DriverWeaponDef newWeapon, bool cutAmmo, int ammoIndex, bool isNewAmmoType)
         {
-			// i hate this naming
 			this.weaponDef = newWeapon;
-			this.cutAmmo = _cutAmmo;
+			this.cutAmmo = cutAmmo;
 			this.ammoIndex = ammoIndex;
+			this.isNewAmmoType = isNewAmmoType;
 
 			// wow this is awful!
 			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
@@ -175,7 +178,7 @@ namespace RobDriver.Modules.Components
 					Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
 					Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
 
-					iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive, (short)this.ammoIndex);
+					iDrive.ServerPickUpWeapon(iDrive, this.weaponDef, this.cutAmmo, this.ammoIndex, this.isNewAmmoType);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}

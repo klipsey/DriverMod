@@ -92,7 +92,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
 
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.iDrive.HasSpecialBullets) this.iDrive.ConsumeAmmo(1f, false);
         }
 
         public override void OnExit()
@@ -126,7 +126,7 @@ namespace RobDriver.SkillStates.Driver
             {
                 GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
                 var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
-                col.startColor = Buffs.bulletDefs[iDrive.currentBulletIndex].buffColor;
+                col.startColor = this.iDrive.CurrentBulletInfo.trailColor;
                 EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
             }
             else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
@@ -146,7 +146,7 @@ namespace RobDriver.SkillStates.Driver
                     origin = aimRay.origin,
                     damage = this._damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = iDrive.bulletDamageType,
+                    damageType = iDrive.DamageType,
                     falloffModel = this.falloff,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -169,7 +169,7 @@ namespace RobDriver.SkillStates.Driver
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                attack.AddModdedDamageType(iDrive.moddedBulletType);
+                attack.AddModdedDamageType(iDrive.ModdedDamageType);
                 attack.Fire();
             }
 

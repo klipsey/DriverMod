@@ -1,18 +1,21 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
+using RobDriver.Modules.Components;
 using RoR2;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 
 namespace RobDriver.Modules
 {
     public static class Buffs
     {
         internal static List<BuffDef> buffDefs = new List<BuffDef>();
-        internal static List<BuffDef> bulletDefs = new List<BuffDef>();
+        internal static List<BuffDef> bulletDefs { get; private set; } = new List<BuffDef>();
 
         internal static BuffDef dazedDebuff;
         internal static BuffDef woundDebuff;
@@ -36,15 +39,24 @@ namespace RobDriver.Modules
 
         internal static void InitBulletsWithBuffs()
         {
-            foreach (DamageTypes.DriverBulletInfo i in DamageTypes.bulletTypes)
+            foreach (var bullet in DamageTypes.bulletTypes)
             {
-                if(i.bulletType != DamageType.Generic) Buffs.AddNewBuff(i.nameToken, i.icon, i.trailColor, false, false, true);
-                else Buffs.AddNewBuff(i.nameToken, i.icon, i.trailColor, false, false, true);
+                if (bullet.index == 0) continue;
+
+                BuffDef buffDef = ScriptableObject.CreateInstance<BuffDef>();
+                buffDef.name = bullet.nameToken;
+                buffDef.buffColor = bullet.trailColor;
+                buffDef.iconSprite = bullet.icon;
+                buffDef.canStack = false;
+                buffDef.isDebuff = false;
+                buffDef.eliteDef = null;
+
+                bulletDefs.Add(buffDef);
             }
         }
 
         // simple helper method
-        internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff, bool bullet = false)
+        internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff)
         {
             BuffDef buffDef = ScriptableObject.CreateInstance<BuffDef>();
             buffDef.name = buffName;
@@ -54,10 +66,27 @@ namespace RobDriver.Modules
             buffDef.eliteDef = null;
             buffDef.iconSprite = buffIcon;
 
-            if (bullet) bulletDefs.Add(buffDef);
-            else buffDefs.Add(buffDef);
+            buffDefs.Add(buffDef);
 
             return buffDef;
+        }
+
+        internal static void RemoveBuff(CharacterBody body, int bulletIndex)
+        {
+            var buff = bulletDefs.ElementAtOrDefault(bulletIndex - 1);
+            if (NetworkServer.active && !(buff is null) && body.HasBuff(bulletDefs[bulletIndex]))
+            {
+                body.RemoveBuff(bulletDefs[bulletIndex]);
+            }
+        }
+
+        internal static void GiveBuff(CharacterBody body, int bulletIndex)
+        {
+            var buff = bulletDefs.ElementAtOrDefault(bulletIndex - 1);
+            if (NetworkServer.active && !(buff is null) && !body.HasBuff(bulletDefs[bulletIndex]))
+            {
+                body.AddBuff(bulletDefs[bulletIndex]);
+            }
         }
     }
 }

@@ -74,13 +74,13 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     float radius = 1f;
 
                     LayerMask stopperMask = LayerIndex.CommonMasks.bullet;
-                    DamageType damageType = iDrive.bulletDamageType;
+                    DamageType damageType = iDrive.DamageType;
                     if (this.aiming)
                     {
                         maxSpread = 0f;
                         minSpread = 0f;
                         stopperMask = LayerIndex.world.mask;
-                        damageType = DamageType.Stun1s | iDrive.bulletDamageType;
+                        damageType = DamageType.Stun1s | iDrive.DamageType;
                         tracer = Modules.Assets.sniperTracer;
                         radius = 0.25f;
                     }
@@ -117,7 +117,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         bulletCount = 1
                     };
 
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
                     if (this.aiming)
                     {

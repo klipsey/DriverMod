@@ -87,7 +87,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                         origin = aimRay.origin,
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = iDrive.bulletDamageType,
+                        damageType = iDrive.DamageType,
                         falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                         maxDistance = bulletRange,
                         force = force,// RiotShotgun.bulletForce,
@@ -109,7 +109,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                         HitEffectNormal = false,
                     };
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;

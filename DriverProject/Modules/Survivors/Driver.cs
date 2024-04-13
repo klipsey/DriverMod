@@ -2923,9 +2923,16 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                         if (isAmmoPassive || isPistolPassive || isGodSlingAmmo)
                         {
-                            System.Random rnd = new System.Random();
-                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().ammoIndex = rnd.Next(Buffs.bulletDefs.Count);
+                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isNewAmmoType = true;
                         }
+
+                        // non-legendary gets rerolled
+                        if (weaponTier != DriverWeaponTier.Legendary)
+                        {
+                            weaponTier = DamageTypes.GetWeightedBulletTier();
+                        }
+
+                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().ammoIndex = DamageTypes.GetRandomBulletIndexFromTier(weaponTier);
 
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;

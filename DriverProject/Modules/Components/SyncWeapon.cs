@@ -12,17 +12,19 @@ namespace RobDriver.Modules.Components
         private ushort weapon;
         private bool cutAmmo;
         private short ammoIndex;
+        private bool isNewAmmoType;
 
         public SyncWeapon()
         {
         }
 
-        public SyncWeapon(NetworkInstanceId netId, ushort augh, bool ough, short ammoIndex)
+        public SyncWeapon(NetworkInstanceId netId, ushort augh, bool ough, int ammoIndex, bool isNewAmmoType)
         {
             this.netId = netId;
             this.weapon = augh;
             this.cutAmmo = ough;
-            this.ammoIndex = ammoIndex;
+            this.ammoIndex = (short)ammoIndex;
+            this.isNewAmmoType = isNewAmmoType;
         }
 
         public void Deserialize(NetworkReader reader)
@@ -31,6 +33,7 @@ namespace RobDriver.Modules.Components
             this.weapon = reader.ReadUInt16();
             this.cutAmmo = reader.ReadBoolean();
             this.ammoIndex = reader.ReadInt16();
+            this.isNewAmmoType = reader.ReadBoolean();
         }
 
         public void OnReceived()
@@ -44,7 +47,7 @@ namespace RobDriver.Modules.Components
             float ammo = -1f;
             if (this.cutAmmo) ammo = weaponDef.shotCount * 0.5f;
 
-            if (iDrive) iDrive.PickUpWeaponDrop(weaponDef, ammo, this.ammoIndex);
+            if (iDrive) iDrive.PickUpWeaponDrop(weaponDef, ammo, this.ammoIndex, this.isNewAmmoType);
         }
 
         public void Serialize(NetworkWriter writer)
@@ -53,6 +56,7 @@ namespace RobDriver.Modules.Components
             writer.Write(this.weapon);
             writer.Write(this.cutAmmo);
             writer.Write(this.ammoIndex);
+            writer.Write(this.isNewAmmoType);
         }
     }
 }

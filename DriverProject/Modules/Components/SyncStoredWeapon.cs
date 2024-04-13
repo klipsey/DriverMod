@@ -17,7 +17,7 @@ namespace RobDriver.Modules.Components
         {
         }
 
-        public SyncStoredWeapon(NetworkInstanceId netId, ushort augh, float ammo, short ammoIndex = -1)
+        public SyncStoredWeapon(NetworkInstanceId netId, ushort augh, float ammo, short ammoIndex)
         {
             this.netId = netId;
             this.weapon = augh;
@@ -41,7 +41,7 @@ namespace RobDriver.Modules.Components
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
             if (iDrive)
             {
-                iDrive.PickUpWeaponDrop(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f, ammoIndex);
+                iDrive.PickUpWeaponDrop(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f, ammoIndex, true);
             }
         }
 
