@@ -4,7 +4,7 @@ using R2API.Utils;
 using RoR2;
 using System.Security;
 using System.Security.Permissions;
-using UnityEngine;
+using RobDriver.Modules;
 using R2API.Networking;
 using RobDriver.Modules.Components;
 using RobDriver.Modules.Survivors;
@@ -67,6 +67,7 @@ namespace RobDriver
             Modules.CameraParams.InitializeParams();
             Modules.States.RegisterStates();
             Modules.DamageTypes.Init();
+            Modules.BulletTypes.Init();
             Modules.Buffs.RegisterBuffs();
             Modules.Projectiles.RegisterProjectiles();
             Modules.Tokens.AddTokens();

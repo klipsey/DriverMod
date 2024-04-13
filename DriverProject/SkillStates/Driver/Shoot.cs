@@ -92,7 +92,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
 
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && (BulletTypes.bulletDefs[this.iDrive.currentBulletIndex].name != "Default")) this.iDrive.ConsumeAmmo(1f, true);
         }
 
         public override void OnExit()
@@ -126,7 +126,7 @@ namespace RobDriver.SkillStates.Driver
             {
                 GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
                 var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
-                col.startColor = Buffs.bulletDefs[iDrive.currentBulletIndex].buffColor;
+                col.startColor = this.iDrive.bulletDef.trailColor;
                 EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
             }
             else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);

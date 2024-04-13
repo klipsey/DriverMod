@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using RobDriver.Modules;
+using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
@@ -12,8 +13,9 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop.Nerfed
             if (NetworkServer.active)
             {
                 DriverWeaponDef _weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(DriverWeaponTier.Uncommon);
-
+                DriverBulletDef _bulletDef = BulletTypes.GetRandomBulletFromTier(DriverWeaponTier.Uncommon);
                 if (Modules.Config.randomSupplyDrop.Value) _weaponDef = DriverWeaponCatalog.GetRandomWeapon();
+                _bulletDef = BulletTypes.GetRandomBullet();
 
                 GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(_weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 

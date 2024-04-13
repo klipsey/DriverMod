@@ -320,7 +320,7 @@ namespace RobDriver.SkillStates.Driver
         {
             if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
 
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Modules.Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.iDrive.bulletDef != this.iDrive.defaultBulletDef) this.iDrive.ConsumeAmmo(1f, false);
 
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 

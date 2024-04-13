@@ -10,16 +10,18 @@ namespace RobDriver.Modules.Components
     {
         private NetworkInstanceId netId;
         private ushort weapon;
+        private ushort bullet;
         private long ammo;
 
         public SyncStoredWeapon()
         {
         }
 
-        public SyncStoredWeapon(NetworkInstanceId netId, ushort augh, float ammo)
+        public SyncStoredWeapon(NetworkInstanceId netId, ushort weapon, ushort bullet, float ammo)
         {
             this.netId = netId;
-            this.weapon = augh;
+            this.weapon = weapon;
+            this.bullet = bullet;
             this.ammo = Mathf.CeilToInt(ammo * 100f);
         }
 
@@ -27,6 +29,7 @@ namespace RobDriver.Modules.Components
         {
             this.netId = reader.ReadNetworkId();
             this.weapon = reader.ReadUInt16();
+            this.bullet = reader.ReadUInt16();
             this.ammo = reader.ReadInt64();
         }
 
@@ -38,7 +41,7 @@ namespace RobDriver.Modules.Components
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
             if (iDrive)
             {
-                iDrive.PickUpWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f);
+                iDrive.PickUpWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), BulletTypes.GetBulletFromIndex(this.bullet), this.ammo * 0.01f);
             }
         }
 
@@ -46,6 +49,7 @@ namespace RobDriver.Modules.Components
         {
             writer.Write(this.netId);
             writer.Write(this.weapon);
+            writer.Write(this.bullet);
             writer.Write(this.ammo);
         }
     }

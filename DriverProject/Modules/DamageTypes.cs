@@ -3,7 +3,6 @@ using RoR2.Orbs;
 using RoR2;
 using UnityEngine.Networking;
 using UnityEngine;
-using RobDriver.Modules.Components;
 using RobDriver.Modules.Survivors;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,31 +13,12 @@ using RoR2.Projectile;
 using UnityEngine.UIElements;
 using System.ComponentModel;
 using System.Diagnostics;
+using DriverMod.Modules;
 
 namespace RobDriver.Modules
 {
     public static class DamageTypes
     {
-        public static List<DriverBulletInfo> bulletTypes = new List<DriverBulletInfo>();
-
-        internal static DamageType[] allowedDamageTypes = new DamageType[]
-        {
-            DamageType.ResetCooldownsOnKill,
-            DamageType.SlowOnHit,
-            DamageType.Stun1s,
-            DamageType.IgniteOnHit,
-            DamageType.Freeze2s,
-            DamageType.ClayGoo,
-            DamageType.BleedOnHit,
-            DamageType.PoisonOnHit,
-            DamageType.WeakOnHit,
-            DamageType.Nullify,
-            DamageType.BonusToLowHealth,
-            DamageType.BlightOnHit,
-            DamageType.CrippleOnHit,
-            DamageType.FruitOnHit
-        };
-
         public static DamageAPI.ModdedDamageType Generic;
         public static DamageAPI.ModdedDamageType HookShot;
         public static DamageAPI.ModdedDamageType MissileShot;
@@ -54,16 +34,6 @@ namespace RobDriver.Modules
         public static DamageAPI.ModdedDamageType CoinShot;
         public static DamageAPI.ModdedDamageType MysteryShot;
         public static DamageAPI.ModdedDamageType Hemorrhage;
-
-        public struct DriverBulletInfo
-        {
-            public string nameToken;
-            public DamageType bulletType;
-            public DamageAPI.ModdedDamageType moddedBulletType;
-            public Sprite icon;
-            public Color trailColor;
-        }
-
         internal static void Init()
         {
             Generic = DamageAPI.ReserveDamageType();
@@ -82,139 +52,13 @@ namespace RobDriver.Modules
             MysteryShot = DamageAPI.ReserveDamageType();
             Hemorrhage = DamageAPI.ReserveDamageType();
 
-            InitializeBullets();
             Hook();
         }
 
         private static void Hook()
         {
-            GlobalEventManager.onServerDamageDealt += GlobalEventManager_onServerDamageDealt;
             On.RoR2.GlobalEventManager.OnHitEnemy += new On.RoR2.GlobalEventManager.hook_OnHitEnemy(GlobalEventManager_OnHitEnemy);
             On.RoR2.GlobalEventManager.OnHitAll += new On.RoR2.GlobalEventManager.hook_OnHitAll(GlobalEventManager_OnHitAll);
-        }
-
-        public static void InitializeBullets()
-        {
-            int common = 5;
-            int uncommon = 3;
-            int legendary = 1;
-            foreach (DamageType i in allowedDamageTypes)
-            {
-                //Renaming
-                switch (i)
-                {
-                    case DamageType.ResetCooldownsOnKill:
-                        DamageTypes.AddNewBullet("Resetting Rounds", i, Color.red);
-                        break;
-
-                    case DamageType.SlowOnHit:
-                        DamageTypes.AddNewBullet("Slowing Rounds", i, UnityEngine.Color.yellow);
-                        break;
-
-                    case DamageType.Stun1s:
-                        DamageTypes.AddNewBullet("Stunning Rounds", i, UnityEngine.Color.gray);
-                        break;
-
-                    case DamageType.IgniteOnHit:
-                        DamageTypes.AddNewBullet("Incendiary Rounds", i, new UnityEngine.Color(255f / 255f, 127f / 255f, 80 / 255f));
-                        break;
-
-                    case DamageType.Freeze2s:
-                        DamageTypes.AddNewBullet("Frostbite Rounds", i, UnityEngine.Color.cyan, null, uncommon);
-                        break;
-
-                    case DamageType.ClayGoo:
-                        DamageTypes.AddNewBullet("Goo Rounds", i, UnityEngine.Color.black);
-                        break;
-
-                    case DamageType.BleedOnHit:
-                        DamageTypes.AddNewBullet("Serrated Rounds", i, DamageColor.FindColor(DamageColorIndex.Bleed));
-                        break;
-
-                    case DamageType.PoisonOnHit:
-                        DamageTypes.AddNewBullet("Poison Rounds", i, UnityEngine.Color.green);
-                        break;
-
-                    case DamageType.WeakOnHit:
-                        DamageTypes.AddNewBullet("Weakening Rounds", i, new UnityEngine.Color(220f / 255f, 237f / 255f, 159f / 255f));
-                        break;
-
-                    case DamageType.Nullify:
-                        DamageTypes.AddNewBullet("Nullifying Rounds", i, DamageColor.FindColor(DamageColorIndex.Void));
-                        break;
-
-                    case DamageType.BonusToLowHealth:
-                        DamageTypes.AddNewBullet("Executing Rounds", i, DamageColor.FindColor(DamageColorIndex.Fragile));
-                        break;
-
-                    case DamageType.BlightOnHit:
-                        DamageTypes.AddNewBullet("Blighting Rounds", i, new UnityEngine.Color(222f / 255f, 85f / 255f, 230f / 255f), null);
-                        break;
-
-                    case DamageType.CrippleOnHit:
-                        DamageTypes.AddNewBullet("Crippling Rounds", i, new UnityEngine.Color(48f / 255f, 205f / 255f, 217f / 255f));
-                        break;
-
-                    case DamageType.FruitOnHit:
-                        DamageTypes.AddNewBullet("Fruitful Rounds", i, new UnityEngine.Color(255f / 255f, 191f / 255f, 225f / 255f));
-                        break;
-                }
-            }
-
-            DamageTypes.AddNewModdedBullet("Hook Shot", DamageTypes.HookShot, Color.grey, null, legendary);
-
-            DamageTypes.AddNewModdedBullet("Missle Shot", DamageTypes.MissileShot, new UnityEngine.Color(219 / 255f, 132 / 255f, 11 / 255f), null, uncommon);
-
-            DamageTypes.AddNewModdedBullet("Void Missile Rounds", DamageTypes.VoidMissileShot, new UnityEngine.Color(122 / 255f, 69 / 255f, 173 / 255f), null, uncommon);
-
-            DamageTypes.AddNewModdedBullet("Explosive Rounds", DamageTypes.ExplosiveRounds, Color.yellow, null, uncommon);
-
-            DamageTypes.AddNewModdedBullet("Elemental Flame Rounds", DamageTypes.FlameTornadoShot, new UnityEngine.Color(255f / 255f, 127f / 255f, 80 / 255f), null, uncommon);
-
-            DamageTypes.AddNewModdedBullet("Elemental Ice Rounds", DamageTypes.IceBlastShot, UnityEngine.Color.cyan, null, uncommon);
-
-            DamageTypes.AddNewModdedBullet("Dagger Shot", DamageTypes.DaggerShot, Color.black, null, legendary);
-
-            DamageTypes.AddNewModdedBullet("Lightning Rounds", DamageTypes.LightningStrikeRounds, Color.cyan, null, legendary);
-
-            DamageTypes.AddNewModdedBullet("Fireball Rounds", DamageTypes.FireballRounds, new UnityEngine.Color(255f / 255f, 127f / 255f, 80 / 255f), null, legendary);
-
-            DamageTypes.AddNewModdedBullet("Sticky Shot", DamageTypes.StickyShot, new UnityEngine.Color(255 / 255f, 117 / 255f, 48 / 255f), null, common);
-
-            DamageTypes.AddNewModdedBullet("Void Lightning Rounds", DamageTypes.VoidLightning, new UnityEngine.Color(194 / 255f, 115 / 255f, 255 / 255f), null, uncommon);
-
-            DamageTypes.AddNewModdedBullet("Coin Shot", DamageTypes.CoinShot, new UnityEngine.Color(255 / 255f, 212 / 255f, 94 / 255f), null, common);
-
-            DamageTypes.AddNewModdedBullet("Mystery Shot", DamageTypes.MysteryShot, new UnityEngine.Color(30 / 255f, 51 / 255f, 45 / 255f), null, uncommon);
-
-            DamageTypes.AddNewModdedBullet("Hemorrhaging Rounds", DamageTypes.Hemorrhage, DamageColor.FindColor(DamageColorIndex.SuperBleed), null, uncommon);
-        }
-        public static void AddNewModdedBullet(string name, DamageAPI.ModdedDamageType bulletType, Color color, Sprite icon, int chance)
-        {
-            if (icon == null) icon = Assets.bulletSprite;
-            DriverBulletInfo bulletDef = new DriverBulletInfo
-            {
-                nameToken = name,
-                moddedBulletType = bulletType,
-                bulletType = DamageType.Generic,
-                icon = icon,
-                trailColor = color  
-            };
-            for (int i = 0; i < chance; i++) bulletTypes.Add(bulletDef);
-        }
-
-        public static void AddNewBullet(string name, DamageType bulletType, Color color, Sprite icon = null, int chance = 5)
-        {
-            if (icon == null) icon = Assets.bulletSprite;
-            DriverBulletInfo bulletDef = new DriverBulletInfo
-            {
-                nameToken = name,
-                bulletType = bulletType,
-                moddedBulletType = Generic,
-                icon = icon,
-                trailColor = color
-            };
-            for (int i = 0; i < chance; i++) bulletTypes.Add(bulletDef);
         }
 
         private static bool CheckRoll(float procChance, CharacterMaster characterMaster)
@@ -231,12 +75,10 @@ namespace RobDriver.Modules
             if (attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && 
                 damageInfo.HasModdedDamageType(MysteryShot))
             {
-                System.Random rnd = new System.Random();
-                int bulletIndex = rnd.Next(Buffs.bulletDefs.Count);
-
-                damageInfo.damageType |= DamageTypes.bulletTypes[bulletIndex].bulletType;
+                DriverBulletDef bullet = BulletTypes.GetRandomBullet();
+                damageInfo.damageType |= bullet.bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);
-                damageInfo.AddModdedDamageType(DamageTypes.bulletTypes[bulletIndex].moddedBulletType);
+                damageInfo.AddModdedDamageType(bullet.moddedBulletType);
             } // end mysteryshot
 
             orig.Invoke(self, damageInfo, victim);
@@ -639,23 +481,6 @@ namespace RobDriver.Modules
                     damageType = damageInfo.damageType
                 };
                 obj.Fire();
-            }
-        }
-
-        private static void GlobalEventManager_onServerDamageDealt(DamageReport damageReport)
-        {
-            DamageInfo damageInfo = damageReport.damageInfo;
-            if (!damageReport.attackerBody || !damageReport.victimBody)
-            {
-                return;
-            }
-            HealthComponent victim = damageReport.victim;
-            GameObject inflictorObject = damageInfo.inflictor;
-            CharacterBody victimBody = damageReport.victimBody;
-            CharacterBody attackerBody = damageReport.attackerBody;
-            GameObject attackerObject = damageReport.attacker.gameObject;
-            if (NetworkServer.active)
-            {
             }
         }
     }

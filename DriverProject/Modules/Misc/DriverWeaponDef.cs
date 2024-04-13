@@ -135,8 +135,8 @@ public enum DriverWeaponTier
 {
     Common,
     Uncommon,
-    Legendary,
     Unique,
     Void,
-    Lunar
+    Lunar,
+    Legendary
 }

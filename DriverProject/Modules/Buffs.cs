@@ -12,7 +12,6 @@ namespace RobDriver.Modules
     public static class Buffs
     {
         internal static List<BuffDef> buffDefs = new List<BuffDef>();
-        internal static List<BuffDef> bulletDefs = new List<BuffDef>();
 
         internal static BuffDef dazedDebuff;
         internal static BuffDef woundDebuff;
@@ -31,16 +30,6 @@ namespace RobDriver.Modules
             syringeCritBuff = AddNewBuff("RobDriverSyringeCritBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 80f / 255f, 17f / 255f), false, false);
             syringeNewBuff = AddNewBuff("RobDriverSyringeNewBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 70f / 255f, 75f / 255f), false, false);
             syringeScepterBuff = AddNewBuff("RobDriverSyringeScepterBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), Modules.Survivors.Driver.characterColor, false, false);
-            InitBulletsWithBuffs();
-        }
-
-        internal static void InitBulletsWithBuffs()
-        {
-            foreach (DamageTypes.DriverBulletInfo i in DamageTypes.bulletTypes)
-            {
-                if(i.bulletType != DamageType.Generic) Buffs.AddNewBuff(i.nameToken, i.icon, i.trailColor, false, false, true);
-                else Buffs.AddNewBuff(i.nameToken, i.icon, i.trailColor, false, false, true);
-            }
         }
 
         // simple helper method
@@ -54,8 +43,7 @@ namespace RobDriver.Modules
             buffDef.eliteDef = null;
             buffDef.iconSprite = buffIcon;
 
-            if (bullet) bulletDefs.Add(buffDef);
-            else buffDefs.Add(buffDef);
+            buffDefs.Add(buffDef);
 
             return buffDef;
         }

@@ -94,7 +94,7 @@ false,
             godslingDropRateSplit
 = Config.BindAndOptionsSlider("01 - General",
 "Godsling Drop Rate Split",
-75f,
+50f,
 "Controls whether ammo or guns drop while using the Godsling passive, higher number means higher chance for guns", 0f, 100f);
 
             weaponCallouts
@@ -262,14 +262,14 @@ false,
             if (string.IsNullOrWhiteSpace(weaponDef.configIdentifier)) return;
 
             var x = Config.BindAndOptionsSlider("04 - Weapons",
- weaponDef.configIdentifier + " - Base Ammo",
- weaponDef.shotCount,
- "How many shots this weapon can fire without any bonus attack speed.", 0, 200);
+            weaponDef.configIdentifier + " - Base Ammo",
+            weaponDef.shotCount,
+            "How many shots this weapon can fire without any bonus attack speed.", 0, 200);
 
             var y = Config.BindAndOptions("04 - Weapons",
-weaponDef.configIdentifier + " - Enabled",
-true,
-"Set to false to remove this weapon from the drop pool.");
+            weaponDef.configIdentifier + " - Enabled",
+            true,
+            "Set to false to remove this weapon from the drop pool.");
 
             foreach (WeaponConfigBinding i in weaponConfigBinding)
             {

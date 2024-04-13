@@ -13,6 +13,7 @@ namespace RobDriver.Modules.Components
 		[Tooltip("The team filter object which determines who can pick up this pack.")]
 		public TeamFilter teamFilter;
 		public DriverWeaponDef weaponDef;
+		public DriverBulletDef bulletDef;
 
 		public GameObject pickupEffect;
 		public bool cutAmmo = false;
@@ -51,16 +52,33 @@ namespace RobDriver.Modules.Components
 				{
 					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken)
                     {
-						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly || i.cachedBody.GetComponent<DriverController>().passive.isBullets || i.cachedBody.GetComponent<DriverController>().passive.isRyan && this.isAmmoBox == true)
+						bool isGodsling = i.cachedBody.GetComponent<DriverController>().passive.isRyan;
+						bool isBullets = i.cachedBody.GetComponent<DriverController>().passive.isBullets;
+						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly || isBullets || isGodsling)
 						{
 							RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
 							if (textComponent)
 							{
 								textComponent.gameObject.SetActive(false);
 							}
+							//Calculate ammo chance for godsling
+							if(isGodsling)
+							{
+                                float splitChance = Modules.Config.godslingDropRateSplit.Value;
+                                System.Random rnd = new System.Random();
+                                float num = rnd.Next(0, 100);
+                                if (num >= splitChance)
+                                {
+                                    isAmmoBox = true;
+                                }
+                            }
+							else
+							{
+								isAmmoBox = true;
+							}
 
-							BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
-							if (blinker)
+                            BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+							if (blinker && isAmmoBox)
 							{
 								foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
 								{
@@ -95,7 +113,7 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.cutAmmo, this.isAmmoBox);
+			this.SetWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, this.isAmmoBox);
 		}
 
 		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
@@ -108,14 +126,15 @@ namespace RobDriver.Modules.Components
 				NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
 				if (!identity) return;
 
-				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo).Send(NetworkDestination.Clients);
+				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, (ushort)this.bulletDef.index, this.cutAmmo).Send(NetworkDestination.Clients);
 			}
 		}
 
-		public void SetWeapon(DriverWeaponDef newWeapon, bool _cutAmmo = false, bool _isAmmoBox = false)
+		public void SetWeapon(DriverWeaponDef newWeapon, DriverBulletDef newBullet, bool _cutAmmo = false, bool _isAmmoBox = false)
         {
 			this.weaponDef = newWeapon;
-			this.cutAmmo = _cutAmmo;
+            this.bulletDef = newBullet;
+            this.cutAmmo = _cutAmmo;
 			this.isAmmoBox = _isAmmoBox;
 
 			// wow this is awful!
@@ -176,7 +195,7 @@ namespace RobDriver.Modules.Components
 					Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
 					Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
 
-					iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive, this.isAmmoBox);
+					iDrive.ServerPickUpWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, iDrive, this.isAmmoBox);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}
