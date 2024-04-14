@@ -45,10 +45,9 @@ namespace RobDriver.Modules.Components
 
         public float maxWeaponTimer;
         public float weaponTimer;
-        private DamageTypes.DriverBulletInfo currentBulletType = DamageTypes.GenericBulletInfo;
+        public DamageTypes.DriverBulletInfo currentBulletType = DamageTypes.GenericBulletInfo;
         public DriverPassive passive;
         private float comboDecay = 1f;
-        private DriverWeaponDef pistolWeaponDef;
         private SkinnedMeshRenderer weaponRenderer;
 
         public float upForce = 9f;
@@ -77,21 +76,11 @@ namespace RobDriver.Modules.Components
         private WeaponNotificationQueue notificationQueue;
         private bool needReload = false;
 
+        // these can be deleted but its nice to have easy to understand conditionals for now
         public int BulletIndex => this.currentBulletType.index;
         public bool HasSpecialBullets => this.currentBulletType.index != 0;
         public DamageType DamageType => this.currentBulletType.bulletType;
         public DamageAPI.ModdedDamageType ModdedDamageType => this.currentBulletType.moddedBulletType;
-
-        public DamageTypes.DriverBulletInfo CurrentBulletInfo => this.currentBulletType;
-
-
-        public float ammo
-        {
-            get
-            {
-                return this.weaponTimer;
-            }
-        }
 
         private void Awake()
         {
@@ -116,8 +105,7 @@ namespace RobDriver.Modules.Components
 
             this.GetSkillOverrides();
 
-            this.pistolWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(0);
-            this.defaultWeaponDef = pistolWeaponDef;
+            this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
             this.currentBulletType = DamageTypes.GenericBulletInfo;
             this.PickUpWeapon(defaultWeaponDef);
 
@@ -176,7 +164,6 @@ namespace RobDriver.Modules.Components
             }
 
             this.defaultWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(Config.defaultWeaponIndex.Value);
-            if (DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef)) pistolWeaponDef = defaultWeaponDef;
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -209,7 +196,7 @@ namespace RobDriver.Modules.Components
             if (this.characterBody && this.characterBody.master)
             {
                 DriverWeaponTracker weaponTracker = this._weaponTracker;
-                weaponTracker.StoreWeapon(this.weaponDef, this.ammo, (short)this.BulletIndex);
+                weaponTracker.StoreWeapon(this.weaponDef, this.weaponTimer, (short)this.BulletIndex);
             }
         }
 
@@ -247,10 +234,10 @@ namespace RobDriver.Modules.Components
 
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
-                DriverWeaponDef desiredWeapon = this.pistolWeaponDef;
+                DriverWeaponDef desiredWeapon = this.defaultWeaponDef;
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0 &&
-                    (this.defaultWeaponDef == DriverWeaponCatalog.Pistol || this.defaultWeaponDef == DriverWeaponCatalog.PyriteGun))
+                    this.defaultWeaponDef == DriverWeaponCatalog.Pistol)
                 {
                     desiredWeapon = DriverWeaponCatalog.PyriteGun;
                 }
@@ -260,10 +247,11 @@ namespace RobDriver.Modules.Components
                     desiredWeapon = DriverWeaponCatalog.Needler;
                 }
 
-                // this seems sus af
-                if (this.maxWeaponTimer <= 0f && desiredWeapon != this.defaultWeaponDef)
+                // set new default
+                this.defaultWeaponDef = desiredWeapon;
+                // give new weapon if you arent holding a stored weapon
+                if (this.weaponDef != this.defaultWeaponDef && desiredWeapon != this.defaultWeaponDef)
                 {
-                    this.defaultWeaponDef = desiredWeapon;
                     this.PickUpWeapon(this.defaultWeaponDef);
                 }
             }
@@ -305,7 +293,6 @@ namespace RobDriver.Modules.Components
             if (this.passive && this.passive.isDefault) return false;
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
-            this.pistolWeaponDef = newWeaponDef;
             this.defaultWeaponDef = newWeaponDef;
 
             return true;
@@ -314,10 +301,9 @@ namespace RobDriver.Modules.Components
         private void UpgradeToLunar()
         {
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.LunarPistol);
-
             if (!success) return;
-            this.PickUpWeapon(this.defaultWeaponDef);
 
+            this.PickUpWeapon(this.defaultWeaponDef);
             this.TryPickupNotification(true);
 
             EffectData effectData = new EffectData
@@ -339,10 +325,9 @@ namespace RobDriver.Modules.Components
         private void UpgradeToVoid()
         {
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.VoidPistol);
-
             if (!success) return;
-            this.PickUpWeapon(this.defaultWeaponDef);
 
+            this.PickUpWeapon(this.defaultWeaponDef);
             this.TryPickupNotification(true);
 
             EffectData effectData = new EffectData
@@ -363,20 +348,17 @@ namespace RobDriver.Modules.Components
 
         private void Inventory_onItemAddedClient(ItemIndex itemIndex)
         {
-            if (DriverPlugin.litInstalled) // funny compat :-)
+            // quit resetting my shit
+            if (this.passive.isBullets || this.passive.isPistolOnly) return;
+
+            if (DriverPlugin.litInstalled && this.IsItemGoldenGun(itemIndex)) // funny compat :-)
             {
-                if (this.IsItemGoldenGun(itemIndex))
-                {
-                    this.ServerPickUpWeapon(this, DriverWeaponCatalog.GoldenGun, false, -1, false);
-                }
+                this.ServerPickUpWeapon(this, DriverWeaponCatalog.GoldenGun, false, -1, false);
             }
 
-            if (DriverPlugin.classicItemsInstalled) // not funny anymore
+            if (DriverPlugin.classicItemsInstalled && this.IsItemGoldenGun2(itemIndex)) // not funny anymore
             {
-                if (this.IsItemGoldenGun2(itemIndex))
-                {
-                    this.ServerPickUpWeapon(this, DriverWeaponCatalog.GoldenGun, false, -1, false);
-                }
+                this.ServerPickUpWeapon(this, DriverWeaponCatalog.GoldenGun, false, -1, false);
             }
 
             if (itemIndex == RoR2Content.Items.Behemoth.itemIndex)
@@ -387,22 +369,21 @@ namespace RobDriver.Modules.Components
 
         private bool IsItemGoldenGun(ItemIndex itemIndex)
         {
-            // golden gun disabled- forgot to account for that whoops
-            if (LostInTransit.LITContent.Items.GoldenGun == null) return false;
+            var goldenGun = LostInTransit.LITContent.Items.GoldenGun;
 
-            if (itemIndex == LostInTransit.LITContent.Items.GoldenGun.itemIndex) return true;
-            return false;
+            if (goldenGun is null) return false;
+            return goldenGun.itemIndex == itemIndex;
         }
 
+        // electric boogaloo
         private bool IsItemGoldenGun2(ItemIndex itemIndex)
         {
-            // golden gun disabled- forgot to account for that whoops
-            if (ClassicItemsReturns.Items.GoldenGun.Instance == null) return false;
-            if (ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef == null) return false;
+            var goldenGun = ClassicItemsReturns.Items.GoldenGun.Instance;
 
-            if (itemIndex == ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef.itemIndex) return true;
-            return false;
+            if (goldenGun?.ItemDef is null) return false;
+            return goldenGun.ItemDef.itemIndex == itemIndex;
         }
+
         private void CreateHammerEffect()
         {
             #region clone mithrix effect
@@ -684,6 +665,7 @@ namespace RobDriver.Modules.Components
 
             SetBulletAmmo(ammo);
 
+            // this shit doesnt work
             Transform muzzleTransform;
             if (DriverWeaponCatalog.IsWeaponPistol(weaponDef)) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
             else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
@@ -718,7 +700,7 @@ namespace RobDriver.Modules.Components
 
                 if (this.weaponDef != this.lastWeaponDef)
                 {
-                    if (this.weaponDef != this.defaultWeaponDef && this.weaponDef != this.pistolWeaponDef)
+                    if (this.weaponDef != this.defaultWeaponDef && this.weaponDef != DriverWeaponCatalog.Pistol)
                     {
                         WeaponNotificationQueue.PushWeaponNotification(this.characterBody.master, this.weaponDef.index);
                     }

@@ -31,13 +31,7 @@ namespace RobDriver.SkillStates.Driver
         private uint spinPlayID;
         private bool oldShoot;
 
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Shoot.damageCoefficient;
-            }
-        }
+        protected virtual float _damageCoefficient => Shoot.damageCoefficient;
 
         public override void OnEnter()
         {
@@ -120,11 +114,11 @@ namespace RobDriver.SkillStates.Driver
 
         private void Fire()
         {
-            if (this.iDrive.passive.isBullets|| this.iDrive.passive.isRyan)
+            if (this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
             {
                 GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
                 var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
-                col.startColor = this.iDrive.CurrentBulletInfo.trailColor;
+                col.startColor = this.iDrive.currentBulletType.trailColor;
                 EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
             }
             else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
