@@ -28,7 +28,7 @@ namespace RobDriver.Modules.Components
             {
                 if (this.iDrive && this.passive)
                 {
-                    if (this.iDrive.maxWeaponTimer <= 0f)
+                    if (this.iDrive.maxWeaponTimer <= 0f || this.passive.isDefault)
                     {
                         this.targetText.token = "";
                         return;
