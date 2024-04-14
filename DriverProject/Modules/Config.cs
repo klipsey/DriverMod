@@ -136,22 +136,22 @@ namespace RobDriver.Modules
             #endregion
 
             #region Emotes
-            restKey = Config.BindAndOptions("02 - Keybinds", "Rest Emote", new KeyboardShortcut(KeyCode.Alpha1), "Key used to Rest");
-            tauntKey = Config.BindAndOptions("02 - Keybinds", "Salute Emote", new KeyboardShortcut(KeyCode.Alpha2), "Key used to Taunt");
+            restKey = Config.BindAndOptions("05 - Keybinds", "Rest Emote", new KeyboardShortcut(KeyCode.Alpha1), "Key used to Rest");
+            tauntKey = Config.BindAndOptions("05 - Keybinds", "Salute Emote", new KeyboardShortcut(KeyCode.Alpha2), "Key used to Taunt");
 
-            danceKey = Config.BindAndOptions("02 - Keybinds", "Dance Emote", new KeyboardShortcut(KeyCode.Alpha3), "Key used to Dance");
+            danceKey = Config.BindAndOptions("05 - Keybinds", "Dance Emote", new KeyboardShortcut(KeyCode.Alpha3), "Key used to Dance");
             #endregion
 
             #region Stats
-            baseHealth = Config.BindAndOptionsSlider("03 - Character Stats", "Base Health", 110f, "", 1f, 500f, true);
-            healthGrowth = Config.BindAndOptionsSlider("03 - Character Stats", "Health Growth", 33f, "", 0f, 100f, true);
-            baseRegen = Config.BindAndOptionsSlider("03 - Character Stats", "Base Health Regen", 1.5f, "", 0f, 5f, true);
-            baseArmor = Config.BindAndOptionsSlider("03 - Character Stats", "Base Armor", 0f, "", 0f, 20f, true);
-            armorGrowth = Config.BindAndOptionsSlider("03 - Character Stats", "Armor Growth", 0f, "", 0f, 2f, true);
-            baseDamage = Config.BindAndOptionsSlider("03 - Character Stats", "Base Damage", 12f, "", 1f, 24f, true);
-            damageGrowth = Config.BindAndOptionsSlider("03 - Character Stats", "Damage Growth", 2.4f, "", 0f, 5f, true);
-            baseMovementSpeed = Config.BindAndOptionsSlider("03 - Character Stats", "Base Movement Speed", 7f, "", 0f, 14f, true);
-            baseCrit = Config.BindAndOptionsSlider("03 - Character Stats", "Base Crit", 1f, "", 0f, 100f, true);
+            baseHealth = Config.BindAndOptionsSlider("06 - Character Stats", "Base Health", 110f, "", 1f, 500f, true);
+            healthGrowth = Config.BindAndOptionsSlider("06 - Character Stats", "Health Growth", 33f, "", 0f, 100f, true);
+            baseRegen = Config.BindAndOptionsSlider("06 - Character Stats", "Base Health Regen", 1.5f, "", 0f, 5f, true);
+            baseArmor = Config.BindAndOptionsSlider("06 - Character Stats", "Base Armor", 0f, "", 0f, 20f, true);
+            armorGrowth = Config.BindAndOptionsSlider("06 - Character Stats", "Armor Growth", 0f, "", 0f, 2f, true);
+            baseDamage = Config.BindAndOptionsSlider("06 - Character Stats", "Base Damage", 12f, "", 1f, 24f, true);
+            damageGrowth = Config.BindAndOptionsSlider("06 - Character Stats", "Damage Growth", 2.4f, "", 0f, 5f, true);
+            baseMovementSpeed = Config.BindAndOptionsSlider("06 - Character Stats", "Base Movement Speed", 7f, "", 0f, 14f, true);
+            baseCrit = Config.BindAndOptionsSlider("06 - Character Stats", "Base Crit", 1f, "", 0f, 100f, true);
             #endregion
         }
 
@@ -160,9 +160,9 @@ namespace RobDriver.Modules
             if (!weaponDef) return;
             if (string.IsNullOrWhiteSpace(weaponDef.configIdentifier)) return;
 
-            var x = Config.BindAndOptionsSlider("04 - Weapons", weaponDef.configIdentifier + " - Base Ammo", weaponDef.shotCount, "How many shots this weapon can fire without any bonus attack speed.", 0, 200);
+            var x = Config.BindAndOptionsSlider("07 - Weapons", weaponDef.configIdentifier + " - Base Ammo", weaponDef.shotCount, "How many shots this weapon can fire without any bonus attack speed.", 0, 200);
 
-            var y = Config.BindAndOptions("04 - Weapons", weaponDef.configIdentifier + " - Enabled", true, "Set to false to remove this weapon from the drop pool.");
+            var y = Config.BindAndOptions("07 - Weapons", weaponDef.configIdentifier + " - Enabled", true, "Set to false to remove this weapon from the drop pool.");
 
             foreach (WeaponConfigBinding i in weaponConfigBinding)
             {
