@@ -90,9 +90,7 @@ namespace RobDriver.SkillStates.Driver
                 this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration * 1.5f);
             }
 
-            if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
-
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.iDrive.HasSpecialBullets) this.iDrive.ConsumeAmmo(1f, false);
+            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, false);
         }
 
         public override void OnExit()
@@ -238,9 +236,17 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
+            // pyrite gun made me do this
+            if (this.iDrive.weaponTimer <= 0f && this.iDrive.maxWeaponTimer > 0 &&
+                this.GetMinimumInterruptPriority() == InterruptPriority.Any)
+            {
+                this.outer.SetNextState(new ReloadPistol());
+                return;
+            }
+
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+                if (this.iDrive.passive.isPistolOnly)
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;

@@ -2,6 +2,7 @@
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RobDriver.Modules.Survivors;
+using RobDriver.SkillStates.Driver;
 using RoR2;
 using RoR2.Skills;
 using System;
@@ -166,7 +167,7 @@ namespace RobDriver.Modules.Components
         private void SetInventoryHook()
         {
             // swag
-            if (this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
+            if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
 
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
@@ -174,7 +175,7 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
 
-            this.defaultWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(Modules.Config.defaultWeaponIndex.Value);
+            this.defaultWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(Config.defaultWeaponIndex.Value);
             if (DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef)) pistolWeaponDef = defaultWeaponDef;
 
             PickUpWeapon(defaultWeaponDef);
@@ -503,7 +504,7 @@ namespace RobDriver.Modules.Components
                     if (!this.needReload)
                     {
                         this.needReload = true;
-                        this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                        this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
                     }
                 }
                 else if(this.passive.isBullets || this.passive.isRyan)
@@ -517,12 +518,12 @@ namespace RobDriver.Modules.Components
                         this.muzzleTrail = null;
                     }
 
-                    if (DriverWeaponCatalog.IsWeaponPistol(weaponDef))
+                    if (weaponDef == defaultWeaponDef)
                     {
                         if (!needReload)
                         {
                             this.needReload = true;
-                            this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                            this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
                         }
                     }
                     else
@@ -608,7 +609,7 @@ namespace RobDriver.Modules.Components
         
         public void FinishReload()
         {
-            if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
             if(this.passive.isPistolOnly)
@@ -667,7 +668,7 @@ namespace RobDriver.Modules.Components
 
         private void LoadNewBullets(int newAmmoIndex, float ammo = -1)
         {
-            if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
             if (muzzleTrail)

@@ -71,6 +71,11 @@ namespace RobDriver.Modules
             return buffDef;
         }
 
+        internal static BuffDef GetBuffForBulletType(DamageTypes.DriverBulletInfo bulletType)
+        {
+            return bulletDefs.ElementAtOrDefault(bulletType.index - 1);
+        }
+
         internal static void RemoveBuff(CharacterBody body, int bulletIndex)
         {
             var buff = bulletDefs.ElementAtOrDefault(bulletIndex - 1);

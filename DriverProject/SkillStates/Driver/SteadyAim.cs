@@ -312,9 +312,7 @@ namespace RobDriver.SkillStates.Driver
 
         public virtual void Fire()
         {
-            if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
-
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.iDrive.HasSpecialBullets) this.iDrive.ConsumeAmmo(1f, false);
+            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, false);
 
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
