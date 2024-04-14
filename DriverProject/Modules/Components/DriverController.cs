@@ -147,17 +147,7 @@ namespace RobDriver.Modules.Components
         private void Start()
         {
             this.InitShells();
-
-            if (this.passive.isPistolOnly)
-            {
-                this.maxWeaponTimer = 26f;
-                this.weaponTimer = 26f;
-            }
-
-            if (this.passive.isBullets || this.passive.isRyan)
-            {
-                SetBulletAmmo();
-            }
+            this.SetBulletAmmo();
         }
 
         private void SetInventoryHook()
@@ -431,15 +421,7 @@ namespace RobDriver.Modules.Components
 
             if (this.weaponTimer <= 0f && this.maxWeaponTimer > 0f)
             {
-                if (this.passive.isPistolOnly)
-                {
-                    if (!this.needReload)
-                    {
-                        this.needReload = true;
-                        this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
-                    }
-                }
-                else if(this.passive.isBullets || this.passive.isRyan)
+                if (this.passive.isBullets || this.passive.isRyan)
                 {
                     if (this.HasSpecialBullets)
                     {
@@ -448,17 +430,14 @@ namespace RobDriver.Modules.Components
                         UnityEngine.Object.Destroy(muzzleTrail.gameObject);
                         this.muzzleTrail = null;
                     }
-                    if (weaponDef == defaultWeaponDef)
+                }
+
+                if (weaponDef == defaultWeaponDef)
+                {
+                    if (!needReload)
                     {
-                        if (!needReload)
-                        {
-                            this.needReload = true;
-                            this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
-                        }
-                    }
-                    else
-                    {
-                        this.ReturnToDefaultWeapon();
+                        this.needReload = true;
+                        this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
                     }
                 }
                 else
@@ -556,16 +535,7 @@ namespace RobDriver.Modules.Components
             if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
-            if(this.passive.isPistolOnly)
-            {
-                this.weaponTimer = 26f;
-                this.maxWeaponTimer = 26f;
-            }
-
-            if (this.passive.isBullets || this.passive.isRyan)
-            {
-                SetBulletAmmo();
-            }
+            SetBulletAmmo();
 
             // notify hud
             this.onWeaponUpdate?.Invoke(this);
@@ -610,7 +580,6 @@ namespace RobDriver.Modules.Components
             this.SetBulletAmmo(ammo, cutAmmo);
 
             this.TryCallout();
-
             this.TryPickupNotification();
 
             this.onWeaponUpdate?.Invoke(this);
@@ -666,7 +635,14 @@ namespace RobDriver.Modules.Components
             {
                 shotCount = basePistolAmmo;
             }
-            // default pistol, infinite ammo
+            // finite ammo
+            else if (this.passive.isPistolOnly)
+            {
+                this.weaponTimer = 26f;
+                this.maxWeaponTimer = 26f;
+                return;
+            }
+            //infinite ammo
             else
             {
                 this.weaponTimer = 0f;
