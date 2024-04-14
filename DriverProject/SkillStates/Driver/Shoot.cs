@@ -31,13 +31,7 @@ namespace RobDriver.SkillStates.Driver
         private uint spinPlayID;
         private bool oldShoot;
 
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Shoot.damageCoefficient;
-            }
-        }
+        protected virtual float _damageCoefficient => Shoot.damageCoefficient;
 
         public override void OnEnter()
         {
@@ -90,9 +84,7 @@ namespace RobDriver.SkillStates.Driver
                 this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration * 1.5f);
             }
 
-            if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
-
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, false);
         }
 
         public override void OnExit()
@@ -122,11 +114,11 @@ namespace RobDriver.SkillStates.Driver
 
         private void Fire()
         {
-            if (this.iDrive.passive.isBullets|| this.iDrive.passive.isRyan)
+            if (this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
             {
                 GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
                 var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
-                col.startColor = Buffs.bulletDefs[iDrive.currentBulletIndex].buffColor;
+                col.startColor = this.iDrive.currentBulletDef.trailColor;
                 EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
             }
             else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
@@ -146,7 +138,7 @@ namespace RobDriver.SkillStates.Driver
                     origin = aimRay.origin,
                     damage = this._damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = iDrive.bulletDamageType,
+                    damageType = iDrive.DamageType,
                     falloffModel = this.falloff,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -169,7 +161,7 @@ namespace RobDriver.SkillStates.Driver
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                attack.AddModdedDamageType(iDrive.moddedBulletType);
+                attack.AddModdedDamageType(iDrive.ModdedDamageType);
                 attack.Fire();
             }
 
@@ -238,9 +230,17 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
+            // pyrite gun made me do this
+            if (this.iDrive.weaponTimer <= 0f && this.iDrive.maxWeaponTimer > 0 &&
+                this.GetMinimumInterruptPriority() == InterruptPriority.Any)
+            {
+                this.outer.SetNextState(new ReloadPistol());
+                return;
+            }
+
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+                if (this.iDrive.passive.isPistolOnly)
                 {
                     this.outer.SetNextState(new WaitForReload());
                     return;

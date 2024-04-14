@@ -57,14 +57,14 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 					inflictor = base.gameObject,
 					teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
 					baseDamage = this.damageStat * FireLaser.damageCoefficient,
-					damageType = iDrive.bulletDamageType,
+					damageType = iDrive.DamageType,
 					baseForce = FireLaser.force * 0.2f,
 					position = vector,
 					radius = FireLaser.blastRadius,
 					falloffModel = BlastAttack.FalloffModel.None,
 					bonusForce = FireLaser.force * this.modifiedAimRay.direction
 				};
-				blastAttack.AddModdedDamageType(iDrive.moddedBulletType);
+				blastAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 				blastAttack.Fire();
 
 				Vector3 origin = this.modifiedAimRay.origin;
@@ -89,7 +89,7 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 				}
 			}
 
-			if (this.iDrive) this.iDrive.StartTimer(2f);
+			if (this.iDrive) this.iDrive.ConsumeAmmo(2f);
 
 			float recoilAmplitude = FireLaser.recoil / this.attackSpeedStat;
 

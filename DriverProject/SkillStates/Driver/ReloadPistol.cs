@@ -38,8 +38,9 @@ namespace RobDriver.SkillStates.Driver
             if (base.fixedAge <= this.duration && this.camParamsOverrideHandle.isValid) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
             if (this.camParamsOverrideHandle.isValid && !this.aiming) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
             if (NetworkServer.active && this.aiming) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
-            //AHHHHH
-            if (this.inputBank.skill3.down && this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef) base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
+
+            if (this.inputBank.skill3.down && this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef)
+                base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
         }
 
         public override void FixedUpdate()
@@ -85,6 +86,8 @@ namespace RobDriver.SkillStates.Driver
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
+            if (this.iDrive && this.iDrive.HasSpecialBullets) return InterruptPriority.Any;
+
             return this.interruptPriority;
         }
     }

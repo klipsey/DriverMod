@@ -46,7 +46,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer(2f);
+            if (this.iDrive) this.iDrive.ConsumeAmmo(2f);
         }
 
         public virtual void FireBullet()
@@ -90,7 +90,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
                         origin = aimRay.origin,
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = iDrive.bulletDamageType,
+                        damageType = iDrive.DamageType,
                         falloffModel = BulletAttack.FalloffModel.None,
                         maxDistance = bulletRange,
                         force = force,// RiotShotgun.bulletForce,
@@ -112,7 +112,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                         HitEffectNormal = false,
                     };
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;

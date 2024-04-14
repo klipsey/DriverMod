@@ -8,11 +8,5 @@ namespace RobDriver.SkillStates.Driver.Revolver
     {
         protected override float _damageCoefficient => 3.2f;
         public override string shootSoundString => "Play_bandit2_R_fire";
-
-        public override void OnEnter()
-        {
-            base.OnEnter();
-            if (this.iDrive) this.iDrive.StartTimer();
-        }
     }
 }

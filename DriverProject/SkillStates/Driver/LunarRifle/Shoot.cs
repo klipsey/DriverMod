@@ -45,7 +45,7 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void FireBullet()
@@ -79,7 +79,7 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
                         origin = aimRay.origin,
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = iDrive.bulletDamageType,
+                        damageType = iDrive.DamageType,
                         falloffModel = BulletAttack.FalloffModel.None,
                         maxDistance = bulletRange,
                         force = force,
@@ -101,7 +101,7 @@ namespace RobDriver.SkillStates.Driver.LunarRifle
                         hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarGolem/LunarGolemTwinShotExplosion.prefab").WaitForCompletion(),
                         HitEffectNormal = false,
                     };
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;

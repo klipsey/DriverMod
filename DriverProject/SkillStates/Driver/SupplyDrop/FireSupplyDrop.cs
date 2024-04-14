@@ -3,6 +3,7 @@ using RoR2;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
 using EntityStates;
+using RobDriver.Modules;
 
 namespace RobDriver.SkillStates.Driver.SupplyDrop
 {
@@ -82,8 +83,10 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
 
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().cutAmmo = true;
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = iDrive.passive.isBullets;
+                var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
+                weaponComponent.cutAmmo = false;
+                weaponComponent.bulletIndex = BulletTypes.GetRandomBulletFromTier(DriverWeaponTier.Legendary).index;
+                weaponComponent.isNewAmmoType = false;
 
                 NetworkServer.Spawn(weaponPickup);
             }

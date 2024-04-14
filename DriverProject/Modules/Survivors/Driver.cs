@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using KinematicCharacterController;
 using RoR2.CharacterAI;
-using RoR2.Navigation;
 using RoR2.Orbs;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
@@ -16,6 +15,7 @@ using RobDriver.Modules.Components;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using UnityEngine.UI;
+using EntityStates.Missions.BrotherEncounter;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -2705,10 +2705,14 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             orig(self);
 
-            // this is literally the worst thing ever
-            if (self && self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+            if(!Config.enableGodslingInMultiplayer.Value)
             {
-                self.gameObject.SetActive(false);
+                // this is literally the worst thing ever
+                if (self && !string.IsNullOrEmpty(self.hoverToken) &&
+                    self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+                {
+                    self.gameObject.SetActive(false);
+                }
             }
         }
 
@@ -2817,8 +2821,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 }
 
                 // weapon drops
-                bool bonusChance = false;
-                bool godSlingChance = false;
                 if (isDriverOnPlayerTeam)
                 {
                     // headshot first
@@ -2832,14 +2834,13 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                             }
                         }
-                        //Log.debug("chance checking");
-                        if (damageReport.attackerBody.GetComponent<DriverController>().passive.isBullets) bonusChance = true;
-                        if (damageReport.attackerBody.GetComponent<DriverController>().passive.isRyan) godSlingChance = true;
                     }
 
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
-                    if (bonusChance) chance += Mathf.Clamp((DamageTypes.bulletTypes.Distinct().Count() - 30), 0, 30);
+                    // the fuck is this
+                    // (isAmmoPassive) chance += Mathf.Clamp((DamageTypes.bulletTypes.Distinct().Count() - 30), 0, 30);
+
                     bool fuckMyAss = chance >= 100f;
 
                     // higher chance if it's a big guy
@@ -2903,41 +2904,27 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                             if (Util.CheckRoll(newWeapon.dropChance)) weaponDef = newWeapon;
                         }
 
-                        if (godSlingChance)
+                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+                        var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
+
+                        // add passive specific stuff
+                        float splitChance = Modules.Config.godslingDropRateSplit.Value;
+                        weaponComponent.isNewAmmoType = Util.CheckRoll(splitChance);
+
+                        // non-legendary gets rerolled
+                        if (isBoss)
                         {
-                            //Log.debug("godslingchanceactivated");
-                            GameObject weaponPickup = weaponDef.pickupPrefab;
-                            float splitChance = Modules.Config.godslingDropRateSplit.Value;
-                            System.Random rnd = new System.Random();
-                            float num = rnd.Next(0, 100);
-                            if (num >= splitChance)
-                            {
-                                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
-                                //Log.debug("AMMOOOOOOO");
-                            }
-                            else
-                            {
-                                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = false;
-                            }
-                            weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponPickup, position, UnityEngine.Random.rotation);
-
-                            TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
-                            if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
-
-                            NetworkServer.Spawn(weaponPickup);
+                            weaponComponent.bulletIndex = BulletTypes.GetRandomBulletFromTier(DriverWeaponTier.Legendary).index;
                         }
                         else
                         {
-                            GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
-
-                            TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
-                            if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
-
-                            // surely this wont cause problems!
-                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
-
-                            NetworkServer.Spawn(weaponPickup);
+                            weaponComponent.bulletIndex = BulletTypes.GetWeightedRandomBullet(DriverWeaponTier.Uncommon).index;
                         }
+
+                        TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
+                        if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+
+                        NetworkServer.Spawn(weaponPickup);
                     }
                     else
                     {

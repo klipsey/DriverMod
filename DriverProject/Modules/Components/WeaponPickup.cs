@@ -13,10 +13,12 @@ namespace RobDriver.Modules.Components
 		[Tooltip("The team filter object which determines who can pick up this pack.")]
 		public TeamFilter teamFilter;
 		public DriverWeaponDef weaponDef;
+		public DriverBulletDef bulletDef;
 
 		public GameObject pickupEffect;
 		public bool cutAmmo = false;
-		public bool isAmmoBox = false;
+		public int bulletIndex = 0;
+		public bool isNewAmmoType = false;
 
 		private bool alive = true;
 
@@ -44,40 +46,6 @@ namespace RobDriver.Modules.Components
 				}
 			}
 
-			// swap to ammo visuals
-			foreach (LocalUser i in LocalUserManager.readOnlyLocalUsersList)
-			{
-				if (i.cachedBody.hasEffectiveAuthority)
-				{
-					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken)
-                    {
-						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly || i.cachedBody.GetComponent<DriverController>().passive.isBullets || i.cachedBody.GetComponent<DriverController>().passive.isRyan && this.isAmmoBox == true)
-						{
-							RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
-							if (textComponent)
-							{
-								textComponent.gameObject.SetActive(false);
-							}
-
-							BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
-							if (blinker)
-							{
-								foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
-								{
-									h.enabled = false;
-								}
-
-								GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
-								p.transform.localPosition = Vector3.zero;
-								p.transform.localRotation = Quaternion.identity;
-							}
-						}
-                    }
-					
-					break;
-				}
-			}
-
 			// uh will this work?
 			/*if (Run.instance)
 			{
@@ -95,28 +63,38 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.cutAmmo, this.isAmmoBox);
+			this.SetWeapon(this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
 		}
 
-		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
+        private void OnTriggerStay(Collider collider)
         {
-			// this didn't work lole
-			this.weaponDef = newWeaponDef;
+            // can this run on every client? i don't know but let's find out
+            if (NetworkServer.active && this.alive/* && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex*/)
+            {
+                // well it can but it's not a fix.
+                DriverController iDrive = collider.GetComponent<DriverController>();
+                if (iDrive)
+                {
+                    this.alive = false;
 
-			if (NetworkServer.active)
-			{
-				NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
-				if (!identity) return;
+                    Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
+                    Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
 
-				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo).Send(NetworkDestination.Clients);
-			}
-		}
+                    iDrive.ServerPickUpWeapon(iDrive, this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
+                    EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
+                    UnityEngine.Object.Destroy(this.baseObject);
+                }
+            }
+        }
 
-		public void SetWeapon(DriverWeaponDef newWeapon, bool _cutAmmo = false, bool _isAmmoBox = false)
+        public void SetWeapon(DriverWeaponDef newWeapon, bool cutAmmo, int ammoIndex, bool isNewAmmoType)
         {
 			this.weaponDef = newWeapon;
-			this.cutAmmo = _cutAmmo;
-			this.isAmmoBox = _isAmmoBox;
+			this.cutAmmo = cutAmmo;
+			this.bulletIndex = ammoIndex;
+			this.isNewAmmoType = isNewAmmoType;
+
+			SwapToAmmoVisuals();
 
 			// wow this is awful!
 			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
@@ -162,33 +140,63 @@ namespace RobDriver.Modules.Components
 			}
 		}
 
-		private void OnTriggerStay(Collider collider)
-		{
-			// can this run on every client? i don't know but let's find out
-			if (NetworkServer.active && this.alive/* && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex*/)
-			{
-				// well it can but it's not a fix.
-				DriverController iDrive = collider.GetComponent<DriverController>();
-				if (iDrive)
-				{
-					this.alive = false;
-
-					Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
-					Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
-
-					iDrive.ServerPickUpWeapon(this.weaponDef, this.cutAmmo, iDrive, this.isAmmoBox);
-					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
-					UnityEngine.Object.Destroy(this.baseObject);
-				}
-			}
-		}
-
-		private void Fuck()
+        private void SwapToAmmoVisuals()
         {
-			if (this.alive)
-			{
-				Modules.Achievements.SupplyDropAchievement.weaponHasDespawned = true;
-			}
-		}
-	}
+            // swap to ammo visuals
+            foreach (LocalUser i in LocalUserManager.readOnlyLocalUsersList)
+            {
+                if (i.cachedBody.hasEffectiveAuthority)
+                {
+                    var driverController = i.cachedBody.GetComponent<DriverController>();
+                    if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController &&
+                        (driverController.passive.isPistolOnly || driverController.passive.isBullets ||
+                        (driverController.passive.isRyan && this.isNewAmmoType)))
+                    {
+                        RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
+                        if (textComponent)
+                        {
+                            textComponent.gameObject.SetActive(false);
+                        }
+
+                        BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+                        if (blinker)
+                        {
+                            foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
+                            {
+                                h.enabled = false;
+                            }
+
+                            GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+                            p.transform.localPosition = Vector3.zero;
+                            p.transform.localRotation = Quaternion.identity;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        private void Fuck()
+        {
+            if (this.alive)
+            {
+                Modules.Achievements.SupplyDropAchievement.weaponHasDespawned = true;
+            }
+        }
+
+        private void ServerSetWeapon(DriverWeaponDef newWeaponDef)
+        {
+            // this didn't work lole
+            this.weaponDef = newWeaponDef;
+
+            if (NetworkServer.active)
+            {
+                NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
+                if (!identity) return;
+
+                new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo, (short)this.bulletIndex, this.isNewAmmoType).Send(NetworkDestination.Clients);
+            }
+        }
+    }
 }

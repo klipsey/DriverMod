@@ -39,7 +39,7 @@ namespace RobDriver.SkillStates.Driver.ArtiGauntlet
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         protected virtual float _damageCoefficient
@@ -66,11 +66,11 @@ namespace RobDriver.SkillStates.Driver.ArtiGauntlet
                 {
                     Ray aimRay = this.GetAimRay();
                     GameObject modify = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageFireboltBasic.prefab").WaitForCompletion();
-                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
                     if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
                     ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
                 }
             }
         }

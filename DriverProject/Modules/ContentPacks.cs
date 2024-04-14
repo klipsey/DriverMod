@@ -1,4 +1,5 @@
 ﻿using RoR2.ContentManagement;
+using System.Linq;
 
 namespace RobDriver.Modules
 {
@@ -22,7 +23,6 @@ namespace RobDriver.Modules
             this.contentPack.identifier = this.identifier;
             contentPack.bodyPrefabs.Add(Prefabs.bodyPrefabs.ToArray());
             contentPack.buffDefs.Add(Buffs.buffDefs.ToArray());
-            contentPack.buffDefs.Add(Buffs.bulletDefs.ToArray());
             contentPack.effectDefs.Add(Assets.effectDefs.ToArray());
             contentPack.entityStateTypes.Add(States.entityStates.ToArray());
             contentPack.masterPrefabs.Add(Prefabs.masterPrefabs.ToArray());

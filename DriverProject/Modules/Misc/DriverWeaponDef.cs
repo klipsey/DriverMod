@@ -134,9 +134,9 @@ public struct DriverWeaponDefInfo
 public enum DriverWeaponTier
 {
     Common,
-    Uncommon,
-    Legendary,
     Unique,
     Void,
-    Lunar
+    Lunar,
+    Uncommon,
+    Legendary
 }

@@ -44,9 +44,11 @@ namespace RobDriver.Modules.Components
                         {
                             if(NetworkServer.active)
                             {
-                                if (this.iDrive.gameObject.GetComponent<CharacterBody>().HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex]))
+                                if (this.iDrive.HasSpecialBullets)
                                 {
-                                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(Buffs.bulletDefs[this.iDrive.currentBulletIndex].buffColor)}>" + Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() + " - " + Buffs.bulletDefs[this.iDrive.currentBulletIndex].name + Helpers.colorSuffix;
+                                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.currentBulletDef.trailColor)}>" +
+                                        Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() +
+                                        " - " + this.iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
                                 }
                                 else this.targetText.token = "";
                             }
