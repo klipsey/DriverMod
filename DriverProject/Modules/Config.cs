@@ -16,7 +16,6 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> adaptiveFocus;
         public static ConfigEntry<bool> autoFocus;
         public static ConfigEntry<bool> sharedPickupVisuals;
-        public static ConfigEntry<bool> bulletsAsBuffs;
         public static ConfigEntry<bool> oldPickupModel;
         public static ConfigEntry<float> baseDropRate;
         public static ConfigEntry<float> godslingDropRateSplit;
@@ -118,8 +117,6 @@ namespace RobDriver.Modules
 
             #region Visuals and Effects
             sharedPickupVisuals = Config.BindAndOptions("04 - Visuals", "Shared Pickup Visuals", true, "If set to false, weapon pickups will only be visible while playing Driver. Setting this to true lets every character see them. (Client-side)");
-
-            bulletsAsBuffs = Config.BindAndOptions("04 - Visuals", "BulletType Appears As Buff", false, "If set to true, special bullet types will appear on the buff bar as well.", true);
 
             oldPickupModel = Config.BindAndOptions("04 - Visuals", "Old Weapon Pickup Model", false, "If set to true, uses the old goofy crate pickups instead of briefcases. (Client-side)");
             

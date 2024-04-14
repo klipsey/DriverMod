@@ -2821,9 +2821,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 }
 
                 // weapon drops
-                bool isAmmoPassive = false;
-                bool isGodSlingPassive = false;
-                bool isPistolPassive = false;
                 if (isDriverOnPlayerTeam)
                 {
                     // headshot first
@@ -2837,10 +2834,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                             }
                         }
-                        var passive = damageReport.attackerBody.GetComponent<DriverController>().passive;
-                        isAmmoPassive = passive.isBullets;
-                        isGodSlingPassive = passive.isRyan;
-                        isPistolPassive = passive.isPistolOnly;
                     }
 
                     // 7
@@ -2912,30 +2905,20 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         }
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+                        var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
 
                         // add passive specific stuff
-                        bool isGodSlingAmmo = false;
-                        if (isGodSlingPassive)
-                        {
-                            float splitChance = Modules.Config.godslingDropRateSplit.Value;
-                            System.Random rnd = new System.Random();
-                            float num = rnd.Next(0, 100);
-                            isGodSlingAmmo = num >= splitChance;
-                        }
-
-                        if (isAmmoPassive || isPistolPassive || isGodSlingAmmo)
-                        {
-                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isNewAmmoType = true;
-                        }
+                        float splitChance = Modules.Config.godslingDropRateSplit.Value;
+                        weaponComponent.isNewAmmoType = Util.CheckRoll(splitChance);
 
                         // non-legendary gets rerolled
-                        if (weaponTier != DriverWeaponTier.Legendary)
+                        if (isBoss)
                         {
-                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().bulletIndex = BulletTypes.GetRandomIndexFromTier(DriverWeaponTier.Legendary);
+                            weaponComponent.bulletIndex = BulletTypes.GetRandomBulletFromTier(DriverWeaponTier.Legendary).index;
                         }
                         else
                         {
-                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().bulletIndex = BulletTypes.GetRandomIndexFromTier(weaponTier, false);
+                            weaponComponent.bulletIndex = BulletTypes.GetWeightedRandomBullet(DriverWeaponTier.Uncommon).index;
                         }
 
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();

@@ -34,6 +34,7 @@ namespace RobDriver.Modules
         public static DamageAPI.ModdedDamageType CoinShot;
         public static DamageAPI.ModdedDamageType MysteryShot;
         public static DamageAPI.ModdedDamageType Hemorrhage;
+
         internal static void Init()
         {
             Generic = DamageAPI.ReserveDamageType();
@@ -77,7 +78,7 @@ namespace RobDriver.Modules
             if (attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && 
                 damageInfo.HasModdedDamageType(MysteryShot))
             {
-                var bulletInfo = BulletTypes.bulletDefs[BulletTypes.GetRandomIndexFromTier(DriverWeaponTier.Legendary)];
+                var bulletInfo = BulletTypes.GetWeightedRandomBullet(DriverWeaponTier.Legendary);
 
                 damageInfo.damageType |= bulletInfo.bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);

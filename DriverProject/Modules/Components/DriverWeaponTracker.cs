@@ -18,12 +18,12 @@ namespace RobDriver.Modules.Components
         public float storedAmmo;
         public short storedAmmoIndex;
 
-        public void StoreWeapon(DriverWeaponDef weaponDef, float ammo, short ammoIndex)
+        public void StoreWeapon(DriverWeaponDef weaponDef, float ammo, int ammoIndex)
         {
             this.isStoringWeapon = true;
             this.storedWeapon = weaponDef;
             this.storedAmmo = ammo;
-            this.storedAmmoIndex = ammoIndex;
+            this.storedAmmoIndex = (short)ammoIndex;
         }
 
         public StoredWeapon RetrieveWeapon()

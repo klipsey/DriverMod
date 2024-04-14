@@ -118,7 +118,7 @@ namespace RobDriver.SkillStates.Driver
             {
                 GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
                 var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
-                col.startColor = this.iDrive.currentBulletType.trailColor;
+                col.startColor = this.iDrive.currentBulletDef.trailColor;
                 EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
             }
             else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);

@@ -15,7 +15,6 @@ namespace RobDriver.Modules
     public static class Buffs
     {
         internal static List<BuffDef> buffDefs = new List<BuffDef>();
-        internal static List<BuffDef> bulletBuffDefs { get; private set; } = new List<BuffDef>();
 
         internal static BuffDef dazedDebuff;
         internal static BuffDef woundDebuff;
@@ -34,28 +33,6 @@ namespace RobDriver.Modules
             syringeCritBuff = AddNewBuff("RobDriverSyringeCritBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 80f / 255f, 17f / 255f), false, false);
             syringeNewBuff = AddNewBuff("RobDriverSyringeNewBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 70f / 255f, 75f / 255f), false, false);
             syringeScepterBuff = AddNewBuff("RobDriverSyringeScepterBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), Modules.Survivors.Driver.characterColor, false, false);
-            if(Config.bulletsAsBuffs.Value)
-            {
-                InitBulletsWithBuffs();
-            }
-        }
-
-        internal static void InitBulletsWithBuffs()
-        {
-            foreach (var bullet in BulletTypes.bulletDefs)
-            {
-                if (bullet.index == 0) continue;
-
-                BuffDef buffDef = ScriptableObject.CreateInstance<BuffDef>();
-                buffDef.name = bullet.nameToken;
-                buffDef.buffColor = bullet.trailColor;
-                buffDef.iconSprite = bullet.icon;
-                buffDef.canStack = false;
-                buffDef.isDebuff = false;
-                buffDef.eliteDef = null;
-
-                bulletBuffDefs.Add(buffDef);
-            }
         }
 
         // simple helper method
@@ -72,29 +49,6 @@ namespace RobDriver.Modules
             buffDefs.Add(buffDef);
 
             return buffDef;
-        }
-
-        internal static BuffDef GetBuffForBulletType(DamageTypes.DriverBulletInfo bulletType)
-        {
-            return bulletDefs.ElementAtOrDefault(bulletType.index - 1);
-        }
-
-        internal static void RemoveBuff(CharacterBody body, int bulletIndex)
-        {
-            var buff = bulletBuffDefs.ElementAtOrDefault(bulletIndex - 1);
-            if (NetworkServer.active && !(buff is null) && body.HasBuff(buff))
-            {
-                body.RemoveBuff(buff);
-            }
-        }
-
-        internal static void GiveBuff(CharacterBody body, int bulletIndex)
-        {
-            var buff = bulletBuffDefs.ElementAtOrDefault(bulletIndex - 1);
-            if (NetworkServer.active && !(buff is null) && !body.HasBuff(buff))
-            {
-                body.AddBuff(buff);
-            }
         }
     }
 }

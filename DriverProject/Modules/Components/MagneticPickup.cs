@@ -37,16 +37,12 @@ namespace DriverMod.Modules.Components
                 {
                     continue;
                 }
-                if(!Config.enableMagenticConditionalPickups.Value)
-                {
-                    var distance = Vector3.Distance(teamComponent.body.footPosition, location);
-                    if (distance < lowestDistance)
-                    {
-                        closestPosition = teamComponent.body.footPosition;
-                        lowestDistance = distance;
-                    }
-                }
-                else if(!teamComponent.body.GetComponent<DriverController>().HasSpecialBullets || teamComponent.body.GetComponent<DriverController>().weaponDef == teamComponent.body.GetComponent<DriverController>().defaultBulletDef)
+
+                // i really hate calling getComponent on every fixedupdate but itll do for now
+                var driverController = teamComponent.body.GetComponent<DriverController>();
+
+                if (!Config.enableMagenticConditionalPickups.Value || 
+                    (!driverController.HasSpecialBullets || driverController.weaponDef == driverController.defaultWeaponDef))
                 {
                     var distance = Vector3.Distance(teamComponent.body.footPosition, location);
                     if (distance < lowestDistance)
@@ -91,7 +87,7 @@ namespace DriverMod.Modules.Components
             var speed = Vector3.MoveTowards(
                 rigidBody.velocity,
                 (this.transform.position - playerLocation).normalized * 100f,
-                Config.pickupSpeed.Value
+                75f
             );
 
             rigidBody.velocity += -speed;
