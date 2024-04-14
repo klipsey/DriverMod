@@ -17,7 +17,8 @@ namespace RobDriver.Modules.Components
 
 		public GameObject pickupEffect;
 		public bool cutAmmo = false;
-		public bool isAmmoBox = false;
+		public int bulletIndex = 0;
+		public bool isNewAmmoType = false;
 
 		private bool alive = true;
 
@@ -50,45 +51,28 @@ namespace RobDriver.Modules.Components
 			{
 				if (i.cachedBody.hasEffectiveAuthority)
 				{
-					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken)
-                    {
-						bool isGodsling = i.cachedBody.GetComponent<DriverController>().passive.isRyan;
-						bool isBullets = i.cachedBody.GetComponent<DriverController>().passive.isBullets;
-						if (i.cachedBody.GetComponent<DriverController>().passive.isPistolOnly || isBullets || isGodsling)
+					var driverController = i.cachedBody.GetComponent<DriverController>();
+					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController && 
+						(driverController.passive.isPistolOnly || driverController.passive.isBullets || 
+						(driverController.passive.isRyan && this.isNewAmmoType)))
+					{
+						RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
+						if (textComponent)
 						{
-							RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
-							if (textComponent)
+							textComponent.gameObject.SetActive(false);
+						}
+
+						BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+						if (blinker)
+						{
+							foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
 							{
-								textComponent.gameObject.SetActive(false);
-							}
-							//Calculate ammo chance for godsling
-							if(isGodsling)
-							{
-                                float splitChance = Modules.Config.godslingDropRateSplit.Value;
-                                System.Random rnd = new System.Random();
-                                float num = rnd.Next(0, 100);
-                                if (num >= splitChance)
-                                {
-                                    isAmmoBox = true;
-                                }
-                            }
-							else
-							{
-								isAmmoBox = true;
+								h.enabled = false;
 							}
 
-                            BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
-							if (blinker && isAmmoBox)
-							{
-								foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
-								{
-									h.enabled = false;
-								}
-
-								GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
-								p.transform.localPosition = Vector3.zero;
-								p.transform.localRotation = Quaternion.identity;
-							}
+							GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+							p.transform.localPosition = Vector3.zero;
+							p.transform.localRotation = Quaternion.identity;
 						}
                     }
 					
@@ -113,7 +97,7 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, this.isAmmoBox);
+			this.SetWeapon(this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
 		}
 
 		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
@@ -126,16 +110,16 @@ namespace RobDriver.Modules.Components
 				NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
 				if (!identity) return;
 
-				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, (ushort)this.bulletDef.index, this.cutAmmo).Send(NetworkDestination.Clients);
+				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo, (short)this.bulletIndex, this.isNewAmmoType).Send(NetworkDestination.Clients);
 			}
 		}
 
-		public void SetWeapon(DriverWeaponDef newWeapon, DriverBulletDef newBullet, bool _cutAmmo = false, bool _isAmmoBox = false)
+		public void SetWeapon(DriverWeaponDef newWeapon, bool cutAmmo, int ammoIndex, bool isNewAmmoType)
         {
 			this.weaponDef = newWeapon;
-            this.bulletDef = newBullet;
-            this.cutAmmo = _cutAmmo;
-			this.isAmmoBox = _isAmmoBox;
+			this.cutAmmo = cutAmmo;
+			this.bulletIndex = ammoIndex;
+			this.isNewAmmoType = isNewAmmoType;
 
 			// wow this is awful!
 			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
@@ -195,7 +179,7 @@ namespace RobDriver.Modules.Components
 					Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
 					Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
 
-					iDrive.ServerPickUpWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, iDrive, this.isAmmoBox);
+					iDrive.ServerPickUpWeapon(iDrive, this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}

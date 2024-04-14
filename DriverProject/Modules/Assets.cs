@@ -14,6 +14,7 @@ using UnityEngine.UI;
 using RobDriver.Modules.Components;
 using UnityEngine.Rendering.PostProcessing;
 using Moonstorm.Starstorm2.Survivors;
+using DriverMod.Modules.Components;
 
 namespace RobDriver.Modules
 {
@@ -1244,6 +1245,7 @@ namespace RobDriver.Modules
 
             MonoBehaviour.Destroy(ammoPickupComponent);
             MonoBehaviour.Destroy(newPickup.GetComponentInChildren<RoR2.GravitatePickup>());
+            if (Config.enableMagneticPickups.Value) newPickup.AddComponent<MagneticPickup>();
 
             newPickup.transform.Find("Visuals").Find("Particle System").Find("Particle System").gameObject.SetActive(false);
             newPickup.GetComponentInChildren<Light>().color = Modules.Survivors.Driver.characterColor;

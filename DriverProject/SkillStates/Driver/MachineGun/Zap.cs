@@ -42,7 +42,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
             this.playID = Util.PlaySound("sfx_driver_zap_prep", this.gameObject);
 
             DriverController iDrive = this.GetComponent<DriverController>();
-            if (iDrive) iDrive.StartTimer();
+            if (iDrive) iDrive.ConsumeAmmo();
         }
 
         public override void FixedUpdate()

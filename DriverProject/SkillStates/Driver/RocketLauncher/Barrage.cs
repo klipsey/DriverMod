@@ -75,7 +75,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
 
         public virtual void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer(this.ammoMod * (2f / this.baseRocketCount));
+            if (this.iDrive) this.iDrive.ConsumeAmmo(this.ammoMod * (2f / this.baseRocketCount));
 
             base.PlayAnimation("Gesture, Override", "FireBazooka", "Shoot.playbackRate", 1.4f);
             base.PlayAnimation("AimPitch", "Shoot");
@@ -114,22 +114,22 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                     for (int i = 0; i < 3; i++)
                     {
                         GameObject modify = this.projectilePrefab;
-                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
                         if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
                         ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
                         aimRay2.direction = rotation * aimRay2.direction;
                     }
                 }
                 else
                 {
                     GameObject modify = this.projectilePrefab;
-                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
                     if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
                     ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
                 }
             }
         }

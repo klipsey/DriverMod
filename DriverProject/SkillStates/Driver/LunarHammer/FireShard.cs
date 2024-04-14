@@ -25,9 +25,9 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             {
                 Ray aimRay = base.GetAimRay();
                 GameObject modify = Modules.Projectiles.lunarShard;
-                modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
+                modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
                 if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
+                modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
                 FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
                 fireProjectileInfo.position = aimRay.origin;
                 fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
@@ -43,7 +43,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
                 fireProjectileInfo.projectilePrefab = modify;
 
                 ProjectileManager.instance.FireProjectile(fireProjectileInfo);
-                modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
             }
 
             base.PlayAnimation("LeftArm, Override", "FireShard", "Shard.playbackRate", this.duration * 5f);

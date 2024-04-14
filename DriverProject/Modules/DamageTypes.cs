@@ -55,6 +55,8 @@ namespace RobDriver.Modules
             Hook();
         }
 
+        #region Private Methods
+
         private static void Hook()
         {
             On.RoR2.GlobalEventManager.OnHitEnemy += new On.RoR2.GlobalEventManager.hook_OnHitEnemy(GlobalEventManager_OnHitEnemy);
@@ -75,10 +77,11 @@ namespace RobDriver.Modules
             if (attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && 
                 damageInfo.HasModdedDamageType(MysteryShot))
             {
-                DriverBulletDef bullet = BulletTypes.GetRandomBullet();
-                damageInfo.damageType |= bullet.bulletType;
+                var bulletInfo = BulletTypes.bulletDefs[BulletTypes.GetRandomIndexFromTier(DriverWeaponTier.Legendary)];
+
+                damageInfo.damageType |= bulletInfo.bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);
-                damageInfo.AddModdedDamageType(bullet.moddedBulletType);
+                damageInfo.AddModdedDamageType(bulletInfo.moddedBulletType);
             } // end mysteryshot
 
             orig.Invoke(self, damageInfo, victim);
@@ -482,6 +485,7 @@ namespace RobDriver.Modules
                 };
                 obj.Fire();
             }
+            #endregion
         }
     }
 }

@@ -10,27 +10,27 @@ namespace RobDriver.Modules.Components
     {
         private NetworkInstanceId netId;
         private ushort weapon;
-        private ushort bullet;
         private long ammo;
+        private short ammoIndex;
 
         public SyncStoredWeapon()
         {
         }
 
-        public SyncStoredWeapon(NetworkInstanceId netId, ushort weapon, ushort bullet, float ammo)
+        public SyncStoredWeapon(NetworkInstanceId netId, ushort augh, float ammo, short ammoIndex)
         {
             this.netId = netId;
-            this.weapon = weapon;
-            this.bullet = bullet;
+            this.weapon = augh;
             this.ammo = Mathf.CeilToInt(ammo * 100f);
+            this.ammoIndex = ammoIndex;
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.netId = reader.ReadNetworkId();
             this.weapon = reader.ReadUInt16();
-            this.bullet = reader.ReadUInt16();
             this.ammo = reader.ReadInt64();
+            this.ammoIndex = reader.ReadInt16();
         }
 
         public void OnReceived()
@@ -41,7 +41,9 @@ namespace RobDriver.Modules.Components
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
             if (iDrive)
             {
-                iDrive.PickUpWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), BulletTypes.GetBulletFromIndex(this.bullet), this.ammo * 0.01f);
+                // yes, this is a dumb way to do it
+                iDrive.PickUpWeaponDrop(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f, ammoIndex, false);
+                iDrive.PickUpWeaponDrop(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f, ammoIndex, true);
             }
         }
 
@@ -49,8 +51,8 @@ namespace RobDriver.Modules.Components
         {
             writer.Write(this.netId);
             writer.Write(this.weapon);
-            writer.Write(this.bullet);
             writer.Write(this.ammo);
+            writer.Write(this.ammoIndex);
         }
     }
 }

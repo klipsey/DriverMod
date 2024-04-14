@@ -14,7 +14,7 @@ public class DriverBulletDef : ScriptableObject
 
     [Header("Visuals")]
     public Sprite icon = null;
-    public Color trailColor = Color.white;
+    public Color trailColor = Color.black;
 
     [HideInInspector]
     public ushort index; // assigned at runtime
@@ -29,6 +29,7 @@ public class DriverBulletDef : ScriptableObject
         bulletDef.tier = bulletDefInfo.tier;
         bulletDef.icon = bulletDefInfo.icon;
         bulletDef.trailColor = bulletDefInfo.trailColor;
+        bulletDef.index = (ushort)bulletDefInfo.index;
         return bulletDef;
     }
 }
@@ -43,4 +44,5 @@ public struct DriverBulletDefInfo
 
     public Sprite icon;
     public Color trailColor;
+    public int index;
 }

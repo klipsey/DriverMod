@@ -83,7 +83,13 @@ namespace RobDriver
 
         public static bool IsWeaponPistol(DriverWeaponDef weaponDef)
         {
-            return weaponDef == Pistol || weaponDef == LunarPistol || weaponDef == VoidPistol;
+            // These are all the pistol options that are forced upgrades with steadyaim
+            // beetle shield doesnt count since it's dropped instead of reloaded
+            return weaponDef == Pistol ||
+                weaponDef == LunarPistol ||
+                weaponDef == VoidPistol ||
+                weaponDef == Needler ||
+                weaponDef == PyriteGun;
         }
 
         public static DriverWeaponDef GetWeaponFromIndex(int index)

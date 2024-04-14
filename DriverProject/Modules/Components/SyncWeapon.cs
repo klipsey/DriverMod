@@ -10,30 +10,30 @@ namespace RobDriver.Modules.Components
     {
         private NetworkInstanceId netId;
         private ushort weapon;
-        private ushort bullet;
         private bool cutAmmo;
-        private bool isAmmoBox;
+        private short ammoIndex;
+        private bool isNewAmmoType;
 
         public SyncWeapon()
         {
         }
 
-        public SyncWeapon(NetworkInstanceId netId, ushort weapon, ushort bullet, bool cutAmmo, bool isAmmoBox)
+        public SyncWeapon(NetworkInstanceId netId, ushort augh, bool ough, int ammoIndex, bool isNewAmmoType)
         {
             this.netId = netId;
-            this.weapon = weapon;
-            this.bullet = bullet;
-            this.cutAmmo = cutAmmo;
-            this.isAmmoBox = isAmmoBox;
+            this.weapon = augh;
+            this.cutAmmo = ough;
+            this.ammoIndex = (short)ammoIndex;
+            this.isNewAmmoType = isNewAmmoType;
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.netId = reader.ReadNetworkId();
             this.weapon = reader.ReadUInt16();
-            this.bullet = reader.ReadUInt16();
             this.cutAmmo = reader.ReadBoolean();
-            this.isAmmoBox = reader.ReadBoolean();
+            this.ammoIndex = reader.ReadInt16();
+            this.isNewAmmoType = reader.ReadBoolean();
         }
 
         public void OnReceived()
@@ -43,21 +43,19 @@ namespace RobDriver.Modules.Components
 
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
             DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(this.weapon);
-            DriverBulletDef bulletDef = BulletTypes.GetBulletFromIndex(this.bullet);
 
             float ammo = -1f;
-            if (this.cutAmmo) ammo = weaponDef.shotCount * 0.5f;
 
-            if (iDrive) iDrive.PickUpWeapon(weaponDef, bulletDef, ammo, this.isAmmoBox);
+            if (iDrive) iDrive.PickUpWeaponDrop(weaponDef, ammo, this.ammoIndex, this.isNewAmmoType, this.cutAmmo);
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(this.netId);
             writer.Write(this.weapon);
-            writer.Write(this.bullet);
             writer.Write(this.cutAmmo);
-            writer.Write(this.isAmmoBox);
+            writer.Write(this.ammoIndex);
+            writer.Write(this.isNewAmmoType);
         }
     }
 }

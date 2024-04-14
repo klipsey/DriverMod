@@ -10,27 +10,30 @@ namespace RobDriver.Modules.Components
     {
         private NetworkInstanceId netId;
         private ushort weapon;
-        private ushort bullet;
         private bool cutAmmo;
+        private short ammoIndex;
+        private bool isNewAmmoType;
 
         public SyncWeaponPickup()
         {
         }
 
-        public SyncWeaponPickup(NetworkInstanceId netId, ushort weapon, ushort bullet, bool cutAmmo)
+        public SyncWeaponPickup(NetworkInstanceId netId, ushort augh, bool ough, short ammoIndex, bool isNewAmmoType)
         {
             this.netId = netId;
-            this.weapon = weapon;
-            this.bullet = bullet;
-            this.cutAmmo = cutAmmo;
+            this.weapon = augh;
+            this.cutAmmo = ough;
+            this.ammoIndex = ammoIndex;
+            this.isNewAmmoType = isNewAmmoType;
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.netId = reader.ReadNetworkId();
             this.weapon = reader.ReadUInt16();
-            this.bullet = reader.ReadUInt16();  
             this.cutAmmo = reader.ReadBoolean();
+            this.ammoIndex = reader.ReadInt16();
+            this.isNewAmmoType = reader.ReadBoolean();
         }
 
         public void OnReceived()
@@ -39,15 +42,16 @@ namespace RobDriver.Modules.Components
             if (!pickupObject) return;
 
             WeaponPickup pickupComponent = pickupObject.GetComponentInChildren<WeaponPickup>();
-            if (pickupComponent) pickupComponent.SetWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), BulletTypes.GetBulletFromIndex(this.bullet), this.cutAmmo);
+            if (pickupComponent) pickupComponent.SetWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.cutAmmo, this.ammoIndex, isNewAmmoType);
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(this.netId);
             writer.Write(this.weapon);
-            writer.Write(this.bullet);
             writer.Write(this.cutAmmo);
+            writer.Write(this.ammoIndex);
+            writer.Write(this.isNewAmmoType);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace RobDriver.Modules
             {
                 nameToken = "Default",
                 tier = DriverWeaponTier.Common,
-                trailColor = Color.white
+                index = bulletDefs.Count
             }));
 
             foreach (DamageType i in allowedDamageTypes)
@@ -53,7 +53,8 @@ namespace RobDriver.Modules
                             nameToken = "Resetting Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Uncommon,
-                            trailColor = Color.red
+                            trailColor = Color.red,
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -63,7 +64,8 @@ namespace RobDriver.Modules
                             nameToken = "Slowing Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = Color.yellow
+                            trailColor = Color.yellow,
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -73,7 +75,8 @@ namespace RobDriver.Modules
                             nameToken = "Stunning Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = Color.gray
+                            trailColor = Color.gray,
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -83,7 +86,8 @@ namespace RobDriver.Modules
                             nameToken = "Incendiary Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = new Color(255f / 255f, 127f / 255f, 80 / 255f)
+                            trailColor = new Color(255f / 255f, 127f / 255f, 80 / 255f),
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -93,7 +97,8 @@ namespace RobDriver.Modules
                             nameToken = "Frostbite Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Uncommon,
-                            trailColor = Color.cyan
+                            trailColor = Color.cyan,
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -103,7 +108,8 @@ namespace RobDriver.Modules
                             nameToken = "Goo Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = Color.black
+                            trailColor = Color.black,
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -113,7 +119,8 @@ namespace RobDriver.Modules
                             nameToken = "Serrated Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = DamageColor.FindColor(DamageColorIndex.Bleed)
+                            trailColor = DamageColor.FindColor(DamageColorIndex.Bleed),
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -123,7 +130,8 @@ namespace RobDriver.Modules
                             nameToken = "Poison Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = Color.green
+                            trailColor = Color.green,
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -133,7 +141,8 @@ namespace RobDriver.Modules
                             nameToken = "Weakening Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = new Color(220f / 255f, 237f / 255f, 159f / 255f)
+                            trailColor = new Color(220f / 255f, 237f / 255f, 159f / 255f),
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -143,7 +152,8 @@ namespace RobDriver.Modules
                             nameToken = "Nullifying Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Void,
-                            trailColor = DamageColor.FindColor(DamageColorIndex.Void)
+                            trailColor = DamageColor.FindColor(DamageColorIndex.Void),
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -153,7 +163,8 @@ namespace RobDriver.Modules
                             nameToken = "Executing Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = DamageColor.FindColor(DamageColorIndex.Fragile)
+                            trailColor = DamageColor.FindColor(DamageColorIndex.Fragile),
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -163,7 +174,8 @@ namespace RobDriver.Modules
                             nameToken = "Blighting Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Common,
-                            trailColor = new Color(222f / 255f, 85f / 255f, 230f / 255f)
+                            trailColor = new Color(222f / 255f, 85f / 255f, 230f / 255f),
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -173,7 +185,8 @@ namespace RobDriver.Modules
                             nameToken = "Crippling Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Uncommon,
-                            trailColor = new Color(48f / 255f, 205f / 255f, 217f / 255f)
+                            trailColor = new Color(48f / 255f, 205f / 255f, 217f / 255f),
+                            index = bulletDefs.Count
                         }));
                         break;
 
@@ -183,7 +196,8 @@ namespace RobDriver.Modules
                             nameToken = "Fruitful Rounds",
                             bulletType = i,
                             tier = DriverWeaponTier.Uncommon,
-                            trailColor = new Color(255f / 255f, 191f / 255f, 225f / 255f)
+                            trailColor = new Color(255f / 255f, 191f / 255f, 225f / 255f),
+                            index = bulletDefs.Count
                         }));
                         break;
                 }
@@ -194,7 +208,8 @@ namespace RobDriver.Modules
                 nameToken = "Hook Shot",
                 moddedBulletType = DamageTypes.HookShot,
                 tier = DriverWeaponTier.Legendary,
-                trailColor = Color.grey
+                trailColor = Color.grey,
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -202,7 +217,8 @@ namespace RobDriver.Modules
                 nameToken = "Missle Shot",
                 moddedBulletType = DamageTypes.MissileShot,
                 tier = DriverWeaponTier.Uncommon,
-                trailColor = new Color(219 / 255f, 132 / 255f, 11 / 255f)
+                trailColor = new Color(219 / 255f, 132 / 255f, 11 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -210,7 +226,8 @@ namespace RobDriver.Modules
                 nameToken = "Void Missile Rounds",
                 moddedBulletType = DamageTypes.VoidMissileShot,
                 tier = DriverWeaponTier.Void,
-                trailColor = new Color(122 / 255f, 69 / 255f, 173 / 255f)
+                trailColor = new Color(122 / 255f, 69 / 255f, 173 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -218,7 +235,8 @@ namespace RobDriver.Modules
                 nameToken = "Explosive Rounds",
                 moddedBulletType = DamageTypes.ExplosiveRounds,
                 tier = DriverWeaponTier.Uncommon,
-                trailColor = Color.yellow
+                trailColor = Color.yellow,
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -226,7 +244,8 @@ namespace RobDriver.Modules
                 nameToken = "Elemental Flame Rounds",
                 moddedBulletType = DamageTypes.FlameTornadoShot,
                 tier = DriverWeaponTier.Uncommon,
-                trailColor = new Color(255f / 255f, 127f / 255f, 80 / 255f)
+                trailColor = new Color(255f / 255f, 127f / 255f, 80 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -234,7 +253,8 @@ namespace RobDriver.Modules
                 nameToken = "Elemental Ice Rounds",
                 moddedBulletType = DamageTypes.IceBlastShot,
                 tier = DriverWeaponTier.Uncommon,
-                trailColor = Color.cyan
+                trailColor = Color.cyan,
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -242,7 +262,8 @@ namespace RobDriver.Modules
                 nameToken = "Dagger Shot",
                 moddedBulletType = DamageTypes.DaggerShot,
                 tier = DriverWeaponTier.Legendary,
-                trailColor = Color.black
+                trailColor = Color.black,
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -250,7 +271,8 @@ namespace RobDriver.Modules
                 nameToken = "Lightning Rounds",
                 moddedBulletType = DamageTypes.LightningStrikeRounds,
                 tier = DriverWeaponTier.Legendary,
-                trailColor = Color.cyan
+                trailColor = Color.cyan,
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -258,7 +280,8 @@ namespace RobDriver.Modules
                 nameToken = "Fireball Rounds",
                 moddedBulletType = DamageTypes.FireballRounds,
                 tier = DriverWeaponTier.Legendary,
-                trailColor = new Color(255f / 255f, 127f / 255f, 80 / 255f)
+                trailColor = new Color(255f / 255f, 127f / 255f, 80 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -266,7 +289,8 @@ namespace RobDriver.Modules
                 nameToken = "Sticky Shot",
                 moddedBulletType = DamageTypes.StickyShot,
                 tier = DriverWeaponTier.Uncommon,
-                trailColor = new Color(255 / 255f, 117 / 255f, 48 / 255f)
+                trailColor = new Color(255 / 255f, 117 / 255f, 48 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -274,7 +298,8 @@ namespace RobDriver.Modules
                 nameToken = "Void Lightning Rounds",
                 moddedBulletType = DamageTypes.VoidLightning,
                 tier = DriverWeaponTier.Void,
-                trailColor = new Color(194 / 255f, 115 / 255f, 255 / 255f)
+                trailColor = new Color(194 / 255f, 115 / 255f, 255 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -282,7 +307,8 @@ namespace RobDriver.Modules
                 nameToken = "Coin Shot",
                 moddedBulletType = DamageTypes.CoinShot,
                 tier = DriverWeaponTier.Common,
-                trailColor = new Color(255 / 255f, 212 / 255f, 94 / 255f)
+                trailColor = new Color(255 / 255f, 212 / 255f, 94 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -290,7 +316,8 @@ namespace RobDriver.Modules
                 nameToken = "Mystery Shot",
                 moddedBulletType = DamageTypes.CoinShot,
                 tier = DriverWeaponTier.Uncommon,
-                trailColor = new Color(30 / 255f, 51 / 255f, 45 / 255f)
+                trailColor = new Color(30 / 255f, 51 / 255f, 45 / 255f),
+                index = bulletDefs.Count
             }));
 
             bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
@@ -298,33 +325,37 @@ namespace RobDriver.Modules
                 nameToken = "Hemorrhaging Rounds",
                 moddedBulletType = DamageTypes.Hemorrhage,
                 tier = DriverWeaponTier.Uncommon,
-                trailColor = DamageColor.FindColor(DamageColorIndex.SuperBleed)
+                trailColor = DamageColor.FindColor(DamageColorIndex.SuperBleed),
+                index = bulletDefs.Count
             }));
         }
 
-        public static DriverBulletDef GetBulletFromIndex(int index)
+        public static DriverBulletDef GetBulletDefFromIndex(int index)
         {
-            return bulletDefs[index];
+            Log.Debug(index);
+            Log.Debug(BulletTypes.bulletDefs.Count);
+            if (index < 0 || index >= bulletDefs.Count) return bulletDefs[0];
+            else return bulletDefs[index];
         }
+        public static DriverWeaponTier GetWeightedBulletTier()
+        {
+            int commonWeight = 5;
+            int uncommonWeight = 3;
+            int legendaryWeight = 1;
+            int rnd = UnityEngine.Random.Range(0, commonWeight + uncommonWeight + legendaryWeight);
 
-        public static DriverBulletDef GetRandomBullet()
+            if (rnd < commonWeight) return DriverWeaponTier.Common;
+            if (rnd < commonWeight + uncommonWeight) return DriverWeaponTier.Uncommon;
+            return DriverWeaponTier.Legendary;
+        }
+        //Method to get a random bullet index. set to false to only get a random index within a tier
+        public static int GetRandomIndexFromTier(DriverWeaponTier tier, bool canGetTiersBelow = true, bool weighted = true)
         {
             List<DriverBulletDef> validBullets = new List<DriverBulletDef>();
-
-            foreach(DriverBulletDef i in bulletDefs)
+            if(weighted)
             {
-                if (i && i != bulletDefs[0]) validBullets.Add(i);
+                tier = GetWeightedBulletTier();
             }
-
-            if (validBullets.Count <= 0) return bulletDefs[0]; // Failsafe
-
-            return validBullets[UnityEngine.Random.Range(0, validBullets.Count)];
-        }
-
-        public static DriverBulletDef GetRandomBulletFromTier(DriverWeaponTier tier, bool canGetTiersBelow = true)
-        {
-            List<DriverBulletDef> validBullets = new List<DriverBulletDef>();
-
             foreach (DriverBulletDef i in bulletDefs)
             {
                 if (i && i != bulletDefs[0])
@@ -340,9 +371,9 @@ namespace RobDriver.Modules
                 }
             }
 
-            if (validBullets.Count <= 0) return bulletDefs[0]; // Failsafe
+            if (validBullets.Count <= 0) return 0; // Failsafe
 
-            return validBullets[UnityEngine.Random.Range(0, validBullets.Count)];
+            return validBullets[UnityEngine.Random.Range(0, validBullets.Count)].index;
         }
     }
 }

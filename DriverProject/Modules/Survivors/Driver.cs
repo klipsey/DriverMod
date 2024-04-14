@@ -15,6 +15,7 @@ using RobDriver.Modules.Components;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using UnityEngine.UI;
+using EntityStates.Missions.BrotherEncounter;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -2704,11 +2705,11 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             orig(self);
 
-            // this is literally the worst thing ever
-            // Sorry rob but im removing this for now..
-            if(false == true)
+            if(!Config.enableGodslingInMultiplayer.Value)
             {
-                if (self && self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+                // this is literally the worst thing ever
+                if (self && !string.IsNullOrEmpty(self.hoverToken) &&
+                    self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
                 {
                     self.gameObject.SetActive(false);
                 }
@@ -2819,6 +2820,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     }
                 }
 
+                // weapon drops
+                bool isAmmoPassive = false;
+                bool isGodSlingPassive = false;
+                bool isPistolPassive = false;
                 if (isDriverOnPlayerTeam)
                 {
                     // headshot first
@@ -2832,9 +2837,17 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                             }
                         }
+                        var passive = damageReport.attackerBody.GetComponent<DriverController>().passive;
+                        isAmmoPassive = passive.isBullets;
+                        isGodSlingPassive = passive.isRyan;
+                        isPistolPassive = passive.isPistolOnly;
                     }
+
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
+                    // the fuck is this
+                    // (isAmmoPassive) chance += Mathf.Clamp((DamageTypes.bulletTypes.Distinct().Count() - 30), 0, 30);
+
                     bool fuckMyAss = chance >= 100f;
 
                     // higher chance if it's a big guy
@@ -2891,20 +2904,42 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         if (damageReport.victimBody.isChampion) weaponTier = DriverWeaponTier.Legendary;
 
                         DriverWeaponDef weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
-                        weaponTier = DriverWeaponTier.Void;
-                        DriverBulletDef bulletDef = BulletTypes.GetRandomBulletFromTier(weaponTier);
 
                         if (DriverWeaponCatalog.weaponDrops.ContainsKey(damageReport.victimBody.gameObject.name))
                         {
                             DriverWeaponDef newWeapon = DriverWeaponCatalog.weaponDrops[damageReport.victimBody.gameObject.name];
                             if (Util.CheckRoll(newWeapon.dropChance)) weaponDef = newWeapon;
                         }
+
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+
+                        // add passive specific stuff
+                        bool isGodSlingAmmo = false;
+                        if (isGodSlingPassive)
+                        {
+                            float splitChance = Modules.Config.godslingDropRateSplit.Value;
+                            System.Random rnd = new System.Random();
+                            float num = rnd.Next(0, 100);
+                            isGodSlingAmmo = num >= splitChance;
+                        }
+
+                        if (isAmmoPassive || isPistolPassive || isGodSlingAmmo)
+                        {
+                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isNewAmmoType = true;
+                        }
+
+                        // non-legendary gets rerolled
+                        if (weaponTier != DriverWeaponTier.Legendary)
+                        {
+                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().bulletIndex = BulletTypes.GetRandomIndexFromTier(DriverWeaponTier.Legendary);
+                        }
+                        else
+                        {
+                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().bulletIndex = BulletTypes.GetRandomIndexFromTier(weaponTier, false);
+                        }
 
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
-
-                        weaponPickup.GetComponentInChildren<WeaponPickup>().bulletDef = bulletDef;
 
                         NetworkServer.Spawn(weaponPickup);
                     }

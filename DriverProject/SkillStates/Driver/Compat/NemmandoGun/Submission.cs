@@ -101,7 +101,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
                     origin = aimRay.origin,
                     damage = damage,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Stun1s | iDrive.bulletDamageType,
+                    damageType = DamageType.Stun1s | iDrive.DamageType,
                     falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                     maxDistance = 150f,
                     force = force,// RiotShotgun.bulletForce,
@@ -123,7 +123,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                     HitEffectNormal = false,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                 bulletAttack.minSpread = 0;
                 bulletAttack.maxSpread = 0;
                 bulletAttack.bulletCount = 1;

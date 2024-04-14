@@ -44,9 +44,11 @@ namespace RobDriver.Modules.Components
                         {
                             if(NetworkServer.active)
                             {
-                                if (this.iDrive.bulletDef != this.iDrive.defaultBulletDef)
+                                if (this.iDrive.HasSpecialBullets)
                                 {
-                                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.bulletDef.trailColor)}>" + Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() + " - " + this.iDrive.bulletDef.name + Helpers.colorSuffix;
+                                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.CurrentBulletInfo.trailColor)}>" +
+                                        Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() +
+                                        " - " + this.iDrive.CurrentBulletInfo.nameToken + Helpers.colorSuffix;
                                 }
                                 else this.targetText.token = "";
                             }
