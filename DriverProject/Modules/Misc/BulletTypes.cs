@@ -332,8 +332,6 @@ namespace RobDriver.Modules
 
         public static DriverBulletDef GetBulletDefFromIndex(int index)
         {
-            Log.Debug(index);
-            Log.Debug(BulletTypes.bulletDefs.Count);
             if (index < 0 || index >= bulletDefs.Count) return bulletDefs[0];
             else return bulletDefs[index];
         }
