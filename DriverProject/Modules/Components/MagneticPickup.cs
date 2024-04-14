@@ -1,4 +1,5 @@
 ﻿using RobDriver.Modules;
+using RobDriver.Modules.Components;
 using RobDriver.Modules.Survivors;
 using RoR2;
 using System.Collections.ObjectModel;
@@ -36,12 +37,23 @@ namespace DriverMod.Modules.Components
                 {
                     continue;
                 }
-
-                var distance = Vector3.Distance(teamComponent.body.footPosition, location);
-                if (distance < lowestDistance)
+                if(!Config.enableMagenticConditionalPickups.Value)
                 {
-                    closestPosition = teamComponent.body.footPosition;
-                    lowestDistance = distance;
+                    var distance = Vector3.Distance(teamComponent.body.footPosition, location);
+                    if (distance < lowestDistance)
+                    {
+                        closestPosition = teamComponent.body.footPosition;
+                        lowestDistance = distance;
+                    }
+                }
+                else if(!teamComponent.body.GetComponent<DriverController>().HasSpecialBullets || teamComponent.body.GetComponent<DriverController>().weaponDef == teamComponent.body.GetComponent<DriverController>().defaultBulletDef)
+                {
+                    var distance = Vector3.Distance(teamComponent.body.footPosition, location);
+                    if (distance < lowestDistance)
+                    {
+                        closestPosition = teamComponent.body.footPosition;
+                        lowestDistance = distance;
+                    }
                 }
             }
             return closestPosition;

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using KinematicCharacterController;
 using RoR2.CharacterAI;
-using RoR2.Navigation;
 using RoR2.Orbs;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
@@ -2706,11 +2705,14 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             orig(self);
 
-            // this is literally the worst thing ever
-            if (self && !string.IsNullOrEmpty(self.hoverToken) && 
-                self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+            if(!Config.enableGodslingInMultiplayer.Value)
             {
-                self.gameObject.SetActive(false);
+                // this is literally the worst thing ever
+                if (self && !string.IsNullOrEmpty(self.hoverToken) &&
+                    self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+                {
+                    self.gameObject.SetActive(false);
+                }
             }
         }
 
@@ -2929,10 +2931,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         // non-legendary gets rerolled
                         if (weaponTier != DriverWeaponTier.Legendary)
                         {
-                            weaponTier = DamageTypes.GetWeightedBulletTier();
+                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().bulletIndex = BulletTypes.GetRandomIndexFromTier(DriverWeaponTier.Legendary);
                         }
-
-                        weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().ammoIndex = DamageTypes.GetRandomBulletIndexFromTier(weaponTier);
+                        else
+                        {
+                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().bulletIndex = BulletTypes.GetRandomIndexFromTier(weaponTier, false);
+                        }
 
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;

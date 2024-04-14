@@ -13,10 +13,11 @@ namespace RobDriver.Modules.Components
 		[Tooltip("The team filter object which determines who can pick up this pack.")]
 		public TeamFilter teamFilter;
 		public DriverWeaponDef weaponDef;
+		public DriverBulletDef bulletDef;
 
 		public GameObject pickupEffect;
 		public bool cutAmmo = false;
-		public int ammoIndex = 0;
+		public int bulletIndex = 0;
 		public bool isNewAmmoType = false;
 
 		private bool alive = true;
@@ -96,7 +97,7 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.cutAmmo, this.ammoIndex, this.isNewAmmoType);
+			this.SetWeapon(this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
 		}
 
 		public void ServerSetWeapon(DriverWeaponDef newWeaponDef)
@@ -109,7 +110,7 @@ namespace RobDriver.Modules.Components
 				NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
 				if (!identity) return;
 
-				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo, (short)this.ammoIndex, this.isNewAmmoType).Send(NetworkDestination.Clients);
+				new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo, (short)this.bulletIndex, this.isNewAmmoType).Send(NetworkDestination.Clients);
 			}
 		}
 
@@ -117,7 +118,7 @@ namespace RobDriver.Modules.Components
         {
 			this.weaponDef = newWeapon;
 			this.cutAmmo = cutAmmo;
-			this.ammoIndex = ammoIndex;
+			this.bulletIndex = ammoIndex;
 			this.isNewAmmoType = isNewAmmoType;
 
 			// wow this is awful!
@@ -178,7 +179,7 @@ namespace RobDriver.Modules.Components
 					Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
 					Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
 
-					iDrive.ServerPickUpWeapon(iDrive, this.weaponDef, this.cutAmmo, this.ammoIndex, this.isNewAmmoType);
+					iDrive.ServerPickUpWeapon(iDrive, this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
 					EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
 					UnityEngine.Object.Destroy(this.baseObject);
 				}

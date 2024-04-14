@@ -45,9 +45,8 @@ namespace RobDriver.Modules.Components
             DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(this.weapon);
 
             float ammo = -1f;
-            if (this.cutAmmo) ammo = weaponDef.shotCount * 0.5f;
 
-            if (iDrive) iDrive.PickUpWeaponDrop(weaponDef, ammo, this.ammoIndex, this.isNewAmmoType);
+            if (iDrive) iDrive.PickUpWeaponDrop(weaponDef, ammo, this.ammoIndex, this.isNewAmmoType, this.cutAmmo);
         }
 
         public void Serialize(NetworkWriter writer)

@@ -7,6 +7,7 @@ namespace RobDriver.Modules.Components
         public struct StoredWeapon
         {
             public DriverWeaponDef weaponDef;
+            public DriverBulletDef bulletDef;
             public float ammo;
             public short ammoIndex;
         };

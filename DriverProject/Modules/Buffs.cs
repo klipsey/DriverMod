@@ -15,7 +15,7 @@ namespace RobDriver.Modules
     public static class Buffs
     {
         internal static List<BuffDef> buffDefs = new List<BuffDef>();
-        internal static List<BuffDef> bulletDefs { get; private set; } = new List<BuffDef>();
+        internal static List<BuffDef> bulletBuffDefs { get; private set; } = new List<BuffDef>();
 
         internal static BuffDef dazedDebuff;
         internal static BuffDef woundDebuff;
@@ -34,12 +34,15 @@ namespace RobDriver.Modules
             syringeCritBuff = AddNewBuff("RobDriverSyringeCritBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 80f / 255f, 17f / 255f), false, false);
             syringeNewBuff = AddNewBuff("RobDriverSyringeNewBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 70f / 255f, 75f / 255f), false, false);
             syringeScepterBuff = AddNewBuff("RobDriverSyringeScepterBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), Modules.Survivors.Driver.characterColor, false, false);
-            InitBulletsWithBuffs();
+            if(Config.bulletsAsBuffs.Value)
+            {
+                InitBulletsWithBuffs();
+            }
         }
 
         internal static void InitBulletsWithBuffs()
         {
-            foreach (var bullet in DamageTypes.bulletTypes)
+            foreach (var bullet in BulletTypes.bulletDefs)
             {
                 if (bullet.index == 0) continue;
 
@@ -51,7 +54,7 @@ namespace RobDriver.Modules
                 buffDef.isDebuff = false;
                 buffDef.eliteDef = null;
 
-                bulletDefs.Add(buffDef);
+                bulletBuffDefs.Add(buffDef);
             }
         }
 
@@ -78,7 +81,7 @@ namespace RobDriver.Modules
 
         internal static void RemoveBuff(CharacterBody body, int bulletIndex)
         {
-            var buff = bulletDefs.ElementAtOrDefault(bulletIndex - 1);
+            var buff = bulletBuffDefs.ElementAtOrDefault(bulletIndex - 1);
             if (NetworkServer.active && !(buff is null) && body.HasBuff(buff))
             {
                 body.RemoveBuff(buff);
@@ -87,7 +90,7 @@ namespace RobDriver.Modules
 
         internal static void GiveBuff(CharacterBody body, int bulletIndex)
         {
-            var buff = bulletDefs.ElementAtOrDefault(bulletIndex - 1);
+            var buff = bulletBuffDefs.ElementAtOrDefault(bulletIndex - 1);
             if (NetworkServer.active && !(buff is null) && !body.HasBuff(buff))
             {
                 body.AddBuff(buff);

@@ -16,9 +16,11 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> adaptiveFocus;
         public static ConfigEntry<bool> autoFocus;
         public static ConfigEntry<bool> sharedPickupVisuals;
+        public static ConfigEntry<bool> bulletsAsBuffs;
         public static ConfigEntry<bool> oldPickupModel;
         public static ConfigEntry<float> baseDropRate;
         public static ConfigEntry<float> godslingDropRateSplit;
+        public static ConfigEntry<bool> enableGodslingInMultiplayer;
         public static ConfigEntry<bool> weaponCallouts;
         public static ConfigEntry<bool> backupMagExtendDuration;
         public static ConfigEntry<bool> classicDodgeSound;
@@ -36,6 +38,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> cursed;
 
         public static ConfigEntry<bool> enableMagneticPickups;
+        public static ConfigEntry<bool> enableMagenticConditionalPickups;
         public static ConfigEntry<float> pickupSpeed;
         public static ConfigEntry<float> pickupRadius;
 
@@ -65,225 +68,90 @@ namespace RobDriver.Modules
         internal static void ReadConfig()
         {
             #region General
-            adaptiveFocus
- = Config.BindAndOptions("01 - General",
- "Adaptive Focus",
- true,
- "If set to true, Focus will always charge up before firing a shot once your attack speed reaches a certain amount. (Client-side)");
+            badass = Config.BindAndOptions("01 - General", "Badass Mode", false, "Makes the mod BadAss.", true);
 
-            autoFocus
-             = Config.BindAndOptions("01 - General",
-             "Focus Auto Charge",
-             false,
-             "If set to true, Focus will always charge up before firing a shot. Take control of your runs with the illusion of skill! (Client-side)");
+            cursed = Config.BindAndOptions("01 - General", "Cursed", false, "Enables unfinished, stupid and old content.", true);
 
-            sharedPickupVisuals
- = Config.BindAndOptions("01 - General",
- "Shared Pickup Visuals",
- true,
- "If set to false, weapon pickups will only be visible while playing Driver. Setting this to true lets every character see them. (Client-side)");
+            enablePickupNotifications = Config.BindAndOptions("01 - General", "Enable Weapon Pickup Notifications", true, "If set to false, will disable the notifications from picking up weapons. (Client-side)");
+            
+            weaponCallouts = Config.BindAndOptions("01 - General", "Weapon Pickup Callouts", false, "If set to true, Driver will call out the weapons he picks up. (Client-side)");
 
-            oldPickupModel
-= Config.BindAndOptions("01 - General",
-"Old Weapon Pickup Model",
-false,
-"If set to true, uses the old goofy crate pickups instead of briefcases. (Client-side)");
+            enableGodslingInMultiplayer = Config.BindAndOptions("01 - General", "Godsling Enabled In Multiplayer", false, "If set to true, the Godlsling passive will be enabled for multiplayer.", true);
 
-            baseDropRate
-= Config.BindAndOptionsSlider("01 - General",
-"Base Drop Rate",
-7f,
-"Base chance for weapons to drop on kill", 0f, 100f);
+            #endregion
 
-            godslingDropRateSplit
-= Config.BindAndOptionsSlider("01 - General",
-"Godsling Drop Rate Split",
-75f,
-"Controls whether ammo or guns drop while using the Godsling passive, higher number means higher chance for guns", 0f, 100f);
+            #region Gameplay
 
-            weaponCallouts
-= Config.BindAndOptions("01 - General",
-"Weapon Pickup Callouts",
-false,
-"If set to true, Driver will call out the weapons he picks up. (Client-side)");
+            adaptiveFocus = Config.BindAndOptions("02 - Gameplay", "Adaptive Focus", true, "If set to true, Focus will always charge up before firing a shot once your attack speed reaches a certain amount. (Client-side)");
+            
+            autoFocus = Config.BindAndOptions("02 - Gameplay", "Focus Auto Charge", false, "If set to true, Focus will always charge up before firing a shot. Take control of your runs with the illusion of skill! (Client-side)");
+            
+            baseDropRate = Config.BindAndOptionsSlider("02 - Gameplay", "Base Drop Rate", 7f, "Base chance for weapons and ammo to drop on kill", 0f, 100f);
 
-            backupMagExtendDuration
-= Config.BindAndOptions("01 - General",
-"Backup Magazine Duration Extension",
-false,
-"If set to true, Backup Magazines will extend the duration of weapon pickups by 0.5s.");
+            godslingDropRateSplit = Config.BindAndOptionsSlider("02 - Gameplay", "Godsling Drop Rate Split", 50f, "Controls whether ammo or guns drop while using the Godsling passive, higher number means higher chance for guns.", 0f, 100f);
+            
+            backupMagExtendDuration = Config.BindAndOptions("02 - Gameplay", "Backup Magazine Ammo Extension", false, "If set to true, Backup Magazines will increase the Ammo of weapon pickups by 0.5s.");
+            
+            enablePistolUpgrade = Config.BindAndOptions("02 - Gameplay", "Enable Pistol Upgrade", true, "If set to false, will stop Pistol from upgrading itself for run-ending boss fights.");
+            
+            randomSupplyDrop = Config.BindAndOptions("02 - Gameplay", "Random Supply Drop", false, "If set to true, Supply Drop will drop a random weapon from ANY tier. Completely unbalanced but fun! Use at your own risk.");
 
-            classicDodgeSound
-= Config.BindAndOptions("01 - General",
-"Classic Dodge Sound",
-false,
-"If set to true, will use the old Combat Slide SFX. (Client-side)");
+            oldCritShot = Config.BindAndOptions("02 - Gameplay", "Old Critical Shot", false, "If set to true, will use the old critical animation which spins the gun BEFORE shooting.");
 
-            enablePistolUpgrade
-= Config.BindAndOptions("01 - General",
-"Enable Pistol Upgrade",
-true,
-"If set to false, will stop Pistol from upgrading itself for run-ending boss fights.");
+            enableRecoil = Config.BindAndOptions("02 - Gameplay", "Enable Recoil", true, "Set to false to disable recoil from shooting guns.");
 
-            enablePickupNotifications
-= Config.BindAndOptions("01 - General",
-"Enable Weapon Pickup Notifications",
-true,
-"If set to false, will disable the notifications from picking up weapons. (Client-side)");
+            defaultWeaponIndex = Config.BindAndOptions("02 - Gameplay", "Default Weapon Index", 0, "Change the index of the default weapon Driver uses. Purely for fun, don't ask me what the indices are because I don't know, they're generated at runtime.");
 
-            predatoryOnHead
-= Config.BindAndOptions("01 - General",
-"Predatory Instincts On Head",
-false,
-"If set to true, the item display for Predatory Instincts will be moved to the head like other survivors. (Client-side)", true);
-
-            enableCrosshairDot
-= Config.BindAndOptions("01 - General",
-"Enable Crosshair Dot",
-false,
-"If set to false, the dot in the center of the default crosshair will be hidden. (Client-side)", true);
-
-            dynamicCrosshair
-= Config.BindAndOptions("01 - General",
-"Dynamic Crosshair",
-true,
-"If set to false, will no longer highlight the crosshair when hovering over entities. (Client-side)", true);
-
-            dynamicCrosshairUniversal
-= Config.BindAndOptions("01 - General",
-"Dynamic Crosshair (Universal)",
-false,
-"If set to true, highlight the crosshair while hovering over entities, but for ALL characters. Overrides the other option. (Client-side)", true);
-
-            randomSupplyDrop
-= Config.BindAndOptions("01 - General",
-"Random Supply Drop",
-false,
-"If set to true, Supply Drop will drop a random weapon from ANY tier. Completely unbalanced but fun! Use at your own risk.");
-
-            oldCritShot
-= Config.BindAndOptions("01 - General",
-"Old Critical Shot",
-false,
-"If set to true, will use the old critical animation which spins the gun BEFORE shooting.");
-
-            enableRecoil
-= Config.BindAndOptions("01 - General",
-"Enable Recoil",
-true,
-"Set to false to disable recoil from shooting guns.");
-
-            defaultWeaponIndex
-= Config.BindAndOptions("01 - General",
-"Default Weapon Index",
-0,
-"Change the index of the default weapon Driver uses. Purely for fun, don't ask me what the indices are because I don't know, they're generated at runtime.");
-
-            badass
-= Config.BindAndOptions("01 - General",
-"Badass Mode",
-false,
-"Makes the mod BadAss.", true);
-
-            cursed
-= Config.BindAndOptions("01 - General",
-"Cursed",
-false,
-"Enables unfinished, stupid and old content.", true);
             #endregion
 
             #region Pickups
 
-            enableMagneticPickups = Config.BindAndOptions(
-                "01 - General",
-                "Enable Magnetic Pickups",
-                false,
-                "Makes weapon and ammo drops move towards the player when they get close.",
-                true);
+            enableMagneticPickups = Config.BindAndOptions("03 - Pickups", "Enable Magnetic Pickups", true, "Makes weapon and ammo drops move towards the player when they get close.", true);
 
-            pickupSpeed = Config.BindAndOptionsSlider(
-                "01 - General",
-                "PickupSpeed",
-                50,
-                "The speed with which the pickups will move towards players.",
-                25f,
-                75);
+            enableMagenticConditionalPickups = Config.BindAndOptions("03 - Pickups", "Only Magnetize Without Pickup Equipped", true, "Only magnetizes weapon and ammo drops when the player runs out of ammo.", true);
 
-            pickupRadius = Config.BindAndOptionsSlider(
-                "01 - General", 
-                "PickupRadius",
-                10,
-                "How close a pickup must be before it will begin to move towards a player.",
-                0f,
-                50f);
+            pickupSpeed = Config.BindAndOptionsSlider("03 - Pickups", "PickupSpeed", 75f, "The speed with which the pickups will move towards players.", 25f, 75f);
+
+            pickupRadius = Config.BindAndOptionsSlider("03 - Pickups", "PickupRadius", 10f, "How close a pickup must be before it will begin to move towards a player.", 0f, 10f);
+
+            #endregion
+
+            #region Visuals and Effects
+            sharedPickupVisuals = Config.BindAndOptions("04 - Visuals", "Shared Pickup Visuals", true, "If set to false, weapon pickups will only be visible while playing Driver. Setting this to true lets every character see them. (Client-side)");
+
+            bulletsAsBuffs = Config.BindAndOptions("04 - Visuals", "BulletType Appears As Buff", false, "If set to true, special bullet types will appear on the buff bar as well.", true);
+
+            oldPickupModel = Config.BindAndOptions("04 - Visuals", "Old Weapon Pickup Model", false, "If set to true, uses the old goofy crate pickups instead of briefcases. (Client-side)");
+            
+            classicDodgeSound = Config.BindAndOptions("04 - Visuals", "Classic Dodge Sound", false, "If set to true, will use the old Combat Slide SFX. (Client-side)");
+            
+            predatoryOnHead = Config.BindAndOptions("04 - Visuals", "Predatory Instincts On Head", false, "If set to true, the item display for Predatory Instincts will be moved to the head like other survivors. (Client-side)", true);
+
+            enableCrosshairDot = Config.BindAndOptions("04 - Visuals", "Enable Crosshair Dot", false, "If set to false, the dot in the center of the default crosshair will be hidden. (Client-side)", true);
+
+            dynamicCrosshair = Config.BindAndOptions("04 - Visuals", "Dynamic Crosshair", true, "If set to false, will no longer highlight the crosshair when hovering over entities. (Client-side)", true);
+
+            dynamicCrosshairUniversal = Config.BindAndOptions("04 - Visuals", "Dynamic Crosshair (Universal)", false, "If set to true, highlight the crosshair while hovering over entities, but for ALL characters. Overrides the other option. (Client-side)", true);
 
             #endregion
 
             #region Emotes
-            restKey
-                = Config.BindAndOptions("02 - Keybinds",
-                         "Rest Emote",
-                         new KeyboardShortcut(KeyCode.Alpha1),
-                         "Key used to Rest");
-            tauntKey
-                = Config.BindAndOptions("02 - Keybinds",
-                                     "Salute Emote",
-                                     new KeyboardShortcut(KeyCode.Alpha2),
-                                     "Key used to Taunt");
+            restKey = Config.BindAndOptions("05 - Keybinds", "Rest Emote", new KeyboardShortcut(KeyCode.Alpha1), "Key used to Rest");
+            tauntKey = Config.BindAndOptions("05 - Keybinds", "Salute Emote", new KeyboardShortcut(KeyCode.Alpha2), "Key used to Taunt");
 
-            danceKey
-                = Config.BindAndOptions("02 - Keybinds",
-                                     "Dance Emote",
-                                     new KeyboardShortcut(KeyCode.Alpha3),
-                                     "Key used to Dance");
+            danceKey = Config.BindAndOptions("05 - Keybinds", "Dance Emote", new KeyboardShortcut(KeyCode.Alpha3), "Key used to Dance");
             #endregion
 
             #region Stats
-            baseHealth
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                         "Base Health",
-                         110f,
-                         "", 1f, 500f, true);
-            healthGrowth
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Health Growth",
-                                     33f,
-                                     "", 0f, 100f, true);
-            baseRegen
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Base Health Regen",
-                                     1.5f,
-                                     "", 0f, 5f, true);
-            baseArmor
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Base Armor",
-                                     0f,
-                                     "", 0f, 20f, true);
-            armorGrowth
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Armor Growth",
-                                     0f,
-                                     "", 0f, 2f, true);
-            baseDamage
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Base Damage",
-                                     12f,
-                                     "", 1f, 24f, true);
-            damageGrowth
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Damage Growth",
-                                     2.4f,
-                                     "", 0f, 5f, true);
-            baseMovementSpeed
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Base Movement Speed",
-                                     7f,
-                                     "", 0f, 14f, true);
-            baseCrit
-                = Config.BindAndOptionsSlider("03 - Character Stats",
-                                     "Base Crit",
-                                     1f,
-                                     "", 0f, 100f, true);
+            baseHealth = Config.BindAndOptionsSlider("06 - Character Stats", "Base Health", 110f, "", 1f, 500f, true);
+            healthGrowth = Config.BindAndOptionsSlider("06 - Character Stats", "Health Growth", 33f, "", 0f, 100f, true);
+            baseRegen = Config.BindAndOptionsSlider("06 - Character Stats", "Base Health Regen", 1.5f, "", 0f, 5f, true);
+            baseArmor = Config.BindAndOptionsSlider("06 - Character Stats", "Base Armor", 0f, "", 0f, 20f, true);
+            armorGrowth = Config.BindAndOptionsSlider("06 - Character Stats", "Armor Growth", 0f, "", 0f, 2f, true);
+            baseDamage = Config.BindAndOptionsSlider("06 - Character Stats", "Base Damage", 12f, "", 1f, 24f, true);
+            damageGrowth = Config.BindAndOptionsSlider("06 - Character Stats", "Damage Growth", 2.4f, "", 0f, 5f, true);
+            baseMovementSpeed = Config.BindAndOptionsSlider("06 - Character Stats", "Base Movement Speed", 7f, "", 0f, 14f, true);
+            baseCrit = Config.BindAndOptionsSlider("06 - Character Stats", "Base Crit", 1f, "", 0f, 100f, true);
             #endregion
         }
 
@@ -292,15 +160,9 @@ false,
             if (!weaponDef) return;
             if (string.IsNullOrWhiteSpace(weaponDef.configIdentifier)) return;
 
-            var x = Config.BindAndOptionsSlider("04 - Weapons",
- weaponDef.configIdentifier + " - Base Ammo",
- weaponDef.shotCount,
- "How many shots this weapon can fire without any bonus attack speed.", 0, 200);
+            var x = Config.BindAndOptionsSlider("07 - Weapons", weaponDef.configIdentifier + " - Base Ammo", weaponDef.shotCount, "How many shots this weapon can fire without any bonus attack speed.", 0, 200);
 
-            var y = Config.BindAndOptions("04 - Weapons",
-weaponDef.configIdentifier + " - Enabled",
-true,
-"Set to false to remove this weapon from the drop pool.");
+            var y = Config.BindAndOptions("07 - Weapons", weaponDef.configIdentifier + " - Enabled", true, "Set to false to remove this weapon from the drop pool.");
 
             foreach (WeaponConfigBinding i in weaponConfigBinding)
             {
@@ -440,7 +302,13 @@ true,
         {
             if (entry is ConfigEntry<float>)
             {
-                ModSettingsManager.AddOption(new SliderOption(entry as ConfigEntry<float>, new SliderConfig() { min = 0, max = 20, formatString = "{0:0.00}", restartRequired = restartRequired }));
+                ModSettingsManager.AddOption(new SliderOption(entry as ConfigEntry<float>, new SliderConfig()
+                {
+                    min = 0,
+                    max = 20,
+                    formatString = "{0:0.00}",
+                    restartRequired = restartRequired
+                }));
             }
             if (entry is ConfigEntry<int>)
             {
@@ -459,29 +327,35 @@ true,
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static void TryRegisterOptionSlider(ConfigEntry<int> entry, int min, int max, bool restartRequired)
         {
-            ModSettingsManager.AddOption(new IntSliderOption(entry as ConfigEntry<int>, new IntSliderConfig() { min = min, max = max, formatString = "{0:0.00}", restartRequired = restartRequired }));
+            ModSettingsManager.AddOption(new IntSliderOption(entry as ConfigEntry<int>, new IntSliderConfig()
+            {
+                min = min,
+                max = max,
+                formatString = "{0:0.00}",
+                restartRequired = restartRequired
+            }));
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static void TryRegisterOptionSlider(ConfigEntry<float> entry, float min, float max, bool restartRequired)
         {
-            ModSettingsManager.AddOption(new SliderOption(entry as ConfigEntry<float>, new SliderConfig() { min = min, max = max, formatString = "{0:0.00}", restartRequired = restartRequired }));
+            ModSettingsManager.AddOption(new SliderOption(entry as ConfigEntry<float>, new SliderConfig()
+            {
+                min = min,
+                max = max,
+                formatString = "{0:0.00}",
+                restartRequired = restartRequired
+            }));
         }
 
         internal static ConfigEntry<bool> CharacterEnableConfig(string characterName)
         {
-            return Config.BindAndOptions("01 - General",
-                         "Enabled",
-                         true,
-                         "Set to false to disable this character", true);
+            return Config.BindAndOptions("01 - General", "Enabled", true, "Set to false to disable this character", true);
         }
 
         internal static ConfigEntry<bool> ForceUnlockConfig(string characterName)
         {
-            return Config.BindAndOptions("01 - General",
-                         "Force Unlock",
-                         false,
-                         "Makes this character unlocked by default", true);
+            return Config.BindAndOptions("01 - General", "Force Unlock", false, "Makes this character unlocked by default", true);
         }
 
         public static bool GetKeyPressed(ConfigEntry<KeyboardShortcut> entry)
@@ -497,18 +371,24 @@ true,
         }
     }
 
-
-    public class StageSpawnInfo 
+    public class StageSpawnInfo
     {
         private string stageName;
         private int minStages;
 
-        public StageSpawnInfo(string stageName, int minStages) {
+        public StageSpawnInfo(string stageName, int minStages)
+        {
             this.stageName = stageName;
             this.minStages = minStages;
         }
 
-        public string GetStageName() { return stageName; }
-        public int GetMinStages() { return minStages; }
+        public string GetStageName()
+        {
+            return stageName;
+        }
+        public int GetMinStages()
+        {
+            return minStages;
+        }
     }
 }
