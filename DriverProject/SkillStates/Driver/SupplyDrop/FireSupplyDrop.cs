@@ -78,7 +78,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         {
             if (NetworkServer.active)
             {
-                GameObject weaponPickup = this.weaponDef.pickupPrefab;
+                GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(this.weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
@@ -87,8 +87,6 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 weaponComponent.cutAmmo = false;
                 weaponComponent.bulletIndex = BulletTypes.GetRandomBulletFromTier(DriverWeaponTier.Legendary).index;
                 weaponComponent.isNewAmmoType = false;
-
-                UnityEngine.Object.Instantiate<GameObject>(this.weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 
                 NetworkServer.Spawn(weaponPickup);
             }

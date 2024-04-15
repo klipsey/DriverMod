@@ -2904,7 +2904,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                             if (Util.CheckRoll(newWeapon.dropChance)) weaponDef = newWeapon;
                         }
 
-                        GameObject weaponPickup = weaponDef.pickupPrefab;
+                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+                        
                         var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
 
                         // add passive specific stuff
@@ -2924,7 +2925,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
-                        UnityEngine.Object.Instantiate<GameObject>(weaponPickup, position, UnityEngine.Random.rotation);
 
                         NetworkServer.Spawn(weaponPickup);
                     }
