@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using RoR2;
 using EntityStates;
+using RobDriver.Modules;
 using static RoR2.CameraTargetParams;
 using UnityEngine.Networking;
 using RoR2.HudOverlay;
@@ -108,7 +109,8 @@ namespace RobDriver.SkillStates.Driver
                     childLocatorEntry = "ScopeContainer"
                 });
 
-                this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 1f);
+                if(!Config.defaultPistolAnims.Value) this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 1f);
+                else this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 0f);
             }
             else this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 0f);
 

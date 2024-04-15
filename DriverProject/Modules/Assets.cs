@@ -161,6 +161,7 @@ namespace RobDriver.Modules
         internal static Texture golemGunWeaponIcon;
 
         public static GameObject defaultMuzzleTrail;
+        public static GameObject driverMuzzleFlash;
         public static Sprite bulletSprite;
         
         public static GameObject shotgunTracer;
@@ -861,6 +862,8 @@ namespace RobDriver.Modules
             trail.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matSmokeTrail.mat").WaitForCompletion();
             trail.startColor = Color.white;
             trail.endColor = Color.gray;
+
+            driverMuzzleFlash = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/Muzzleflash1.prefab").WaitForCompletion().InstantiateClone("DriverMuzzleFlash");
             bulletSprite = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator");
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -1132,7 +1135,19 @@ namespace RobDriver.Modules
             bloodSpurtEffect.transform.Find("Blood").GetComponent<ParticleSystemRenderer>().material = bloodMat2;
             bloodSpurtEffect.transform.Find("Trails").GetComponent<ParticleSystemRenderer>().trailMaterial = bloodMat2;
 
-            ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup");
+            ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup").InstantiateClone("mdlAmmoPickup");
+            GameObject textShit5 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
+            MonoBehaviour.Destroy(textShit5.GetComponent<EffectComponent>());
+            textShit5.transform.parent = ammoPickupModel.transform;
+            textShit5.transform.localPosition = Vector3.zero;
+            textShit5.transform.localRotation = Quaternion.identity;
+
+            ObjectScaleCurve whatTheFuckIsThis5 = textShit5.GetComponentInChildren<ObjectScaleCurve>();
+            Transform helpMe5 = whatTheFuckIsThis5.transform;
+            MonoBehaviour.DestroyImmediate(whatTheFuckIsThis5);
+            helpMe5.transform.localScale = Vector3.one * 1.25f;
+
+            textShit5.GetComponent<DestroyOnTimer>().enabled = false;
             ConvertAllRenderersToHopooShader(ammoPickupModel);
         }
 
