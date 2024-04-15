@@ -41,8 +41,7 @@ namespace DriverMod.Modules.Components
                 // i really hate calling getComponent on every fixedupdate but itll do for now
                 var driverController = teamComponent.body.GetComponent<DriverController>();
 
-                if (!Config.enableMagenticConditionalPickups.Value || 
-                    (!driverController.HasSpecialBullets || driverController.weaponDef == driverController.defaultWeaponDef))
+                if (!Config.enableMagenticConditionalPickups.Value || (!driverController.HasSpecialBullets && driverController.weaponDef == driverController.defaultWeaponDef))
                 {
                     var distance = Vector3.Distance(teamComponent.body.footPosition, location);
                     if (distance < lowestDistance)

@@ -29,6 +29,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> enableCrosshairDot;
         public static ConfigEntry<bool> dynamicCrosshair;
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
+        public static ConfigEntry<bool> defaultPistolAnims;
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> enableRecoil;
@@ -130,6 +131,7 @@ namespace RobDriver.Modules
 
             dynamicCrosshairUniversal = Config.BindAndOptions("04 - Visuals", "Dynamic Crosshair (Universal)", false, "If set to true, highlight the crosshair while hovering over entities, but for ALL characters. Overrides the other option. (Client-side)", true);
 
+            defaultPistolAnims = Config.BindAndOptions("04 - Visuals", "Default Pistol Animations", false, "If set to true, return pistol passive scope animations back to the default.");
             #endregion
 
             #region Emotes

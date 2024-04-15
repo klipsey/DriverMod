@@ -2905,6 +2905,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         }
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+                        
                         var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
 
                         // add passive specific stuff
@@ -2923,6 +2924,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                         if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+
 
                         NetworkServer.Spawn(weaponPickup);
                     }
@@ -3050,7 +3052,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
                 ammoTrackerComponent.targetHUD = hud;
                 ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
-
                 ammoTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
                 GameObject.DestroyImmediate(ammoTracker.transform.Find("ExpBarRoot").gameObject);
 
@@ -3063,6 +3064,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 rect.offsetMin = new Vector2(50f, -95f);
                 rect.offsetMax = new Vector2(50, -95f);
                 rect.pivot = new Vector2(0.5f, 0f);
+                //positional data doesnt get sent to clients? Manually making offsets works..
                 rect.anchoredPosition = new Vector2(50f, 0f);
                 rect.localPosition = new Vector3(50f, -95f, 0f);
             }

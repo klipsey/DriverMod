@@ -95,49 +95,6 @@ namespace RobDriver.Modules.Components
 			this.isNewAmmoType = isNewAmmoType;
 
 			SwapToAmmoVisuals();
-
-			// wow this is awful!
-			RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
-			if (textComponent)
-			{
-				if (!this.weaponDef)
-				{
-					// band-aid i don't have the time to keep fighting with this code rn
-					textComponent.token = "FUCK YOU FUCK YOU FUCK/nYOU FUCK YOU FUCK YOU";
-					return;
-				}
-
-				textComponent.token = this.weaponDef.nameToken;
-
-				if (this.cutAmmo)
-                {
-					textComponent.textMeshPro.color = Modules.Helpers.badColor;
-				}
-				else
-                {
-					switch (this.weaponDef.tier)
-					{
-						case DriverWeaponTier.Common:
-							textComponent.textMeshPro.color = Modules.Helpers.whiteItemColor;
-							break;
-						case DriverWeaponTier.Uncommon:
-							textComponent.textMeshPro.color = Modules.Helpers.greenItemColor;
-							break;
-						case DriverWeaponTier.Legendary:
-							textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
-							break;
-						case DriverWeaponTier.Unique:
-							textComponent.textMeshPro.color = Modules.Helpers.yellowItemColor;
-							break;
-						case DriverWeaponTier.Lunar:
-							textComponent.textMeshPro.color = Modules.Helpers.lunarItemColor;
-							break;
-						case DriverWeaponTier.Void:
-							textComponent.textMeshPro.color = Modules.Helpers.voidItemColor;
-							break;
-					}
-				}
-			}
 		}
 
         private void SwapToAmmoVisuals()
@@ -148,35 +105,79 @@ namespace RobDriver.Modules.Components
                 if (i.cachedBody.hasEffectiveAuthority)
                 {
                     var driverController = i.cachedBody.GetComponent<DriverController>();
-                    if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController &&
-                        (driverController.passive.isPistolOnly || driverController.passive.isBullets ||
-                        (driverController.passive.isRyan && this.isNewAmmoType)))
-                    {
-                        RoR2.UI.LanguageTextMeshController textComponent = this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
-                        if (textComponent)
-                        {
-                            textComponent.gameObject.SetActive(false);
-                        }
+					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController)
+					{
+                        if (driverController.passive.isPistolOnly || driverController.passive.isBullets || (driverController.passive.isRyan && this.isNewAmmoType))
+						{
+							BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+							if (blinker)
+							{
+								foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
+								{
+									h.enabled = false;
+								}
 
-                        BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
-                        if (blinker)
-                        {
-                            foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
-                            {
-                                h.enabled = false;
+								GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+								p.transform.localPosition = Vector3.zero;
+								p.transform.localRotation = Quaternion.identity;
+                                DoTextStuff(p.transform, true);
                             }
-
-                            GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
-                            p.transform.localPosition = Vector3.zero;
-                            p.transform.localRotation = Quaternion.identity;
-                        }
+						}
+						else
+						{
+                            DoTextStuff(this.transform.parent, false);
+						}
                     }
-
                     break;
                 }
             }
         }
 
+        private void DoTextStuff(Transform transform, bool isAmmo)
+        {
+            RoR2.UI.LanguageTextMeshController textComponent = transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
+            if (textComponent)
+            {
+                if (!this.weaponDef)
+                {
+                    // band-aid i don't have the time to keep fighting with this code rn
+                    textComponent.token = "FUCK YOU FUCK YOU FUCK/nYOU FUCK YOU FUCK YOU";
+                    return;
+                }
+
+                if(isAmmo) textComponent.token = BulletTypes.bulletDefs[bulletIndex].nameToken;
+                else textComponent.token = this.weaponDef.nameToken;
+
+                if (this.cutAmmo)
+                {
+                    textComponent.textMeshPro.color = Modules.Helpers.badColor;
+                }
+                else
+                {
+                    switch (this.weaponDef.tier)
+                    {
+                        case DriverWeaponTier.Common:
+                            textComponent.textMeshPro.color = Modules.Helpers.whiteItemColor;
+                            break;
+                        case DriverWeaponTier.Uncommon:
+                            textComponent.textMeshPro.color = Modules.Helpers.greenItemColor;
+                            break;
+                        case DriverWeaponTier.Legendary:
+                            textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
+                            break;
+                        case DriverWeaponTier.Unique:
+                            textComponent.textMeshPro.color = Modules.Helpers.yellowItemColor;
+                            break;
+                        case DriverWeaponTier.Lunar:
+                            textComponent.textMeshPro.color = Modules.Helpers.lunarItemColor;
+                            break;
+                        case DriverWeaponTier.Void:
+                            textComponent.textMeshPro.color = Modules.Helpers.voidItemColor;
+                            break;
+                    }
+                }
+            }
+        }
         private void Fuck()
         {
             if (this.alive)

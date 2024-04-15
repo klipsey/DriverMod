@@ -230,7 +230,7 @@ namespace RobDriver.Modules
                 + Helpers.ScepterDescription("Cooldown is halved and gain an extra stock."));
 
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Experimental Syringe");
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style>, <style=cIsUtility>movement speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>.");
 
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_NAME", "Perfected Syringe");
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>."
