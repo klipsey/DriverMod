@@ -15,20 +15,17 @@ namespace RobDriver.Modules.Components
 
 		public void Update()
 		{
-			if (this.icon.iDrive)
+			if (this.icon.maxWeaponTimer > 0f)
             {
-				if (this.icon.iDrive.maxWeaponTimer > 0f)
-                {
-					float value = Util.Remap(this.icon.iDrive.weaponTimer, 0f, this.icon.iDrive.maxWeaponTimer, 0f, 1f);
-					this.mask.fillAmount = value;
-                }
-				else
-                {
-					this.mask.fillAmount = 0f;
-                }
-
-				this.onCooldown.enabled = false;
+				float value = Util.Remap(this.icon.weaponTimer, 0f, this.icon.maxWeaponTimer, 0f, 1f);
+				this.mask.fillAmount = value;
             }
+			else
+            {
+				this.mask.fillAmount = 0f;
+            }
+
+			this.onCooldown.enabled = false;
 		}
 	}
 }

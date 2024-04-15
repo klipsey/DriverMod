@@ -21,7 +21,6 @@ namespace RobDriver.Modules.Components
         {
             var driver = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
             if (driver) driver.onWeaponUpdate -= SetDisplay;
-            this.targetText.enabled = false;
         }
 
         private void SetDisplay(DriverController iDrive)

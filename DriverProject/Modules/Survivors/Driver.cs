@@ -2961,6 +2961,13 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 skillsContainer.Find("SprintCluster").gameObject.SetActive(false);
                 skillsContainer.Find("InventoryCluster").gameObject.SetActive(false);
 
+                // remove existing
+                var oldUI = skillsContainer.Find("WeaponSlot");
+                if (oldUI)
+                {
+                    GameObject.Destroy(oldUI.gameObject);
+                }
+
                 GameObject weaponSlot = GameObject.Instantiate(skillsContainer.Find("EquipmentSlot").gameObject, skillsContainer);
                 weaponSlot.name = "WeaponSlot";
 
@@ -3026,35 +3033,38 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 // ammo display for alt passive
 
                 Transform healthbarContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster");
+                var oldUI2 = hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras").Find("AmmoTracker");
 
-                if (!hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("AmmoTracker"))
+                if (oldUI2)
                 {
-                    GameObject ammoTracker = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
-                    ammoTracker.name = "AmmoTracker";
-                    ammoTracker.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
-
-                    GameObject.DestroyImmediate(ammoTracker.transform.GetChild(0).gameObject);
-                    MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<LevelText>());
-                    MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<ExpBar>());
-
-                    AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
-                    ammoTrackerComponent.targetHUD = hud;
-                    ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
-
-                    ammoTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
-
-                    //ammoTracker.transform.Find("ExpBarRoot").GetChild(0).GetComponent<Image>().enabled = true;
-
-                    ammoTracker.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
-
-                    rect = ammoTracker.GetComponent<RectTransform>();
-                    rect.localScale = new Vector3(0.8f, 0.8f, 1f);
-                    rect.anchorMin = new Vector2(0f, 0f);
-                    rect.anchorMax = new Vector2(0f, 0f);
-                    rect.pivot = new Vector2(0.5f, 0f);
-                    rect.anchoredPosition = new Vector2(50f, 0f);
-                    rect.localPosition = new Vector3(50f, -95f, 0f);
+                    GameObject.Destroy(oldUI2.gameObject);
                 }
+                GameObject ammoTracker = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+                ammoTracker.name = "AmmoTracker";
+                ammoTracker.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
+
+                GameObject.DestroyImmediate(ammoTracker.transform.GetChild(0).gameObject);
+                MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<LevelText>());
+                MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<ExpBar>());
+
+                AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
+                ammoTrackerComponent.targetHUD = hud;
+                ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
+
+                ammoTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
+                GameObject.DestroyImmediate(ammoTracker.transform.Find("ExpBarRoot").gameObject);
+
+                ammoTracker.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
+
+                rect = ammoTracker.GetComponent<RectTransform>();
+                rect.localScale = new Vector3(0.8f, 0.8f, 1f);
+                rect.anchorMin = new Vector2(0f, 0f);
+                rect.anchorMax = new Vector2(0f, 0f);
+                rect.offsetMin = new Vector2(50f, -95f);
+                rect.offsetMax = new Vector2(50, -95f);
+                rect.pivot = new Vector2(0.5f, 0f);
+                rect.anchoredPosition = new Vector2(50f, 0f);
+                rect.localPosition = new Vector3(50f, -95f, 0f);
             }
         }
 
