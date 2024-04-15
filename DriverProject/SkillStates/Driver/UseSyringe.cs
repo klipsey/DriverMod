@@ -53,6 +53,7 @@ namespace RobDriver.SkillStates.Driver
         protected virtual void ApplyBuff()
         {
             this.characterBody.AddTimedBuff(Modules.Buffs.syringeNewBuff, 6f);
+            this.characterBody.AddTimedBuff(DLC1Content.Buffs.KillMoveSpeed, 6f);
             /*EffectManager.SpawnEffect(Modules.Assets.damageBuffEffectPrefab, new EffectData
             {
                 origin = this.FindModelChild("PistolMuzzle").position,
