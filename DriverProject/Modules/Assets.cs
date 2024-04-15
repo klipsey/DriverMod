@@ -161,6 +161,7 @@ namespace RobDriver.Modules
         internal static Texture golemGunWeaponIcon;
 
         public static GameObject defaultMuzzleTrail;
+        public static GameObject driverMuzzleFlash;
         public static Sprite bulletSprite;
         
         public static GameObject shotgunTracer;
@@ -861,6 +862,8 @@ namespace RobDriver.Modules
             trail.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matSmokeTrail.mat").WaitForCompletion();
             trail.startColor = Color.white;
             trail.endColor = Color.gray;
+
+            driverMuzzleFlash = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/Muzzleflash1.prefab").WaitForCompletion().InstantiateClone("DriverMuzzleFlash");
             bulletSprite = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator");
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);

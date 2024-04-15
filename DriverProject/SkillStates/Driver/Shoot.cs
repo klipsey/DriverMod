@@ -116,7 +116,7 @@ namespace RobDriver.SkillStates.Driver
         {
             if (this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
             {
-                GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
+                GameObject modify = Modules.Assets.driverMuzzleFlash;
                 var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
                 col.startColor = this.iDrive.currentBulletDef.trailColor;
                 EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
