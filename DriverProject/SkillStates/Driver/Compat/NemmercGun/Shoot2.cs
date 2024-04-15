@@ -145,7 +145,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmercGun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

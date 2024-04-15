@@ -93,7 +93,7 @@ namespace RobDriver.SkillStates.Driver.ArmBFG
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

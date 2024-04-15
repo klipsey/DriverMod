@@ -125,8 +125,7 @@ namespace RobDriver.SkillStates.Driver.SMG
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
-                return;
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

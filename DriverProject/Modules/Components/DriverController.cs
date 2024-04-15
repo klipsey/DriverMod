@@ -267,7 +267,7 @@ namespace RobDriver.Modules.Components
 
         private bool TryUpgradeWeapon(DriverWeaponDef newWeaponDef)
         {
-            if (this.passive && this.passive.isDefault) return false;
+            if (!DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef)) return false;
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
             this.defaultWeaponDef = newWeaponDef;
@@ -280,8 +280,11 @@ namespace RobDriver.Modules.Components
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.LunarPistol);
             if (!success) return;
 
-            this.PickUpWeapon(this.defaultWeaponDef);
-            this.TryPickupNotification(true);
+            if (weaponDef == defaultWeaponDef)
+            {
+                this.PickUpWeapon(this.defaultWeaponDef);
+                this.TryPickupNotification(true);
+            }
 
             EffectData effectData = new EffectData
             {
@@ -304,8 +307,11 @@ namespace RobDriver.Modules.Components
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.VoidPistol);
             if (!success) return;
 
-            this.PickUpWeapon(this.defaultWeaponDef);
-            this.TryPickupNotification(true);
+            if (weaponDef == defaultWeaponDef)
+            {
+                this.PickUpWeapon(this.defaultWeaponDef);
+                this.TryPickupNotification(true);
+            }
 
             EffectData effectData = new EffectData
             {
@@ -413,6 +419,9 @@ namespace RobDriver.Modules.Components
 
             if (scaleWithAttackSpeed) this.weaponTimer -= multiplier / this.characterBody.attackSpeed;
             else this.weaponTimer -= multiplier;
+
+            // notify Hud
+            this.onWeaponUpdate?.Invoke(this);
         }
 
         private void FixedUpdate()
@@ -618,7 +627,7 @@ namespace RobDriver.Modules.Components
         }
 
         /// <summary>
-        /// Sets ammo for current weapon
+        /// Resets ammo for current weapon
         /// </summary>
         private void SetBulletAmmo(float ammo = -1, bool cutAmmo = false)
         {
@@ -642,7 +651,7 @@ namespace RobDriver.Modules.Components
                 this.maxWeaponTimer = 26f;
                 return;
             }
-            //infinite ammo
+            // infinite ammo
             else
             {
                 this.weaponTimer = 0f;
@@ -663,6 +672,9 @@ namespace RobDriver.Modules.Components
             // persisted ammo count
             else weaponTimer = ammo == -1 ? shotCount : ammo;
             this.maxWeaponTimer = shotCount;
+
+            //notify hud
+            this.onWeaponUpdate?.Invoke(this);
         }
 
         private void TryPickupNotification(bool force = false)

@@ -9,52 +9,46 @@ namespace RobDriver.Modules.Components
     {
         public HUD targetHUD;
         public LanguageTextMeshController targetText;
-
-        private DriverController iDrive;
-        private DriverPassive passive;
-
-        private void FixedUpdate()
+        
+        private void Start()
         {
-            if (this.targetHUD)
-            {
-                if (this.targetHUD.targetBodyObject)
-                {
-                    if (!this.iDrive) this.iDrive = this.targetHUD.targetBodyObject.GetComponent<DriverController>();
-                    if (!this.passive) this.passive = this.targetHUD.targetBodyObject.GetComponent<DriverPassive>();
-                }
-            }
+            var driver = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
+            if (driver) driver.onWeaponUpdate += SetDisplay;
+            this.targetText.enabled = true;
+        }
 
+        private void OnDestroy()
+        {
+            var driver = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
+            if (driver) driver.onWeaponUpdate -= SetDisplay;
+            this.targetText.enabled = false;
+        }
+
+        private void SetDisplay(DriverController iDrive)
+        {
             if (this.targetText)
             {
-                if (this.iDrive && this.passive)
+                if (iDrive.maxWeaponTimer <= 0f || iDrive.passive.isDefault)
                 {
-                    if (this.iDrive.maxWeaponTimer <= 0f || this.passive.isDefault)
-                    {
-                        this.targetText.token = "";
-                        return;
-                    }
+                    this.targetText.token = "";
+                    return;
+                }
 
-                    if (this.iDrive.weaponTimer <= 0f)
-                    {
-                        this.targetText.token = "<color=#C80000>0 / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() + Helpers.colorSuffix;
-                    }
-                    else
-                    {
-                        if (this.passive.isBullets || this.passive.isRyan)
-                        {
-                            if(NetworkServer.active)
-                            {
-                                if (this.iDrive.HasSpecialBullets)
-                                {
-                                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.currentBulletDef.trailColor)}>" +
-                                        Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() +
-                                        " - " + this.iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
-                                }
-                                else this.targetText.token = "";
-                            }
-                        }
-                        else this.targetText.token = Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString();
-                    }
+                if (iDrive.weaponTimer <= 0f)
+                {
+                    this.targetText.token = "<color=#C80000>0 / " + Mathf.CeilToInt(iDrive.maxWeaponTimer).ToString() + Helpers.colorSuffix;
+                    return;
+                }
+
+                if (iDrive.passive.isPistolOnly)
+                {
+                    this.targetText.token = Mathf.CeilToInt(iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(iDrive.maxWeaponTimer).ToString();
+                }
+                else if (iDrive.HasSpecialBullets)
+                {
+                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(iDrive.currentBulletDef.trailColor)}>" +
+                        Mathf.CeilToInt(iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(iDrive.maxWeaponTimer).ToString() +
+                        " - " + iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
                 }
                 else
                 {

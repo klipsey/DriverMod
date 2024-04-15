@@ -157,8 +157,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
-                //this.outer.SetNextState(new Reload());
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

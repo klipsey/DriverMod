@@ -134,8 +134,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
-                return;
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

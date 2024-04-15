@@ -117,7 +117,7 @@ namespace RobDriver.SkillStates.Driver.GrenadeLauncher
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

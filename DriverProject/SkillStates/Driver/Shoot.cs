@@ -232,7 +232,7 @@ namespace RobDriver.SkillStates.Driver
 
             // pyrite gun made me do this
             if (this.iDrive.weaponTimer <= 0f && this.iDrive.maxWeaponTimer > 0 &&
-                this.GetMinimumInterruptPriority() == InterruptPriority.Any)
+                this.GetMinimumInterruptPriority() == InterruptPriority.Any && base.isAuthority)
             {
                 this.outer.SetNextState(new ReloadPistol());
                 return;
@@ -240,14 +240,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                if (this.iDrive.passive.isPistolOnly)
-                {
-                    this.outer.SetNextState(new WaitForReload());
-                    return;
-                }
-
-                this.outer.SetNextStateToMain();
-                return;
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

@@ -118,7 +118,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

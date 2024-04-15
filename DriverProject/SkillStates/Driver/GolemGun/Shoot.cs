@@ -141,7 +141,7 @@ namespace RobDriver.SkillStates.Driver.GolemGun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

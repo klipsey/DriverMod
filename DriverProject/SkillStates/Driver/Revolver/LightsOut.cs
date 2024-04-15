@@ -33,7 +33,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
             base.PlayAnimation("Gesture, Override", "ShootLightsOut", "Action.playbackRate", this.duration);
 
-            if (this.iDrive) this.iDrive.weaponTimer = 0.1f;
+            if (this.iDrive && iDrive.defaultWeaponDef != iDrive.weaponDef) this.iDrive.weaponTimer = 0.1f;
 
             this.Fire();
 
@@ -140,7 +140,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 
