@@ -45,7 +45,8 @@ namespace RobDriver.Modules
             {
                 nameToken = "Default",
                 tier = DriverWeaponTier.Unique,
-                index = 0
+                index = 0,
+                trailColor = Color.white 
             });
             bulletDefs.Add(Default);
 
