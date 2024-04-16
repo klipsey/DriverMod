@@ -84,7 +84,7 @@ namespace RobDriver.SkillStates.Driver
                 this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration * 1.5f);
             }
 
-            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, false);
+            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, true);
         }
 
         public override void OnExit()
@@ -114,14 +114,7 @@ namespace RobDriver.SkillStates.Driver
 
         private void Fire()
         {
-            if (this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
-            {
-                GameObject modify = Modules.Assets.driverMuzzleFlash;
-                var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
-                col.startColor = this.iDrive.currentBulletDef.trailColor;
-                EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
-            }
-            else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
+            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
 
 
             Util.PlaySound(this.shootSoundString, this.gameObject);

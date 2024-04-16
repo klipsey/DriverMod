@@ -32,13 +32,15 @@ namespace RobDriver.Modules.Components
             {
 				isPistolOnly = iDrive.passive.isPistolOnly;
                 iDrive.onWeaponUpdate += SetDisplay;
-			}
+                iDrive.onConsumeAmmo += SetAmmoDisplay;
+            }
         }
 
         private void OnDestroy()
         {
             var iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
             if (iDrive) iDrive.onWeaponUpdate -= SetDisplay;
+			if(iDrive) iDrive.onConsumeAmmo -= SetAmmoDisplay;
         }
 
         private void Update()
@@ -64,13 +66,16 @@ namespace RobDriver.Modules.Components
                 this.durationDisplay.SetActive(false);
             }
         }
-
+        private void SetAmmoDisplay(DriverController iDrive)
+		{
+            maxWeaponTimer = iDrive.maxWeaponTimer;
+            weaponTimer = iDrive.weaponTimer;
+        }
         private void SetDisplay(DriverController iDrive)
 		{
 			if (!iDrive) return;
-			
-			maxWeaponTimer = iDrive.maxWeaponTimer;
-			weaponTimer = iDrive.weaponTimer;
+
+			SetAmmoDisplay(iDrive);
 
 			this.DoStockFlash();
 

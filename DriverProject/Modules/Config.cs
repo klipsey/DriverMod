@@ -76,7 +76,7 @@ namespace RobDriver.Modules
             
             weaponCallouts = Config.BindAndOptions("01 - General", "Weapon Pickup Callouts", false, "If set to true, Driver will call out the weapons he picks up. (Client-side)");
 
-            enableGodslingInMultiplayer = Config.BindAndOptions("01 - General", "Godsling Enabled In Multiplayer", false, "If set to true, the Godlsling passive will be enabled for multiplayer.", true);
+            enableGodslingInMultiplayer = Config.BindAndOptions("01 - General", "Godsling Enabled In Multiplayer", true, "If set to true, the Godlsling passive will be enabled for multiplayer.", true);
 
             #endregion
 

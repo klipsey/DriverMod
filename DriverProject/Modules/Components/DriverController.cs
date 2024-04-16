@@ -44,6 +44,7 @@ namespace RobDriver.Modules.Components
         private GameObject[] shellObjects;
         private GameObject[] slugObjects;
 
+        public Action<DriverController> onConsumeAmmo;
         public Action<DriverController> onWeaponUpdate;
 
         public float maxWeaponTimer;
@@ -421,7 +422,7 @@ namespace RobDriver.Modules.Components
             else this.weaponTimer -= multiplier;
 
             // notify Hud
-            this.onWeaponUpdate?.Invoke(this);
+            this.onConsumeAmmo?.Invoke(this);
         }
 
         private void FixedUpdate()
@@ -548,6 +549,7 @@ namespace RobDriver.Modules.Components
 
             // notify hud
             this.onWeaponUpdate?.Invoke(this);
+            this.onConsumeAmmo?.Invoke(this);
         }
 
         /// <summary>
@@ -592,6 +594,7 @@ namespace RobDriver.Modules.Components
             this.TryPickupNotification();
 
             this.onWeaponUpdate?.Invoke(this);
+            this.onConsumeAmmo?.Invoke(this);
         }
 
         /// <summary>
@@ -613,7 +616,6 @@ namespace RobDriver.Modules.Components
 
             SetBulletAmmo(ammo, cutAmmo);
 
-            // this shit doesnt work
             Transform muzzleTransform;
             if (DriverWeaponCatalog.IsWeaponPistol(weaponDef)) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
             else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
@@ -624,6 +626,7 @@ namespace RobDriver.Modules.Components
 
             // notify hud
             this.onWeaponUpdate?.Invoke(this);
+            this.onConsumeAmmo?.Invoke(this);
         }
 
         /// <summary>
@@ -675,6 +678,7 @@ namespace RobDriver.Modules.Components
 
             //notify hud
             this.onWeaponUpdate?.Invoke(this);
+            this.onConsumeAmmo?.Invoke(this);
         }
 
         private void TryPickupNotification(bool force = false)

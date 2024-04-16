@@ -8,6 +8,7 @@ namespace RobDriver.SkillStates.Driver
         protected override void ApplyBuff()
         {
             this.characterBody.AddTimedBuff(Modules.Buffs.syringeScepterBuff, 6f);
+            this.characterBody.AddTimedBuff(DLC1Content.Buffs.KillMoveSpeed, 6f);
 
             EffectManager.SpawnEffect(Modules.Assets.scepterSyringeBuffEffectPrefab, new EffectData
             {

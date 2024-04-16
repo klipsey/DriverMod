@@ -443,7 +443,7 @@ namespace RobDriver.SkillStates.Driver
                             if (BulletAttack.IsSniperTargetHit(hitInfo))
                             {
                                 if (this.iDrive.passive.isPistolOnly) damageInfo.damage *= 2f;
-                                else damageInfo.damage *= 1.5f;
+                                else damageInfo.damage *= 1.25f;
                                 damageInfo.damageColorIndex = DamageColorIndex.Sniper;
 
                                 if (wasCharged)
@@ -533,7 +533,8 @@ namespace RobDriver.SkillStates.Driver
                     {
                         if (BulletAttack.IsSniperTargetHit(hitInfo))
                         {
-                            damageInfo.damage *= 2f;
+                            if (this.iDrive.passive.isPistolOnly) damageInfo.damage *= 2f;
+                            else damageInfo.damage *= 1.25f;
                             damageInfo.damageColorIndex = DamageColorIndex.Sniper;
 
                             if (this.lastCharge)

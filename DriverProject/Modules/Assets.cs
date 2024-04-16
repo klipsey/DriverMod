@@ -161,7 +161,6 @@ namespace RobDriver.Modules
         internal static Texture golemGunWeaponIcon;
 
         public static GameObject defaultMuzzleTrail;
-        public static GameObject driverMuzzleFlash;
         public static Sprite bulletSprite;
         
         public static GameObject shotgunTracer;
@@ -754,7 +753,7 @@ namespace RobDriver.Modules
                 CreateMaterial("matCrate2")
             };
 
-             GameObject textShit4 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
+            GameObject textShit4 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
             MonoBehaviour.Destroy(textShit4.GetComponent<EffectComponent>());
             textShit4.transform.parent = pickupModel4.transform;
             textShit4.transform.localPosition = Vector4.zero;
@@ -862,8 +861,6 @@ namespace RobDriver.Modules
             trail.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matSmokeTrail.mat").WaitForCompletion();
             trail.startColor = Color.white;
             trail.endColor = Color.gray;
-
-            driverMuzzleFlash = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/Muzzleflash1.prefab").WaitForCompletion().InstantiateClone("DriverMuzzleFlash");
             bulletSprite = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSniperBulletIndicator");
 
             shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun").InstantiateClone("DriverShotgunTracer", true);
@@ -1136,6 +1133,9 @@ namespace RobDriver.Modules
             bloodSpurtEffect.transform.Find("Trails").GetComponent<ParticleSystemRenderer>().trailMaterial = bloodMat2;
 
             ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup").InstantiateClone("mdlAmmoPickup");
+
+            ConvertAllRenderersToHopooShader(ammoPickupModel);
+
             GameObject textShit5 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
             MonoBehaviour.Destroy(textShit5.GetComponent<EffectComponent>());
             textShit5.transform.parent = ammoPickupModel.transform;
@@ -1148,7 +1148,7 @@ namespace RobDriver.Modules
             helpMe5.transform.localScale = Vector3.one * 1.25f;
 
             textShit5.GetComponent<DestroyOnTimer>().enabled = false;
-            ConvertAllRenderersToHopooShader(ammoPickupModel);
+
         }
 
         private static GameObject CreateTracer(string originalTracerName, string newTracerName)

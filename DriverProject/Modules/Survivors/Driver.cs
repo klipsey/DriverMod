@@ -2838,8 +2838,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
-                    // the fuck is this
-                    // (isAmmoPassive) chance += Mathf.Clamp((DamageTypes.bulletTypes.Distinct().Count() - 30), 0, 30);
 
                     bool fuckMyAss = chance >= 100f;
 
@@ -2882,7 +2880,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                     if (droppedWeapon)
                     {
-                        Driver.instance.pityMultiplier = 0.8f;
+                        Driver.instance.pityMultiplier = 1f;
 
                         Vector3 position = Vector3.zero;
                         Transform transform = damageReport.victim.transform;
@@ -3049,9 +3047,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<LevelText>());
                 MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<ExpBar>());
 
-                AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
-                ammoTrackerComponent.targetHUD = hud;
-                ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
                 ammoTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
                 GameObject.DestroyImmediate(ammoTracker.transform.Find("ExpBarRoot").gameObject);
 
@@ -3067,6 +3062,29 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 //positional data doesnt get sent to clients? Manually making offsets works..
                 rect.anchoredPosition = new Vector2(50f, 0f);
                 rect.localPosition = new Vector3(50f, -95f, 0f);
+
+                GameObject chargeBarAmmo = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
+                chargeBarAmmo.name = "AmmoBar";
+                chargeBarAmmo.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
+
+                rect = chargeBarAmmo.GetComponent<RectTransform>();
+
+                rect.localScale = new Vector3(0.75f, 0.1f, 1f);
+                rect.anchorMin = new Vector2(100f, 2f);
+                rect.anchorMax = new Vector2(100f, 2f);                
+                rect.pivot = new Vector2(0.5f, 0f);
+                rect.anchoredPosition = new Vector2(100f, 2f);
+                rect.localPosition = new Vector3(100f, 2f, 0f);
+                rect.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
+
+                AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
+
+                ammoTrackerComponent.targetHUD = hud;
+                ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
+                ammoTrackerComponent.durationDisplay = chargeBarAmmo;
+                ammoTrackerComponent.durationBar = chargeBarAmmo.transform.GetChild(1).gameObject.GetComponent<UnityEngine.UI.Image>();
+                ammoTrackerComponent.durationBarRed = chargeBarAmmo.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
+
             }
         }
 

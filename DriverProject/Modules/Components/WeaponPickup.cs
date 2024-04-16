@@ -21,6 +21,7 @@ namespace RobDriver.Modules.Components
 		public bool cutAmmo = false;
 		public bool isNewAmmoType = false;
 		private bool alive = true;
+        private bool changeToAmmoText;
 
 		private void Awake()
         {
@@ -148,6 +149,15 @@ namespace RobDriver.Modules.Components
                 if(isAmmo) textComponent.token = this.bulletDef.nameToken;
                 else textComponent.token = this.weaponDef.nameToken;
 
+                //Because all guns are "uncommon" we have to do this for ammo
+                Color commonColor = Modules.Helpers.whiteItemColor;
+                Color uncommonColor = Modules.Helpers.greenItemColor;
+                if (isAmmo)
+                {
+                    commonColor = Modules.Helpers.greenItemColor;
+                    uncommonColor = Modules.Helpers.whiteItemColor;
+                }
+
                 if (this.cutAmmo)
                 {
                     textComponent.textMeshPro.color = Modules.Helpers.badColor;
@@ -157,10 +167,10 @@ namespace RobDriver.Modules.Components
                     switch (this.weaponDef.tier)
                     {
                         case DriverWeaponTier.Common:
-                            textComponent.textMeshPro.color = Modules.Helpers.whiteItemColor;
+                            textComponent.textMeshPro.color = commonColor;
                             break;
                         case DriverWeaponTier.Uncommon:
-                            textComponent.textMeshPro.color = Modules.Helpers.greenItemColor;
+                            textComponent.textMeshPro.color = uncommonColor;
                             break;
                         case DriverWeaponTier.Legendary:
                             textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
