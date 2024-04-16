@@ -27,7 +27,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
 
             if (base.fixedAge >= this.duration)
             {
-                iDrive.FinishReload();
+                if (iDrive.weaponDef == iDrive.defaultWeaponDef) iDrive.FinishReload();
                 this.outer.SetNextStateToMain();
             }
         }

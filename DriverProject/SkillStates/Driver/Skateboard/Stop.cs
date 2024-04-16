@@ -36,12 +36,7 @@ namespace RobDriver.SkillStates.Driver.Skateboard
 
             if (base.isAuthority && base.fixedAge >= this.duration)
             {
-                if (this.iDrive.passive.isPistolOnly)
-                {
-                    this.outer.SetNextState(new WaitForReload());
-                    return;
-                }
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 
