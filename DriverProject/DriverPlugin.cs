@@ -67,7 +67,7 @@ namespace RobDriver
             Modules.CameraParams.InitializeParams();
             Modules.States.RegisterStates();
             Modules.DamageTypes.Init();
-            Modules.BulletTypes.Init();
+            Modules.DriverBulletCatalog.Init();
             Modules.Buffs.RegisterBuffs();
             Modules.Projectiles.RegisterProjectiles();
             Modules.Tokens.AddTokens();

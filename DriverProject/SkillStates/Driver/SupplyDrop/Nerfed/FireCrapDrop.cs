@@ -14,25 +14,25 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop.Nerfed
             if (NetworkServer.active)
             {
                 DriverWeaponDef _weaponDef;
-                int bulletDefIndex;
+                DriverBulletDef _bulletDef;
 
                 if (Modules.Config.randomSupplyDrop.Value)
                 {
                     _weaponDef = DriverWeaponCatalog.GetRandomWeapon();
-                    bulletDefIndex = BulletTypes.GetWeightedRandomBullet(DriverWeaponTier.Legendary).index;
+                    _bulletDef = DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Legendary);
 
                 }
                 else
                 {
                     _weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(DriverWeaponTier.Uncommon);
-                    bulletDefIndex = BulletTypes.GetWeightedRandomBullet(DriverWeaponTier.Uncommon).index;
+                    _bulletDef = DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Uncommon);
                 }
 
                 GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(_weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 
                 var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
                 weaponComponent.cutAmmo = true;
-                weaponComponent.bulletIndex = bulletDefIndex;
+                weaponComponent.bulletDef = _bulletDef;
                 weaponComponent.isNewAmmoType = false;
 
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();

@@ -29,7 +29,6 @@ public class DriverBulletDef : ScriptableObject
         bulletDef.tier = bulletDefInfo.tier;
         bulletDef.icon = bulletDefInfo.icon;
         bulletDef.trailColor = bulletDefInfo.trailColor;
-        bulletDef.index = (ushort)bulletDefInfo.index;
         return bulletDef;
     }
 }
@@ -44,5 +43,4 @@ public struct DriverBulletDefInfo
 
     public Sprite icon;
     public Color trailColor;
-    public int index;
 }

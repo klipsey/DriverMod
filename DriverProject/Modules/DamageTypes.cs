@@ -78,7 +78,7 @@ namespace RobDriver.Modules
             if (attackerBody && attackerBody.baseNameToken == Driver.bodyNameToken && 
                 damageInfo.HasModdedDamageType(MysteryShot))
             {
-                var bulletInfo = BulletTypes.GetWeightedRandomBullet(DriverWeaponTier.Legendary);
+                var bulletInfo = DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Legendary);
 
                 damageInfo.damageType |= bulletInfo.bulletType;
                 damageInfo.RemoveModdedDamageType(MysteryShot);

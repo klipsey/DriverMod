@@ -12,6 +12,7 @@ namespace RobDriver.Modules.Components
 
 		public float weaponTimer = 0;
 		public float maxWeaponTimer = 0;
+		public bool isPistolOnly = false;
 
 		public GameObject displayRoot;
 		public RawImage iconImage;
@@ -29,10 +30,7 @@ namespace RobDriver.Modules.Components
             var iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
 			if (iDrive)
             {
-                if (iDrive.passive.isPistolOnly)
-                {
-                    this.durationDisplay.SetActive(false);
-                }
+				isPistolOnly = iDrive.passive.isPistolOnly;
                 iDrive.onWeaponUpdate += SetDisplay;
 			}
         }
@@ -45,6 +43,8 @@ namespace RobDriver.Modules.Components
 
         private void Update()
         {
+			if (isPistolOnly) return;
+
             if (this.maxWeaponTimer > 0f)
             {
                 this.durationDisplay.SetActive(true);

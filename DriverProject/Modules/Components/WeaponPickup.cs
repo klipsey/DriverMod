@@ -12,14 +12,14 @@ namespace RobDriver.Modules.Components
 		public GameObject baseObject;
 		[Tooltip("The team filter object which determines who can pick up this pack.")]
 		public TeamFilter teamFilter;
+
 		public DriverWeaponDef weaponDef;
 		public DriverBulletDef bulletDef;
 
 		public GameObject pickupEffect;
-		public bool cutAmmo = false;
-		public int bulletIndex = 0;
-		public bool isNewAmmoType = false;
 
+		public bool cutAmmo = false;
+		public bool isNewAmmoType = false;
 		private bool alive = true;
 
 		private void Awake()
@@ -63,7 +63,7 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
+			this.SetWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, this.isNewAmmoType);
 		}
 
         private void OnTriggerStay(Collider collider)
@@ -80,18 +80,18 @@ namespace RobDriver.Modules.Components
                     Modules.Achievements.DriverPistolPassiveAchievement.weaponPickedUp = true;
                     Modules.Achievements.DriverGodslingPassiveAchievement.weaponPickedUpHard = true;
 
-                    iDrive.ServerPickUpWeapon(iDrive, this.weaponDef, this.cutAmmo, this.bulletIndex, this.isNewAmmoType);
+                    iDrive.ServerPickUpWeapon(iDrive, this.weaponDef, this.bulletDef, this.cutAmmo, this.isNewAmmoType);
                     EffectManager.SimpleEffect(this.pickupEffect, this.transform.position, Quaternion.identity, true);
                     UnityEngine.Object.Destroy(this.baseObject);
                 }
             }
         }
 
-        public void SetWeapon(DriverWeaponDef newWeapon, bool cutAmmo, int ammoIndex, bool isNewAmmoType)
+        public void SetWeapon(DriverWeaponDef newWeapon, DriverBulletDef newBullet, bool cutAmmo, bool isNewAmmoType)
         {
 			this.weaponDef = newWeapon;
-			this.cutAmmo = cutAmmo;
-			this.bulletIndex = ammoIndex;
+            this.bulletDef = newBullet;
+            this.cutAmmo = cutAmmo;
 			this.isNewAmmoType = isNewAmmoType;
 
 			SwapToAmmoVisuals();
@@ -117,10 +117,10 @@ namespace RobDriver.Modules.Components
 									h.enabled = false;
 								}
 
-								GameObject p = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
-								p.transform.localPosition = Vector3.zero;
-								p.transform.localRotation = Quaternion.identity;
-                                DoTextStuff(p.transform, true);
+								GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+								ammoPickup.transform.localPosition = Vector3.zero;
+								ammoPickup.transform.localRotation = Quaternion.identity;
+                                DoTextStuff(ammoPickup.transform, true);
                             }
 						}
 						else
@@ -138,14 +138,14 @@ namespace RobDriver.Modules.Components
             RoR2.UI.LanguageTextMeshController textComponent = transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
             if (textComponent)
             {
-                if (!this.weaponDef)
+                if (!this.weaponDef || (isAmmo && !this.bulletDef))
                 {
                     // band-aid i don't have the time to keep fighting with this code rn
                     textComponent.token = "FUCK YOU FUCK YOU FUCK/nYOU FUCK YOU FUCK YOU";
                     return;
                 }
 
-                if(isAmmo) textComponent.token = BulletTypes.bulletDefs[bulletIndex].nameToken;
+                if(isAmmo) textComponent.token = this.bulletDef.nameToken;
                 else textComponent.token = this.weaponDef.nameToken;
 
                 if (this.cutAmmo)
@@ -183,20 +183,6 @@ namespace RobDriver.Modules.Components
             if (this.alive)
             {
                 Modules.Achievements.SupplyDropAchievement.weaponHasDespawned = true;
-            }
-        }
-
-        private void ServerSetWeapon(DriverWeaponDef newWeaponDef)
-        {
-            // this didn't work lole
-            this.weaponDef = newWeaponDef;
-
-            if (NetworkServer.active)
-            {
-                NetworkIdentity identity = this.transform.root.GetComponentInChildren<NetworkIdentity>();
-                if (!identity) return;
-
-                new SyncWeaponPickup(identity.netId, (ushort)this.weaponDef.index, this.cutAmmo, (short)this.bulletIndex, this.isNewAmmoType).Send(NetworkDestination.Clients);
             }
         }
     }

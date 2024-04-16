@@ -85,7 +85,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
 
                 var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
                 weaponComponent.cutAmmo = false;
-                weaponComponent.bulletIndex = BulletTypes.GetRandomBulletFromTier(DriverWeaponTier.Legendary).index;
+                weaponComponent.bulletDef = DriverBulletCatalog.GetRandomBulletFromTier(DriverWeaponTier.Legendary);
                 weaponComponent.isNewAmmoType = false;
 
                 NetworkServer.Spawn(weaponPickup);

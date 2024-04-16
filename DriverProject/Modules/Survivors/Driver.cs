@@ -2915,11 +2915,11 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         // non-legendary gets rerolled
                         if (isBoss)
                         {
-                            weaponComponent.bulletIndex = BulletTypes.GetRandomBulletFromTier(DriverWeaponTier.Legendary).index;
+                            weaponComponent.bulletDef = DriverBulletCatalog.GetRandomBulletFromTier(DriverWeaponTier.Legendary);
                         }
                         else
                         {
-                            weaponComponent.bulletIndex = BulletTypes.GetWeightedRandomBullet(DriverWeaponTier.Uncommon).index;
+                            weaponComponent.bulletDef = DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Uncommon);
                         }
 
                         TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();

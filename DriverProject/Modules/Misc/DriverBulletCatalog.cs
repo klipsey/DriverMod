@@ -10,7 +10,7 @@ using Newtonsoft.Json.Utilities;
 
 namespace RobDriver.Modules
 {
-    public static class BulletTypes
+    public static class DriverBulletCatalog
     {
         internal static List<DriverBulletDef> bulletDefs { get; private set; } = new List<DriverBulletDef>();
 
@@ -45,9 +45,9 @@ namespace RobDriver.Modules
             {
                 nameToken = "Default",
                 tier = DriverWeaponTier.Unique,
-                index = 0,
                 trailColor = Color.white 
             });
+            Default.index = 0;
             bulletDefs.Add(Default);
 
             foreach (DamageType i in allowedDamageTypes)
@@ -73,7 +73,7 @@ namespace RobDriver.Modules
                         break;
 
                     case DamageType.BleedOnHit:
-                        CreateBulletType("Serrated", i, DriverWeaponTier.Common, DamageColor.FindColor(DamageColorIndex.Bleed));
+                        CreateBulletType("Serrated", i, DriverWeaponTier.Common, DamageColorIndex.Bleed);
                         break;
 
                     case DamageType.PoisonOnHit:
@@ -85,7 +85,7 @@ namespace RobDriver.Modules
                         break;
 
                     case DamageType.BonusToLowHealth:
-                        CreateBulletType("Executing", i, DriverWeaponTier.Common, DamageColor.FindColor(DamageColorIndex.Fragile));
+                        CreateBulletType("Executing", i, DriverWeaponTier.Common, DamageColorIndex.Fragile);
                         break;
 
                     case DamageType.BlightOnHit:
@@ -111,7 +111,7 @@ namespace RobDriver.Modules
 
                     // void
                     case DamageType.Nullify:
-                        CreateBulletType("Nullifying", i, DriverWeaponTier.Uncommon, DamageColor.FindColor(DamageColorIndex.Void));
+                        CreateBulletType("Nullifying", i, DriverWeaponTier.Uncommon, DamageColorIndex.Void);
                         break;
                 }
             }
@@ -126,7 +126,7 @@ namespace RobDriver.Modules
             CreateBulletType("Elemental Ice", DamageTypes.IceBlastShot, DriverWeaponTier.Uncommon, Color.cyan);
             CreateBulletType("Sticky", DamageTypes.StickyShot, DriverWeaponTier.Uncommon, new Color(255 / 255f, 117 / 255f, 48 / 255f));
             CreateBulletType("Mystery", DamageTypes.MysteryShot, DriverWeaponTier.Uncommon, new Color(30 / 255f, 51 / 255f, 45 / 255f));
-            CreateBulletType("Hemorrhaging", DamageTypes.Hemorrhage, DriverWeaponTier.Uncommon, DamageColor.FindColor(DamageColorIndex.SuperBleed));
+            CreateBulletType("Hemorrhaging", DamageTypes.Hemorrhage, DriverWeaponTier.Uncommon, DamageColorIndex.SuperBleed);
 
             // legendary
             CreateBulletType("Dagger", DamageTypes.DaggerShot, DriverWeaponTier.Legendary, Color.black);
@@ -162,15 +162,16 @@ namespace RobDriver.Modules
 
         public static void CreateBulletType(string nameToken, DamageType damageType, DamageAPI.ModdedDamageType moddedBulletType, DriverWeaponTier tier, Color color)
         {
-            bulletDefs.Add(DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
+            var bulletDef = DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
             {
                 nameToken = nameToken,
                 bulletType = damageType,
                 moddedBulletType = moddedBulletType,
                 tier = tier,
-                trailColor = color,
-                index = bulletDefs.Count
-            }));
+                trailColor = color
+            });
+            bulletDef.index = (ushort)bulletDefs.Count;
+            bulletDefs.Add(bulletDef);
         }
 
         public static DriverBulletDef GetBulletDefFromIndex(int index)

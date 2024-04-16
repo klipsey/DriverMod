@@ -21,9 +21,9 @@ namespace RobDriver.Modules.Components
         // properties for when access control matters
         // if you try to circumvent/change these youre probably doing a hack
         public DriverWeaponDef weaponDef { get; private set; }
-        public DriverBulletDef currentBulletDef { get; private set; } =  BulletTypes.Default;
+        public DriverBulletDef currentBulletDef { get; private set; } =  DriverBulletCatalog.Default;
         public DriverWeaponDef defaultWeaponDef { get; private set; }
-        public bool HasSpecialBullets => this.currentBulletDef.index != BulletTypes.Default.index;
+        public bool HasSpecialBullets => this.currentBulletDef.index != DriverBulletCatalog.Default.index;
         public DamageType DamageType => this.currentBulletDef.bulletType;
         public DamageAPI.ModdedDamageType ModdedDamageType => this.currentBulletDef.moddedBulletType;
 
@@ -114,7 +114,7 @@ namespace RobDriver.Modules.Components
             this.GetSkillOverrides();
 
             this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
-            this.currentBulletDef = BulletTypes.Default;
+            this.currentBulletDef = DriverBulletCatalog.Default;
             this.PickUpWeapon(this.defaultWeaponDef);
 
             this.availableSupplyDrops = 1;
@@ -181,14 +181,14 @@ namespace RobDriver.Modules.Components
                 if (weaponTracker?.isStoringWeapon == true)
                 {
                     DriverWeaponTracker.StoredWeapon storedWeapon = weaponTracker.RetrieveWeapon();
-                    this.ServerGetStoredWeapon(storedWeapon.weaponDef, storedWeapon.ammo, storedWeapon.ammoIndex);
+                    this.ServerGetStoredWeapon(storedWeapon.weaponDef, storedWeapon.bulletDef, storedWeapon.ammo);
                 }
             }
         }
 
         private void StoreWeapon()
         {
-            this.weaponTracker?.StoreWeapon(this.weaponDef, this.weaponTimer, (short)this.currentBulletDef.index);
+            this.weaponTracker?.StoreWeapon(this.weaponDef, this.currentBulletDef, this.weaponTimer);
         }
 
         private void CheckForLysateCell()
@@ -434,7 +434,7 @@ namespace RobDriver.Modules.Components
                 {
                     if (this.HasSpecialBullets)
                     {
-                        currentBulletDef = BulletTypes.Default;
+                        currentBulletDef = DriverBulletCatalog.Default;
 
                         UnityEngine.Object.Destroy(muzzleTrail.gameObject);
                         this.muzzleTrail = null;
@@ -490,12 +490,12 @@ namespace RobDriver.Modules.Components
         /// <summary>
         /// Dont call this, gets stored weapon from DriverWeaponController
         /// </summary>
-        public void ServerGetStoredWeapon(DriverWeaponDef newWeapon, float ammo, int ammoIndex)
+        public void ServerGetStoredWeapon(DriverWeaponDef newWeapon, DriverBulletDef newBullet, float ammo)
         {
             NetworkIdentity identity = this.gameObject.GetComponent<NetworkIdentity>();
             if (!identity) return;
 
-            new SyncStoredWeapon(identity.netId, newWeapon.index, ammo, (short)ammoIndex).Send(NetworkDestination.Clients);
+            new SyncStoredWeapon(identity.netId, newWeapon.index, newBullet.index, ammo).Send(NetworkDestination.Clients);
         }
 
         /// <summary>
@@ -503,18 +503,18 @@ namespace RobDriver.Modules.Components
         /// </summary>
         public void ServerPickUpWeapon(DriverWeaponDef newWeapon)
         {
-            ServerPickUpWeapon(this, newWeapon, false, this.currentBulletDef.index, false);
+            ServerPickUpWeapon(this, newWeapon, this.currentBulletDef, false, false);
         }
 
         /// <summary>
         /// Uhhh network shit idk, dont call this, it just works
         /// </summary>
-        public void ServerPickUpWeapon(DriverController driverController, DriverWeaponDef newWeapon, bool cutAmmo, int ammoIndex, bool isNewAmmoType)
+        public void ServerPickUpWeapon(DriverController driverController, DriverWeaponDef newWeapon, DriverBulletDef newBullet, bool cutAmmo, bool isNewAmmoType)
         {
             NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
             if (!identity) return;
 
-            new SyncWeapon(identity.netId, newWeapon.index, cutAmmo, ammoIndex, isNewAmmoType).Send(NetworkDestination.Clients);
+            new SyncWeapon(identity.netId, newWeapon.index, newBullet.index, cutAmmo, isNewAmmoType).Send(NetworkDestination.Clients);
         }
 
         private void ReturnToDefaultWeapon()
@@ -553,7 +553,7 @@ namespace RobDriver.Modules.Components
         /// <summary>
         /// Decides what to do for dropped weapons with each passive
         /// </summary>
-        public void PickUpWeaponDrop(DriverWeaponDef newWeapon, float ammo, int ammoIndex, bool isNewAmmoType, bool cutAmmo)
+        public void PickUpWeaponDrop(DriverWeaponDef newWeapon, DriverBulletDef newBullet, float ammo, bool cutAmmo, bool isNewAmmoType)
         {
             if (this.passive.isPistolOnly)
             {
@@ -561,25 +561,25 @@ namespace RobDriver.Modules.Components
             }
             else if (this.passive.isBullets)
             {
-                LoadNewBullets(ammoIndex, cutAmmo, ammo);
+                LoadNewBullets(newBullet, ammo, cutAmmo);
             }
             else if (this.passive.isRyan)
             {
                 // change ammo type
-                if (isNewAmmoType) LoadNewBullets(ammoIndex, cutAmmo, ammo);
+                if (isNewAmmoType) LoadNewBullets(newBullet, ammo, cutAmmo);
                 // picked up new weapon
-                else PickUpWeapon(newWeapon, cutAmmo, ammo);
+                else PickUpWeapon(newWeapon, ammo, cutAmmo);
             }
             else
             {
-                PickUpWeapon(newWeapon, cutAmmo, ammo);
+                PickUpWeapon(newWeapon, ammo, cutAmmo);
             }
         }
 
         /// <summary>
         /// Changes weapon, does not change ammo type
         /// </summary>
-        private void PickUpWeapon(DriverWeaponDef newWeapon, bool cutAmmo = false, float ammo = -1f)
+        private void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool cutAmmo = false)
         {
             this.weaponDef = newWeapon;
 
@@ -597,7 +597,7 @@ namespace RobDriver.Modules.Components
         /// <summary>
         /// Changes ammo type, does not change weapon
         /// </summary>
-        private void LoadNewBullets(int newAmmoIndex, bool cutAmmo, float ammo)
+        private void LoadNewBullets(DriverBulletDef newBullet, float ammo, bool cutAmmo)
         {
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
@@ -609,7 +609,7 @@ namespace RobDriver.Modules.Components
                 muzzleTrail = null;
             }
 
-            currentBulletDef = BulletTypes.GetBulletDefFromIndex(newAmmoIndex);
+            currentBulletDef = newBullet;
 
             SetBulletAmmo(ammo, cutAmmo);
 
