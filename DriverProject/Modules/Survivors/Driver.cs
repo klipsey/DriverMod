@@ -2705,7 +2705,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             orig(self);
 
-            if(!Config.enableGodslingInMultiplayer.Value)
+            if (!Config.enableGodslingInMultiplayer.Value)
             {
                 // this is literally the worst thing ever
                 if (self && !string.IsNullOrEmpty(self.hoverToken) &&
@@ -2903,7 +2903,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         }
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
-                        
+
                         var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
 
                         // add passive specific stuff
@@ -3056,12 +3056,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 rect.localScale = new Vector3(0.8f, 0.8f, 1f);
                 rect.anchorMin = new Vector2(0f, 0f);
                 rect.anchorMax = new Vector2(0f, 0f);
-                rect.offsetMin = new Vector2(50f, -95f);
-                rect.offsetMax = new Vector2(50, -95f);
+                rect.offsetMin = new Vector2(120f, -40f);
+                rect.offsetMax = new Vector2(120f, -40f);
                 rect.pivot = new Vector2(0.5f, 0f);
                 //positional data doesnt get sent to clients? Manually making offsets works..
                 rect.anchoredPosition = new Vector2(50f, 0f);
-                rect.localPosition = new Vector3(50f, -95f, 0f);
+                rect.localPosition = new Vector3(120f, -40f, 0f);
 
                 GameObject chargeBarAmmo = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
                 chargeBarAmmo.name = "AmmoBar";
@@ -3071,7 +3071,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 rect.localScale = new Vector3(0.75f, 0.1f, 1f);
                 rect.anchorMin = new Vector2(100f, 2f);
-                rect.anchorMax = new Vector2(100f, 2f);                
+                rect.anchorMax = new Vector2(100f, 2f);
                 rect.pivot = new Vector2(0.5f, 0f);
                 rect.anchoredPosition = new Vector2(100f, 2f);
                 rect.localPosition = new Vector3(100f, 2f, 0f);

@@ -8,64 +8,63 @@ namespace RobDriver.Modules.Components
 {
     public class WeaponPickup : MonoBehaviour
     {
-		[Tooltip("The base object to destroy when this pickup is consumed.")]
-		public GameObject baseObject;
-		[Tooltip("The team filter object which determines who can pick up this pack.")]
-		public TeamFilter teamFilter;
+        [Tooltip("The base object to destroy when this pickup is consumed.")]
+        public GameObject baseObject;
+        [Tooltip("The team filter object which determines who can pick up this pack.")]
+        public TeamFilter teamFilter;
 
-		public DriverWeaponDef weaponDef;
-		public DriverBulletDef bulletDef;
+        public DriverWeaponDef weaponDef;
+        public DriverBulletDef bulletDef;
 
-		public GameObject pickupEffect;
+        public GameObject pickupEffect;
 
-		public bool cutAmmo = false;
-		public bool isNewAmmoType = false;
-		private bool alive = true;
-        private bool changeToAmmoText;
+        public bool cutAmmo = false;
+        public bool isNewAmmoType = false;
+        private bool alive = true;
 
-		private void Awake()
+        private void Awake()
         {
-			// disable visuals for non driver
-			if (!Modules.Config.sharedPickupVisuals.Value)
+            // disable visuals for non driver
+            if (!Modules.Config.sharedPickupVisuals.Value)
             {
-				BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
-				if (blinker)
-				{
-					bool isDriver = false;
+                BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+                if (blinker)
+                {
+                    bool isDriver = false;
 
-					var localPlayers = LocalUserManager.readOnlyLocalUsersList;
-					foreach (LocalUser i in localPlayers)
-					{
-						if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken) isDriver = true;
-					}
+                    var localPlayers = LocalUserManager.readOnlyLocalUsersList;
+                    foreach (LocalUser i in localPlayers)
+                    {
+                        if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken) isDriver = true;
+                    }
 
-					if (!isDriver)
-					{
-						blinker.blinkingRootObject.SetActive(false);
-						Destroy(blinker);
-					}
-				}
-			}
+                    if (!isDriver)
+                    {
+                        blinker.blinkingRootObject.SetActive(false);
+                        Destroy(blinker);
+                    }
+                }
+            }
 
-			// uh will this work?
-			/*if (Run.instance)
+            // uh will this work?
+            /*if (Run.instance)
 			{
 				float rng = Run.instance.stageRng.nextNormalizedFloat;
 
 				if (rng > 0.5f) this.SetWeapon(DriverWeapon.MachineGun);
 				else this.SetWeapon(DriverWeapon.Shotgun);
 			}*/
-			// no it doesn't, clients don't have the rng
+            // no it doesn't, clients don't have the rng
 
-			// i'm a dirty hack
-			// lock me up and throw away the key
-			this.Invoke("Fuck", 59.5f);
-		}
+            // i'm a dirty hack
+            // lock me up and throw away the key
+            this.Invoke("Fuck", 59.5f);
+        }
 
-		private void Start()
+        private void Start()
         {
-			this.SetWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, this.isNewAmmoType);
-		}
+            this.SetWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, this.isNewAmmoType);
+        }
 
         private void OnTriggerStay(Collider collider)
         {
@@ -90,13 +89,13 @@ namespace RobDriver.Modules.Components
 
         public void SetWeapon(DriverWeaponDef newWeapon, DriverBulletDef newBullet, bool cutAmmo, bool isNewAmmoType)
         {
-			this.weaponDef = newWeapon;
+            this.weaponDef = newWeapon;
             this.bulletDef = newBullet;
             this.cutAmmo = cutAmmo;
-			this.isNewAmmoType = isNewAmmoType;
+            this.isNewAmmoType = isNewAmmoType;
 
-			SwapToAmmoVisuals();
-		}
+            SwapToAmmoVisuals();
+        }
 
         private void SwapToAmmoVisuals()
         {
@@ -106,28 +105,28 @@ namespace RobDriver.Modules.Components
                 if (i.cachedBody.hasEffectiveAuthority)
                 {
                     var driverController = i.cachedBody.GetComponent<DriverController>();
-					if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController)
-					{
+                    if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController)
+                    {
                         if (driverController.passive.isPistolOnly || driverController.passive.isBullets || (driverController.passive.isRyan && this.isNewAmmoType))
-						{
-							BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
-							if (blinker)
-							{
-								foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
-								{
-									h.enabled = false;
-								}
+                        {
+                            BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+                            if (blinker)
+                            {
+                                foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
+                                {
+                                    h.enabled = false;
+                                }
 
-								GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
-								ammoPickup.transform.localPosition = Vector3.zero;
-								ammoPickup.transform.localRotation = Quaternion.identity;
+                                GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+                                ammoPickup.transform.localPosition = Vector3.zero;
+                                ammoPickup.transform.localRotation = Quaternion.identity;
                                 DoTextStuff(ammoPickup.transform, true);
                             }
-						}
-						else
-						{
+                        }
+                        else
+                        {
                             DoTextStuff(this.transform.parent, false);
-						}
+                        }
                     }
                     break;
                 }
@@ -139,14 +138,19 @@ namespace RobDriver.Modules.Components
             RoR2.UI.LanguageTextMeshController textComponent = transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
             if (textComponent)
             {
-                if (!this.weaponDef || (isAmmo && !this.bulletDef))
+                if (!this.weaponDef)
                 {
                     // band-aid i don't have the time to keep fighting with this code rn
-                    textComponent.token = "FUCK YOU FUCK YOU FUCK/nYOU FUCK YOU FUCK YOU";
+                    textComponent.token = "Weapon";
+                    return;
+                }
+                if((isAmmo && !this.bulletDef))
+                {
+                    textComponent.token = "Bullets";
                     return;
                 }
 
-                if(isAmmo) textComponent.token = this.bulletDef.nameToken;
+                if (isAmmo) textComponent.token = this.bulletDef.nameToken;
                 else textComponent.token = this.weaponDef.nameToken;
 
                 //Because all guns are "uncommon" we have to do this for ammo

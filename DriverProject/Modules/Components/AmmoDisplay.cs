@@ -58,30 +58,30 @@ namespace RobDriver.Modules.Components
                     return;
                 }
 
-                if (iDrive.weaponTimer <= 0f)
-                {
-                    //this.targetText.token = "<color=#C80000>0 / " + Mathf.CeilToInt(iDrive.maxWeaponTimer).ToString() + Helpers.colorSuffix;
-                    durationBar.color = durationBarRed.color;
-                    return;
-                }
-
                 if (iDrive.passive.isPistolOnly)
                 {
+                    if (iDrive.weaponTimer <= 0f)
+                    {
+                        this.targetText.token = "<color=#C80000>0 / " + Mathf.CeilToInt(iDrive.maxWeaponTimer).ToString() + Helpers.colorSuffix;
+                        return;
+                    }
                     this.targetText.token = Mathf.CeilToInt(iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(iDrive.maxWeaponTimer).ToString();
                 }
                 else if (iDrive.HasSpecialBullets)
                 {
+                    if (iDrive.weaponTimer <= 0f)
+                    {
+                        this.targetText.token = "";
+                        durationBar.color = durationBarRed.color;
+                        return;
+                    }
                     this.durationDisplay.SetActive(true);
 
                     maxWeaponTimer = iDrive.maxWeaponTimer;
                     weaponTimer = iDrive.weaponTimer;
 
                     durationBar.color = iDrive.currentBulletDef.trailColor;
-                    /*
-                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(iDrive.currentBulletDef.trailColor)}>" +
-                        Mathf.CeilToInt(iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(iDrive.maxWeaponTimer).ToString() +
-                        " - " + iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
-                    */
+                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(iDrive.currentBulletDef.trailColor)}>"+ iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
                 }
                 else
                 {

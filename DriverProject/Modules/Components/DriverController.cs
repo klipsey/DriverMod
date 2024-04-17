@@ -38,7 +38,7 @@ namespace RobDriver.Modules.Components
         private SkillLocator skillLocator;
 
         private readonly int maxShellCount = 12;
-        private readonly int basePistolAmmo = 20;
+        private readonly int basePistolAmmo = 26;
         private int currentShell;
         private int currentSlug;
         private GameObject[] shellObjects;
@@ -545,7 +545,7 @@ namespace RobDriver.Modules.Components
             if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
-            SetBulletAmmo();
+            if(weaponTimer <= 0) SetBulletAmmo();
 
             // notify hud
             this.onWeaponUpdate?.Invoke(this);
