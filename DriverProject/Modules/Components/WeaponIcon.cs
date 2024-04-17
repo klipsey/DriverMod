@@ -50,6 +50,7 @@ namespace RobDriver.Modules.Components
                 }
 
                 this.durationBar.fillAmount = fill;
+				this.durationBar.color = this.iDrive.currentBulletDef.trailColor;
             }
             else
             {
@@ -69,8 +70,8 @@ namespace RobDriver.Modules.Components
             if (this.iconImage)
 			{
 				this.iconImage.texture = this.iDrive.weaponDef.icon;
-				this.iconImage.color = Color.white;
-				this.iconImage.enabled = true;
+				this.iconImage.color = this.iDrive.currentBulletDef.trailColor;
+                this.iconImage.enabled = true;
 			}
             if (this.tooltipProvider)
 			{

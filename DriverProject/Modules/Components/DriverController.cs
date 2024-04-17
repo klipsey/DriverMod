@@ -539,7 +539,7 @@ namespace RobDriver.Modules.Components
             if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
-            if(weaponTimer <= 0) SetBulletAmmo();
+            SetBulletAmmo();
 
             // notify hud
             this.onWeaponUpdate?.Invoke();

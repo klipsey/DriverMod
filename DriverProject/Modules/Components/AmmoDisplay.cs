@@ -23,13 +23,13 @@ namespace RobDriver.Modules.Components
             {
                 this.iDrive.onConsumeAmmo += SetDisplay;
                 this.targetText.enabled = true;
-                this.durationDisplay.SetActive(true);
+                this.targetText.token = string.Empty;
             }
             else
             {
                 this.targetText.enabled = false;
-                this.durationDisplay.SetActive(false);
             }
+            this.durationDisplay.SetActive(false);
         }
 
         private void OnDestroy()
@@ -59,11 +59,12 @@ namespace RobDriver.Modules.Components
             {
                 if (this.iDrive.maxWeaponTimer <= 0f)
                 {
-                    this.targetText.token = "";
+                    this.targetText.token = string.Empty;
                     this.durationDisplay.SetActive(false);
                     return;
                 }
 
+                // pistol only, text and no bar
                 if (this.iDrive.passive.isPistolOnly)
                 {
                     if (this.iDrive.weaponTimer <= 0f)
@@ -72,23 +73,26 @@ namespace RobDriver.Modules.Components
                         return;
                     }
                     this.targetText.token = Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString();
+                    return;
                 }
-                else if (this.iDrive.HasSpecialBullets)
+                
+                // ammo passives, bar and text
+                if (this.iDrive.HasSpecialBullets)
                 {
-                    if (this.iDrive.weaponTimer <= 0f)
+                    if (this.iDrive.weaponTimer <= 0)
                     {
-                        this.targetText.token = "";
-                        durationBar.color = durationBarRed.color;
+                        this.targetText.token = string.Empty;
+                        this.durationBar.color = this.durationBarRed.color;
                         return;
                     }
                     this.durationDisplay.SetActive(true);
 
-                    durationBar.color = this.iDrive.currentBulletDef.trailColor;
+                    this.durationBar.color = this.iDrive.currentBulletDef.trailColor;
                     this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.currentBulletDef.trailColor)}>" + this.iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
                 }
-                else
+                else if (this.iDrive.weaponTimer == this.iDrive.maxWeaponTimer)
                 {
-                    this.targetText.token = "";
+                    this.durationDisplay.SetActive(false);
                 }
             }
         }
