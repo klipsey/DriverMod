@@ -117,7 +117,7 @@ namespace RobDriver
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
 
             // uncomment this if network testing
-            On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
+            //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
