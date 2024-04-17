@@ -9,10 +9,7 @@ namespace RobDriver.Modules.Components
     public class WeaponIcon : MonoBehaviour
     {
 		public HUD targetHUD;
-
-		public float weaponTimer = 0;
-		public float maxWeaponTimer = 0;
-		public bool isPistolOnly = false;
+		public DriverController iDrive;
 
 		public GameObject displayRoot;
 		public RawImage iconImage;
@@ -27,31 +24,24 @@ namespace RobDriver.Modules.Components
 
 		private void Start()
 		{
-            var iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
-			if (iDrive)
-            {
-				isPistolOnly = iDrive.passive.isPistolOnly;
-                iDrive.onWeaponUpdate += SetDisplay;
-                iDrive.onConsumeAmmo += SetAmmoDisplay;
-            }
+            this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
+			if (this.iDrive) this.iDrive.onWeaponUpdate += SetDisplay;
         }
 
         private void OnDestroy()
         {
-            var iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
-            if (iDrive) iDrive.onWeaponUpdate -= SetDisplay;
-			if(iDrive) iDrive.onConsumeAmmo -= SetAmmoDisplay;
+            if (this.iDrive) this.iDrive.onWeaponUpdate -= SetDisplay;
         }
 
         private void Update()
         {
-			if (isPistolOnly) return;
+			if (!this.iDrive || this.iDrive.passive.isPistolOnly) return;
 
-            if (this.maxWeaponTimer > 0f)
+            if (this.iDrive.maxWeaponTimer > 0f)
             {
                 this.durationDisplay.SetActive(true);
 
-                float fill = Util.Remap(this.weaponTimer, 0f, this.maxWeaponTimer, 0f, 1f);
+                float fill = Util.Remap(this.iDrive.weaponTimer, 0f, this.iDrive.maxWeaponTimer, 0f, 1f);
 
                 if (this.durationBarRed)
                 {
@@ -66,16 +56,10 @@ namespace RobDriver.Modules.Components
                 this.durationDisplay.SetActive(false);
             }
         }
-        private void SetAmmoDisplay(DriverController iDrive)
-		{
-            maxWeaponTimer = iDrive.maxWeaponTimer;
-            weaponTimer = iDrive.weaponTimer;
-        }
-        private void SetDisplay(DriverController iDrive)
-		{
-			if (!iDrive) return;
 
-			SetAmmoDisplay(iDrive);
+        private void SetDisplay()
+		{
+			if (!this.iDrive) return;
 
 			this.DoStockFlash();
 
@@ -84,14 +68,14 @@ namespace RobDriver.Modules.Components
 
             if (this.iconImage)
 			{
-				this.iconImage.texture = iDrive.weaponDef.icon;
+				this.iconImage.texture = this.iDrive.weaponDef.icon;
 				this.iconImage.color = Color.white;
 				this.iconImage.enabled = true;
 			}
             if (this.tooltipProvider)
 			{
-				this.tooltipProvider.titleToken = iDrive.weaponDef.nameToken;
-				this.tooltipProvider.bodyToken = iDrive.weaponDef.descriptionToken;
+				this.tooltipProvider.titleToken = this.iDrive.weaponDef.nameToken;
+				this.tooltipProvider.bodyToken = this.iDrive.weaponDef.descriptionToken;
 				this.tooltipProvider.titleColor = Modules.Survivors.Driver.characterColor;
 				this.tooltipProvider.bodyColor = Color.gray;
 			}

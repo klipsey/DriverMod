@@ -29,7 +29,7 @@ namespace DriverMod.Modules.Components
             Vector3 location)
         {
             var closestPosition = Vector3.positiveInfinity;
-            var lowestDistance = float.MaxValue;
+            var lowestDistance = Config.pickupRadius.Value;
             foreach (var teamComponent in players)
             {
                 var networkBody = Util.LookUpBodyNetworkUser(teamComponent.gameObject);
@@ -39,12 +39,12 @@ namespace DriverMod.Modules.Components
                 }
 
                 // i really hate calling getComponent on every fixedupdate but itll do for now
-                var driverController = teamComponent.body.GetComponent<DriverController>();
-
-                if (!Config.enableMagenticConditionalPickups.Value || (!driverController.HasSpecialBullets && driverController.weaponDef == driverController.defaultWeaponDef))
+                var distance = Vector3.Distance(teamComponent.body.footPosition, location);
+                if (distance < lowestDistance)
                 {
-                    var distance = Vector3.Distance(teamComponent.body.footPosition, location);
-                    if (distance < lowestDistance)
+                    var iDrive = teamComponent.body.GetComponent<DriverController>();
+
+                    if (!Config.enableMagenticConditionalPickups.Value || (!iDrive.HasSpecialBullets && iDrive.weaponDef == iDrive.defaultWeaponDef))
                     {
                         closestPosition = teamComponent.body.footPosition;
                         lowestDistance = distance;

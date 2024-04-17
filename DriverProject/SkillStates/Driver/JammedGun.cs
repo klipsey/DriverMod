@@ -37,7 +37,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (base.fixedAge >= this.duration)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

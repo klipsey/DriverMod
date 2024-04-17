@@ -144,7 +144,7 @@ namespace RobDriver.Modules.Components
                     textComponent.token = "Weapon";
                     return;
                 }
-                if((isAmmo && !this.bulletDef))
+                if(isAmmo && !this.bulletDef)
                 {
                     textComponent.token = "Bullets";
                     return;

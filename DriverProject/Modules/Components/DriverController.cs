@@ -44,8 +44,8 @@ namespace RobDriver.Modules.Components
         private GameObject[] shellObjects;
         private GameObject[] slugObjects;
 
-        public Action<DriverController> onConsumeAmmo;
-        public Action<DriverController> onWeaponUpdate;
+        public Action onConsumeAmmo;
+        public Action onWeaponUpdate;
 
         public float maxWeaponTimer;
         public float weaponTimer;
@@ -281,11 +281,8 @@ namespace RobDriver.Modules.Components
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.LunarPistol);
             if (!success) return;
 
-            if (weaponDef == defaultWeaponDef)
-            {
-                this.PickUpWeapon(this.defaultWeaponDef);
-                this.TryPickupNotification(true);
-            }
+            this.PickUpWeapon(this.defaultWeaponDef);
+            this.TryPickupNotification(true);
 
             EffectData effectData = new EffectData
             {
@@ -308,11 +305,8 @@ namespace RobDriver.Modules.Components
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.VoidPistol);
             if (!success) return;
 
-            if (weaponDef == defaultWeaponDef)
-            {
-                this.PickUpWeapon(this.defaultWeaponDef);
-                this.TryPickupNotification(true);
-            }
+            this.PickUpWeapon(this.defaultWeaponDef);
+            this.TryPickupNotification(true);
 
             EffectData effectData = new EffectData
             {
@@ -422,7 +416,7 @@ namespace RobDriver.Modules.Components
             else this.weaponTimer -= multiplier;
 
             // notify Hud
-            this.onConsumeAmmo?.Invoke(this);
+            this.onConsumeAmmo?.Invoke();
         }
 
         private void FixedUpdate()
@@ -548,8 +542,8 @@ namespace RobDriver.Modules.Components
             if(weaponTimer <= 0) SetBulletAmmo();
 
             // notify hud
-            this.onWeaponUpdate?.Invoke(this);
-            this.onConsumeAmmo?.Invoke(this);
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
         }
 
         /// <summary>
@@ -593,8 +587,8 @@ namespace RobDriver.Modules.Components
             this.TryCallout();
             this.TryPickupNotification();
 
-            this.onWeaponUpdate?.Invoke(this);
-            this.onConsumeAmmo?.Invoke(this);
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
         }
 
         /// <summary>
@@ -625,8 +619,8 @@ namespace RobDriver.Modules.Components
             muzzleTrail = UnityEngine.Object.Instantiate(muzzleTrail, muzzleTransform);
 
             // notify hud
-            this.onWeaponUpdate?.Invoke(this);
-            this.onConsumeAmmo?.Invoke(this);
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
         }
 
         /// <summary>
@@ -677,8 +671,8 @@ namespace RobDriver.Modules.Components
             this.maxWeaponTimer = shotCount;
 
             //notify hud
-            this.onWeaponUpdate?.Invoke(this);
-            this.onConsumeAmmo?.Invoke(this);
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
         }
 
         private void TryPickupNotification(bool force = false)
