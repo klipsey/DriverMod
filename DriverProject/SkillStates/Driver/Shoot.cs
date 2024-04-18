@@ -155,8 +155,6 @@ namespace RobDriver.SkillStates.Driver
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
                 attack.AddModdedDamageType(iDrive.ModdedDamageType);
-                Log.Debug("Modded: " + iDrive.ModdedDamageType);
-                Log.Debug("Vanilla: " + iDrive.DamageType);
                 attack.Fire();
             }
 
