@@ -224,12 +224,12 @@ namespace RobDriver.Modules.Components
                     desiredWeapon = DriverWeaponCatalog.Needler;
                 }
 
-                // set new default
-                this.defaultWeaponDef = desiredWeapon;
                 // give new weapon if you arent holding a stored weapon
-                if (this.weaponDef != this.defaultWeaponDef && desiredWeapon != this.defaultWeaponDef)
+                if (this.maxWeaponTimer <= 0 && this.defaultWeaponDef != desiredWeapon)
                 {
-                    this.PickUpWeapon(this.defaultWeaponDef);
+                    // set new default
+                    this.defaultWeaponDef = desiredWeapon;
+                    this.PickUpWeapon(desiredWeapon);
                 }
             }
         }
@@ -602,8 +602,13 @@ namespace RobDriver.Modules.Components
 
             SetBulletAmmo(ammo, cutAmmo);
 
+            // this is bad
             Transform muzzleTransform;
-            if (DriverWeaponCatalog.IsWeaponPistol(weaponDef)) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
+            if (DriverWeaponCatalog.IsWeaponPistol(weaponDef) ||
+                DriverWeaponCatalog.GoldenGun == weaponDef ||
+                DriverWeaponCatalog.BeetleShield == weaponDef ||
+                DriverWeaponCatalog.NemmandoGun == weaponDef ||
+                DriverWeaponCatalog.NemmercGun == weaponDef) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
             else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
 
             if (muzzleTrail) UnityEngine.Object.Destroy(muzzleTrail);

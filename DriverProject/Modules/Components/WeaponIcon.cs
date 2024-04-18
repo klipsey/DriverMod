@@ -70,7 +70,7 @@ namespace RobDriver.Modules.Components
             if (this.iconImage)
 			{
 				this.iconImage.texture = this.iDrive.weaponDef.icon;
-				this.iconImage.color = this.iDrive.currentBulletDef.trailColor;
+				this.iconImage.color = Color.white;
                 this.iconImage.enabled = true;
 			}
             if (this.tooltipProvider)

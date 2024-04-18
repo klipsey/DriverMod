@@ -254,7 +254,7 @@ namespace RobDriver.Modules
                     position += UnityEngine.Random.insideUnitSphere * 0.5f;
 
                     Quaternion rotation = Util.QuaternionSafeLookRotation(Vector3.up + UnityEngine.Random.insideUnitSphere * 0.1f);
-                    float damageValue = Util.OnKillProcDamage(attackerBody.damage, 1.5f + 1.5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.Dagger));
+                    float damageValue = Util.OnKillProcDamage(attackerBody.damage, 3f + 1.5f * attackerBody.inventory.GetItemCount(RoR2Content.Items.Dagger));
                     float force = 200f;
 
                     ProjectileManager.instance.FireProjectile(
