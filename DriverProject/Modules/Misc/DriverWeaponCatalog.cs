@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RobDriver.Modules;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -95,6 +96,27 @@ namespace RobDriver
         public static DriverWeaponDef GetWeaponFromIndex(int index)
         {
             return weaponDefs[index];
+        }
+
+        public static DriverWeaponDef GetDefaultWeaponFromConfig()
+        {
+            var name = Config.defaultWeaponName.Value;
+            var ret = weaponDefs[Config.defaultWeaponIndex.Value];
+
+            if (string.IsNullOrWhiteSpace(name)) return ret;
+
+            name = name.ToUpper().Trim().Replace("_", "");
+            for (int i = 0; i < weaponDefs.Length; i++)
+            {
+                // i hate string comparisons
+                var token = weaponDefs[i].nameToken?.ToUpper()?.Replace("_", "")?.Replace("ROBDRIVER", "")?.Replace("NAME", "");
+                var configId = weaponDefs[i].configIdentifier?.ToUpper()?.Replace("_", "")?.Replace(" ", "");
+                if (weaponDefs[i].nameToken == name || token == name || configId == name)
+                {
+                    return weaponDefs[i];
+                }
+            }
+            return ret;
         }
 
         public static DriverWeaponDef GetRandomWeapon()

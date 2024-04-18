@@ -38,13 +38,12 @@ namespace DriverMod.Modules.Components
                     continue;
                 }
 
-                // i really hate calling getComponent on every fixedupdate but itll do for now
                 var distance = Vector3.Distance(teamComponent.body.footPosition, location);
                 if (distance < lowestDistance)
                 {
-                    var iDrive = teamComponent.body.GetComponent<DriverController>();
+                    teamComponent.body.TryGetComponent<DriverController>(out var iDrive);
 
-                    if (!Config.enableMagenticConditionalPickups.Value || (!iDrive.HasSpecialBullets && iDrive.weaponDef == iDrive.defaultWeaponDef))
+                    if (!Config.enableMagenticConditionalPickups.Value || (iDrive && !iDrive.HasSpecialBullets && iDrive.weaponDef == iDrive.defaultWeaponDef))
                     {
                         closestPosition = teamComponent.body.footPosition;
                         lowestDistance = distance;
@@ -86,7 +85,7 @@ namespace DriverMod.Modules.Components
             var speed = Vector3.MoveTowards(
                 rigidBody.velocity,
                 (this.transform.position - playerLocation).normalized * 100f,
-                75f
+                50f
             );
 
             rigidBody.velocity += -speed;

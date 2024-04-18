@@ -19,22 +19,20 @@ namespace RobDriver.Modules.Components
         private void Start()
         {
             this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
-            if (this.iDrive && !this.iDrive.passive.isDefault)
-            {
-                this.iDrive.onConsumeAmmo += SetDisplay;
-                this.targetText.enabled = true;
-                this.targetText.token = string.Empty;
-            }
-            else
-            {
-                this.targetText.enabled = false;
-            }
+            if (this.iDrive && !this.iDrive.passive.isDefault) this.iDrive.onConsumeAmmo += SetDisplay;
+
+            this.targetText.token = string.Empty;
             this.durationDisplay.SetActive(false);
         }
 
         private void OnDestroy()
         {
             if (this.iDrive) this.iDrive.onConsumeAmmo -= SetDisplay;
+
+            // why wont it just die
+            this.targetText.token = string.Empty;
+            this.durationDisplay.SetActive(false);
+            GameObject.Destroy(this.durationDisplay);
         }
 
         private void Update()
@@ -82,7 +80,6 @@ namespace RobDriver.Modules.Components
                     if (this.iDrive.weaponTimer <= 0)
                     {
                         this.targetText.token = string.Empty;
-                        this.durationBar.color = this.durationBarRed.color;
                         return;
                     }
                     this.durationDisplay.SetActive(true);

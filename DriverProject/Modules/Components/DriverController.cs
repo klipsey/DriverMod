@@ -18,8 +18,6 @@ namespace RobDriver.Modules.Components
 {
     public class DriverController : MonoBehaviour
     {
-        // properties for when access control matters
-        // if you try to circumvent/change these youre probably doing a hack
         public DriverWeaponDef weaponDef { get; private set; }
         public DriverBulletDef currentBulletDef { get; private set; } =  DriverBulletCatalog.Default;
         public DriverWeaponDef defaultWeaponDef { get; private set; }
@@ -66,6 +64,7 @@ namespace RobDriver.Modules.Components
         private int lysateCellCount = 0;
 
         private GameObject muzzleTrail;
+        public GameObject weaponEffectInstance;
 
         public ParticleSystem machineGunVFX;
 
@@ -162,7 +161,7 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
 
-            this.defaultWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(Config.defaultWeaponIndex.Value);
+            this.defaultWeaponDef = DriverWeaponCatalog.GetDefaultWeaponFromConfig();
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -533,7 +532,7 @@ namespace RobDriver.Modules.Components
             newEffect.transform.rotation = this.characterBody.modelLocator.modelTransform.rotation;
             newEffect.transform.position = this.childLocator.FindChild("Pistol").position + (Vector3.up * 0.5f);
         }
-        
+
         public void FinishReload()
         {
             if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
@@ -903,6 +902,8 @@ namespace RobDriver.Modules.Components
 
         private void OnDestroy()
         {
+            if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
+
             if (this.shellObjects != null && this.shellObjects.Length > 0)
             {
                 for (int i = 0; i < this.shellObjects.Length; i++)

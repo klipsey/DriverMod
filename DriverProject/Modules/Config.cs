@@ -33,6 +33,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> enableRecoil;
+        public static ConfigEntry<string> defaultWeaponName;
         public static ConfigEntry<int> defaultWeaponIndex;
         public static ConfigEntry<bool> badass;
         public static ConfigEntry<bool> cursed;
@@ -100,6 +101,8 @@ namespace RobDriver.Modules
 
             enableRecoil = Config.BindAndOptions("02 - Gameplay", "Enable Recoil", true, "Set to false to disable recoil from shooting guns.");
 
+            defaultWeaponName = Config.BindAndOptions("02 - Gameplay", "Default Weapon Name", "", "Changes the default weapon when given a valid weapon name. Leave blank to use the configured index instead. Attempts to match the name listed in 07 - Weapons");
+
             defaultWeaponIndex = Config.BindAndOptions("02 - Gameplay", "Default Weapon Index", 0, "Change the index of the default weapon Driver uses. Purely for fun, don't ask me what the indices are because I don't know, they're generated at runtime.");
 
             #endregion
@@ -112,7 +115,7 @@ namespace RobDriver.Modules
 
             pickupSpeed = Config.BindAndOptionsSlider("03 - Pickups", "PickupSpeed", 75f, "The speed with which the pickups will move towards players.", 25f, 75f);
 
-            pickupRadius = Config.BindAndOptionsSlider("03 - Pickups", "PickupRadius", 10f, "How close a pickup must be before it will begin to move towards a player.", 0f, 10f);
+            pickupRadius = Config.BindAndOptionsSlider("03 - Pickups", "PickupRadius", 10f, "How close a pickup must be before it will begin to move towards a player.", 0f, 15f);
 
             #endregion
 
@@ -299,6 +302,10 @@ namespace RobDriver.Modules
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static void TryRegisterOption<T>(ConfigEntry<T> entry, bool restartRequired)
         {
+            if (entry is ConfigEntry<string> stringEntry)
+            {
+                ModSettingsManager.AddOption(new StringInputFieldOption(stringEntry, restartRequired));
+            }
             if (entry is ConfigEntry<float>)
             {
                 ModSettingsManager.AddOption(new SliderOption(entry as ConfigEntry<float>, new SliderConfig()

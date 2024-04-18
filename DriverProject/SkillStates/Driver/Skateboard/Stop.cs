@@ -26,7 +26,8 @@ namespace RobDriver.SkillStates.Driver.Skateboard
 
         public override void OnExit()
         {
-            base.OnExit(); 
+            base.OnExit();
+            if (this.iDrive && this.iDrive.weaponEffectInstance) Destroy(this.iDrive.weaponEffectInstance);
             this.GetModelChildLocator().FindChild("SkateboardBackModel").gameObject.SetActive(true);
         }
 
