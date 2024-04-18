@@ -27,13 +27,13 @@ namespace RobDriver.SkillStates.Driver.Skateboard
         public override void OnExit()
         {
             base.OnExit();
-            if (this.iDrive && this.iDrive.weaponEffectInstance) Destroy(this.iDrive.weaponEffectInstance);
             this.GetModelChildLocator().FindChild("SkateboardBackModel").gameObject.SetActive(true);
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            if (this.iDrive.weaponEffectInstance && this.GetMinimumInterruptPriority() == InterruptPriority.Any) Destroy(this.iDrive.weaponEffectInstance);
 
             if (base.isAuthority && base.fixedAge >= this.duration)
             {
