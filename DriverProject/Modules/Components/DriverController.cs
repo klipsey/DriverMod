@@ -18,8 +18,6 @@ namespace RobDriver.Modules.Components
 {
     public class DriverController : MonoBehaviour
     {
-        // properties for when access control matters
-        // if you try to circumvent/change these youre probably doing a hack
         public DriverWeaponDef weaponDef { get; private set; }
         public DriverBulletDef currentBulletDef { get; private set; } =  DriverBulletCatalog.Default;
         public DriverWeaponDef defaultWeaponDef { get; private set; }
@@ -66,6 +64,7 @@ namespace RobDriver.Modules.Components
         private int lysateCellCount = 0;
 
         private GameObject muzzleTrail;
+        public GameObject weaponEffectInstance;
 
         public ParticleSystem machineGunVFX;
 
@@ -162,7 +161,7 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
 
-            this.defaultWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(Config.defaultWeaponIndex.Value);
+            this.defaultWeaponDef = DriverWeaponCatalog.GetDefaultWeaponFromConfig();
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -225,12 +224,12 @@ namespace RobDriver.Modules.Components
                     desiredWeapon = DriverWeaponCatalog.Needler;
                 }
 
-                // set new default
-                this.defaultWeaponDef = desiredWeapon;
                 // give new weapon if you arent holding a stored weapon
-                if (this.weaponDef != this.defaultWeaponDef && desiredWeapon != this.defaultWeaponDef)
+                if (this.maxWeaponTimer <= 0 && this.defaultWeaponDef != desiredWeapon)
                 {
-                    this.PickUpWeapon(this.defaultWeaponDef);
+                    // set new default
+                    this.defaultWeaponDef = desiredWeapon;
+                    this.PickUpWeapon(desiredWeapon);
                 }
             }
         }
@@ -533,7 +532,7 @@ namespace RobDriver.Modules.Components
             newEffect.transform.rotation = this.characterBody.modelLocator.modelTransform.rotation;
             newEffect.transform.position = this.childLocator.FindChild("Pistol").position + (Vector3.up * 0.5f);
         }
-        
+
         public void FinishReload()
         {
             if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
@@ -599,24 +598,23 @@ namespace RobDriver.Modules.Components
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
-            //Just in case
-            if (muzzleTrail)
-            {
-                UnityEngine.Object.Destroy(muzzleTrail);
-                muzzleTrail = null;
-            }
-
             currentBulletDef = newBullet;
 
             SetBulletAmmo(ammo, cutAmmo);
 
+            // this is bad
             Transform muzzleTransform;
-            if (DriverWeaponCatalog.IsWeaponPistol(weaponDef)) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
+            if (DriverWeaponCatalog.IsWeaponPistol(weaponDef) ||
+                DriverWeaponCatalog.GoldenGun == weaponDef ||
+                DriverWeaponCatalog.BeetleShield == weaponDef ||
+                DriverWeaponCatalog.NemmandoGun == weaponDef ||
+                DriverWeaponCatalog.NemmercGun == weaponDef) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
             else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
 
-            muzzleTrail = Assets.defaultMuzzleTrail;
+            if (muzzleTrail) UnityEngine.Object.Destroy(muzzleTrail);
+            muzzleTrail = UnityEngine.Object.Instantiate(Assets.defaultMuzzleTrail, muzzleTransform);
             muzzleTrail.GetComponent<TrailRenderer>().startColor = currentBulletDef.trailColor;
-            muzzleTrail = UnityEngine.Object.Instantiate(muzzleTrail, muzzleTransform);
+            muzzleTrail.GetComponent<TrailRenderer>().endColor = currentBulletDef.trailColor.AlphaMultiplied(0.2f);
 
             // notify hud
             this.onWeaponUpdate?.Invoke();
@@ -903,6 +901,8 @@ namespace RobDriver.Modules.Components
 
         private void OnDestroy()
         {
+            if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
+
             if (this.shellObjects != null && this.shellObjects.Length > 0)
             {
                 for (int i = 0; i < this.shellObjects.Length; i++)

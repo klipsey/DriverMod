@@ -66,10 +66,14 @@ namespace RobDriver.SkillStates.Driver
                 base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
             }
 
-            if (base.isAuthority && base.fixedAge >= this.duration)
+            // early exit to sync with sound queues
+            if (base.fixedAge >= 0.75f * this.duration && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
             {
                 this.iDrive.FinishReload();
+            }
 
+            if (base.isAuthority && base.fixedAge >= this.duration)
+            {
                 if (this.aiming)
                 {
                     this.outer.SetNextState(new SteadyAim

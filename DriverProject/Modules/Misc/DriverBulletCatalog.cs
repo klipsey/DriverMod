@@ -184,7 +184,7 @@ namespace RobDriver.Modules
         public static DriverBulletDef GetWeightedRandomBullet(DriverWeaponTier maxTier)
         {
             int commonWeight = 5;
-            int uncommonWeight = maxTier == DriverWeaponTier.Uncommon ? 3 : 0;
+            int uncommonWeight = maxTier >= DriverWeaponTier.Uncommon ? 3 : 0;
             int legendaryWeight = maxTier == DriverWeaponTier.Legendary ? 1 : 0;
             int rnd = UnityEngine.Random.Range(0, commonWeight + uncommonWeight + legendaryWeight);
 

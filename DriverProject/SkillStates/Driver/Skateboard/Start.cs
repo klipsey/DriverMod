@@ -31,6 +31,17 @@ namespace RobDriver.SkillStates.Driver.Skateboard
             base.PlayAnimation("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration);
 
             this.SmallHop(this.characterMotor, 10f);
+
+
+            if (this.iDrive)
+            {
+                if (this.iDrive.weaponEffectInstance) Destroy(this.iDrive.weaponEffectInstance);
+                this.iDrive.weaponEffectInstance = GameObject.Instantiate(Modules.Assets.backWeaponEffect);
+                this.iDrive.weaponEffectInstance.GetComponent<Modules.Components.BackWeaponComponent>().Init(this.cachedWeaponDef);
+                this.iDrive.weaponEffectInstance.transform.parent = this.FindModelChild("BackWeapon");
+                this.iDrive.weaponEffectInstance.transform.localRotation = Quaternion.identity;
+                this.iDrive.weaponEffectInstance.transform.localPosition = Vector3.zero;
+            }
         }
 
         public override void FixedUpdate()
