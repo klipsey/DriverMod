@@ -598,13 +598,6 @@ namespace RobDriver.Modules.Components
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
-            //Just in case
-            if (muzzleTrail)
-            {
-                UnityEngine.Object.Destroy(muzzleTrail);
-                muzzleTrail = null;
-            }
-
             currentBulletDef = newBullet;
 
             SetBulletAmmo(ammo, cutAmmo);
@@ -613,9 +606,10 @@ namespace RobDriver.Modules.Components
             if (DriverWeaponCatalog.IsWeaponPistol(weaponDef)) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
             else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
 
-            muzzleTrail = Assets.defaultMuzzleTrail;
+            if (muzzleTrail) UnityEngine.Object.Destroy(muzzleTrail);
+            muzzleTrail = UnityEngine.Object.Instantiate(Assets.defaultMuzzleTrail, muzzleTransform);
             muzzleTrail.GetComponent<TrailRenderer>().startColor = currentBulletDef.trailColor;
-            muzzleTrail = UnityEngine.Object.Instantiate(muzzleTrail, muzzleTransform);
+            muzzleTrail.GetComponent<TrailRenderer>().endColor = currentBulletDef.trailColor.AlphaMultiplied(0.2f);
 
             // notify hud
             this.onWeaponUpdate?.Invoke();
