@@ -89,7 +89,7 @@ namespace RobDriver.Modules
             
             baseDropRate = Config.BindAndOptionsSlider("02 - Gameplay", "Base Drop Rate", 7f, "Base chance for weapons and ammo to drop on kill", 0f, 100f);
 
-            godslingDropRateSplit = Config.BindAndOptionsSlider("02 - Gameplay", "Godsling Drop Rate Split", 50f, "Controls whether ammo or guns drop while using the Godsling passive, higher number means higher chance for guns.", 0f, 100f);
+            godslingDropRateSplit = Config.BindAndOptionsSlider("02 - Gameplay", "Godsling Drop Rate Split", 50f, "Controls whether ammo or guns drop while using the Godsling passive, higher number means higher chance for ammo.", 0f, 100f);
             
             backupMagExtendDuration = Config.BindAndOptions("02 - Gameplay", "Backup Magazine Ammo Extension", false, "If set to true, Backup Magazines will increase the Ammo of weapon pickups by 0.5s.");
             
