@@ -24,8 +24,8 @@ public class DriverBulletDef : ScriptableObject
         DriverBulletDef bulletDef = (DriverBulletDef)ScriptableObject.CreateInstance(typeof(DriverBulletDef));
         bulletDef.name = bulletDefInfo.nameToken;
         bulletDef.nameToken = bulletDefInfo.nameToken;
-        bulletDef.bulletType = bulletDefInfo.bulletType;
-        bulletDef.moddedBulletType = bulletDefInfo.moddedBulletType;
+        bulletDef.bulletType = bulletDefInfo.driverBulletType;
+        bulletDef.moddedBulletType = bulletDefInfo.moddedDriverBulletType;
         bulletDef.tier = bulletDefInfo.tier;
         bulletDef.icon = bulletDefInfo.icon;
         bulletDef.trailColor = bulletDefInfo.trailColor;
@@ -37,8 +37,8 @@ public class DriverBulletDef : ScriptableObject
 public struct DriverBulletDefInfo
 {
     public string nameToken;
-    public DamageType bulletType;
-    public DamageAPI.ModdedDamageType moddedBulletType;
+    public DamageType driverBulletType;
+    public DamageAPI.ModdedDamageType moddedDriverBulletType;
     public DriverWeaponTier tier;
 
     public Sprite icon;

@@ -28,6 +28,7 @@ namespace RobDriver.Modules.Components
             else
             {
                 this.targetText.enabled = false;
+                this.targetText.token = string.Empty;
             }
             this.durationDisplay.SetActive(false);
         }
@@ -91,6 +92,10 @@ namespace RobDriver.Modules.Components
                     this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.currentBulletDef.trailColor)}>" + this.iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
                 }
                 else if (this.iDrive.weaponTimer == this.iDrive.maxWeaponTimer)
+                {
+                    this.durationDisplay.SetActive(false);
+                }
+                else
                 {
                     this.durationDisplay.SetActive(false);
                 }
