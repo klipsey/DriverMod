@@ -8,6 +8,9 @@ using RobDriver.Modules;
 using R2API.Networking;
 using RobDriver.Modules.Components;
 using RobDriver.Modules.Survivors;
+using DriverMod.Modules.Misc;
+using static DriverWeaponSkinDef;
+using UnityEngine;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -90,6 +93,7 @@ namespace RobDriver
             RoR2.ContentManagement.ContentManager.onContentPacksAssigned += LateSetup;
 
             CreateWeapons();
+
         }
 
         private void LateSetup(global::HG.ReadOnlyArray<RoR2.ContentManagement.ReadOnlyContentPack> obj)
@@ -116,8 +120,15 @@ namespace RobDriver
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
 
+            On.RoR2.UI.MainMenu.MainMenuController.Start += MainMenuController_Start;
             // uncomment this if network testing
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
+        }
+
+        private void MainMenuController_Start(On.RoR2.UI.MainMenu.MainMenuController.orig_Start orig, RoR2.UI.MainMenu.MainMenuController self)
+        {
+            orig(self);
+            Driver.LateSkinSetup();
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)

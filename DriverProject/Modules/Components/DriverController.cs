@@ -1,4 +1,5 @@
-﻿using R2API;
+﻿using DriverMod.Modules.Misc;
+using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RobDriver.Modules.Survivors;
@@ -9,10 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using static DriverWeaponSkinDef;
+using static R2API.LoadoutAPI;
 
 namespace RobDriver.Modules.Components
 {
@@ -30,6 +34,7 @@ namespace RobDriver.Modules.Components
         private float jamTimer;
         //private EntityStateMachine weaponStateMachine;
         private CharacterBody characterBody;
+        private ModelSkinController skinController;
         private ChildLocator childLocator;
         private CharacterModel characterModel;
         private Animator animator;
@@ -50,7 +55,7 @@ namespace RobDriver.Modules.Components
         public DriverPassive passive;
         private float comboDecay = 1f;
         private SkinnedMeshRenderer weaponRenderer;
-
+        private DriverWeaponSkinDef[] cachedSkin;
         public readonly float upForce = 9f;
         public readonly float backForce = 2.4f;
 
@@ -106,7 +111,9 @@ namespace RobDriver.Modules.Components
             this.animator = modelLocator.modelBaseTransform.GetComponentInChildren<Animator>();
             this.characterModel = modelLocator.modelBaseTransform.GetComponentInChildren<CharacterModel>();
             this.skillLocator = this.GetComponent<SkillLocator>();
-            this.machineGunVFX = this.childLocator.FindChild("MachineGunVFX").gameObject.GetComponent<ParticleSystem>();
+            this.machineGunVFX = this.childLocator.FindChild("MachineGunVFX").gameObject.GetComponent<ParticleSystem>(); 
+
+            this.skinController = modelLocator.modelTransform.gameObject.GetComponent<ModelSkinController>();
 
             // really gotta cache this instead of calling a getcomponent on every single weapon pickup
             this.weaponRenderer = this.childLocator.FindChild("PistolModel").GetComponent<SkinnedMeshRenderer>();
@@ -115,14 +122,13 @@ namespace RobDriver.Modules.Components
 
             this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
             this.currentBulletDef = DriverBulletCatalog.Default;
-            this.PickUpWeapon(this.defaultWeaponDef);
 
             this.availableSupplyDrops = 1;
 
             this.CreateHammerEffect();
 
-            this.Invoke("SetInventoryHook", 0.5f);
-            this.Invoke("CheckForUpgrade", 2.5f);
+            this.Invoke(nameof(SetInventoryHook), 0.5f);
+            this.Invoke(nameof(CheckForUpgrade), 2.5f);
         }
 
         private void GetSkillOverrides()
@@ -160,8 +166,9 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onItemAddedClient += this.Inventory_onItemAddedClient;
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
+            ApplyWeaponSkins();
 
-            this.defaultWeaponDef = DriverWeaponCatalog.GetDefaultWeaponFromConfig();
+            this.defaultWeaponDef = CheckForSkin(DriverWeaponCatalog.GetDefaultWeaponFromConfig());
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -171,6 +178,19 @@ namespace RobDriver.Modules.Components
             this.CheckForNeedler();
 
             this.CheckForStoredWeapon();
+        }
+
+        private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
+        {
+            Log.Debug("Checking for skin: " + def.nameToken);
+            if (Array.Find(this.cachedSkin, ele => ele.weaponDef == def))
+            {
+                Log.Debug("FoundSkin: " + def.nameToken);
+                int i = Array.FindIndex(this.cachedSkin, ele => ele.weaponDef == def);
+                def.mesh = cachedSkin[i].weaponSkinMesh;
+                def.material = cachedSkin[i].weaponSkinMaterial;
+            }
+            return def;
         }
 
         private void CheckForStoredWeapon()
@@ -228,7 +248,7 @@ namespace RobDriver.Modules.Components
                 if (this.maxWeaponTimer <= 0 && this.defaultWeaponDef != desiredWeapon)
                 {
                     // set new default
-                    this.defaultWeaponDef = desiredWeapon;
+                    this.defaultWeaponDef = CheckForSkin(desiredWeapon);
                     this.PickUpWeapon(desiredWeapon);
                 }
             }
@@ -270,7 +290,7 @@ namespace RobDriver.Modules.Components
             if (!DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef)) return false;
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
-            this.defaultWeaponDef = newWeaponDef;
+            this.defaultWeaponDef = CheckForSkin(newWeaponDef);
 
             return true;
         }
@@ -574,7 +594,7 @@ namespace RobDriver.Modules.Components
         /// </summary>
         private void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool cutAmmo = false)
         {
-            this.weaponDef = newWeapon;
+            this.weaponDef = CheckForSkin(newWeapon);
 
             if (newWeapon == DriverWeaponCatalog.LunarHammer) this.hasPickedUpHammer = true; // hardcoding the mithrix hammer as default once picked up. fuck it
 
@@ -941,6 +961,18 @@ namespace RobDriver.Modules.Components
 
                 this.weaponTimer = Mathf.Clamp(this.weaponTimer + amount, 0f, this.maxWeaponTimer);
             }
+        }
+
+        public void ApplyWeaponSkins()
+        {
+            if (this.skinController)
+            {
+                Log.Debug("Skin Index?" + this.skinController.currentSkinIndex);
+                Log.Debug("Skin Index?" + skinController.skins[this.skinController.currentSkinIndex].nameToken);
+                cachedSkin = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
+                Log.Debug("CachedSkin =  " + cachedSkin);
+            }
+            else this.cachedSkin = DriverWeaponSkinCatalog.GetSkin(0);
         }
     }
 }

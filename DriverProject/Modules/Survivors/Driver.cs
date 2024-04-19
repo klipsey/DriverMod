@@ -16,6 +16,10 @@ using R2API.Networking;
 using R2API.Networking.Interfaces;
 using UnityEngine.UI;
 using EntityStates.Missions.BrotherEncounter;
+using DriverMod.Modules.Misc;
+using static DriverWeaponSkinDef;
+using System;
+using UnityEngine.UIElements;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -497,11 +501,9 @@ namespace RobDriver.Modules.Survivors
             GameObject model = childLocator.gameObject;
 
             Transform hitboxTransform = childLocator.FindChild("HammerBaseHitbox");
-            Transform hitboxTransform2 = childLocator.FindChild("HammerHitbox");
             Modules.Prefabs.SetupHitbox(model, new Transform[]
                 {
-                    hitboxTransform,
-                    hitboxTransform2
+                    hitboxTransform
                 }, "Hammer");
 
             hitboxTransform = childLocator.FindChild("KnifeHitbox");
@@ -1970,7 +1972,7 @@ namespace RobDriver.Modules.Survivors
 
         private static void CreateSkins(GameObject prefab)
         {
-            GameObject model = prefab.GetComponentInChildren<ModelLocator>().modelTransform.gameObject;
+            GameObject model = prefab.GetComponent<ModelLocator>().modelTransform.gameObject;
             CharacterModel characterModel = model.GetComponent<CharacterModel>();
 
             ModelSkinController skinController = model.AddComponent<ModelSkinController>();
@@ -2316,7 +2318,47 @@ namespace RobDriver.Modules.Survivors
 
             skinController.skins = skins.ToArray();
         }
+        internal static void LateSkinSetup()
+        {
+            GameObject model = characterPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
+            CharacterModel characterModel = model.GetComponent<CharacterModel>();
 
+            ModelSkinController skinController = model.GetComponent<ModelSkinController>();
+
+            Log.Debug(skinController.skins.Length);
+            DriverWeaponSkinDef[] tempSkins = new DriverWeaponSkinDef[0];
+            for (int n = 0; n < skinController.skins.Length; n++)
+            {
+                Log.Debug("Index: " + n);
+                foreach (SkinDef.MeshReplacement i in skinController.skins[n].meshReplacements)
+                {
+                    Log.Debug("Mesh Loop: " + i);
+                    if (model.transform.Find(i.renderer.name) && model.transform.Find(i.renderer.name).TryGetComponent<SkinnedMeshRenderer>(out var skm))
+                    {
+                        Log.Debug("Found: " + i.renderer.name);
+                        DriverWeaponDef def = Array.Find(DriverWeaponCatalog.weaponDefs, ele => ele.mesh == skm.sharedMesh);
+                        if (def)
+                        {
+                            Log.Debug("Found Def: " + def.nameToken);
+                            DriverWeaponSkinDef skinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
+                            {
+                                nameToken = def.nameToken + "Skin",
+                                weaponDef = def,
+                                weaponSkinMesh = i.mesh,
+                                weaponSkinMaterial = i.renderer.material
+                            });
+                            Array.Resize(ref tempSkins, tempSkins.Length + 1);
+
+                            int index = tempSkins.Length - 1;
+                            tempSkins[index] = skinDef;
+                            Log.Debug("tempSkins: " + tempSkins[index]);
+                        }
+                    }
+                }
+                DriverWeaponSkinCatalog.AddSkin(tempSkins);
+                tempSkins = new DriverWeaponSkinDef[0];
+            }
+        }
         private static void InitializeItemDisplays(GameObject prefab)
         {
             CharacterModel characterModel = prefab.GetComponentInChildren<CharacterModel>();
@@ -2638,7 +2680,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             });
         }
 
-        internal static void ReplaceItemDisplay(Object keyAsset, ItemDisplayRule[] newDisplayRules)
+        internal static void ReplaceItemDisplay(UnityEngine.Object keyAsset, ItemDisplayRule[] newDisplayRules)
         {
             ItemDisplayRuleSet.KeyAssetRuleGroup[] cock = itemDisplayRules.ToArray();
             for (int i = 0; i < cock.Length; i++)
@@ -2721,8 +2763,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
             {
-                orig(self, ref dest, Random.onUnitSphere);
-                dest.desiredAimDirection = Random.onUnitSphere;
+                orig(self, ref dest, UnityEngine.Random.onUnitSphere);
+                dest.desiredAimDirection = UnityEngine.Random.onUnitSphere;
             }
             else orig(self, ref dest, aimDirection);
         }
@@ -2732,7 +2774,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
             {
                 orig(self, ref dest, aimTarget);
-                dest.desiredAimDirection = Random.onUnitSphere;
+                dest.desiredAimDirection = UnityEngine.Random.onUnitSphere;
             }
             else orig(self, ref dest, aimTarget);
         }

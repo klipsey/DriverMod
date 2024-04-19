@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Driver\\DriverProject\\DriverMod.csproj": {}
+    "E:\\RoR2Mods\\Driver\\DriverProject\\DriverMod.csproj": {}
   },
   "projects": {
-    "E:\\Driver\\DriverProject\\DriverMod.csproj": {
+    "E:\\RoR2Mods\\Driver\\DriverProject\\DriverMod.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Driver\\DriverProject\\DriverMod.csproj",
+        "projectUniqueName": "E:\\RoR2Mods\\Driver\\DriverProject\\DriverMod.csproj",
         "projectName": "DriverMod",
-        "projectPath": "E:\\Driver\\DriverProject\\DriverMod.csproj",
+        "projectPath": "E:\\RoR2Mods\\Driver\\DriverProject\\DriverMod.csproj",
         "packagesPath": "C:\\Users\\mario\\.nuget\\packages\\",
-        "outputPath": "E:\\Driver\\DriverProject\\obj\\",
+        "outputPath": "E:\\RoR2Mods\\Driver\\DriverProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "E:\\Driver\\NuGet.Config",
+          "E:\\RoR2Mods\\Driver\\NuGet.Config",
           "C:\\Users\\mario\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
