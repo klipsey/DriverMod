@@ -40,7 +40,6 @@ namespace RobDriver.Modules
 
         public static ConfigEntry<bool> enableMagneticPickups;
         public static ConfigEntry<bool> enableMagenticConditionalPickups;
-        public static ConfigEntry<float> pickupSpeed;
         public static ConfigEntry<float> pickupRadius;
 
         public static ConfigEntry<float> baseHealth;
@@ -112,8 +111,6 @@ namespace RobDriver.Modules
             enableMagneticPickups = Config.BindAndOptions("03 - Pickups", "Enable Magnetic Pickups", true, "Makes weapon and ammo drops move towards the player when they get close.", true);
 
             enableMagenticConditionalPickups = Config.BindAndOptions("03 - Pickups", "Only Magnetize Without Pickup Equipped", true, "Only magnetizes weapon and ammo drops when the player runs out of ammo.", true);
-
-            pickupSpeed = Config.BindAndOptionsSlider("03 - Pickups", "PickupSpeed", 75f, "The speed with which the pickups will move towards players.", 25f, 75f);
 
             pickupRadius = Config.BindAndOptionsSlider("03 - Pickups", "PickupRadius", 10f, "How close a pickup must be before it will begin to move towards a player.", 0f, 15f);
 
