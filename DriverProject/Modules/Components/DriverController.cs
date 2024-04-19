@@ -429,9 +429,7 @@ namespace RobDriver.Modules.Components
                     if (this.HasSpecialBullets)
                     {
                         currentBulletDef = DriverBulletCatalog.Default;
-
                         UnityEngine.Object.Destroy(muzzleTrail.gameObject);
-                        this.muzzleTrail = null;
                     }
                 }
 
@@ -602,20 +600,6 @@ namespace RobDriver.Modules.Components
 
             SetBulletAmmo(ammo, cutAmmo);
 
-            // this is bad
-            Transform muzzleTransform;
-            if (DriverWeaponCatalog.IsWeaponPistol(weaponDef) ||
-                DriverWeaponCatalog.GoldenGun == weaponDef ||
-                DriverWeaponCatalog.BeetleShield == weaponDef ||
-                DriverWeaponCatalog.NemmandoGun == weaponDef ||
-                DriverWeaponCatalog.NemmercGun == weaponDef) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
-            else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
-
-            if (muzzleTrail) UnityEngine.Object.Destroy(muzzleTrail);
-            muzzleTrail = UnityEngine.Object.Instantiate(Assets.defaultMuzzleTrail, muzzleTransform);
-            muzzleTrail.GetComponent<TrailRenderer>().startColor = currentBulletDef.trailColor;
-            muzzleTrail.GetComponent<TrailRenderer>().endColor = currentBulletDef.trailColor.AlphaMultiplied(0.2f);
-
             // notify hud
             this.onWeaponUpdate?.Invoke();
             this.onConsumeAmmo?.Invoke();
@@ -626,6 +610,19 @@ namespace RobDriver.Modules.Components
         /// </summary>
         private void SetBulletAmmo(float ammo = -1, bool cutAmmo = false)
         {
+            if (muzzleTrail) UnityEngine.Object.Destroy(muzzleTrail.gameObject);
+            if (this.HasSpecialBullets)
+            {
+                Transform muzzleTransform;
+                if (weaponDef.animationSet == DriverWeaponDef.AnimationSet.Default) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
+                else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
+
+                muzzleTrail = GameObject.Instantiate(Assets.defaultMuzzleTrail, muzzleTransform);
+                var color = currentBulletDef.trailColor.RGBMultiplied(0.5f).AlphaMultiplied(0.5f);
+                muzzleTrail.GetComponent<TrailRenderer>().startColor = color;
+                muzzleTrail.GetComponent<TrailRenderer>().endColor = color;
+            }
+
             float shotCount;
             // set ammo for non-pistols
             if (!DriverWeaponCatalog.IsWeaponPistol(weaponDef))
@@ -902,6 +899,7 @@ namespace RobDriver.Modules.Components
         private void OnDestroy()
         {
             if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
+            if (this.muzzleTrail) Destroy(this.muzzleTrail);
 
             if (this.shellObjects != null && this.shellObjects.Length > 0)
             {
