@@ -34,12 +34,14 @@ namespace RobDriver.SkillStates.Driver.Skateboard
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (this.iDrive.weaponEffectInstance && base.fixedAge >= this.duration * 0.8f)
+            if (this.iDrive.weaponEffectInstance && base.fixedAge >= this.duration * 0.7f)
             {
-                this.GetModelChildLocator().FindChild("PistolModel").gameObject.SetActive(true);
+                if (this.cachedWeaponDef.animationSet != DriverWeaponDef.AnimationSet.Default) this.GetModelChildLocator().FindChild("PistolModel").gameObject.SetActive(true);
                 this.GetModelChildLocator().FindChild("SkateboardModel").gameObject.SetActive(false);
                 this.GetModelChildLocator().FindChild("SkateboardBackModel").gameObject.SetActive(true);
                 Destroy(this.iDrive.weaponEffectInstance);
+
+                this.PlayCrossfade("Gesture, Override", this.cachedWeaponDef.equipAnimationString, this.duration * 0.3f);
             }
 
             if (base.isAuthority && base.fixedAge >= this.duration)
