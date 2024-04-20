@@ -129,6 +129,7 @@ namespace RobDriver
         {
             orig(self);
             Driver.LateSkinSetup();
+            On.RoR2.UI.MainMenu.MainMenuController.Start -= MainMenuController_Start;
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)

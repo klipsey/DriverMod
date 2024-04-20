@@ -20,6 +20,8 @@ using DriverMod.Modules.Misc;
 using static DriverWeaponSkinDef;
 using System;
 using UnityEngine.UIElements;
+using System.Security.Cryptography;
+using System.Reflection;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -144,6 +146,8 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef scepterSyringeSkillDef;
         internal static SkillDef scepterSyringeLegacySkillDef;
         internal static SkillDef scepterKnifeSkillDef;
+
+        internal static int baseSkinCount;
 
         internal static string bodyNameToken;
 
@@ -2317,47 +2321,65 @@ namespace RobDriver.Modules.Survivors
             #endregion
 
             skinController.skins = skins.ToArray();
+            baseSkinCount = skinController.skins.Length;
         }
         internal static void LateSkinSetup()
         {
             GameObject model = characterPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
-            CharacterModel characterModel = model.GetComponent<CharacterModel>();
 
             ModelSkinController skinController = model.GetComponent<ModelSkinController>();
 
-            Log.Debug(skinController.skins.Length);
             DriverWeaponSkinDef[] tempSkins = new DriverWeaponSkinDef[0];
-            for (int n = 0; n < skinController.skins.Length; n++)
+            int skinDex = 0;
+            foreach (SkinDef i in skinController.skins)
             {
-                Log.Debug("Index: " + n);
-                foreach (SkinDef.MeshReplacement i in skinController.skins[n].meshReplacements)
+                bool isBodyMesh = false;
+                foreach (var j in i.meshReplacements.Select ((value, index) => new { value, index }))
                 {
-                    Log.Debug("Mesh Loop: " + i);
-                    if (model.transform.Find(i.renderer.name) && model.transform.Find(i.renderer.name).TryGetComponent<SkinnedMeshRenderer>(out var skm))
+                    //holy shit LINQ!
+                    var value = j.value;
+                    var index = j.index;
+                    if(!isBodyMesh)
                     {
-                        Log.Debug("Found: " + i.renderer.name);
-                        DriverWeaponDef def = Array.Find(DriverWeaponCatalog.weaponDefs, ele => ele.mesh == skm.sharedMesh);
-                        if (def)
+                        isBodyMesh = true;
+                        DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
                         {
-                            Log.Debug("Found Def: " + def.nameToken);
-                            DriverWeaponSkinDef skinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
-                            {
-                                nameToken = def.nameToken + "Skin",
-                                weaponDef = def,
-                                weaponSkinMesh = i.mesh,
-                                weaponSkinMaterial = i.renderer.material
-                            });
-                            Array.Resize(ref tempSkins, tempSkins.Length + 1);
+                            nameToken = i.nameToken
+                        });
+                        Array.Resize(ref tempSkins, tempSkins.Length + 1);
 
-                            int index = tempSkins.Length - 1;
-                            tempSkins[index] = skinDef;
-                            Log.Debug("tempSkins: " + tempSkins[index]);
+                        int index2 = tempSkins.Length - 1;
+                        tempSkins[index2] = weaponSkinDef;
+                        if (i.meshReplacements.Length == 1) break;
+                    }
+
+                    if (model.transform.Find(value.renderer.name))
+                    {
+                        //I hate this so much HFUDFIDHJFIUDHIUFODKFIODSHYUIDJSNFVGHNB
+                        for (int k = 0; k < DriverWeaponCatalog.weaponDefs.Length; k++)
+                        {
+                            if (DriverWeaponCatalog.GetWeaponFromIndex(k).mesh.name == value.renderer.name)
+                            {
+                                DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
+                                {
+                                    nameToken = DriverWeaponCatalog.GetWeaponFromIndex(k).nameToken + "Skin" + skinDex,
+                                    weaponDefIndex = DriverWeaponCatalog.GetWeaponFromIndex(k).index,
+                                    weaponSkinMesh = value.mesh,
+                                    weaponSkinMaterial = i.rendererInfos[index].defaultMaterial
+                                });
+                                Array.Resize(ref tempSkins, tempSkins.Length + 1);
+
+                                int index2 = tempSkins.Length - 1;
+                                tempSkins[index2] = weaponSkinDef;
+                            }
                         }
                     }
                 }
                 DriverWeaponSkinCatalog.AddSkin(tempSkins);
                 tempSkins = new DriverWeaponSkinDef[0];
+                skinDex++;
             }
+
         }
         private static void InitializeItemDisplays(GameObject prefab)
         {

@@ -1,30 +1,32 @@
 ﻿using UnityEngine;
 using RoR2;
+using DriverMod.Modules;
 using RoR2.Skills;
+using RobDriver;
 
 [CreateAssetMenu(fileName = "rsd", menuName = "ScriptableObjects/DriverWeaponSkinDef", order = 1)]
 public class DriverWeaponSkinDef : ScriptableObject
 {
     [Header("General")]
     public string nameToken = "";
-    public DriverWeaponDef weaponDef;
-    public Mesh weaponSkinMesh;
-    public Material weaponSkinMaterial;
+    public ushort weaponDefIndex = DriverWeaponCatalog.Pistol.index;
+    public Mesh weaponSkinMesh = DriverWeaponCatalog.Pistol.mesh;
+    public Material weaponSkinMaterial = DriverWeaponCatalog.Pistol.material;
 
     public static DriverWeaponSkinDef CreateWeaponSkinDefFromInfo(DriverWeaponSkinDefInfo skinDefInfo)
     {
-        DriverWeaponSkinDef skinDef = (DriverWeaponSkinDef)ScriptableObject.CreateInstance(typeof(DriverWeaponSkinDef));
-        skinDef.nameToken = skinDefInfo.nameToken;
-        skinDef.weaponDef = skinDefInfo.weaponDef;
-        skinDef.weaponSkinMesh = skinDefInfo.weaponSkinMesh;
-        skinDef.weaponSkinMaterial = skinDefInfo.weaponSkinMaterial;
-        return skinDef;
+        DriverWeaponSkinDef weaponSkinDef = (DriverWeaponSkinDef)ScriptableObject.CreateInstance(typeof(DriverWeaponSkinDef));
+        weaponSkinDef.nameToken = skinDefInfo.nameToken;
+        weaponSkinDef.weaponDefIndex = skinDefInfo.weaponDefIndex;
+        weaponSkinDef.weaponSkinMesh = skinDefInfo.weaponSkinMesh;
+        weaponSkinDef.weaponSkinMaterial = skinDefInfo.weaponSkinMaterial;
+        return weaponSkinDef;
     }
     [System.Serializable]
     public struct DriverWeaponSkinDefInfo
     {
         public string nameToken;
-        public DriverWeaponDef weaponDef;
+        public ushort weaponDefIndex;
         public Mesh weaponSkinMesh;
         public Material weaponSkinMaterial;
     }

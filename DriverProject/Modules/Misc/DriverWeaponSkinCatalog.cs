@@ -1,24 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DriverMod.Modules.Misc
 {
     internal static class DriverWeaponSkinCatalog
     {
-        internal static DriverWeaponSkinDef[][] skinDefs = new DriverWeaponSkinDef[0][];
-
+        internal static List<DriverWeaponSkinDef[]> driverSkinDefs { get; set; } = new List<DriverWeaponSkinDef[]>();
+        internal static DriverWeaponSkinDef[] Default { get; private set; }
         internal static void AddSkin(DriverWeaponSkinDef[] skinDef)
         {
-            Log.Debug("Added ");
-            Array.Resize(ref skinDefs, skinDefs.Length + 1);
-
-            int index = skinDefs.Length - 1;
-            skinDefs[index] = skinDef;
+            if (driverSkinDefs.Count == 0) Default = skinDef;
+            driverSkinDefs.Add(skinDef);
         }
 
         internal static DriverWeaponSkinDef[] GetSkin(int index)
         {
-            Log.Debug("SkinDef Length" + skinDefs.Length);
-            return skinDefs[index];
+            return driverSkinDefs[index];
         }
     }
 }
