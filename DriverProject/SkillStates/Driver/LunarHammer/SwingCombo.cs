@@ -37,10 +37,8 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 
             this.damageType = DamageType.Stun1s | iDrive.DamageType;
             this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
-            Log.Debug("DamagE!");
             if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
             else this.muzzleString = "SwingCenter2";
-            Log.Debug("muzzles");
             base.OnEnter();
         }
         protected override void FireAttack()
