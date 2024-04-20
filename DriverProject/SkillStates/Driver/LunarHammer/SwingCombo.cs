@@ -3,7 +3,7 @@ using EntityStates;
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine.AddressableAssets;
 using RoR2;
-
+using DriverMod;
 namespace RobDriver.SkillStates.Driver.LunarHammer
 {
     public class SwingCombo : BaseMeleeAttack
@@ -30,9 +30,10 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_driver_swing_hammer";
-            this.swingEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
+
+            this.swingEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redMercSwing : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
             this.hitSoundString = "";
-            this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
+            this.hitEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redSlashImpactEffect : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
 
             this.damageType = DamageType.Stun1s | iDrive.DamageType;

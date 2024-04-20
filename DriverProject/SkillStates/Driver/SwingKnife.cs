@@ -29,9 +29,9 @@ namespace RobDriver.SkillStates.Driver
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_driver_swing_knife";
-            this.swingEffectPrefab = Modules.Assets.knifeSwingEffect;
+            this.swingEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? Modules.Assets.redSmallSlashEffect : Modules.Assets.knifeSwingEffect;
             this.hitSoundString = "";
-            this.hitEffectPrefab = Modules.Assets.knifeImpactEffect;
+            this.hitEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? Modules.Assets.redSlashImpactEffect : Modules.Assets.knifeImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
             this.damageType = DamageType.ApplyMercExpose;

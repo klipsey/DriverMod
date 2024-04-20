@@ -123,6 +123,7 @@ namespace RobDriver.Modules.Components
 
             this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
             this.currentBulletDef = DriverBulletCatalog.Default;
+            this.currentSkinDef = DriverWeaponSkinCatalog.Default;
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -925,7 +926,6 @@ namespace RobDriver.Modules.Components
         {
             if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
             if (this.muzzleTrail) Destroy(this.muzzleTrail);
-
             if (this.shellObjects != null && this.shellObjects.Length > 0)
             {
                 for (int i = 0; i < this.shellObjects.Length; i++)
@@ -934,6 +934,7 @@ namespace RobDriver.Modules.Components
                 }
             }
 
+            if (this.currentSkinDef[0]) Array.Clear(currentSkinDef, 0, currentSkinDef.Length);
             if (this.slugObjects != null && this.slugObjects.Length > 0)
             {
                 for (int i = 0; i < this.slugObjects.Length; i++)
@@ -947,7 +948,7 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onItemAddedClient -= this.Inventory_onItemAddedClient;
                 this.characterBody.master.inventory.onInventoryChanged -= this.Inventory_onInventoryChanged;
             }
-
+            
             if (NetworkServer.active)
             {
                 this.StoreWeapon();

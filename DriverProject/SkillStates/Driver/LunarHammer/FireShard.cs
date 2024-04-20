@@ -24,7 +24,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
-                GameObject modify = Modules.Projectiles.lunarShard;
+                GameObject modify = RobDriver.Modules.Config.enableMinuanoCompat.Value ? Modules.Projectiles.lunarShardRed : Modules.Projectiles.lunarShard;
                 modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
                 if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
                 modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);

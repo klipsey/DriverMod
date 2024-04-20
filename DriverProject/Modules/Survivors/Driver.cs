@@ -22,6 +22,9 @@ using System;
 using UnityEngine.UIElements;
 using System.Security.Cryptography;
 using System.Reflection;
+using HarmonyLib;
+using UnityEngine.Rendering;
+using Moonstorm.Starstorm2;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -1986,6 +1989,8 @@ namespace RobDriver.Modules.Survivors
 
             CharacterModel.RendererInfo[] defaultRenderers = characterModel.baseRendererInfos;
 
+            Renderer[] renderers = prefab.GetComponentsInChildren<Renderer>(true);
+
             List<SkinDef> skins = new List<SkinDef>();
 
             GameObject sluggerCloth = childLocator.FindChild("SluggerCloth").gameObject;
@@ -2021,7 +2026,7 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(defaultSkin);
+
             #endregion
 
             #region MasterySkin
@@ -2058,7 +2063,7 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(masterySkin);
+
             #endregion
 
             #region GrandMasterySkin
@@ -2095,18 +2100,17 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(grandMasterySkin);
             #endregion
 
             #region SpecialForcesSkin
             SkinDef specialForcesSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIALFORCES_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
+            {
+                            Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
             specialForcesSkin.meshReplacements = new SkinDef.MeshReplacement[]
             {
@@ -2130,19 +2134,17 @@ namespace RobDriver.Modules.Survivors
                     shouldActivate = false
                 }
             };
-
-            skins.Add(specialForcesSkin);
             #endregion
 
             #region GuerrillaSkin
             SkinDef guerrillaSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_GUERRILLA_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texGuerrillaSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matGuerrilla", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texGuerrillaSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
+            {
+                            Modules.Assets.CreateMaterial("matGuerrilla", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
             guerrillaSkin.meshReplacements = new SkinDef.MeshReplacement[]
             {
@@ -2167,7 +2169,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(guerrillaSkin);
             #endregion
 
             #region SuitSkin
@@ -2204,7 +2205,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(suitSkin);
             #endregion
 
             #region Suit2Skin
@@ -2241,7 +2241,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
             #endregion
 
             #region GreenSkin
@@ -2277,32 +2276,30 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            if (Modules.Config.cursed.Value) skins.Add(greenSkin);
             #endregion
 
             #region MinecraftSkin
-            if (Modules.Config.cursed.Value)
+
+            SkinDef minecraftSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MINECRAFT_SKIN_NAME",
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texMinecraftSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
             {
-                SkinDef minecraftSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MINECRAFT_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texMinecraftSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matMinecraftDriver", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+                            Modules.Assets.CreateMaterial("matMinecraftDriver", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
-                minecraftSkin.meshReplacements = new SkinDef.MeshReplacement[]
-                {
-                new SkinDef.MeshReplacement
-                {
-                    renderer = mainRenderer,
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
-                }
-                };
+            minecraftSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+            new SkinDef.MeshReplacement
+            {
+                renderer = mainRenderer,
+                mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
+            }
+            };
 
-                minecraftSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
-{
+            minecraftSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
                 new SkinDef.GameObjectActivation
                 {
                     gameObject = sluggerCloth,
@@ -2313,12 +2310,18 @@ namespace RobDriver.Modules.Survivors
                     gameObject = tie,
                     shouldActivate = false
                 }
-};
-
-
-                skins.Add(minecraftSkin);
-            }
+            };
             #endregion
+
+            skins.Add(defaultSkin);
+            skins.Add(masterySkin);
+            skins.Add(grandMasterySkin);
+            skins.Add(specialForcesSkin);
+            skins.Add(guerrillaSkin);
+            skins.Add(suitSkin);
+            if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
+            if (Modules.Config.cursed.Value) skins.Add(greenSkin);
+            if (Modules.Config.cursed.Value) skins.Add(minecraftSkin);
 
             skinController.skins = skins.ToArray();
             baseSkinCount = skinController.skins.Length;
@@ -2326,6 +2329,7 @@ namespace RobDriver.Modules.Survivors
         internal static void LateSkinSetup()
         {
             GameObject model = characterPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
+            Renderer[] renderers = characterPrefab.GetComponentsInChildren<Renderer>(true);
 
             ModelSkinController skinController = model.GetComponent<ModelSkinController>();
 
@@ -2352,7 +2356,6 @@ namespace RobDriver.Modules.Survivors
                         tempSkins[index2] = weaponSkinDef;
                         if (i.meshReplacements.Length == 1) break;
                     }
-
                     if (model.transform.Find(value.renderer.name))
                     {
                         //I hate this so much HFUDFIDHJFIUDHIUFODKFIODSHYUIDJSNFVGHNB
