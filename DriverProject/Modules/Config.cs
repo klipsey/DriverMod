@@ -30,6 +30,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> dynamicCrosshair;
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
         public static ConfigEntry<bool> defaultPistolAnims;
+        public static ConfigEntry<bool> enableMinuanoCompat;
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> enableRecoil;
@@ -40,7 +41,6 @@ namespace RobDriver.Modules
 
         public static ConfigEntry<bool> enableMagneticPickups;
         public static ConfigEntry<bool> enableMagenticConditionalPickups;
-        public static ConfigEntry<float> pickupSpeed;
         public static ConfigEntry<float> pickupRadius;
 
         public static ConfigEntry<float> baseHealth;
@@ -113,8 +113,6 @@ namespace RobDriver.Modules
 
             enableMagenticConditionalPickups = Config.BindAndOptions("03 - Pickups", "Only Magnetize Without Pickup Equipped", true, "Only magnetizes weapon and ammo drops when the player runs out of ammo.", true);
 
-            pickupSpeed = Config.BindAndOptionsSlider("03 - Pickups", "PickupSpeed", 75f, "The speed with which the pickups will move towards players.", 25f, 75f);
-
             pickupRadius = Config.BindAndOptionsSlider("03 - Pickups", "PickupRadius", 10f, "How close a pickup must be before it will begin to move towards a player.", 0f, 15f);
 
             #endregion
@@ -135,6 +133,9 @@ namespace RobDriver.Modules
             dynamicCrosshairUniversal = Config.BindAndOptions("04 - Visuals", "Dynamic Crosshair (Universal)", false, "If set to true, highlight the crosshair while hovering over entities, but for ALL characters. Overrides the other option. (Client-side)", true);
 
             defaultPistolAnims = Config.BindAndOptions("04 - Visuals", "Default Pistol Animations", false, "If set to true, return pistol passive scope animations back to the default.");
+            //ill add compat for it later like rav 
+            enableMinuanoCompat = Config.BindAndOptions("04 - Visuals", "Minuano Compatibility", false, "If set to true, Mithrix's hammer equip has red vfx for skins.");
+            
             #endregion
 
             #region Emotes

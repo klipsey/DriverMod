@@ -45,6 +45,8 @@ namespace RobDriver.Modules
             {
                 nameToken = "Default",
                 tier = DriverWeaponTier.Unique,
+                moddedDriverBulletType = DamageTypes.Generic,
+                driverBulletType = DamageType.Generic,
                 trailColor = Color.white 
             });
             Default.index = 0;
@@ -165,8 +167,8 @@ namespace RobDriver.Modules
             var bulletDef = DriverBulletDef.CreateBulletDefFromInfo(new DriverBulletDefInfo
             {
                 nameToken = nameToken,
-                bulletType = damageType,
-                moddedBulletType = moddedBulletType,
+                driverBulletType = damageType,
+                moddedDriverBulletType = moddedBulletType,
                 tier = tier,
                 trailColor = color
             });

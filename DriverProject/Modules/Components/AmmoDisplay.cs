@@ -91,6 +91,10 @@ namespace RobDriver.Modules.Components
                 {
                     this.durationDisplay.SetActive(false);
                 }
+                else
+                {
+                    this.durationDisplay.SetActive(false);
+                }
             }
         }
     }

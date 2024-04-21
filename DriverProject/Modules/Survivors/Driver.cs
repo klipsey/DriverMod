@@ -16,6 +16,15 @@ using R2API.Networking;
 using R2API.Networking.Interfaces;
 using UnityEngine.UI;
 using EntityStates.Missions.BrotherEncounter;
+using DriverMod.Modules.Misc;
+using static DriverWeaponSkinDef;
+using System;
+using UnityEngine.UIElements;
+using System.Security.Cryptography;
+using System.Reflection;
+using HarmonyLib;
+using UnityEngine.Rendering;
+using Moonstorm.Starstorm2;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -140,6 +149,8 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef scepterSyringeSkillDef;
         internal static SkillDef scepterSyringeLegacySkillDef;
         internal static SkillDef scepterKnifeSkillDef;
+
+        internal static int baseSkinCount;
 
         internal static string bodyNameToken;
 
@@ -497,11 +508,9 @@ namespace RobDriver.Modules.Survivors
             GameObject model = childLocator.gameObject;
 
             Transform hitboxTransform = childLocator.FindChild("HammerBaseHitbox");
-            Transform hitboxTransform2 = childLocator.FindChild("HammerHitbox");
             Modules.Prefabs.SetupHitbox(model, new Transform[]
                 {
-                    hitboxTransform,
-                    hitboxTransform2
+                    hitboxTransform
                 }, "Hammer");
 
             hitboxTransform = childLocator.FindChild("KnifeHitbox");
@@ -1970,7 +1979,7 @@ namespace RobDriver.Modules.Survivors
 
         private static void CreateSkins(GameObject prefab)
         {
-            GameObject model = prefab.GetComponentInChildren<ModelLocator>().modelTransform.gameObject;
+            GameObject model = prefab.GetComponent<ModelLocator>().modelTransform.gameObject;
             CharacterModel characterModel = model.GetComponent<CharacterModel>();
 
             ModelSkinController skinController = model.AddComponent<ModelSkinController>();
@@ -1979,6 +1988,8 @@ namespace RobDriver.Modules.Survivors
             SkinnedMeshRenderer mainRenderer = characterModel.mainSkinnedMeshRenderer;
 
             CharacterModel.RendererInfo[] defaultRenderers = characterModel.baseRendererInfos;
+
+            Renderer[] renderers = prefab.GetComponentsInChildren<Renderer>(true);
 
             List<SkinDef> skins = new List<SkinDef>();
 
@@ -2015,7 +2026,7 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(defaultSkin);
+
             #endregion
 
             #region MasterySkin
@@ -2052,7 +2063,7 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(masterySkin);
+
             #endregion
 
             #region GrandMasterySkin
@@ -2089,18 +2100,17 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(grandMasterySkin);
             #endregion
 
             #region SpecialForcesSkin
             SkinDef specialForcesSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIALFORCES_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
+            {
+                            Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
             specialForcesSkin.meshReplacements = new SkinDef.MeshReplacement[]
             {
@@ -2124,19 +2134,17 @@ namespace RobDriver.Modules.Survivors
                     shouldActivate = false
                 }
             };
-
-            skins.Add(specialForcesSkin);
             #endregion
 
             #region GuerrillaSkin
             SkinDef guerrillaSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_GUERRILLA_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texGuerrillaSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matGuerrilla", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texGuerrillaSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
+            {
+                            Modules.Assets.CreateMaterial("matGuerrilla", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
             guerrillaSkin.meshReplacements = new SkinDef.MeshReplacement[]
             {
@@ -2161,7 +2169,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(guerrillaSkin);
             #endregion
 
             #region SuitSkin
@@ -2198,7 +2205,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(suitSkin);
             #endregion
 
             #region Suit2Skin
@@ -2235,7 +2241,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
             #endregion
 
             #region GreenSkin
@@ -2271,32 +2276,30 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            if (Modules.Config.cursed.Value) skins.Add(greenSkin);
             #endregion
 
             #region MinecraftSkin
-            if (Modules.Config.cursed.Value)
+
+            SkinDef minecraftSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MINECRAFT_SKIN_NAME",
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texMinecraftSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
             {
-                SkinDef minecraftSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MINECRAFT_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texMinecraftSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matMinecraftDriver", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+                            Modules.Assets.CreateMaterial("matMinecraftDriver", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
-                minecraftSkin.meshReplacements = new SkinDef.MeshReplacement[]
-                {
-                new SkinDef.MeshReplacement
-                {
-                    renderer = mainRenderer,
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
-                }
-                };
+            minecraftSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+            new SkinDef.MeshReplacement
+            {
+                renderer = mainRenderer,
+                mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
+            }
+            };
 
-                minecraftSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
-{
+            minecraftSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
                 new SkinDef.GameObjectActivation
                 {
                     gameObject = sluggerCloth,
@@ -2307,16 +2310,80 @@ namespace RobDriver.Modules.Survivors
                     gameObject = tie,
                     shouldActivate = false
                 }
-};
-
-
-                skins.Add(minecraftSkin);
-            }
+            };
             #endregion
 
-            skinController.skins = skins.ToArray();
-        }
+            skins.Add(defaultSkin);
+            skins.Add(masterySkin);
+            skins.Add(grandMasterySkin);
+            skins.Add(specialForcesSkin);
+            skins.Add(guerrillaSkin);
+            skins.Add(suitSkin);
+            if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
+            if (Modules.Config.cursed.Value) skins.Add(greenSkin);
+            if (Modules.Config.cursed.Value) skins.Add(minecraftSkin);
 
+            skinController.skins = skins.ToArray();
+            baseSkinCount = skinController.skins.Length;
+        }
+        internal static void LateSkinSetup()
+        {
+            GameObject model = characterPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
+            Renderer[] renderers = characterPrefab.GetComponentsInChildren<Renderer>(true);
+
+            ModelSkinController skinController = model.GetComponent<ModelSkinController>();
+
+            DriverWeaponSkinDef[] tempSkins = new DriverWeaponSkinDef[0];
+            int skinDex = 0;
+            foreach (SkinDef i in skinController.skins)
+            {
+                bool isBodyMesh = false;
+                foreach (var j in i.meshReplacements.Select ((value, index) => new { value, index }))
+                {
+                    //holy shit LINQ!
+                    var value = j.value;
+                    var index = j.index;
+                    if(!isBodyMesh)
+                    {
+                        isBodyMesh = true;
+                        DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
+                        {
+                            nameToken = i.nameToken
+                        });
+                        Array.Resize(ref tempSkins, tempSkins.Length + 1);
+
+                        int index2 = tempSkins.Length - 1;
+                        tempSkins[index2] = weaponSkinDef;
+                        if (i.meshReplacements.Length == 1) break;
+                    }
+                    if (model.transform.Find(value.renderer.name))
+                    {
+                        //I hate this so much HFUDFIDHJFIUDHIUFODKFIODSHYUIDJSNFVGHNB
+                        for (int k = 0; k < DriverWeaponCatalog.weaponDefs.Length; k++)
+                        {
+                            if (DriverWeaponCatalog.GetWeaponFromIndex(k).mesh.name == value.renderer.name)
+                            {
+                                DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
+                                {
+                                    nameToken = DriverWeaponCatalog.GetWeaponFromIndex(k).nameToken + "Skin" + skinDex,
+                                    weaponDefIndex = DriverWeaponCatalog.GetWeaponFromIndex(k).index,
+                                    weaponSkinMesh = value.mesh,
+                                    weaponSkinMaterial = i.rendererInfos[index].defaultMaterial
+                                });
+                                Array.Resize(ref tempSkins, tempSkins.Length + 1);
+
+                                int index2 = tempSkins.Length - 1;
+                                tempSkins[index2] = weaponSkinDef;
+                            }
+                        }
+                    }
+                }
+                DriverWeaponSkinCatalog.AddSkin(tempSkins);
+                tempSkins = new DriverWeaponSkinDef[0];
+                skinDex++;
+            }
+
+        }
         private static void InitializeItemDisplays(GameObject prefab)
         {
             CharacterModel characterModel = prefab.GetComponentInChildren<CharacterModel>();
@@ -2638,7 +2705,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             });
         }
 
-        internal static void ReplaceItemDisplay(Object keyAsset, ItemDisplayRule[] newDisplayRules)
+        internal static void ReplaceItemDisplay(UnityEngine.Object keyAsset, ItemDisplayRule[] newDisplayRules)
         {
             ItemDisplayRuleSet.KeyAssetRuleGroup[] cock = itemDisplayRules.ToArray();
             for (int i = 0; i < cock.Length; i++)
@@ -2721,8 +2788,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
             {
-                orig(self, ref dest, Random.onUnitSphere);
-                dest.desiredAimDirection = Random.onUnitSphere;
+                orig(self, ref dest, UnityEngine.Random.onUnitSphere);
+                dest.desiredAimDirection = UnityEngine.Random.onUnitSphere;
             }
             else orig(self, ref dest, aimDirection);
         }
@@ -2732,7 +2799,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
             {
                 orig(self, ref dest, aimTarget);
-                dest.desiredAimDirection = Random.onUnitSphere;
+                dest.desiredAimDirection = UnityEngine.Random.onUnitSphere;
             }
             else orig(self, ref dest, aimTarget);
         }

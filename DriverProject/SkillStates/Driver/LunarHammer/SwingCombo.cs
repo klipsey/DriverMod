@@ -3,18 +3,21 @@ using EntityStates;
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine.AddressableAssets;
 using RoR2;
-
+using DriverMod;
 namespace RobDriver.SkillStates.Driver.LunarHammer
 {
     public class SwingCombo : BaseMeleeAttack
     {
         public static float _damageCoefficient = 32.1f;
 
+        private GameObject swingEffectInstance;
+
         public override void OnEnter()
         {
+            RefreshState();
             this.hitboxName = "Hammer";
 
-            this.damageCoefficient = SwingCombo._damageCoefficient;
+            this.damageCoefficient = _damageCoefficient;
             this.pushForce = 1000f;
             this.baseDuration = 1.8f;
             this.baseEarlyExitTime = 0.5f;
@@ -27,20 +30,29 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_driver_swing_hammer";
-            this.swingEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
+
+            this.swingEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redMercSwing : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
             this.hitSoundString = "";
-            this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
+            this.hitEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redSlashImpactEffect : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
 
             this.damageType = DamageType.Stun1s | iDrive.DamageType;
             this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
-
             if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
             else this.muzzleString = "SwingCenter2";
-
             base.OnEnter();
         }
+        protected override void FireAttack()
+        {
+            if (base.isAuthority)
+            {
+                Vector3 direction = this.GetAimRay().direction;
+                direction.y = Mathf.Max(direction.y, direction.y * 0.5f);
+                this.FindModelChild("MeleePivot").rotation = Util.QuaternionSafeLookRotation(direction);
+            }
 
+            base.FireAttack();
+        }
         public override void FixedUpdate()
         {
             base.FixedUpdate();
@@ -61,10 +73,20 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
                 Transform muzzleTransform = this.FindModelChild(this.muzzleString);
                 if (muzzleTransform)
                 {
-                    GameObject swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
-                    ScaleParticleSystemDuration fuck = swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                    this.swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
+                    ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
                     if (fuck) fuck.newDuration = fuck.initialDuration;
                 }
+            }
+        }
+        protected override void TriggerHitStop()
+        {
+            base.TriggerHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = 20f;
             }
         }
 

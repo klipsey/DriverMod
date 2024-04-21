@@ -30,14 +30,18 @@ namespace RobDriver.SkillStates.Driver
 
         public override void OnEnter()
         {
-            this.iDrive = this.GetComponent<DriverController>();
-            if (this.iDrive) this.cachedWeaponDef = this.iDrive.weaponDef;
+            RefreshState();
             base.OnEnter();
 
             if (this.hideGun) this.GetModelChildLocator().FindChild("PistolModel").gameObject.SetActive(false);
             if (this.prop != "") this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(true);
         }
 
+        public void RefreshState()
+        {
+            if(!this.iDrive) this.iDrive = this.GetComponent<DriverController>();
+            if (this.iDrive) this.cachedWeaponDef = this.iDrive.weaponDef;
+        }
         public override void OnExit()
         {
             base.OnExit();
