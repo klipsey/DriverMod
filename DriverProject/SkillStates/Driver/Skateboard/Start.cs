@@ -22,13 +22,13 @@ namespace RobDriver.SkillStates.Driver.Skateboard
             this.GetModelChildLocator().FindChild("SkateboardBackModel").gameObject.SetActive(false);
 
             // pistol has good animation blending, others dont
-            if (!DriverWeaponCatalog.IsWeaponPistol(iDrive.weaponDef))
+            if (this.iDrive.weaponDef.animationSet != DriverWeaponDef.AnimationSet.Default)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
             }
 
             Util.PlaySound("sfx_driver_foley_syringe", this.gameObject);
-            base.PlayAnimation("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration);
+            base.PlayCrossfade("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration, 0.1f);
 
             this.SmallHop(this.characterMotor, 10f);
 

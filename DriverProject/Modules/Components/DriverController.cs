@@ -186,6 +186,8 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
         {
+            if (currentSkinDef is null) return def;
+
             for (int i = 1; i < currentSkinDef.Length; i++)
             {
                 if (currentSkinDef[i].weaponDefIndex == def.index)
@@ -924,8 +926,10 @@ namespace RobDriver.Modules.Components
 
         private void OnDestroy()
         {
+            if (!(this.currentSkinDef is null)) this.currentSkinDef = null;
             if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
             if (this.muzzleTrail) Destroy(this.muzzleTrail);
+
             if (this.shellObjects != null && this.shellObjects.Length > 0)
             {
                 for (int i = 0; i < this.shellObjects.Length; i++)
@@ -933,8 +937,6 @@ namespace RobDriver.Modules.Components
                     if (this.shellObjects[i]) Destroy(this.shellObjects[i]);
                 }
             }
-
-            if (this.currentSkinDef[0]) Array.Clear(currentSkinDef, 0, currentSkinDef.Length);
             if (this.slugObjects != null && this.slugObjects.Length > 0)
             {
                 for (int i = 0; i < this.slugObjects.Length; i++)

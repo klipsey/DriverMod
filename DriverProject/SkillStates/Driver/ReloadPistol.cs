@@ -40,7 +40,7 @@ namespace RobDriver.SkillStates.Driver
             if (NetworkServer.active && this.aiming) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
 
             if (this.inputBank.skill3.down && this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef)
-                base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
+                base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.1f);
         }
 
         public override void FixedUpdate()

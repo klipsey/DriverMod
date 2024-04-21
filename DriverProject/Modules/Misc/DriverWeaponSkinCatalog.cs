@@ -6,10 +6,9 @@ namespace DriverMod.Modules.Misc
     internal static class DriverWeaponSkinCatalog
     {
         internal static List<DriverWeaponSkinDef[]> driverSkinDefs { get; set; } = new List<DriverWeaponSkinDef[]>();
-        internal static DriverWeaponSkinDef[] Default { get; private set; }
+        internal static DriverWeaponSkinDef[] Default => driverSkinDefs[0];
         internal static void AddSkin(DriverWeaponSkinDef[] skinDef)
         {
-            if (driverSkinDefs.Count == 0) Default = skinDef;
             driverSkinDefs.Add(skinDef);
         }
 
