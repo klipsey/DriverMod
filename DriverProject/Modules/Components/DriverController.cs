@@ -161,7 +161,9 @@ namespace RobDriver.Modules.Components
 
         private void SetInventoryHook()
         {
-            SetCurrentSkin();
+            if (this.skinController) this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
+            else this.currentSkinDef = new DriverWeaponSkinDef[0];
+
             // swag
             if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
 
@@ -185,17 +187,13 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
         {
-            if(currentSkinDef.Length != 0)
+            if (this.currentSkinDef?.Any() != true) return def;
+
+            var skinOverride = currentSkinDef.Skip(1).FirstOrDefault(skin => skin.weaponDefIndex == def.index);
+            if (skinOverride)
             {
-                for (int i = 0; i < currentSkinDef.Length; i++)
-                {
-                    if (currentSkinDef[i].weaponDefIndex == def.index)
-                    {
-                        def.mesh = currentSkinDef[i].weaponSkinMesh;
-                        def.material = currentSkinDef[i].weaponSkinMaterial;
-                        return def;
-                    }
-                }
+                def.mesh = skinOverride.weaponSkinMesh;
+                def.material = skinOverride.weaponSkinMaterial;
             }
 
             return def;
@@ -928,8 +926,10 @@ namespace RobDriver.Modules.Components
         private void OnDestroy()
         {
             Log.Debug("Destroyed");
+            if (!(this.currentSkinDef is null)) this.currentSkinDef = null;
             if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
             if (this.muzzleTrail) Destroy(this.muzzleTrail);
+
             if (this.shellObjects != null && this.shellObjects.Length > 0)
             {
                 for (int i = 0; i < this.shellObjects.Length; i++)
@@ -937,8 +937,6 @@ namespace RobDriver.Modules.Components
                     if (this.shellObjects[i]) Destroy(this.shellObjects[i]);
                 }
             }
-
-            currentSkinDef = new DriverWeaponSkinDef[0];
             if (this.slugObjects != null && this.slugObjects.Length > 0)
             {
                 for (int i = 0; i < this.slugObjects.Length; i++)
@@ -970,14 +968,6 @@ namespace RobDriver.Modules.Components
                 this.comboDecay = Mathf.Clamp(this.comboDecay - 0.1f, 0f, 1f);
 
                 this.weaponTimer = Mathf.Clamp(this.weaponTimer + amount, 0f, this.maxWeaponTimer);
-            }
-        }
-        public void SetCurrentSkin()
-        {
-            if (this.skinController)
-            {
-                Log.Debug("Checking for skincontroller");
-                this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
             }
         }
     }
