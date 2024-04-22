@@ -57,7 +57,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
             LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
-            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"Enemies have a chance to drop a new <style=cIsHealth>bullets</style>. These give your <style=cIsHealth>pistol</style> <style=cIsDamage>powerful attacks</style> for a limited time!.");
+            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"Enemies have a chance to drop <style=cIsHealth>bullets</style>. These give your <style=cIsHealth>pistol</style> <style=cIsDamage>powerful attacks</style> for a limited time!.");
 
             LanguageAPI.Add(prefix + "PASSIVE4_NAME", "Godsling");
             LanguageAPI.Add(prefix + "PASSIVE4_DESCRIPTION", $"I <style=cIsHealth>drive</style>.");
