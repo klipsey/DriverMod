@@ -24,7 +24,7 @@ namespace RobDriver.Modules.Components
     {
         public DriverWeaponDef weaponDef { get; private set; }
         public DriverBulletDef currentBulletDef { get; private set; } =  DriverBulletCatalog.Default;
-        public DriverWeaponSkinDef[] currentSkinDef { get; private set; } = DriverWeaponSkinCatalog.Default;
+        public DriverWeaponSkinDef[] currentSkinDef { get; private set; } = new DriverWeaponSkinDef[0];
         public DriverWeaponDef defaultWeaponDef { get; private set; }
 
         public bool HasSpecialBullets => this.currentBulletDef.index != DriverBulletCatalog.Default.index;
@@ -123,7 +123,6 @@ namespace RobDriver.Modules.Components
 
             this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
             this.currentBulletDef = DriverBulletCatalog.Default;
-            this.currentSkinDef = DriverWeaponSkinCatalog.Default;
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -186,15 +185,19 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
         {
-            for (int i = 1; i < currentSkinDef.Length; i++)
+            if(currentSkinDef.Length != 0)
             {
-                if (currentSkinDef[i].weaponDefIndex == def.index)
+                for (int i = 0; i < currentSkinDef.Length; i++)
                 {
-                    def.mesh = currentSkinDef[i].weaponSkinMesh;
-                    def.material = currentSkinDef[i].weaponSkinMaterial;
-                    return def;
+                    if (currentSkinDef[i].weaponDefIndex == def.index)
+                    {
+                        def.mesh = currentSkinDef[i].weaponSkinMesh;
+                        def.material = currentSkinDef[i].weaponSkinMaterial;
+                        return def;
+                    }
                 }
             }
+
             return def;
         }
 
@@ -801,7 +804,7 @@ namespace RobDriver.Modules.Components
             }
 
             // extra shit
-            if (this.hammerEffectInstance && this.hammerEffectInstance2 && this.skinController.currentSkinIndex + 1 <= Driver.baseSkinCount) // so it doesnt screw up custom skins. Compat can be added like way later ig
+            if (this.hammerEffectInstance && this.hammerEffectInstance2 && this.skinController.currentSkinIndex + 1 <= Driver.baseSkinCount) // so it doesnt screw up custom skins. Compat for effects later maybe
             {
                 if (this.weaponDef == DriverWeaponCatalog.LunarHammer)
                 {
@@ -924,6 +927,7 @@ namespace RobDriver.Modules.Components
 
         private void OnDestroy()
         {
+            Log.Debug("Destroyed");
             if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
             if (this.muzzleTrail) Destroy(this.muzzleTrail);
             if (this.shellObjects != null && this.shellObjects.Length > 0)
@@ -934,7 +938,7 @@ namespace RobDriver.Modules.Components
                 }
             }
 
-            if (this.currentSkinDef[0]) Array.Clear(currentSkinDef, 0, currentSkinDef.Length);
+            currentSkinDef = new DriverWeaponSkinDef[0];
             if (this.slugObjects != null && this.slugObjects.Length > 0)
             {
                 for (int i = 0; i < this.slugObjects.Length; i++)
@@ -972,9 +976,9 @@ namespace RobDriver.Modules.Components
         {
             if (this.skinController)
             {
+                Log.Debug("Checking for skincontroller");
                 this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
             }
-            else this.currentSkinDef = DriverWeaponSkinCatalog.Default;
         }
     }
 }

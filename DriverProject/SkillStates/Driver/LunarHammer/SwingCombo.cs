@@ -31,9 +31,9 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 
             this.swingSoundString = "sfx_driver_swing_hammer";
 
-            this.swingEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redMercSwing : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
+            this.swingEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? RobDriver.Modules.Assets.redMercSwing : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
             this.hitSoundString = "";
-            this.hitEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redSlashImpactEffect : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
+            this.hitEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? RobDriver.Modules.Assets.redSlashImpactEffect : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
 
             this.damageType = DamageType.Stun1s | iDrive.DamageType;

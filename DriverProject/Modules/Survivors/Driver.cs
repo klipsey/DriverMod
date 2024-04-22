@@ -2334,28 +2334,14 @@ namespace RobDriver.Modules.Survivors
             ModelSkinController skinController = model.GetComponent<ModelSkinController>();
 
             DriverWeaponSkinDef[] tempSkins = new DriverWeaponSkinDef[0];
-            int skinDex = 0;
+            int currentSkinDex = 0;
             foreach (SkinDef i in skinController.skins)
             {
-                bool isBodyMesh = false;
                 foreach (var j in i.meshReplacements.Select ((value, index) => new { value, index }))
                 {
                     //holy shit LINQ!
                     var value = j.value;
                     var index = j.index;
-                    if(!isBodyMesh)
-                    {
-                        isBodyMesh = true;
-                        DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
-                        {
-                            nameToken = i.nameToken
-                        });
-                        Array.Resize(ref tempSkins, tempSkins.Length + 1);
-
-                        int index2 = tempSkins.Length - 1;
-                        tempSkins[index2] = weaponSkinDef;
-                        if (i.meshReplacements.Length == 1) break;
-                    }
                     if (model.transform.Find(value.renderer.name))
                     {
                         //I hate this so much HFUDFIDHJFIUDHIUFODKFIODSHYUIDJSNFVGHNB
@@ -2365,7 +2351,8 @@ namespace RobDriver.Modules.Survivors
                             {
                                 DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
                                 {
-                                    nameToken = DriverWeaponCatalog.GetWeaponFromIndex(k).nameToken + "Skin" + skinDex,
+                                    nameToken = i.name + DriverWeaponCatalog.GetWeaponFromIndex(k).nameToken,
+                                    mainSkinName = i.name,
                                     weaponDefIndex = DriverWeaponCatalog.GetWeaponFromIndex(k).index,
                                     weaponSkinMesh = value.mesh,
                                     weaponSkinMaterial = i.rendererInfos[index].defaultMaterial
@@ -2378,9 +2365,13 @@ namespace RobDriver.Modules.Survivors
                         }
                     }
                 }
-                DriverWeaponSkinCatalog.AddSkin(tempSkins);
+                if (tempSkins.Length != 0)
+                {
+                    DriverWeaponSkinCatalog.AddSkin(i.name, tempSkins);
+                }
+                DriverWeaponSkinCatalog.AddSkinIndex(currentSkinDex, i.name);
                 tempSkins = new DriverWeaponSkinDef[0];
-                skinDex++;
+                currentSkinDex++;
             }
 
         }
