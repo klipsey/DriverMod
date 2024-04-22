@@ -2333,53 +2333,42 @@ namespace RobDriver.Modules.Survivors
 
             ModelSkinController skinController = model.GetComponent<ModelSkinController>();
 
-            DriverWeaponSkinDef[] tempSkins = new DriverWeaponSkinDef[0];
             int skinDex = 0;
-            foreach (SkinDef i in skinController.skins)
+            foreach (SkinDef skinDef in skinController.skins)
             {
-                bool isBodyMesh = false;
-                foreach (var j in i.meshReplacements.Select ((value, index) => new { value, index }))
+                var weaponReskins = new List<DriverWeaponSkinDef>();
+                for (int i = 0; i < skinDef.meshReplacements.Length; i++)
                 {
-                    //holy shit LINQ!
-                    var value = j.value;
-                    var index = j.index;
-                    if(!isBodyMesh)
+                    // body mesh
+                    if(i == 0)
                     {
-                        isBodyMesh = true;
-                        DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
+                        weaponReskins.Add(CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
                         {
-                            nameToken = i.nameToken
-                        });
-                        Array.Resize(ref tempSkins, tempSkins.Length + 1);
+                            nameToken = skinDef.nameToken
+                        }));
 
-                        int index2 = tempSkins.Length - 1;
-                        tempSkins[index2] = weaponSkinDef;
-                        if (i.meshReplacements.Length == 1) break;
+                        Debug.Log("Adding body mesh for skin " + skinDef.nameToken);
+                        if (skinDef.meshReplacements.Length == 1) break;
                     }
-                    if (model.transform.Find(value.renderer.name))
-                    {
-                        //I hate this so much HFUDFIDHJFIUDHIUFODKFIODSHYUIDJSNFVGHNB
-                        for (int k = 0; k < DriverWeaponCatalog.weaponDefs.Length; k++)
-                        {
-                            if (DriverWeaponCatalog.GetWeaponFromIndex(k).mesh.name == value.renderer.name)
-                            {
-                                DriverWeaponSkinDef weaponSkinDef = CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
-                                {
-                                    nameToken = DriverWeaponCatalog.GetWeaponFromIndex(k).nameToken + "Skin" + skinDex,
-                                    weaponDefIndex = DriverWeaponCatalog.GetWeaponFromIndex(k).index,
-                                    weaponSkinMesh = value.mesh,
-                                    weaponSkinMaterial = i.rendererInfos[index].defaultMaterial
-                                });
-                                Array.Resize(ref tempSkins, tempSkins.Length + 1);
 
-                                int index2 = tempSkins.Length - 1;
-                                tempSkins[index2] = weaponSkinDef;
-                            }
+                    var meshReplacement = skinDef.meshReplacements[i];
+                    if (model.transform.Find(meshReplacement.renderer.name))
+                    {
+                        foreach (var weaponDef in DriverWeaponCatalog.weaponDefs.Where(weapon => weapon.mesh.name == meshReplacement.renderer.name))
+                        {
+                            weaponReskins.Add(CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
+                            {
+                                nameToken = weaponDef.nameToken + "Skin" + skinDex,
+                                weaponDefIndex = weaponDef.index,
+                                weaponSkinMesh = meshReplacement.mesh,
+                                weaponSkinMaterial = skinDef.rendererInfos[i].defaultMaterial
+                            }));
+
+                            Debug.Log("Adding weapon skin " + weaponDef.nameToken + "Skin" + skinDex);
                         }
                     }
                 }
-                DriverWeaponSkinCatalog.AddSkin(tempSkins);
-                tempSkins = new DriverWeaponSkinDef[0];
+                DriverWeaponSkinCatalog.AddSkin(weaponReskins.ToArray());
                 skinDex++;
             }
 

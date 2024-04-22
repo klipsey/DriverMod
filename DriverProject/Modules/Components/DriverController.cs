@@ -162,7 +162,9 @@ namespace RobDriver.Modules.Components
 
         private void SetInventoryHook()
         {
-            SetCurrentSkin();
+            if (this.skinController) this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
+            else this.currentSkinDef = DriverWeaponSkinCatalog.Default;
+
             // swag
             if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
 
@@ -186,17 +188,15 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
         {
-            if (currentSkinDef is null) return def;
+            if (this.currentSkinDef?.Any() != true) return def;
 
-            for (int i = 1; i < currentSkinDef.Length; i++)
+            var skinOverride = currentSkinDef.Skip(1).FirstOrDefault(skin => skin.weaponDefIndex == def.index);
+            if (skinOverride)
             {
-                if (currentSkinDef[i].weaponDefIndex == def.index)
-                {
-                    def.mesh = currentSkinDef[i].weaponSkinMesh;
-                    def.material = currentSkinDef[i].weaponSkinMaterial;
-                    return def;
-                }
+                def.mesh = skinOverride.weaponSkinMesh;
+                def.material = skinOverride.weaponSkinMaterial;
             }
+
             return def;
         }
 
@@ -972,11 +972,6 @@ namespace RobDriver.Modules.Components
         }
         public void SetCurrentSkin()
         {
-            if (this.skinController)
-            {
-                this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
-            }
-            else this.currentSkinDef = DriverWeaponSkinCatalog.Default;
         }
     }
 }
