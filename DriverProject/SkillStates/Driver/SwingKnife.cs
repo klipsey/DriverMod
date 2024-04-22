@@ -9,11 +9,17 @@ namespace RobDriver.SkillStates.Driver
     public class SwingKnife : BaseMeleeAttack
     {
         protected override string prop => "KnifeModel";
+        protected override bool hideGun => iDrive.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Modules.Config.enabledRedVfxForKnife.Value;
 
         private GameObject swingEffectInstance;
-
+        private bool wasActive;
         public override void OnEnter()
         {
+            if (this.GetModelChildLocator().FindChild("BackWeapon").gameObject.activeSelf) 
+            {
+                this.GetModelChildLocator().FindChild("BackWeapon").gameObject.SetActive(false);
+                this.wasActive = true;
+            }
             this.hitboxName = "Knife";
 
             this.damageCoefficient = 4.7f;
@@ -29,9 +35,9 @@ namespace RobDriver.SkillStates.Driver
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_driver_swing_knife";
-            this.swingEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? Modules.Assets.redSmallSlashEffect : Modules.Assets.knifeSwingEffect;
+            this.swingEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? Modules.Assets.redSmallSlashEffect : Modules.Assets.knifeSwingEffect;
             this.hitSoundString = "";
-            this.hitEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? Modules.Assets.redSlashImpactEffect : Modules.Assets.knifeImpactEffect;
+            this.hitEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? Modules.Assets.redSlashImpactEffect : Modules.Assets.knifeImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
             this.damageType = DamageType.ApplyMercExpose;
@@ -101,6 +107,14 @@ namespace RobDriver.SkillStates.Driver
         {
         }
 
+        public override void OnExit()
+        {
+            if (this.wasActive == true)
+            {
+                this.GetModelChildLocator().FindChild("BackWeapon").gameObject.SetActive(true);
+            }
+            base.OnExit();
+        }
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             if (this.stopwatch >= (0.5f * this.duration)) return InterruptPriority.Any;

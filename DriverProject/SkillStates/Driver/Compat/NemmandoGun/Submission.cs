@@ -10,6 +10,10 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 {
     public class Submission : BaseDriverSkillState
     {
+        protected override string prop => "KnifeModel";
+
+        protected override bool hideGun => iDrive.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Modules.Config.enabledRedVfxForKnife.Value;
+
         public static float damageCoefficient = 1.1f;
         public static int bulletCount = 6;
         public static float procCoefficient = 1f;
@@ -48,9 +52,17 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
         protected string muzzleString;
         private uint spinPlayID;
         private GameObject spinEffectInstance;
-
+        private bool redVfxOn;
+        private Mesh hold;
         public override void OnEnter()
         {
+            RefreshState();
+            if(iDrive.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Modules.Config.enabledRedVfxForKnife.Value) redVfxOn = true;
+            if (redVfxOn)
+            {
+                hold = Mesh.Instantiate(this.GetModelChildLocator().FindChild("KnifeModel").gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh);
+                this.GetModelChildLocator().FindChild("KnifeModel").gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.nemmandoGunMesh;
+            }
             base.OnEnter();
             this.characterBody.SetAimTimer(5f);
             this.muzzleString = "PistolMuzzle";
@@ -190,7 +202,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
                 }
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();
@@ -210,6 +222,8 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
         public override void OnExit()
         {
+            if (redVfxOn) this.GetModelChildLocator().FindChild("KnifeModel").gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = hold;
+
             base.OnExit();
 
             if (this.spinEffectInstance)

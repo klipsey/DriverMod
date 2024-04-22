@@ -20,11 +20,11 @@ using static R2API.LoadoutAPI;
 
 namespace RobDriver.Modules.Components
 {
-    public class DriverController : MonoBehaviour
+    public class DriverController : MonoBehaviour 
     {
         public DriverWeaponDef weaponDef { get; private set; }
         public DriverBulletDef currentBulletDef { get; private set; } =  DriverBulletCatalog.Default;
-        public DriverWeaponSkinDef[] currentSkinDef { get; private set; } = DriverWeaponSkinCatalog.Default;
+        public DriverWeaponSkinDef[] currentSkinDef { get; private set; } = new DriverWeaponSkinDef[0];
         public DriverWeaponDef defaultWeaponDef { get; private set; }
 
         public bool HasSpecialBullets => this.currentBulletDef.index != DriverBulletCatalog.Default.index;
@@ -121,9 +121,9 @@ namespace RobDriver.Modules.Components
 
             this.GetSkillOverrides();
 
-            this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
-            this.currentBulletDef = DriverBulletCatalog.Default;
-            this.currentSkinDef = DriverWeaponSkinCatalog.Default;
+            this.defaultWeaponDef = Instantiate(DriverWeaponCatalog.Pistol);
+            this.lastWeaponDef = Instantiate(DriverWeaponCatalog.Pistol);
+            this.currentBulletDef = Instantiate(DriverBulletCatalog.Default);
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -163,10 +163,20 @@ namespace RobDriver.Modules.Components
         private void SetInventoryHook()
         {
             if (this.skinController) this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
-            else this.currentSkinDef = DriverWeaponSkinCatalog.Default;
+            else this.currentSkinDef = new DriverWeaponSkinDef[0];
 
             // swag
             if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
+            if (Config.enabledRedVfxForKnife.Value && this.currentSkinDef.Length > 1 && skillLocator.special.skillDef == Driver.knifeSkillDef)
+            {
+                if(DriverWeaponSkinCatalog.badAssSwordDef != null)
+                {
+                    this.characterModel.baseRendererInfos[11].defaultMaterial = Instantiate(DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMaterial);
+                    this.childLocator.FindChild("BackWeapon").gameObject.GetComponent<MeshFilter>().mesh = Instantiate(DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMesh);
+                    this.childLocator.FindChild("BackWeapon").transform.localRotation *= Quaternion.Euler(0, 0, 90);
+                    this.childLocator.FindChild("BackWeapon").gameObject.SetActive(true);
+                }
+            }
 
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
@@ -174,7 +184,7 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
 
-            this.defaultWeaponDef = CheckForSkin(DriverWeaponCatalog.GetDefaultWeaponFromConfig());
+            this.defaultWeaponDef = CheckForSkin(Instantiate(DriverWeaponCatalog.GetDefaultWeaponFromConfig()));
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -188,9 +198,15 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
         {
-            if (this.currentSkinDef?.Any() != true) return def;
+            if (this.currentSkinDef.Length < 1) return def;
+            else if(def.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Config.enabledRedVfxForKnife.Value && DriverWeaponSkinCatalog.badAssSwordDef != null)
+            {
+                def.mesh = DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMesh;
+                def.material = DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMaterial;
+                return def;
+            }
 
-            var skinOverride = currentSkinDef.Skip(1).FirstOrDefault(skin => skin.weaponDefIndex == def.index);
+            var skinOverride = currentSkinDef.FirstOrDefault(skin => skin.weaponDefIndex == def.index);
             if (skinOverride)
             {
                 def.mesh = skinOverride.weaponSkinMesh;
@@ -241,7 +257,7 @@ namespace RobDriver.Modules.Components
                 DriverWeaponDef desiredWeapon = this.defaultWeaponDef;
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0 &&
-                    this.defaultWeaponDef == DriverWeaponCatalog.Pistol)
+                    this.defaultWeaponDef.nameToken == DriverWeaponCatalog.Pistol.nameToken)
                 {
                     desiredWeapon = DriverWeaponCatalog.PyriteGun;
                 }
@@ -252,10 +268,10 @@ namespace RobDriver.Modules.Components
                 }
 
                 // give new weapon if you arent holding a stored weapon
-                if (this.maxWeaponTimer <= 0 && this.defaultWeaponDef != desiredWeapon)
+                if (this.maxWeaponTimer <= 0 && this.defaultWeaponDef.nameToken != desiredWeapon.nameToken)
                 {
                     // set new default
-                    this.defaultWeaponDef = CheckForSkin(desiredWeapon);
+                    this.defaultWeaponDef = CheckForSkin(Instantiate(desiredWeapon));
                     this.PickUpWeapon(desiredWeapon);
                 }
             }
@@ -297,7 +313,7 @@ namespace RobDriver.Modules.Components
             if (!DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef)) return false;
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
-            this.defaultWeaponDef = CheckForSkin(newWeaponDef);
+            this.defaultWeaponDef = CheckForSkin(Instantiate(newWeaponDef));
 
             return true;
         }
@@ -455,12 +471,12 @@ namespace RobDriver.Modules.Components
                 {
                     if (this.HasSpecialBullets)
                     {
-                        currentBulletDef = DriverBulletCatalog.Default;
+                        currentBulletDef = Instantiate(DriverBulletCatalog.Default);
                         UnityEngine.Object.Destroy(muzzleTrail.gameObject);
                     }
                 }
 
-                if (weaponDef == defaultWeaponDef)
+                if (weaponDef.nameToken == defaultWeaponDef.nameToken)
                 {
                     if (!needReload)
                     {
@@ -539,14 +555,7 @@ namespace RobDriver.Modules.Components
         private void ReturnToDefaultWeapon()
         {
             this.DiscardWeapon();
-            if (this.hasPickedUpHammer)
-            {
-                this.PickUpWeapon(DriverWeaponCatalog.LunarHammer);
-            }
-            else
-            {
-                this.PickUpWeapon(this.defaultWeaponDef);
-            }
+            this.PickUpWeapon(this.defaultWeaponDef);
         }
 
         private void DiscardWeapon()
@@ -601,9 +610,14 @@ namespace RobDriver.Modules.Components
         /// </summary>
         private void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool cutAmmo = false)
         {
-            this.weaponDef = CheckForSkin(newWeapon);
+            this.weaponDef = CheckForSkin(Instantiate(DriverWeaponCatalog.GetWeaponFromIndex(newWeapon.index)));
 
-            if (newWeapon == DriverWeaponCatalog.LunarHammer) this.hasPickedUpHammer = true; // hardcoding the mithrix hammer as default once picked up. fuck it
+            if (newWeapon.nameToken == DriverWeaponCatalog.LunarHammer.nameToken)
+            {
+                this.hasPickedUpHammer = true; // keeping this for now
+                this.defaultWeaponDef = Instantiate(DriverWeaponCatalog.LunarHammer);
+                this.childLocator.FindChild("BackWeapon").gameObject.SetActive(false);
+            }
 
             this.EquipWeapon();
             this.SetBulletAmmo(ammo, cutAmmo);
@@ -713,18 +727,18 @@ namespace RobDriver.Modules.Components
                 if (force)
                 {
                     WeaponNotificationQueue.PushWeaponNotification(this.characterBody.master, this.weaponDef.index);
-                    this.lastWeaponDef = this.weaponDef;
+                    this.lastWeaponDef = Instantiate(this.weaponDef);
                     return;
                 }
 
-                if (this.weaponDef != this.lastWeaponDef)
+                if (this.weaponDef.nameToken != this.lastWeaponDef.nameToken)
                 {
-                    if (this.weaponDef != this.defaultWeaponDef && this.weaponDef != DriverWeaponCatalog.Pistol)
+                    if (this.weaponDef.nameToken != this.defaultWeaponDef.nameToken && this.weaponDef.nameToken != DriverWeaponCatalog.Pistol.nameToken)
                     {
                         WeaponNotificationQueue.PushWeaponNotification(this.characterBody.master, this.weaponDef.index);
                     }
                 }
-                this.lastWeaponDef = this.weaponDef;
+                this.lastWeaponDef = Instantiate(this.weaponDef);
             }
         }
 
@@ -766,27 +780,27 @@ namespace RobDriver.Modules.Components
             // model swap
             if (this.weaponDef.mesh)
             {
-                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
+                this.weaponRenderer.sharedMesh = Instantiate(this.weaponDef.mesh);
                 //OK FUCK THIS YOU HAVE TO HARD CODE IT SO OTHER WEAPONS DONT SCREW IT UP. 10 IS PISTOL RN OK!
-                this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
+                this.characterModel.baseRendererInfos[10].defaultMaterial = Instantiate(this.weaponDef.material);
             }
             else
             {
                 if (this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.TwoHanded)
                 {
-                    this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Behemoth.mesh;
-                    this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
+                    this.weaponRenderer.sharedMesh = Instantiate(DriverWeaponCatalog.Behemoth.mesh);
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = Instantiate(this.weaponDef.material);
                 }
                 else
                 {
-                    this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Pistol.mesh;
-                    this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
+                    this.weaponRenderer.sharedMesh = Instantiate(DriverWeaponCatalog.Pistol.mesh);
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = Instantiate(this.weaponDef.material);
                 }
             }
 
             // crosshair
-            this.crosshairPrefab = this.weaponDef.crosshairPrefab;
-            this.characterBody._defaultCrosshairPrefab = this.crosshairPrefab;
+            this.crosshairPrefab = Instantiate(this.weaponDef.crosshairPrefab);
+            this.characterBody._defaultCrosshairPrefab = Instantiate(this.crosshairPrefab);
 
             // animator layer
             switch (this.weaponDef.animationSet)
@@ -803,9 +817,9 @@ namespace RobDriver.Modules.Components
             }
 
             // extra shit
-            if (this.hammerEffectInstance && this.hammerEffectInstance2 && this.skinController.currentSkinIndex + 1 <= Driver.baseSkinCount) // so it doesnt screw up custom skins. Compat can be added like way later ig
+            if (this.hammerEffectInstance && this.hammerEffectInstance2 && !Config.enabledRedVfxForKnife.Value) // so it doesnt screw up custom skins. Compat for effects later maybe
             {
-                if (this.weaponDef == DriverWeaponCatalog.LunarHammer)
+                if (this.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken)
                 {
                     this.hammerEffectInstance.SetActive(true);
                     this.hammerEffectInstance2.SetActive(false); // this one needs to be remade from scratch ig
@@ -926,7 +940,7 @@ namespace RobDriver.Modules.Components
 
         private void OnDestroy()
         {
-            if (!(this.currentSkinDef is null)) this.currentSkinDef = null;
+            this.currentSkinDef = new DriverWeaponSkinDef[0];
             if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
             if (this.muzzleTrail) Destroy(this.muzzleTrail);
 
@@ -969,9 +983,6 @@ namespace RobDriver.Modules.Components
 
                 this.weaponTimer = Mathf.Clamp(this.weaponTimer + amount, 0f, this.maxWeaponTimer);
             }
-        }
-        public void SetCurrentSkin()
-        {
         }
     }
 }

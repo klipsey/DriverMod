@@ -43,7 +43,7 @@ namespace DriverMod.Modules.Components
                 {
                     teamComponent.body.TryGetComponent<DriverController>(out var iDrive);
 
-                    if (!Config.enableMagenticConditionalPickups.Value || (iDrive && !iDrive.HasSpecialBullets && iDrive.weaponDef == iDrive.defaultWeaponDef))
+                    if (!Config.enableMagenticConditionalPickups.Value || (iDrive && !iDrive.HasSpecialBullets && iDrive.weaponDef.nameToken == iDrive.defaultWeaponDef.nameToken))
                     {
                         closestPosition = teamComponent.body.footPosition;
                         lowestDistance = distance;

@@ -25,6 +25,7 @@ using System.Reflection;
 using HarmonyLib;
 using UnityEngine.Rendering;
 using Moonstorm.Starstorm2;
+using System.Xml.Linq;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -149,6 +150,7 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef scepterSyringeSkillDef;
         internal static SkillDef scepterSyringeLegacySkillDef;
         internal static SkillDef scepterKnifeSkillDef;
+        internal static SkillDef knifeSkillDef;
 
         internal static int baseSkinCount;
 
@@ -332,7 +334,12 @@ namespace RobDriver.Modules.Survivors
                 {
                     childName = "PistolModel",
                     material = Modules.Assets.pistolMat
-                } }, bodyRendererIndex);
+                },
+                new CustomRendererInfo
+                {
+                    childName = "BackWeapon",
+                    material = Modules.Assets.pistolMat
+                }, }, bodyRendererIndex);
 
             // hide the extra stuff
             childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
@@ -343,6 +350,8 @@ namespace RobDriver.Modules.Survivors
             childLocator.FindChild("Tie").gameObject.SetActive(false);
             childLocator.FindChild("SkateboardModel").gameObject.SetActive(false);
             childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(false);
+            childLocator.FindChild("BackWeapon").gameObject.SetActive(false);
+            childLocator.FindChild("BackWeapon").transform.localScale = Vector3.one * 0.26f; 
             #endregion
 
             CreateHitboxes(newPrefab);
@@ -1677,7 +1686,7 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
-            SkillDef knifeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            knifeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_NAME",
@@ -2337,20 +2346,9 @@ namespace RobDriver.Modules.Survivors
             foreach (SkinDef skinDef in skinController.skins)
             {
                 var weaponReskins = new List<DriverWeaponSkinDef>();
+                DriverWeaponSkinCatalog.AddSkinIndex(skinDex, skinDef.name);
                 for (int i = 0; i < skinDef.meshReplacements.Length; i++)
                 {
-                    // body mesh
-                    if(i == 0)
-                    {
-                        weaponReskins.Add(CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
-                        {
-                            nameToken = skinDef.nameToken
-                        }));
-
-                        Debug.Log("Adding body mesh for skin " + skinDef.nameToken);
-                        if (skinDef.meshReplacements.Length == 1) break;
-                    }
-
                     var meshReplacement = skinDef.meshReplacements[i];
                     if (model.transform.Find(meshReplacement.renderer.name))
                     {
@@ -2358,20 +2356,21 @@ namespace RobDriver.Modules.Survivors
                         {
                             weaponReskins.Add(CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
                             {
-                                nameToken = weaponDef.nameToken + "Skin" + skinDex,
+                                nameToken = skinDef.name + weaponDef.nameToken,
+                                mainSkinName = skinDef.name,
                                 weaponDefIndex = weaponDef.index,
                                 weaponSkinMesh = meshReplacement.mesh,
                                 weaponSkinMaterial = skinDef.rendererInfos[i].defaultMaterial
                             }));
-
-                            Debug.Log("Adding weapon skin " + weaponDef.nameToken + "Skin" + skinDex);
                         }
                     }
                 }
-                DriverWeaponSkinCatalog.AddSkin(weaponReskins.ToArray());
+                if (weaponReskins.Count != 0)
+                {
+                    DriverWeaponSkinCatalog.AddSkin(skinDef.name, weaponReskins.ToArray());
+                }
                 skinDex++;
             }
-
         }
         private static void InitializeItemDisplays(GameObject prefab)
         {

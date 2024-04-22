@@ -17,7 +17,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             RefreshState();
             this.hitboxName = "Hammer";
 
-            this.damageCoefficient = _damageCoefficient;
+            this.damageCoefficient = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? 3f : _damageCoefficient;
             this.pushForce = 1000f;
             this.baseDuration = 1.8f;
             this.baseEarlyExitTime = 0.5f;
@@ -29,17 +29,17 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.hitStopDuration = 0.2f;
             this.smoothHitstop = true;
 
-            this.swingSoundString = "sfx_driver_swing_hammer";
+            this.swingSoundString = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? "Play_merc_sword_swing" : "sfx_driver_swing_hammer";
 
-            this.swingEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redMercSwing : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
+            this.swingEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? RobDriver.Modules.Assets.redMercSwing : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
             this.hitSoundString = "";
-            this.hitEffectPrefab = RobDriver.Modules.Config.enableMinuanoCompat.Value ? RobDriver.Modules.Assets.redSlashImpactEffect : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
-            this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
+            this.hitEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? RobDriver.Modules.Assets.redSlashImpactEffect : Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
+            this.impactSound = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? Modules.Assets.knifeImpactSoundDef.index : Modules.Assets.hammerImpactSoundDef.index;
 
             this.damageType = DamageType.Stun1s | iDrive.DamageType;
             this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
-            if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
-            else this.muzzleString = "SwingCenter2";
+            if (this.swingIndex == 0) this.muzzleString = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? "SwingCenter2" :  "SwingCenter";
+            else this.muzzleString = this.muzzleString = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? "SwingCenter" : "SwingCenter2";
             base.OnEnter();
         }
         protected override void FireAttack()
@@ -57,7 +57,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
         {
             base.FixedUpdate();
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();

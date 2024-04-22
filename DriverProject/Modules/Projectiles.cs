@@ -118,13 +118,15 @@ namespace RobDriver.Modules
             Prefabs.projectilePrefabs.Add(lunarShard);
 
             lunarShardRed = lunarShard.InstantiateClone("DriverLunarShardRed", false);
-            GameObject ghost = lunarShardRed.GetComponent<ProjectileController>().ghostPrefab;
+            GameObject ghost = lunarShardRed.GetComponent<ProjectileController>().ghostPrefab.InstantiateClone("DriverLunarShardRedGhost", false);
             ghost.transform.GetChild(0).GetComponent<MeshRenderer>().materials[0] = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDust.mat").WaitForCompletion();
             ghost.transform.GetChild(1).GetComponent<TrailRenderer>().materials[0] = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpPortalEffectEdge.mat").WaitForCompletion();
             ghost.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.red);
             ghost.transform.GetChild(3).GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.red);
             var life = ghost.transform.GetChild(3).GetComponent<ParticleSystem>().colorOverLifetime;
             life.enabled = false;
+
+            lunarShardRed.GetComponent<ProjectileController>().ghostPrefab = ghost;
 
             Prefabs.projectilePrefabs.Add(lunarShardRed);
         }

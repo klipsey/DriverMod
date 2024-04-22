@@ -1,20 +1,40 @@
-﻿using System;
+﻿using RobDriver;
+using System;
+using Unity;
+using UnityEngine;
 using System.Collections.Generic;
+using static DriverWeaponSkinDef;
+using System.Reflection;
 
 namespace DriverMod.Modules.Misc
 {
     internal static class DriverWeaponSkinCatalog
     {
-        internal static List<DriverWeaponSkinDef[]> driverSkinDefs { get; set; } = new List<DriverWeaponSkinDef[]>();
-        internal static DriverWeaponSkinDef[] Default => driverSkinDefs[0];
-        internal static void AddSkin(DriverWeaponSkinDef[] skinDef)
+        internal static Dictionary<string, DriverWeaponSkinDef[]> driverSkinDefs { get; private set; } = new Dictionary<string, DriverWeaponSkinDef[]>();
+        //To convert skincontrollerindex to weaponskin
+        internal static Dictionary<int, String> mainSkinIndexes = new Dictionary<int, String>();
+        internal static DriverWeaponSkinDef badAssSwordDef { get; private set; }
+        internal static void AddSkin(string name, DriverWeaponSkinDef[] skinDef)
         {
-            driverSkinDefs.Add(skinDef);
+            if (name == "NemCmdoSamDef" && RobDriver.Modules.Config.enabledRedVfxForKnife.Value)
+            {
+                //minuano sword
+                badAssSwordDef = skinDef[1];
+            }
+            driverSkinDefs.Add(name, skinDef);
+        }
+
+        internal static void AddSkinIndex(int index, string name)
+        {
+            mainSkinIndexes.Add(index, name);
         }
 
         internal static DriverWeaponSkinDef[] GetSkin(int index)
         {
-            return driverSkinDefs[index];
+            String skinName = mainSkinIndexes[index];
+
+            if (driverSkinDefs.ContainsKey(skinName)) return driverSkinDefs[skinName];
+            else return new DriverWeaponSkinDef[0]; 
         }
     }
 }

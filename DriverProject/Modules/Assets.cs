@@ -91,6 +91,7 @@ namespace RobDriver.Modules
         public static Mesh nemmandoGunMesh;
         public static Mesh nemmercGunMesh;
         public static Mesh golemGunMesh;
+        public static Mesh knifeMesh;
 
         public static Material pistolMat;
         public static Material goldenGunMat;
@@ -997,7 +998,7 @@ namespace RobDriver.Modules
             //InitWeaponDefs();
             // kinda jank kinda not impactful enough to care about changing
 
-            redSlashImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("RavagerSwordImpact", false);
+            redSlashImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("RedSwordImpact", false);
             redSlashImpactEffect.GetComponent<OmniEffect>().enabled = false;
 
             Material hitsparkMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat").WaitForCompletion());
@@ -1052,7 +1053,7 @@ namespace RobDriver.Modules
 
             AddNewEffectDef(lunarShardMuzzleFlashRed);
 
-            redMercSwing = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RavagerBigSwordSwing");
+            redMercSwing = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RedBigSwordSwing", false);
             redMercSwing.transform.GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
             var sex = redMercSwing.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
             sex.startLifetimeMultiplier = 0.6f;
@@ -1060,7 +1061,7 @@ namespace RobDriver.Modules
             Object.Destroy(redMercSwing.GetComponent<EffectComponent>());
 
 
-            redSmallSlashEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RavagerSwordSwing");
+            redSmallSlashEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RedSwordSwing", false);
             redSmallSlashEffect.transform.GetChild(0).gameObject.SetActive(false);
             redSmallSlashEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
 
@@ -1756,7 +1757,7 @@ namespace RobDriver.Modules
                 crosshairPrefab = Assets.needlerCrosshairPrefab,
                 tier = DriverWeaponTier.Lunar,
                 primarySkillDef = Survivors.Driver.lunarHammerPrimarySkillDef,
-                secondarySkillDef = Survivors.Driver.lunarHammerSecondarySkillDef,
+                secondarySkillDef = Modules.Config.enabledRedVfxForKnife.Value ? Survivors.Driver.nemmandoGunSecondarySkillDef : Survivors.Driver.lunarHammerSecondarySkillDef,
                 mesh = Assets.lunarHammerMesh,
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Brother/matBrotherHammer.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.BigMelee,

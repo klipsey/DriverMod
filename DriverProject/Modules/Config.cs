@@ -30,7 +30,7 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> dynamicCrosshair;
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
         public static ConfigEntry<bool> defaultPistolAnims;
-        public static ConfigEntry<bool> enableMinuanoCompat;
+        public static ConfigEntry<bool> enabledRedVfxForKnife;
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> enableRecoil;
@@ -133,8 +133,8 @@ namespace RobDriver.Modules
             dynamicCrosshairUniversal = Config.BindAndOptions("04 - Visuals", "Dynamic Crosshair (Universal)", false, "If set to true, highlight the crosshair while hovering over entities, but for ALL characters. Overrides the other option. (Client-side)", true);
 
             defaultPistolAnims = Config.BindAndOptions("04 - Visuals", "Default Pistol Animations", false, "If set to true, return pistol passive scope animations back to the default.");
-            //ill add compat for it later like rav 
-            enableMinuanoCompat = Config.BindAndOptions("04 - Visuals", "Minuano Compatibility", false, "If set to true, Mithrix's hammer equip has red vfx for skins.");
+            //For those who like red. Proper compat tba down the line
+            enabledRedVfxForKnife = Config.BindAndOptions("04 - Visuals", "Red Slashing VFX", false, "If set to true, knife and kings hammer has red vfx.", true);
             
             #endregion
 
