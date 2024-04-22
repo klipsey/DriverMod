@@ -25,7 +25,10 @@ namespace RobDriver.Modules
             lore += "Against the grain of dystopic claims\n";
             lore += "Not the thoughts your actions entertain\n";
             lore += "And you have proved to be\n\n\n";
-            lore += "A real human being and a real hero";
+            lore += "A real human being and a real hero\n\n";
+            lore += "\"So, what do you do?\"\n\n";
+            lore += "\"I drive.\"";
+            
 
             LanguageAPI.Add(prefix + "NAME", "Driver");
             LanguageAPI.Add(prefix + "DESCRIPTION", desc);
@@ -54,7 +57,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
             LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
-            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"My words are my <style=cIsHealth>bullets</style>.");
+            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"Enemies have a chance to drop a new <style=cIsHealth>bullets</style>. These give your <style=cIsHealth>pistol</style> <style=cIsDamage>powerful attacks</style> for a limited time!.");
 
             LanguageAPI.Add(prefix + "PASSIVE4_NAME", "Godsling");
             LanguageAPI.Add(prefix + "PASSIVE4_DESCRIPTION", $"I <style=cIsHealth>drive</style>.");
