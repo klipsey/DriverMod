@@ -1,5 +1,7 @@
 ﻿using RobDriver;
 using System;
+using Unity;
+using UnityEngine;
 using System.Collections.Generic;
 using static DriverWeaponSkinDef;
 using System.Reflection;
@@ -8,12 +10,17 @@ namespace DriverMod.Modules.Misc
 {
     internal static class DriverWeaponSkinCatalog
     {
-        internal static Dictionary<string, DriverWeaponSkinDef[]> driverSkinDefs { get; set; } = new Dictionary<string, DriverWeaponSkinDef[]>();
+        internal static Dictionary<string, DriverWeaponSkinDef[]> driverSkinDefs { get; private set; } = new Dictionary<string, DriverWeaponSkinDef[]>();
         //To convert skincontrollerindex to weaponskin
         internal static Dictionary<int, String> mainSkinIndexes = new Dictionary<int, String>();
+        internal static DriverWeaponSkinDef badAssSwordDef { get; private set; }
         internal static void AddSkin(string name, DriverWeaponSkinDef[] skinDef)
         {
-            Log.Debug("Adding thing");
+            if (name == "NemCmdoSamDef" && RobDriver.Modules.Config.enabledRedVfxForKnife.Value)
+            {
+                //minuano sword
+                badAssSwordDef = skinDef[1];
+            }
             driverSkinDefs.Add(name, skinDef);
         }
 
@@ -25,7 +32,7 @@ namespace DriverMod.Modules.Misc
         internal static DriverWeaponSkinDef[] GetSkin(int index)
         {
             String skinName = mainSkinIndexes[index];
-            Log.Debug("Returning " + skinName);
+
             if (driverSkinDefs.ContainsKey(skinName)) return driverSkinDefs[skinName];
             else return new DriverWeaponSkinDef[0]; 
         }

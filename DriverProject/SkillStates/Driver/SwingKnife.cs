@@ -9,11 +9,17 @@ namespace RobDriver.SkillStates.Driver
     public class SwingKnife : BaseMeleeAttack
     {
         protected override string prop => "KnifeModel";
+        protected override bool hideGun => iDrive.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Modules.Config.enabledRedVfxForKnife.Value;
 
         private GameObject swingEffectInstance;
-
+        private bool wasActive;
         public override void OnEnter()
         {
+            if (this.GetModelChildLocator().FindChild("BackWeapon").gameObject.activeSelf) 
+            {
+                this.GetModelChildLocator().FindChild("BackWeapon").gameObject.SetActive(false);
+                this.wasActive = true;
+            }
             this.hitboxName = "Knife";
 
             this.damageCoefficient = 4.7f;
@@ -101,6 +107,14 @@ namespace RobDriver.SkillStates.Driver
         {
         }
 
+        public override void OnExit()
+        {
+            if (this.wasActive == true)
+            {
+                this.GetModelChildLocator().FindChild("BackWeapon").gameObject.SetActive(true);
+            }
+            base.OnExit();
+        }
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             if (this.stopwatch >= (0.5f * this.duration)) return InterruptPriority.Any;

@@ -52,7 +52,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             base.AddRecoil2(-0.4f * recoil, -0.8f * recoil, -0.3f * recoil, 0.3f * recoil);
             base.characterBody.AddSpreadBloom(FireShard.spreadBloomValue);
 
-            EffectManager.SimpleMuzzleFlash(Modules.Assets.lunarShardMuzzleFlash, base.gameObject, "HandL", false);
+            EffectManager.SimpleMuzzleFlash(RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? Modules.Assets.lunarShardMuzzleFlashRed : Modules.Assets.lunarShardMuzzleFlash, base.gameObject, "HandL", false);
             Util.PlaySound(EntityStates.BrotherMonster.Weapon.FireLunarShards.fireSound, base.gameObject);
 
             //base.skillLocator.secondary.rechargeStopwatch = 0f;
