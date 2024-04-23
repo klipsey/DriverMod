@@ -11,6 +11,7 @@ using RobDriver.Modules.Survivors;
 using DriverMod.Modules.Misc;
 using static DriverWeaponSkinDef;
 using UnityEngine;
+using System.Collections.Generic;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -25,6 +26,7 @@ namespace RobDriver
     [BepInDependency("com.RiskySleeps.ClassicItemsReturns", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("bubbet.riskui", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.rob.Ravager", BepInDependency.DependencyFlags.SoftDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(MODUID, MODNAME, MODVERSION)]
     [R2APISubmoduleDependency(new string[]
@@ -57,7 +59,9 @@ namespace RobDriver
         public static bool riskUIInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("bubbet.riskui");
         public static bool extendedLoadoutInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.KingEnderBrine.ExtendedLoadout");
         public static bool greenAlienHeadInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Borbo.GreenAlienHead");
+        public static bool ravagerInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rob.Ravager");
 
+        public static List<HurtBox> hurtboxesList = new List<HurtBox>();
         private void Awake()
         {
             instance = this;
@@ -119,12 +123,23 @@ namespace RobDriver
             if (Modules.Config.dynamicCrosshairUniversal.Value) On.RoR2.UI.CrosshairController.Awake += CrosshairController_Awake;
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
-
+            On.RoR2.HurtBox.OnEnable += HurtBox_OnEnable;
+            On.RoR2.HurtBox.OnDisable += HurtBox_OnDisable;
             On.RoR2.UI.MainMenu.MainMenuController.Start += MainMenuController_Start;
             // uncomment this if network testing
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
         }
+        private void HurtBox_OnEnable(On.RoR2.HurtBox.orig_OnEnable orig, HurtBox self)
+        {
+            orig(self);
+            hurtboxesList.Add(self);
+        }
 
+        private void HurtBox_OnDisable(On.RoR2.HurtBox.orig_OnDisable orig, HurtBox self)
+        {
+            orig(self);
+            hurtboxesList.Remove(self);
+        }
         private void MainMenuController_Start(On.RoR2.UI.MainMenu.MainMenuController.orig_Start orig, RoR2.UI.MainMenu.MainMenuController self)
         {
             orig(self);

@@ -21,6 +21,7 @@ namespace RobDriver.SkillStates.Driver
         }
         protected DriverController iDrive;
         protected DriverWeaponDef cachedWeaponDef;
+        protected RedGuyController penis;
         protected virtual string prop
         {
             get
@@ -40,7 +41,8 @@ namespace RobDriver.SkillStates.Driver
 
         public void RefreshState()
         {
-            if(!this.iDrive) this.iDrive = this.GetComponent<DriverController>();
+            if (!this.penis && this.cachedWeaponDef.nameToken == ) this.penis = this.gameObject.GetComponent<RedGuyController>();
+            if (!this.iDrive) this.iDrive = this.GetComponent<DriverController>();
             if (this.iDrive) this.cachedWeaponDef = this.iDrive.weaponDef;
         }
         public override void OnExit()

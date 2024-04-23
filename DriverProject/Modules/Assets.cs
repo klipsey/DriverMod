@@ -183,6 +183,8 @@ namespace RobDriver.Modules
         public static GameObject redSmallSlashEffect;
         public static GameObject redMercSwing;
         public static GameObject lunarShardMuzzleFlashRed;
+        public static GameObject redSwingEffect;
+        public static GameObject bigRedSwingEffect;
 
         internal static DriverWeaponDef pistolWeaponDef;
         internal static DriverWeaponDef goldenGunWeaponDef;
@@ -1060,6 +1062,16 @@ namespace RobDriver.Modules
             redMercSwing.transform.GetChild(0).localScale = Vector3.one * 2f;
             Object.Destroy(redMercSwing.GetComponent<EffectComponent>());
 
+            redSwingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RavagerSwordSwing");
+            redSwingEffect.transform.GetChild(0).gameObject.SetActive(false);
+            redSwingEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
+
+            bigRedSwingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RavagerBigSwordSwing");
+            bigRedSwingEffect.transform.GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
+            sex = bigRedSwingEffect.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
+            sex.startLifetimeMultiplier = 0.6f;
+            bigRedSwingEffect.transform.GetChild(0).localScale = Vector3.one * 2f;
+            Object.Destroy(bigRedSwingEffect.GetComponent<EffectComponent>());
 
             redSmallSlashEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RedSwordSwing", false);
             redSmallSlashEffect.transform.GetChild(0).gameObject.SetActive(false);

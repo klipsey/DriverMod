@@ -41,14 +41,14 @@ namespace RobDriver.SkillStates.BaseStates
         private float earlyExitTime;
         public float duration;
         private bool hasFired;
-        private float hitPauseTimer;
+        protected float hitPauseTimer;
         protected OverlapAttack attack;
-        private bool inHitPause;
+        protected bool inHitPause;
         private bool hasHopped;
         protected float stopwatch;
         protected Animator animator;
-        private BaseState.HitStopCachedState hitStopCachedState;
-        private Vector3 storedVelocity;
+        protected BaseState.HitStopCachedState hitStopCachedState;
+        protected Vector3 storedVelocity;
 
         protected List<HurtBox> hitResults = new List<HurtBox>();
 
