@@ -13,6 +13,7 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.revolverCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Uncommon;
         public override int shotCount => 6;
+        public override bool isMelee => false;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshRevolver");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Bandit2/matBandit2Revolver.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;

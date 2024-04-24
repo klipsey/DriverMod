@@ -13,14 +13,8 @@ namespace DriverMod.Modules.Misc
         internal static Dictionary<string, DriverWeaponSkinDef[]> driverSkinDefs { get; private set; } = new Dictionary<string, DriverWeaponSkinDef[]>();
         //To convert skincontrollerindex to weaponskin
         internal static Dictionary<int, String> mainSkinIndexes = new Dictionary<int, String>();
-        internal static DriverWeaponSkinDef badAssSwordDef { get; private set; }
         internal static void AddSkin(string name, DriverWeaponSkinDef[] skinDef)
         {
-            if (name == "NemCmdoSamDef" && RobDriver.Modules.Config.enabledRedVfxForKnife.Value)
-            {
-                //minuano sword
-                badAssSwordDef = skinDef[1];
-            }
             driverSkinDefs.Add(name, skinDef);
         }
 

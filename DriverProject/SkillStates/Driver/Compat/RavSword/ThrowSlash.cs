@@ -17,7 +17,7 @@ namespace RobDriver.SkillStates.Driver.Compat
 
             this.charge = Mathf.Clamp01(Util.Remap(this.characterMotor.velocity.magnitude, 0f, 60f, 0f, 1f));
 
-            this.damageCoefficient = Util.Remap(this.charge, 0f, 1f, 2.3f, 2.3f * 5f);
+            this.damageCoefficient = Util.Remap(this.charge, 0f, 1f, 2.3f, 2.3f * 2.5f);
             this.pushForce = 200f;
             this.baseDuration = 0.8f;
             this.baseEarlyExitTime = 0.5f;
@@ -36,11 +36,13 @@ namespace RobDriver.SkillStates.Driver.Compat
             this.hitEffectPrefab = Modules.Assets.redSlashImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
-            this.damageType = DamageType.Generic;
+            this.damageType = DamageType.Generic | iDrive.DamageType;
+
+            this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
 
             this.muzzleString = "KnifeSwingMuzzle";
 
-            if (this.charge >= 0.9f)
+            if (this.charge >= 0.45f)
             {
                 this.hitStopDuration *= 2.5f;
                 this.attackEndTime = 0.7f;
@@ -48,7 +50,7 @@ namespace RobDriver.SkillStates.Driver.Compat
                 else this.swingSoundString = "sfx_driver_swing_hammer";
                 this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
                 this.swingEffectPrefab = Modules.Assets.bigRedSwingEffect;
-                this.damageType = DamageType.Stun1s;
+                this.damageType = DamageType.Stun1s | iDrive.DamageType;
             }
 
             base.OnEnter();
@@ -57,9 +59,14 @@ namespace RobDriver.SkillStates.Driver.Compat
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            if (this.penis)
+            if (this.ravController)
             {
-                this.penis.RefreshBlink();
+                this.ravController.RefreshBlink();
+            }
+            if (this.iDrive.maxWeaponTimer > 0 && !ammoConsumed)
+            {
+                ammoConsumed = true;
+                this.iDrive.ConsumeAmmo(1f, true);
             }
         }
 
@@ -116,7 +123,7 @@ namespace RobDriver.SkillStates.Driver.Compat
 
         protected override void PlayAttackAnimation()
         {
-            if (this.charge >= 0.9f)
+            if (this.charge >= 0.45f)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 base.PlayAnimation("FullBody, Override", "ThrowSlashMax", "Slash.playbackRate", this.duration * 2f);

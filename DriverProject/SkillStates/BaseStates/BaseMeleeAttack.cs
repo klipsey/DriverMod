@@ -52,6 +52,7 @@ namespace RobDriver.SkillStates.BaseStates
 
         protected List<HurtBox> hitResults = new List<HurtBox>();
 
+        protected bool ammoConsumed = false;
         public override void OnEnter()
         {
             base.OnEnter();
@@ -108,7 +109,7 @@ namespace RobDriver.SkillStates.BaseStates
 
         protected virtual void PlayAttackAnimation()
         {
-            base.PlayCrossfade("Gesture, Override", "Slash" + (1 + swingIndex), "Knife.playbackRate", this.duration, 0.05f);
+            base.PlayCrossfade("Gesture, Override", "Slash" + (1 + swingIndex), "Slash.playbackRate", this.duration, 0.05f);
         }
 
         public override void OnExit()
@@ -151,7 +152,7 @@ namespace RobDriver.SkillStates.BaseStates
         protected virtual void TriggerHitStop()
         {
             this.storedVelocity = base.characterMotor.velocity;
-            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Knife.playbackRate");
+            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Slash.playbackRate");
             this.hitPauseTimer = this.hitStopDuration / this.attackSpeedStat;
             this.inHitPause = true;
         }
@@ -211,18 +212,16 @@ namespace RobDriver.SkillStates.BaseStates
             else
             {
                 if (base.characterMotor) base.characterMotor.velocity = Vector3.zero;
-                if (this.animator) this.animator.SetFloat("Knife.playbackRate", 0f);
+                if (this.animator)
+                {
+                    this.animator.SetFloat("Slash.playbackRate", 0f);
+                    this.animator.SetFloat("Slash.playbackRate", 0f);
+                }
             }
 
             if (this.stopwatch >= (this.duration * this.attackStartTime) && this.stopwatch <= (this.duration * this.attackEndTime))
             {
                 this.FireAttack();
-            }
-
-            if (base.fixedAge >= this.duration && base.isAuthority)
-            {
-                this.outer.SetNextStateToMain();
-                return;
             }
 
             if (base.fixedAge >= (this.duration * this.earlyExitTime) && base.isAuthority)
@@ -233,6 +232,12 @@ namespace RobDriver.SkillStates.BaseStates
                     this.SetNextState();
                     return;
                 }
+            }
+
+            if (base.fixedAge >= this.duration && base.isAuthority)
+            {
+                this.outer.SetNextStateToMain();
+                return;
             }
         }
 
@@ -245,7 +250,7 @@ namespace RobDriver.SkillStates.BaseStates
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Pain;
+            return InterruptPriority.Skill;
         }
 
         public override void OnSerialize(NetworkWriter writer)

@@ -16,6 +16,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         public override void OnEnter()
         {
             base.OnEnter();
+            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, true);
             this.duration = this.baseDuration / this.attackSpeedStat;
             base.PlayAnimation("FullBody, Override", "PunchHit", "Grab.playbackRate", this.duration);
         }

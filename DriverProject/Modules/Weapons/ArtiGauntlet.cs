@@ -13,6 +13,7 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.needlerCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Unique;
         public override int shotCount => 20;
+        public override bool isMelee => false;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshArtiGauntlet");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Mage/matMage.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;

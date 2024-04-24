@@ -26,6 +26,7 @@ namespace RobDriver.Modules.Weapons
         public abstract GameObject crosshairPrefab { get; }
         public abstract DriverWeaponTier tier { get; }
         public abstract int shotCount { get; }
+        public abstract bool isMelee { get; }
 
         public abstract DriverWeaponDef.BuffType buffType { get; }
         public abstract SkillDef primarySkillDef { get; }
@@ -50,7 +51,15 @@ namespace RobDriver.Modules.Weapons
         protected void CreateWeapon()
         {
             Texture icon = null;
+            DriverWeaponTier changeTier = tier;
+            float changeDropChance = dropChance;
             if (iconName != "") icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
+
+            if(tier == DriverWeaponTier.Unique && Modules.Config.uniqueDropsAreLegendary.Value)
+            {
+                changeTier = DriverWeaponTier.Legendary;
+                changeDropChance = 0f;
+            }
 
             weaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
@@ -58,8 +67,9 @@ namespace RobDriver.Modules.Weapons
                 descriptionToken = "ROB_DRIVER_WEAPON_" + weaponNameToken + "_DESC",
                 icon = icon,
                 crosshairPrefab = crosshairPrefab,
-                tier = tier,
+                tier = changeTier,
                 shotCount = shotCount,
+                isMelee = isMelee,
                 primarySkillDef = primarySkillDef,
                 secondarySkillDef = secondarySkillDef,
                 mesh = mesh,
@@ -67,7 +77,7 @@ namespace RobDriver.Modules.Weapons
                 animationSet = animationSet,
                 calloutSoundString = calloutSoundString,
                 configIdentifier = configIdentifier,
-                dropChance = dropChance,
+                dropChance = changeDropChance,
                 buffType = buffType
             });
             /*if (addToPool) */DriverWeaponCatalog.AddWeapon(weaponDef);

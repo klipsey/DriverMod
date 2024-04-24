@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using RoR2;
 using EntityStates;
-using RobDriver.SkillStates.Driver.Compat;
+using RobDriver.SkillStates.BaseStates;
 
-namespace RobDriver.SkillStates.BaseStates
+namespace RobDriver.SkillStates.Driver.Compat
 {
     public class ChargeJump : BaseDriverState
     {
@@ -11,8 +11,6 @@ namespace RobDriver.SkillStates.BaseStates
         public bool hopoo = false;
 
         private Vector3 origin;
-        private ParticleSystem x1;
-        private ParticleSystem x2;
         protected float jumpTime;
         private bool hasJumped;
         protected Vector3 jumpDir;
@@ -25,25 +23,20 @@ namespace RobDriver.SkillStates.BaseStates
 
         public override void OnEnter()
         {
+            RefreshState();
             base.OnEnter();
             origin = this.transform.position;
             base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
-            this.penis.isWallClinging = true;
-            this.penis.skibidi = true;
+            this.ravController.isWallClinging = true;
             animator = this.GetModelAnimator();
 
             SnapToGround();
             PlayAnim();
 
-            x1 = this.FindModelChild("FootChargeL").gameObject.GetComponent<ParticleSystem>();
-            x2 = this.FindModelChild("FootChargeR").gameObject.GetComponent<ParticleSystem>();
-
-            x1.Play();
-            x2.Play();
-
             if (DriverPlugin.ravagerInstalled) playID = Util.PlaySound("sfx_ravager_charge_jump", this.gameObject);
+            else playID = Util.PlaySound("HenryBazookaCharge", this.gameObject);
 
-            this.penis.IncrementWallJump();
+            this.ravController.IncrementWallJump();
         }
 
         private void SnapToGround()
@@ -66,9 +59,7 @@ namespace RobDriver.SkillStates.BaseStates
         {
             base.OnExit();
             base.PlayAnimation("Body", "AscendDescend");
-            this.penis.isWallClinging = false;
-            x1.Stop();
-            x2.Stop();
+            this.ravController.isWallClinging = false;
             AkSoundEngine.StopPlayingID(playID);
         }
 
@@ -121,8 +112,6 @@ namespace RobDriver.SkillStates.BaseStates
 
                 if (base.fixedAge >= duration && !permaCling || !this.inputBank.jump.down)
                 {
-                    x1.Stop();
-                    x2.Stop();
 
                     if (base.fixedAge <= 0.2f)
                     {
@@ -142,7 +131,7 @@ namespace RobDriver.SkillStates.BaseStates
 
                         float movespeed = Mathf.Clamp(this.characterBody.moveSpeed, 1f, 18f);
 
-                        jumpForce = Util.Remap(charge, 0f, 1f, 0.17733990147f, 0.37334975369f) * this.characterBody.jumpPower * movespeed;
+                        jumpForce = Util.Remap(charge, 0f, 1f, 0.17733990147f, 0.37334975369f) * this.characterBody.jumpPower * movespeed * 0.5f;
 
                         this.characterMotor.velocity = jumpDir * jumpForce;
                         hasJumped = true;

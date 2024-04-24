@@ -9,15 +9,15 @@ namespace RobDriver.SkillStates.Driver
     public class SwingKnife : BaseMeleeAttack
     {
         protected override string prop => "KnifeModel";
-        protected override bool hideGun => iDrive.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Modules.Config.enabledRedVfxForKnife.Value;
+        protected override bool hideGun => iDrive.weaponDef.isMelee && Modules.Config.enableRevengence.Value;
 
         private GameObject swingEffectInstance;
         private bool wasActive;
         public override void OnEnter()
         {
-            if (this.GetModelChildLocator().FindChild("BackWeapon").gameObject.activeSelf) 
+            if (this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.activeSelf) 
             {
-                this.GetModelChildLocator().FindChild("BackWeapon").gameObject.SetActive(false);
+                this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.SetActive(false);
                 this.wasActive = true;
             }
             this.hitboxName = "Knife";
@@ -100,7 +100,7 @@ namespace RobDriver.SkillStates.Driver
 
         protected override void PlayAttackAnimation()
         {
-            base.PlayCrossfade("Gesture, Override", "SwingKnife", "Knife.playbackRate", this.duration, 0.1f);
+            base.PlayCrossfade("Gesture, Override", "SwingKnife", "Slash.playbackRate", this.duration, 0.1f);
         }
 
         protected override void SetNextState()
@@ -111,7 +111,7 @@ namespace RobDriver.SkillStates.Driver
         {
             if (this.wasActive == true)
             {
-                this.GetModelChildLocator().FindChild("BackWeapon").gameObject.SetActive(true);
+                this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.SetActive(true);
             }
             base.OnExit();
         }

@@ -31,11 +31,13 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> dynamicCrosshairUniversal;
         public static ConfigEntry<bool> defaultPistolAnims;
         public static ConfigEntry<bool> enabledRedVfxForKnife;
+        public static ConfigEntry<bool> enableRevengence;
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> enableRecoil;
         public static ConfigEntry<string> defaultWeaponName;
         public static ConfigEntry<int> defaultWeaponIndex;
+        public static ConfigEntry<bool> uniqueDropsAreLegendary; 
         public static ConfigEntry<bool> badass;
         public static ConfigEntry<bool> cursed;
 
@@ -105,6 +107,7 @@ namespace RobDriver.Modules
 
             defaultWeaponIndex = Config.BindAndOptions("02 - Gameplay", "Default Weapon Index", 0, "Change the index of the default weapon Driver uses. Purely for fun, don't ask me what the indices are because I don't know, they're generated at runtime.");
 
+            uniqueDropsAreLegendary = Config.BindAndOptions("02 - Gameplay", "Unique Drop Are Legendary", false, "Unique weapon drops from survivors are now in the legendary pool");
             #endregion
 
             #region Pickups
@@ -134,8 +137,9 @@ namespace RobDriver.Modules
 
             defaultPistolAnims = Config.BindAndOptions("04 - Visuals", "Default Pistol Animations", false, "If set to true, return pistol passive scope animations back to the default.");
             //For those who like red. Proper compat tba down the line
-            enabledRedVfxForKnife = Config.BindAndOptions("04 - Visuals", "Red Slashing VFX", false, "If set to true, knife and kings hammer has red vfx.", true);
-            
+            enabledRedVfxForKnife = Config.BindAndOptions("04 - Visuals", "Red Slashing VFX", false, "If set to true, knife has red vfx.", true);
+
+            enableRevengence = Config.BindAndOptions("04 - Visuals", "Revengence", false, "Some weapons are turned into murasama.", true);
             #endregion
 
             #region Emotes

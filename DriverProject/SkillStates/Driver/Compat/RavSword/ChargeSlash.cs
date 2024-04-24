@@ -12,7 +12,8 @@ namespace RobDriver.SkillStates.Driver.Compat
             base.OnEnter();
 
             base.PlayCrossfade("Gesture, Override", "ChargeSlash", "Slash.playbackRate", 0.3f, 0.1f);
-            Util.PlaySound("sfx_ravager_foley_01", this.gameObject);
+            if(DriverPlugin.ravagerInstalled) Util.PlaySound("sfx_ravager_foley_01", this.gameObject);
+            else Util.PlaySound("sfx_driver_aim_foley", this.gameObject);
         }
 
         public override void FixedUpdate()
@@ -23,7 +24,7 @@ namespace RobDriver.SkillStates.Driver.Compat
             {
                 if (!this.inputBank.skill1.down && base.fixedAge >= 0.1f || this.isGrounded && base.fixedAge >= 1.25f)
                 {
-                    if (!this.penis.isWallClinging)
+                    if (!this.ravController.isWallClinging)
                     {
                         this.outer.SetNextState(new ThrowSlash());
                         return;

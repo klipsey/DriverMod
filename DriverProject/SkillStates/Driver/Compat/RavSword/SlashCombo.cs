@@ -35,20 +35,21 @@ namespace RobDriver.SkillStates.Driver.Compat
             this.hitEffectPrefab = Modules.Assets.redSlashImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
-            this.damageType = DamageType.Generic;
+            this.damageType = DamageType.Generic | iDrive.DamageType;
+            this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
 
-            if (this.swingIndex == 0) this.muzzleString = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? "SwingCenter2" : "SwingCenter";
-            else this.muzzleString = this.muzzleString = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? "SwingCenter" : "SwingCenter2";
+            if (this.swingIndex == 0) this.muzzleString = "SwingMuzzle1";
+            else this.muzzleString = this.muzzleString = "SwingMuzzle2";
 
             if (this.swingIndex == 2)
             {
-                this.muzzleString = "KnifeSwingMuzzle";
+                this.muzzleString = "SwingMuzzleLeap";
 
                 this.duration *= 1.25f;
                 this.baseEarlyExitTime = 0.75f;
                 this.hitStopDuration *= 2.5f;
                 this.attackStartTime = 0.22f;
-                this.damageType = DamageType.Stun1s;
+                this.damageType = DamageType.Stun1s | iDrive.DamageType;
                 if (DriverPlugin.ravagerInstalled) this.swingSoundString = "sfx_ravager_bigswing";
                 else this.swingSoundString = "sfx_driver_swing_hammer";
                 this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
@@ -56,17 +57,20 @@ namespace RobDriver.SkillStates.Driver.Compat
             }
 
             base.OnEnter();
-
-            /*if (this.empowered)
-            {
-                this.FireAttack();
-                this.InitializeAttack();
-            }*/
         }
 
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
+            if(this.ravController)
+            {
+                this.ravController.RefreshBlink();
+            }
+            if (this.iDrive.maxWeaponTimer > 0 && !ammoConsumed)
+            {
+                ammoConsumed = true;
+                this.iDrive.ConsumeAmmo(1f, true);
+            }
         }
 
         protected override void FireAttack()
@@ -75,7 +79,7 @@ namespace RobDriver.SkillStates.Driver.Compat
             {
                 Vector3 direction = this.GetAimRay().direction;
                 direction.y = Mathf.Max(direction.y, direction.y * 0.5f);
-                this.FindModelChild("SwordPivot").rotation = Util.QuaternionSafeLookRotation(direction);
+                this.FindModelChild("MeleePivot").rotation = Util.QuaternionSafeLookRotation(direction);
             }
 
             base.FireAttack();

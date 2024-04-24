@@ -254,7 +254,15 @@ namespace RobDriver.Modules.Survivors
 
             //newPrefab.GetComponent<CharacterDirection>().turnSpeed = 720f;
 
-            newPrefab.GetComponent<EntityStateMachine>().mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MainState));
+            foreach (EntityStateMachine i in newPrefab.GetComponents<EntityStateMachine>())
+            {
+                if (i.customName == "Body") i.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MainState));
+            }
+
+            EntityStateMachine passiveController = newPrefab.AddComponent<EntityStateMachine>();
+            passiveController.initialStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.WallJump));
+            passiveController.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.WallJump));
+            passiveController.customName = "Passive";
 
             // this is for the lunar shard skill..
             EntityStateMachine stateMachine = newPrefab.AddComponent<EntityStateMachine>();
@@ -268,7 +276,8 @@ namespace RobDriver.Modules.Survivors
             // schizophrenia
             newPrefab.GetComponent<CharacterDeathBehavior>().deathState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.FuckMyAss));
 
-            newPrefab.AddComponent<Modules.Components.DriverController>();
+            newPrefab.AddComponent<DriverController>();
+            newPrefab.AddComponent<RedGuyController>();
             #endregion
 
             #region Model
@@ -337,8 +346,8 @@ namespace RobDriver.Modules.Survivors
                 },
                 new CustomRendererInfo
                 {
-                    childName = "BackWeapon",
-                    material = Modules.Assets.pistolMat
+                    childName = "BackWeaponModel",
+                    material = Modules.Assets.nemKatanaMat
                 }, }, bodyRendererIndex);
 
             // hide the extra stuff
@@ -350,8 +359,7 @@ namespace RobDriver.Modules.Survivors
             childLocator.FindChild("Tie").gameObject.SetActive(false);
             childLocator.FindChild("SkateboardModel").gameObject.SetActive(false);
             childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(false);
-            childLocator.FindChild("BackWeapon").gameObject.SetActive(false);
-            childLocator.FindChild("BackWeapon").transform.localScale = Vector3.one * 0.26f; 
+            childLocator.FindChild("BackWeaponModel").gameObject.SetActive(false);
             #endregion
 
             CreateHitboxes(newPrefab);
@@ -527,6 +535,12 @@ namespace RobDriver.Modules.Survivors
                 {
                     hitboxTransform
                 }, "Knife");
+
+            hitboxTransform = childLocator.FindChild("DragHitbox");
+            Modules.Prefabs.SetupHitbox(model, new Transform[]
+                {
+                    hitboxTransform
+                }, "Drag");
         }
 
         private static void CreateSkills(GameObject prefab)

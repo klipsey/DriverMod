@@ -1,4 +1,5 @@
-﻿namespace RobDriver.SkillStates.BaseStates
+﻿using RobDriver.SkillStates.BaseStates;
+namespace RobDriver.SkillStates.Driver.Compat
 {
     public class WallJumpSmall : BaseDriverState
     {

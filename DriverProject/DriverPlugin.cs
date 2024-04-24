@@ -116,6 +116,8 @@ namespace RobDriver
             new Modules.Weapons.CommandoSMG().Init();
             new Modules.Weapons.Revolver().Init();
             new Modules.Weapons.SMG().Init();
+            new Modules.Weapons.RavSword().Init();
+            new Modules.Weapons.NemSword().Init();
         }
 
         private void Hook()

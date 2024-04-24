@@ -10,9 +10,9 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 {
     public class Submission : BaseDriverSkillState
     {
-        protected override string prop => "KnifeModel";
+        protected override string prop => "";
 
-        protected override bool hideGun => iDrive.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Modules.Config.enabledRedVfxForKnife.Value;
+        protected override bool hideGun => false;
 
         public static float damageCoefficient = 1.1f;
         public static int bulletCount = 6;
@@ -52,17 +52,10 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
         protected string muzzleString;
         private uint spinPlayID;
         private GameObject spinEffectInstance;
-        private bool redVfxOn;
-        private Mesh hold;
         public override void OnEnter()
         {
             RefreshState();
-            if(iDrive.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Modules.Config.enabledRedVfxForKnife.Value) redVfxOn = true;
-            if (redVfxOn)
-            {
-                hold = Mesh.Instantiate(this.GetModelChildLocator().FindChild("KnifeModel").gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh);
-                this.GetModelChildLocator().FindChild("KnifeModel").gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = Modules.Assets.nemmandoGunMesh;
-            }
+            this.iDrive.SetToNemmandoGun(true);
             base.OnEnter();
             this.characterBody.SetAimTimer(5f);
             this.muzzleString = "PistolMuzzle";
@@ -222,7 +215,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
         public override void OnExit()
         {
-            if (redVfxOn) this.GetModelChildLocator().FindChild("KnifeModel").gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh = hold;
+            this.iDrive.SetToNemmandoGun(false);
 
             base.OnExit();
 

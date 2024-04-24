@@ -90,8 +90,8 @@ namespace RobDriver.Modules
         public static Mesh lunarHammerMesh;
         public static Mesh nemmandoGunMesh;
         public static Mesh nemmercGunMesh;
+        public static Mesh nemKatanaMesh;
         public static Mesh golemGunMesh;
-        public static Mesh knifeMesh;
 
         public static Material pistolMat;
         public static Material goldenGunMat;
@@ -112,6 +112,7 @@ namespace RobDriver.Modules
         public static Material badassShotgunMat;
         public static Material nemmandoGunMat;
         public static Material nemmercGunMat;
+        public static Material nemKatanaMat;
 
         public static Material skateboardMat;
         public static Material knifeMat;
@@ -158,6 +159,7 @@ namespace RobDriver.Modules
         internal static Texture lunarRifleWeaponIcon;
         internal static Texture lunarHammerWeaponIcon;
         internal static Texture nemmandoGunWeaponIcon;
+        internal static Texture nemmandoSwordWeaponIcon;
         internal static Texture nemmercGunWeaponIcon;
         internal static Texture golemGunWeaponIcon;
 
@@ -210,6 +212,7 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef lunarRifleWeaponDef;
         internal static DriverWeaponDef lunarHammerWeaponDef;
         internal static DriverWeaponDef nemmandoGunWeaponDef;
+        internal static DriverWeaponDef nemmandoSwordWeaponDef;
         internal static DriverWeaponDef nemmercGunWeaponDef;
         internal static DriverWeaponDef golemGunWeaponDef;
 
@@ -556,6 +559,7 @@ namespace RobDriver.Modules
             lunarHammerMesh = mainAssetBundle.LoadAsset<Mesh>("meshLunarHammer");
             nemmandoGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmandoGun");
             nemmercGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmercGun");
+            nemKatanaMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemKatana");
             golemGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshGolemGun");
 
             pistolMat = CreateMaterial("matPistol");
@@ -577,7 +581,7 @@ namespace RobDriver.Modules
             badassShotgunMat = CreateMaterial("matSawedOff");
             nemmandoGunMat = CreateMaterial("matNemmandoGun", 5f, Color.white, 1f);
             nemmercGunMat = CreateMaterial("matNemmercGun", 5f, Color.white, 1f);
-
+            nemKatanaMat = CreateMaterial("matNemKatana", 5f, Color.white, 1f);
             knifeMat = CreateMaterial("matKnife");
             skateboardMat = CreateMaterial("matSkateboard");
 
@@ -1769,7 +1773,7 @@ namespace RobDriver.Modules
                 crosshairPrefab = Assets.needlerCrosshairPrefab,
                 tier = DriverWeaponTier.Lunar,
                 primarySkillDef = Survivors.Driver.lunarHammerPrimarySkillDef,
-                secondarySkillDef = Modules.Config.enabledRedVfxForKnife.Value ? Survivors.Driver.nemmandoGunSecondarySkillDef : Survivors.Driver.lunarHammerSecondarySkillDef,
+                secondarySkillDef = Survivors.Driver.lunarHammerSecondarySkillDef,
                 mesh = Assets.lunarHammerMesh,
                 material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Brother/matBrotherHammer.mat").WaitForCompletion(),
                 animationSet = DriverWeaponDef.AnimationSet.BigMelee,
@@ -1799,6 +1803,7 @@ namespace RobDriver.Modules
             DriverWeaponCatalog.AddWeapon(nemmandoGunWeaponDef);
             DriverWeaponCatalog.NemmandoGun = nemmandoGunWeaponDef;
 
+            /*
             nemmercGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_NEMMERC_NAME",
@@ -1818,7 +1823,7 @@ namespace RobDriver.Modules
             });
             DriverWeaponCatalog.AddWeapon(nemmercGunWeaponDef);
             DriverWeaponCatalog.NemmercGun = nemmercGunWeaponDef;
-
+            */ 
             golemGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_GOLEMGUN_NAME",
@@ -1849,7 +1854,7 @@ namespace RobDriver.Modules
 
             DriverWeaponCatalog.AddWeaponDrop("Mechorilla", armCannonWeaponDef);
 
-            DriverWeaponCatalog.AddWeaponDrop("NemCommando", nemmandoGunWeaponDef);
+            //DriverWeaponCatalog.AddWeaponDrop("NemCommando", nemmandoGunWeaponDef);
             DriverWeaponCatalog.AddWeaponDrop("NemMerc", nemmercGunWeaponDef);
         }
 

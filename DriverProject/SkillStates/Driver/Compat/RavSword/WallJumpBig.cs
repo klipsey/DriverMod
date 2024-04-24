@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using RoR2;
-using EntityStates;
+using RobDriver.SkillStates.BaseStates;
 
-namespace RobDriver.SkillStates.BaseStates
+namespace RobDriver.SkillStates.Driver.Compat
 {
     public class WallJumpBig : BaseDriverState
     {

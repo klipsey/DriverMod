@@ -56,7 +56,7 @@ namespace RobDriver.Modules.Components
         public float weaponTimer;
         public DriverPassive passive;
         private float comboDecay = 1f;
-        private SkinnedMeshRenderer weaponRenderer;
+        public SkinnedMeshRenderer weaponRenderer;
         public readonly float upForce = 9f;
         public readonly float backForce = 2.4f;
 
@@ -81,6 +81,8 @@ namespace RobDriver.Modules.Components
         private DriverWeaponDef lastWeaponDef;
         private WeaponNotificationQueue notificationQueue;
         private bool needReload = false;
+
+        private bool hasEquippedConfigKatana;
 
         private DriverWeaponTracker weaponTracker
         {
@@ -159,7 +161,21 @@ namespace RobDriver.Modules.Components
             this.InitShells();
             this.SetBulletAmmo();
         }
-
+        public void SetToNemmandoGun(bool set)
+        {
+            if(set)
+            {
+                this.weaponRenderer.sharedMesh = Assets.nemmandoGunMesh;
+                //OK FUCK THIS YOU HAVE TO HARD CODE IT SO OTHER WEAPONS DONT SCREW IT UP. 10 IS PISTOL RN OK!
+                this.characterModel.baseRendererInfos[10].defaultMaterial = Assets.nemmandoGunMat;
+            }
+            else
+            {
+                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
+                //OK FUCK THIS YOU HAVE TO HARD CODE IT SO OTHER WEAPONS DONT SCREW IT UP. 10 IS PISTOL RN OK!
+                this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
+            }
+        }
         private void SetInventoryHook()
         {
             if (this.skinController) this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
@@ -167,16 +183,6 @@ namespace RobDriver.Modules.Components
 
             // swag
             if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
-            if (Config.enabledRedVfxForKnife.Value && this.currentSkinDef.Length > 1 && skillLocator.special.skillDef == Driver.knifeSkillDef)
-            {
-                if(DriverWeaponSkinCatalog.badAssSwordDef != null)
-                {
-                    this.characterModel.baseRendererInfos[11].defaultMaterial = Instantiate(DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMaterial);
-                    this.childLocator.FindChild("BackWeapon").gameObject.GetComponent<MeshFilter>().mesh = Instantiate(DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMesh);
-                    this.childLocator.FindChild("BackWeapon").transform.localRotation *= Quaternion.Euler(0, 0, 90);
-                    this.childLocator.FindChild("BackWeapon").gameObject.SetActive(true);
-                }
-            }
 
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
@@ -199,12 +205,6 @@ namespace RobDriver.Modules.Components
         private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
         {
             if (this.currentSkinDef.Length < 1) return def;
-            else if(def.nameToken == DriverWeaponCatalog.LunarHammer.nameToken && Config.enabledRedVfxForKnife.Value && DriverWeaponSkinCatalog.badAssSwordDef != null)
-            {
-                def.mesh = DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMesh;
-                def.material = DriverWeaponSkinCatalog.badAssSwordDef.weaponSkinMaterial;
-                return def;
-            }
 
             var skinOverride = currentSkinDef.FirstOrDefault(skin => skin.weaponDefIndex == def.index);
             if (skinOverride)
@@ -433,6 +433,7 @@ namespace RobDriver.Modules.Components
 
         public void ConsumeAmmo(float multiplier = 1f, bool scaleWithAttackSpeed = true)
         {
+            if (this.weaponDef.nameToken == this.defaultWeaponDef.nameToken && !HasSpecialBullets) return;
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
             if (this.characterBody && this.characterBody.inventory && scaleWithAttackSpeed)
@@ -612,6 +613,28 @@ namespace RobDriver.Modules.Components
         {
             this.weaponDef = CheckForSkin(Instantiate(DriverWeaponCatalog.GetWeaponFromIndex(newWeapon.index)));
 
+            //Do you have cool config -> are you currently ramboing it -> if not nvm go away cool shit
+            if (Config.enableRevengence.Value && skillLocator.special.skillDef == Driver.knifeSkillDef)
+            {
+                if (!hasEquippedConfigKatana)
+                {
+                    this.characterModel.baseRendererInfos[11].defaultMaterial = Assets.nemKatanaMat;
+                    this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshFilter>().mesh = Assets.nemKatanaMesh;
+                    hasEquippedConfigKatana = true;
+                    this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(true);
+                }
+            }
+            else if (this.weaponDef.nameToken != this.defaultWeaponDef.nameToken)
+            {
+                this.characterModel.baseRendererInfos[11].defaultMaterial = defaultWeaponDef.material;
+                this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshFilter>().mesh = defaultWeaponDef.mesh;
+                this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(true);
+            }
+            else
+            {
+                this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(false);
+            }
+
             if (newWeapon.nameToken == DriverWeaponCatalog.LunarHammer.nameToken)
             {
                 this.hasPickedUpHammer = true; // keeping this for now
@@ -780,27 +803,27 @@ namespace RobDriver.Modules.Components
             // model swap
             if (this.weaponDef.mesh)
             {
-                this.weaponRenderer.sharedMesh = Instantiate(this.weaponDef.mesh);
+                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
                 //OK FUCK THIS YOU HAVE TO HARD CODE IT SO OTHER WEAPONS DONT SCREW IT UP. 10 IS PISTOL RN OK!
-                this.characterModel.baseRendererInfos[10].defaultMaterial = Instantiate(this.weaponDef.material);
+                this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
             }
             else
             {
                 if (this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.TwoHanded)
                 {
-                    this.weaponRenderer.sharedMesh = Instantiate(DriverWeaponCatalog.Behemoth.mesh);
-                    this.characterModel.baseRendererInfos[10].defaultMaterial = Instantiate(this.weaponDef.material);
+                    this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Behemoth.mesh;
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
                 }
                 else
                 {
-                    this.weaponRenderer.sharedMesh = Instantiate(DriverWeaponCatalog.Pistol.mesh);
-                    this.characterModel.baseRendererInfos[10].defaultMaterial = Instantiate(this.weaponDef.material);
+                    this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Pistol.mesh;
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
                 }
             }
 
             // crosshair
-            this.crosshairPrefab = Instantiate(this.weaponDef.crosshairPrefab);
-            this.characterBody._defaultCrosshairPrefab = Instantiate(this.crosshairPrefab);
+            this.crosshairPrefab = this.weaponDef.crosshairPrefab;
+            this.characterBody._defaultCrosshairPrefab = this.crosshairPrefab;
 
             // animator layer
             switch (this.weaponDef.animationSet)
@@ -817,7 +840,7 @@ namespace RobDriver.Modules.Components
             }
 
             // extra shit
-            if (this.hammerEffectInstance && this.hammerEffectInstance2 && !Config.enabledRedVfxForKnife.Value) // so it doesnt screw up custom skins. Compat for effects later maybe
+            if (this.hammerEffectInstance && this.hammerEffectInstance2) // so it doesnt screw up custom skins. Compat for effects later maybe
             {
                 if (this.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken)
                 {

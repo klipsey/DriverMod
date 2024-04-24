@@ -1479,6 +1479,9 @@ ModelImporter:
   - first:
       74: -5976754167980939356
     second: ThrowSlashMaxDown
+  - first:
+      74: -7641999516914617841
+    second: SpinSlashGround2
   externalObjects: {}
   materials:
     materialImportMode: 1

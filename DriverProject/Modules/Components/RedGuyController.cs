@@ -6,6 +6,7 @@ using R2API.Networking.Interfaces;
 using R2API.Networking;
 using System;
 using System.Reflection;
+using RobDriver.Modules.Weapons;
 
 namespace RobDriver.Modules.Components
 {
@@ -13,6 +14,8 @@ namespace RobDriver.Modules.Components
     {
         public bool blinkReady;
         public int blinkCount;
+
+        public DriverController iDrive;
 
         public float drainRate = 24f;
         public float altDrainRate = 16f;
@@ -31,25 +34,26 @@ namespace RobDriver.Modules.Components
         public Transform punchTarget;
         public float chargeValue;
 
-        public bool skibidi;
-        public bool inGrab;
-
         public static event Action<int> onWallJumpIncremented;
         public static event Action<bool> onStageCompleted;
 
         private void Awake()
         {
             this.characterBody = this.GetComponent<CharacterBody>();
+            this.iDrive = this.GetComponent<DriverController>();
             this.wallJumpCounter = 0;
         }
 
         private void FixedUpdate()
         {
-            this.hopoFeatherTimer -= Time.fixedDeltaTime;
-
-            if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount)
+            if(iDrive.weaponDef.nameToken == "ROB_DRIVER_WEAPON_RAV_SWORD_NAME")
             {
-                this.blinkReady = true;
+                this.hopoFeatherTimer -= Time.fixedDeltaTime;
+
+                if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount)
+                {
+                    this.blinkReady = true;
+                }
             }
         }
 

@@ -184,10 +184,20 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SECONDARY_LUNARHAMMER_DESCRIPTION", $"<style=cIsUtility>Agile.</style> Fire a volley of <style=cIsUtility>lunar shards</style>, dealing <style=cIsDamage>" + 100f * SkillStates.Driver.LunarHammer.FireShard.damageCoefficient + "% damage</style> each.");
 
             LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_NAME", "Submission");
-            LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_DESCRIPTION", $"<style=cIsDamage>Stunning.</style> Fire repeatedly for <style=cIsDamage>" + 100f * SkillStates.Driver.LunarHammer.FireShard.damageCoefficient + "% damage</style> per shot.");
+            LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_DESCRIPTION", $"<style=cIsDamage>Stunning.</style> Fire repeatedly for <style=cIsDamage>" + 100f * SkillStates.Driver.Compat.NemmandoGun.Submission.damageCoefficient + "% damage</style> per shot.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMANDOSWORD_NAME", "Blade of Cessation");
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMANDOSWORD_DESCRIPTION", $"<style=cIsDamage>Gouging</style>. <style=cIsUtility>Agile</style>. Slice enemies in front for <style=cIsDamage>160% damage</style>.");
 
             LanguageAPI.Add(prefix + "SECONDARY_NEMMERC_NAME", "Bash");
             LanguageAPI.Add(prefix + "SECONDARY_NEMMERC_DESCRIPTION", $"<style=cIsDamage>Stun</style> and <style=cIsUtility>knock back</style> nearby enemies for <style=cIsDamage>{100f * SkillStates.Driver.Shotgun.Bash.damageCoefficient}% damage</style>.");
+            
+            LanguageAPI.Add(prefix + "PRIMARY_SLASHCOMBO_NAME", "Dismantle");
+            LanguageAPI.Add(prefix + "PRIMARY_SLASHCOMBO_DESCRIPTION", $"Swing forward for <style=cIsDamage>{100f * SkillStates.Driver.Compat.SlashCombo._damageCoefficient}% damage</style>. Every 3rd hit <style=cIsUtility>stuns</style> and deals <style=cIsDamage>{100f * SkillStates.Driver.Compat.SlashCombo.finisherDamageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_NAME", "Pummel");
+            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_DESCRIPTION", $"Lunge and <style=cIsUtility>punch</style>, dealing <style=cIsDamage>{100f * SkillStates.Driver.Compat.DashPunch.punchDamageCoefficient}% damage</style> with a <style=cIsUtility>shockwave</style> through them for the same damage.");
+
             #endregion
 
             #region Utility
@@ -364,6 +374,9 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add("ROB_DRIVER_NEMMANDO_NAME", "Reclaimer");
             LanguageAPI.Add("ROB_DRIVER_NEMMANDO_DESC", "Nemesis Commando's gun.");
+
+            LanguageAPI.Add("ROB_DRIVER_NEMMANDOSWORD_NAME", "Murasama");
+            LanguageAPI.Add("ROB_DRIVER_NEMMANDOSWORD_DESC", "Nemesis Commando's sword.");
 
             LanguageAPI.Add("ROB_DRIVER_NEMMERC_NAME", "Carnage");
             LanguageAPI.Add("ROB_DRIVER_NEMMERC_DESC", "Nemesis Mercenary's shotgun.");

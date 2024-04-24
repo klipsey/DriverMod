@@ -21,7 +21,7 @@ namespace RobDriver.SkillStates.Driver
         }
         protected DriverController iDrive;
         protected DriverWeaponDef cachedWeaponDef;
-        protected RedGuyController penis;
+        protected RedGuyController ravController;
         protected virtual string prop
         {
             get
@@ -35,15 +35,15 @@ namespace RobDriver.SkillStates.Driver
             RefreshState();
             base.OnEnter();
 
-            if (this.hideGun) this.GetModelChildLocator().FindChild("PistolModel").gameObject.SetActive(false);
+            if (this.hideGun) this.iDrive.weaponRenderer.gameObject.SetActive(false);
             if (this.prop != "") this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(true);
         }
 
         public void RefreshState()
         {
-            if (!this.penis && this.cachedWeaponDef.nameToken == ) this.penis = this.gameObject.GetComponent<RedGuyController>();
             if (!this.iDrive) this.iDrive = this.GetComponent<DriverController>();
             if (this.iDrive) this.cachedWeaponDef = this.iDrive.weaponDef;
+            if (!this.ravController && this.iDrive.weaponDef.nameToken == "ROB_DRIVER_WEAPON_RAV_SWORD_NAME") this.ravController = this.gameObject.GetComponent<RedGuyController>();
         }
         public override void OnExit()
         {

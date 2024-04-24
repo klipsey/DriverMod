@@ -14,6 +14,7 @@ using UnityEngine.UIElements;
 using System.ComponentModel;
 using System.Diagnostics;
 using DriverMod.Modules;
+using static R2API.DamageAPI;
 
 namespace RobDriver.Modules
 {
@@ -34,6 +35,7 @@ namespace RobDriver.Modules
         public static DamageAPI.ModdedDamageType CoinShot;
         public static DamageAPI.ModdedDamageType MysteryShot;
         public static DamageAPI.ModdedDamageType Hemorrhage;
+        public static DamageAPI.ModdedDamageType Gouge;
 
         internal static void Init()
         {
@@ -52,6 +54,7 @@ namespace RobDriver.Modules
             CoinShot = DamageAPI.ReserveDamageType();
             MysteryShot = DamageAPI.ReserveDamageType();
             Hemorrhage = DamageAPI.ReserveDamageType();
+            Gouge = DamageAPI .ReserveDamageType();
 
             Hook();
         }
@@ -62,6 +65,7 @@ namespace RobDriver.Modules
         {
             On.RoR2.GlobalEventManager.OnHitEnemy += new On.RoR2.GlobalEventManager.hook_OnHitEnemy(GlobalEventManager_OnHitEnemy);
             On.RoR2.GlobalEventManager.OnHitAll += new On.RoR2.GlobalEventManager.hook_OnHitAll(GlobalEventManager_OnHitAll);
+            GlobalEventManager.onServerDamageDealt += GlobalEventManager_OnServerDamageDealt;
         }
 
         private static bool CheckRoll(float procChance, CharacterMaster characterMaster)
@@ -70,6 +74,26 @@ namespace RobDriver.Modules
             return procChance >= 100f || Util.CheckRoll(procChance, characterMaster);
         }
 
+        private static void GlobalEventManager_OnServerDamageDealt(DamageReport report)
+        {
+            var victimBody = report.victimBody;
+            var attackerBody = report.attackerBody;
+            var damageInfo = report.damageInfo;
+            if (DamageAPI.HasModdedDamageType(damageInfo, Gouge))
+            {
+                //deprecated by reimplementation in buff
+                //var gougeDamage = (damageInfo.crit ? 2f : 1f) * 2.1f;
+                var dotInfo = new InflictDotInfo()
+                {
+                    attackerObject = attackerBody.gameObject,
+                    victimObject = victimBody.gameObject,
+                    dotIndex = Buffs.gougeIndex,
+                    duration = 2,
+                    damageMultiplier = 1,
+                };
+                DotController.InflictDot(ref dotInfo);
+            }
+        }
         private static void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
         {
 

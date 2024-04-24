@@ -2,30 +2,18 @@
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using RobDriver.SkillStates.BaseStates;
 
-namespace RobDriver.SkillStates.BaseStates.Compat.RavSword
+namespace RobDriver.SkillStates.Driver.Compat
 {
     public class ChargeBlink : ChargeJump
     {
-        private Transform modelTransform;
         private GameObject predictionEffectInstance;
 
         public override void OnEnter()
         {
             duration = 0.6f;
             base.OnEnter();
-            modelTransform = this.GetModelTransform();
-
-            if (modelTransform)
-            {
-                TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                temporaryOverlay.duration = duration;
-                temporaryOverlay.animateShaderAlpha = true;
-                temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-                temporaryOverlay.destroyComponentOnEnd = true;
-                temporaryOverlay.originalMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDissolve.mat").WaitForCompletion();
-                temporaryOverlay.AddToCharacerModel(modelTransform.GetComponent<CharacterModel>());
-            }
         }
 
         public override void OnExit()
@@ -82,7 +70,7 @@ namespace RobDriver.SkillStates.BaseStates.Compat.RavSword
             this.outer.SetNextState(new BlinkBig
             {
                 jumpDir = jumpDir,
-                jumpForce = jumpForce * 1.5f
+                jumpForce = jumpForce * 1.2f
             });
         }
 
