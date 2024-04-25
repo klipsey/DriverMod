@@ -35,8 +35,6 @@ namespace RobDriver.Modules
         public static ConfigEntry<bool> randomSupplyDrop;
         public static ConfigEntry<bool> oldCritShot;
         public static ConfigEntry<bool> enableRecoil;
-        public static ConfigEntry<string> defaultWeaponName;
-        public static ConfigEntry<int> defaultWeaponIndex;
         public static ConfigEntry<bool> uniqueDropsAreLegendary; 
         public static ConfigEntry<bool> badass;
         public static ConfigEntry<bool> cursed;
@@ -102,10 +100,6 @@ namespace RobDriver.Modules
             oldCritShot = Config.BindAndOptions("02 - Gameplay", "Old Critical Shot", false, "If set to true, will use the old critical animation which spins the gun BEFORE shooting.");
 
             enableRecoil = Config.BindAndOptions("02 - Gameplay", "Enable Recoil", true, "Set to false to disable recoil from shooting guns.");
-
-            defaultWeaponName = Config.BindAndOptions("02 - Gameplay", "Default Weapon Name", "", "Changes the default weapon when given a valid weapon name. Leave blank to use the configured index instead. Attempts to match the name listed in 07 - Weapons");
-
-            defaultWeaponIndex = Config.BindAndOptions("02 - Gameplay", "Default Weapon Index", 0, "Change the index of the default weapon Driver uses. Purely for fun, don't ask me what the indices are because I don't know, they're generated at runtime.");
 
             uniqueDropsAreLegendary = Config.BindAndOptions("02 - Gameplay", "Unique Drop Are Legendary", false, "Unique weapon drops from survivors are now in the legendary pool");
             #endregion

@@ -1803,7 +1803,6 @@ namespace RobDriver.Modules
             DriverWeaponCatalog.AddWeapon(nemmandoGunWeaponDef);
             DriverWeaponCatalog.NemmandoGun = nemmandoGunWeaponDef;
 
-            /*
             nemmercGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_NEMMERC_NAME",
@@ -1823,7 +1822,7 @@ namespace RobDriver.Modules
             });
             DriverWeaponCatalog.AddWeapon(nemmercGunWeaponDef);
             DriverWeaponCatalog.NemmercGun = nemmercGunWeaponDef;
-            */ 
+
             golemGunWeaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
                 nameToken = "ROB_DRIVER_GOLEMGUN_NAME",
@@ -1854,7 +1853,7 @@ namespace RobDriver.Modules
 
             DriverWeaponCatalog.AddWeaponDrop("Mechorilla", armCannonWeaponDef);
 
-            //DriverWeaponCatalog.AddWeaponDrop("NemCommando", nemmandoGunWeaponDef);
+            DriverWeaponCatalog.AddWeaponDrop("NemCommando", nemmandoGunWeaponDef);
             DriverWeaponCatalog.AddWeaponDrop("NemMerc", nemmercGunWeaponDef);
         }
 

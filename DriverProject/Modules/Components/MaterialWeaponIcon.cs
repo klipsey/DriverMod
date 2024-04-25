@@ -3,29 +3,73 @@ using UnityEngine.UI;
 using RoR2;
 using RoR2.UI;
 using TMPro;
+using System;
 
 namespace RobDriver.Modules.Components
 {
 	public class MaterialWeaponIcon : MonoBehaviour
 	{
+		public DriverController iDrive;
+        public HUD targetHUD;
 		public WeaponIcon icon;
-		public Image onCooldown;
+
 		public Image mask;
-		public TextMeshProUGUI stockText;
+        public Image cooldownRing;
+		public TextMeshProUGUI ammoText;
+        public GameObject ammoBackground;
 
-		public void Update()
-		{
-			if (this.icon.iDrive && this.icon.iDrive.maxWeaponTimer > 0f)
-            {
-				float value = Util.Remap(this.icon.iDrive.weaponTimer, 0f, this.icon.iDrive.maxWeaponTimer, 0f, 1f);
-				this.mask.fillAmount = value;
-            }
-			else
-            {
-				this.mask.fillAmount = 0f;
-            }
+        private bool registerEvent;
+        private Color defaultColor;
 
-			this.onCooldown.enabled = false;
+		public void Start()
+        {
+            this.ammoText.enabled = true;
+            this.ammoBackground.SetActive(false);
+            this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
+
+            if (this.iDrive)
+			{
+                this.defaultColor = this.cooldownRing.color;
+
+                this.registerEvent = this.iDrive.passive.isBullets || this.iDrive.passive.isRyan;
+                if (this.registerEvent) this.iDrive.onConsumeAmmo += SetAmmoTypeDisplay;
+            }
 		}
+
+		public void OnDestroy()
+		{
+            if (this.iDrive && this.registerEvent) this.iDrive.onConsumeAmmo -= SetAmmoTypeDisplay;
+		}
+
+        private void Update()
+        {
+            if (this.iDrive)
+            {
+                float fill = Util.Remap(this.iDrive.weaponTimer, 0f, this.iDrive.maxWeaponTimer, 0f, 1f);
+                if (this.iDrive.maxWeaponTimer <= 0) fill = 0f;
+
+                if (fill > mask.fillAmount) this.mask.fillAmount = Mathf.Clamp01(fill);
+                this.mask.fillAmount = Mathf.Lerp(this.mask.fillAmount, fill, Time.deltaTime * 8f);
+            }
+        }
+
+        private void SetAmmoTypeDisplay()
+        {
+            if (!this.iDrive) return;
+
+            // display text and change color
+            if (this.iDrive.HasSpecialBullets && this.iDrive.weaponTimer > 0)
+            {
+                this.ammoText.text = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.currentBulletDef.trailColor)}>" + this.iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
+                this.ammoBackground.SetActive(true);
+                this.cooldownRing.color = this.iDrive.currentBulletDef.trailColor;
+            }
+            else
+            {
+                this.ammoText.text = string.Empty;
+                this.ammoBackground.SetActive(false);
+                if (!this.iDrive.HasSpecialBullets) this.cooldownRing.color = defaultColor;
+            }
+        }
 	}
 }

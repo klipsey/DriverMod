@@ -1,6 +1,10 @@
-﻿using R2API;
+﻿using EntityStates;
+using R2API;
+using RobDriver.Modules.Survivors;
 using RoR2.Skills;
 using System;
+using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 
 namespace RobDriver.Modules.Weapons
@@ -80,7 +84,19 @@ namespace RobDriver.Modules.Weapons
                 dropChance = changeDropChance,
                 buffType = buffType
             });
-            /*if (addToPool) */DriverWeaponCatalog.AddWeapon(weaponDef);
+            DriverWeaponCatalog.AddWeapon(weaponDef);
+
+            Skills.AddSkillToFamily(Driver.characterPrefab.GetComponent<Components.DriverArsenal>().weaponSkillSlot.skillFamily,
+                Modules.Skills.CreateSkillDef(new SkillDefInfo(
+                skillName: weaponDef.name,
+                skillNameToken: weaponDef.nameToken,
+                skillDescriptionToken: weaponDef.descriptionToken,
+                skillIcon: Sprite.Create(weaponDef.icon as Texture2D, new Rect(0, 0, weaponDef.icon.width, weaponDef.icon.height), new Vector2(0.5f, 0.5f)),
+                activationState: new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName: "",
+                interruptPriority: InterruptPriority.Any,
+                isCombatSkill: false,
+                baseRechargeInterval: 0)));
 
             if (uniqueDropBodyName != "")
             {

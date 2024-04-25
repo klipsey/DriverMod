@@ -26,6 +26,10 @@ using HarmonyLib;
 using UnityEngine.Rendering;
 using Moonstorm.Starstorm2;
 using System.Xml.Linq;
+using Newtonsoft.Json.Utilities;
+using MaterialHud;
+using TMPro;
+using EntityStates;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -155,6 +159,8 @@ namespace RobDriver.Modules.Survivors
         internal static int baseSkinCount;
 
         internal static string bodyNameToken;
+
+        internal static Dictionary<string, int> renderInfoDict;
 
         internal void CreateCharacter()
         {
@@ -287,8 +293,7 @@ namespace RobDriver.Modules.Survivors
             Material tieMat = Modules.Assets.CreateMaterial("matSuit", 1f, Color.white);
 
             bodyRendererIndex = 0;
-
-            Modules.Prefabs.SetupCharacterModel(newPrefab, new CustomRendererInfo[] {
+            var customRendererInfo = new CustomRendererInfo[] {
                 new CustomRendererInfo
                 {
                     childName = "Model",
@@ -348,7 +353,11 @@ namespace RobDriver.Modules.Survivors
                 {
                     childName = "BackWeaponModel",
                     material = Modules.Assets.nemKatanaMat
-                }, }, bodyRendererIndex);
+                } };
+
+            // store (childName,arrayIndex) for other classes to access
+            renderInfoDict = customRendererInfo.ToDictionary(info => info.childName, info => Array.IndexOf(customRendererInfo, info));
+            Modules.Prefabs.SetupCharacterModel(newPrefab, customRendererInfo, bodyRendererIndex);
 
             // hide the extra stuff
             childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
@@ -546,6 +555,7 @@ namespace RobDriver.Modules.Survivors
         private static void CreateSkills(GameObject prefab)
         {
             DriverPassive passive = prefab.AddComponent<DriverPassive>();
+            DriverArsenal arsenal = prefab.AddComponent<DriverArsenal>();
             Modules.Skills.CreateSkillFamilies(prefab);
 
             string prefix = DriverPlugin.developerPrefix;
@@ -627,7 +637,6 @@ namespace RobDriver.Modules.Survivors
                 requiredStock = 1,
                 stockToConsume = 0,
             });
-
 
             #region Passive
             passive.defaultPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
@@ -1979,6 +1988,20 @@ namespace RobDriver.Modules.Survivors
             if (DriverPlugin.scepterInstalled) InitializeScepterSkills();
 
             Modules.Assets.InitWeaponDefs();
+
+            // linq is wonderful
+            Modules.Skills.AddSkillsToFamily(arsenal.weaponSkillSlot.skillFamily,
+                DriverWeaponCatalog.weaponDefs.Select(def => Modules.Skills.CreateSkillDef(new SkillDefInfo(
+                    skillName: def.name,
+                    skillNameToken: def.nameToken,
+                    skillDescriptionToken: def.descriptionToken,
+                    skillIcon: Sprite.Create(def.icon as Texture2D, new Rect(0, 0, def.icon.width, def.icon.height), new Vector2(0.5f, 0.5f)),
+                    activationState: new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                    activationStateMachineName: "",
+                    interruptPriority: InterruptPriority.Any,
+                    isCombatSkill: false,
+                    baseRechargeInterval: 0
+                    ))).ToArray());
         }
 
         private static void InitializeScepterSkills()
@@ -2356,11 +2379,9 @@ namespace RobDriver.Modules.Survivors
 
             ModelSkinController skinController = model.GetComponent<ModelSkinController>();
 
-            int skinDex = 0;
             foreach (SkinDef skinDef in skinController.skins)
             {
                 var weaponReskins = new List<DriverWeaponSkinDef>();
-                DriverWeaponSkinCatalog.AddSkinIndex(skinDex, skinDef.name);
                 for (int i = 0; i < skinDef.meshReplacements.Length; i++)
                 {
                     var meshReplacement = skinDef.meshReplacements[i];
@@ -2379,11 +2400,7 @@ namespace RobDriver.Modules.Survivors
                         }
                     }
                 }
-                if (weaponReskins.Count != 0)
-                {
-                    DriverWeaponSkinCatalog.AddSkin(skinDef.name, weaponReskins.ToArray());
-                }
-                skinDex++;
+                DriverWeaponSkinCatalog.AddSkin(skinDef.name, weaponReskins.ToArray());
             }
         }
         private static void InitializeItemDisplays(GameObject prefab)
@@ -3024,18 +3041,17 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     return;
                 }
 
-                Transform skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
+                Transform skillsContainer = hud.equipmentIcons[0].gameObject.transform.parent;
+
+                // remove existing
+                if (skillsContainer.Find("WeaponSlot")) GameObject.Destroy(skillsContainer.Find("WeaponSlot").gameObject);
+
+                var oldUI = hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras").Find("AmmoTracker");
+                if (oldUI) GameObject.Destroy(oldUI.gameObject);
 
                 // no one will notice these missing
                 skillsContainer.Find("SprintCluster").gameObject.SetActive(false);
                 skillsContainer.Find("InventoryCluster").gameObject.SetActive(false);
-
-                // remove existing
-                var oldUI = skillsContainer.Find("WeaponSlot");
-                if (oldUI)
-                {
-                    GameObject.Destroy(oldUI.gameObject);
-                }
 
                 GameObject weaponSlot = GameObject.Instantiate(skillsContainer.Find("EquipmentSlot").gameObject, skillsContainer);
                 weaponSlot.name = "WeaponSlot";
@@ -3050,7 +3066,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 weaponIconComponent.isReadyPanelObject = equipmentIconComponent.isReadyPanelObject;
                 weaponIconComponent.tooltipProvider = equipmentIconComponent.tooltipProvider;
                 weaponIconComponent.targetHUD = hud;
-
                 weaponSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(-480f, -17.1797f);
 
                 HGTextMeshProUGUI keyText = weaponSlot.transform.Find("DisplayRoot").Find("EquipmentTextBackgroundPanel").Find("EquipmentKeyText").gameObject.GetComponent<HGTextMeshProUGUI>();
@@ -3080,7 +3095,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 MonoBehaviour.Destroy(equipmentIconComponent);
 
-
                 // weapon pickup notification
 
                 GameObject notificationPanel = GameObject.Instantiate(hud.transform.Find("MainContainer").Find("NotificationArea").gameObject);
@@ -3097,17 +3111,9 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 _old.enabled = false;
 
-
-
                 // ammo display for alt passive
-
                 Transform healthbarContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster");
-                var oldUI2 = hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras").Find("AmmoTracker");
 
-                if (oldUI2)
-                {
-                    GameObject.Destroy(oldUI2.gameObject);
-                }
                 GameObject ammoTracker = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
                 ammoTracker.name = "AmmoTracker";
                 ammoTracker.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
@@ -3159,14 +3165,22 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
         internal static void RiskUIHudSetup(RoR2.UI.HUD hud)
         {
-            Transform skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
+            GameObject weaponSlot = hud.equipmentIcons.First().transform.parent.Find("WeaponSlot")?.gameObject;
+            if (weaponSlot && hud.targetBodyObject?.GetComponent<DriverController>())
+            {
+                weaponSlot.GetComponent<WeaponIcon>().iDrive = hud.targetBodyObject.GetComponent<DriverController>();
+                weaponSlot.GetComponent<MaterialWeaponIcon>().iDrive = hud.targetBodyObject.GetComponent<DriverController>();
+                return;
+            };
 
-            GameObject weaponSlot = GameObject.Instantiate(skillsContainer.Find("EquipmentSlotPos1").Find("EquipIcon").gameObject, skillsContainer);
+            weaponSlot = GameObject.Instantiate(hud.equipmentIcons.First().gameObject);
             weaponSlot.name = "WeaponSlot";
+            MonoBehaviour.Destroy(weaponSlot.GetComponent<BepinConfigParentManager>());
 
             EquipmentIcon equipmentIconComponent = weaponSlot.GetComponent<EquipmentIcon>();
             Components.WeaponIcon weaponIconComponent = weaponSlot.AddComponent<Components.WeaponIcon>();
 
+            // whoever deleted the stock flash animations is a bad guy
             weaponIconComponent.iconImage = equipmentIconComponent.iconImage;
             weaponIconComponent.displayRoot = equipmentIconComponent.displayRoot;
             weaponIconComponent.flashPanelObject = equipmentIconComponent.stockFlashPanelObject;
@@ -3175,13 +3189,13 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             weaponIconComponent.tooltipProvider = equipmentIconComponent.tooltipProvider;
             weaponIconComponent.targetHUD = hud;
 
-            MaterialHud.MaterialEquipmentIcon x = weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>();
-            Components.MaterialWeaponIcon y = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
+            var weaponIcon = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
 
-            y.icon = weaponIconComponent;
-            y.onCooldown = x.onCooldown;
-            y.mask = x.mask;
-            y.stockText = x.stockText;
+            weaponIcon.targetHUD = hud;
+            weaponIcon.icon = weaponIconComponent;
+            weaponIcon.mask = weaponSlot.transform.Find("DisplayRoot").Find("Mask").gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIcon.cooldownRing = weaponSlot.transform.Find("DisplayRoot").Find("Mask").Find("CooldownRing").gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIcon.cooldownRing.fillCenter = true;
 
             RectTransform iconRect = weaponSlot.GetComponent<RectTransform>();
             iconRect.localScale = new Vector3(2f, 2f, 2f);
@@ -3192,15 +3206,24 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 iconRect.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 iconRect.anchoredPosition = new Vector2(-110f, 60f);
             }
+            // text for ammo type
+            weaponIcon.ammoBackground = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("StockTextContainer").gameObject;
+            weaponIcon.ammoBackground.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 2.5f);
+            weaponIcon.ammoBackground.GetComponent<RectTransform>().localScale = new Vector3(0.8f, -0.8f, 0.8f);
+            weaponIcon.ammoBackground.transform.SetAsFirstSibling();
 
-            HGTextMeshProUGUI keyText = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").Find("SkillKeyText").gameObject.GetComponent<HGTextMeshProUGUI>();
-            keyText.gameObject.GetComponent<InputBindingDisplayController>().enabled = false;
-            keyText.text = "Weapon";
+            weaponIcon.ammoText = weaponIcon.ammoBackground.transform.Find("StockText").gameObject.GetComponent<TextMeshProUGUI>();
 
-            weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("StockTextContainer").gameObject.SetActive(false);
-            weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject.SetActive(false);
+            GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").gameObject);
+            GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject);
+            weaponSlot.transform.Find("DisplayRoot").Find("BgImage").Find("IconPanel").Find("OnCooldown").gameObject.SetActive(false);
+            MonoBehaviour.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").gameObject.GetComponent<HideFromBepinConfig>());
+            MonoBehaviour.Destroy(weaponIcon.cooldownRing.GetComponent<RedToColorRemapperIndividual>());
+            MonoBehaviour.Destroy(weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>());
+            MonoBehaviour.Destroy(equipmentIconComponent);
 
             // duration bar
+            /**
             GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
             chargeBar.transform.SetParent(weaponSlot.transform.Find("DisplayRoot"));
 
@@ -3217,11 +3240,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             weaponIconComponent.durationDisplay = chargeBar;
             weaponIconComponent.durationBar = chargeBar.transform.GetChild(1).gameObject.GetComponent<UnityEngine.UI.Image>();
             weaponIconComponent.durationBarRed = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
-
-            MonoBehaviour.Destroy(equipmentIconComponent);
-            MonoBehaviour.Destroy(x);
-
-
+            **/
             // weapon pickup notification
 
             GameObject notificationPanel = GameObject.Instantiate(hud.transform.Find("MainContainer").Find("NotificationArea").gameObject);
