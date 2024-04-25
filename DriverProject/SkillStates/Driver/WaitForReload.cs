@@ -17,17 +17,7 @@
 
             if (base.fixedAge >= 1f)
             {
-                if (this.iDrive.weaponTimer <= 0f)
-                {
-                    this.outer.SetNextState(new ReloadPistol());
-                }
-                else
-                {
-                    this.outer.SetNextState(new ReloadPistol
-                    {
-                        interruptPriority = EntityStates.InterruptPriority.Any
-                    });
-                }
+                this.outer.SetNextState(new ReloadPistol());
             }
         }
     }

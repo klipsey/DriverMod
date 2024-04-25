@@ -31,6 +31,12 @@ namespace RobDriver.Modules
                 passive.passiveSkillSlot = CreateGenericSkillWithSkillFamily(targetPrefab, "Passive");
             }
 
+            DriverArsenal arsenal = targetPrefab.GetComponent<DriverArsenal>();
+            if (arsenal)
+            {
+                arsenal.weaponSkillSlot = CreateGenericSkillWithSkillFamily(targetPrefab, "Arsenal");
+            }
+
             if ((families & (1 << 0)) != 0) {
                 skillLocator.primary = CreateGenericSkillWithSkillFamily(targetPrefab, "Primary");
             }

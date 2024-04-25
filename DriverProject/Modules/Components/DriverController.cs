@@ -98,6 +98,8 @@ namespace RobDriver.Modules.Components
             }
         }
 
+        public DriverArsenal arsenal;
+
         private void Awake()
         {
             // this was originally used for gun jamming
@@ -107,6 +109,7 @@ namespace RobDriver.Modules.Components
             }*/
             // probably won't be used but who knows
 
+            this.arsenal = this.GetComponent<DriverArsenal>();
             this.passive = this.GetComponent<DriverPassive>();
             this.characterBody = this.GetComponent<CharacterBody>();
             ModelLocator modelLocator = this.GetComponent<ModelLocator>();
@@ -124,7 +127,7 @@ namespace RobDriver.Modules.Components
             this.GetSkillOverrides();
 
             this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
-            this.lastWeaponDef = DriverWeaponCatalog.Pistol;
+            this.lastWeaponDef = defaultWeaponDef;
             this.currentBulletDef = DriverBulletCatalog.Default;
 
             PickUpWeapon(defaultWeaponDef);
@@ -189,7 +192,7 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
 
-            this.defaultWeaponDef = CheckForSkin(DriverWeaponCatalog.GetDefaultWeaponFromConfig());
+            this.defaultWeaponDef = CheckForSkin(arsenal.DefaultWeapon);
 
             PickUpWeapon(defaultWeaponDef);
 
@@ -434,7 +437,7 @@ namespace RobDriver.Modules.Components
 
         public void ConsumeAmmo(float multiplier = 1f, bool scaleWithAttackSpeed = true)
         {
-            if (this.weaponDef.nameToken == this.defaultWeaponDef.nameToken && !HasSpecialBullets) return;
+            //if (this.weaponDef.nameToken == this.defaultWeaponDef.nameToken && !HasSpecialBullets) return;
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
             if (this.characterBody && this.characterBody.inventory && scaleWithAttackSpeed)

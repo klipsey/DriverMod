@@ -29,6 +29,7 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Utilities;
 using MaterialHud;
 using TMPro;
+using EntityStates;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -554,6 +555,7 @@ namespace RobDriver.Modules.Survivors
         private static void CreateSkills(GameObject prefab)
         {
             DriverPassive passive = prefab.AddComponent<DriverPassive>();
+            DriverArsenal arsenal = prefab.AddComponent<DriverArsenal>();
             Modules.Skills.CreateSkillFamilies(prefab);
 
             string prefix = DriverPlugin.developerPrefix;
@@ -635,7 +637,6 @@ namespace RobDriver.Modules.Survivors
                 requiredStock = 1,
                 stockToConsume = 0,
             });
-
 
             #region Passive
             passive.defaultPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
@@ -1987,6 +1988,20 @@ namespace RobDriver.Modules.Survivors
             if (DriverPlugin.scepterInstalled) InitializeScepterSkills();
 
             Modules.Assets.InitWeaponDefs();
+
+            // linq is wonderful
+            Modules.Skills.AddSkillsToFamily(arsenal.weaponSkillSlot.skillFamily,
+                DriverWeaponCatalog.weaponDefs.Select(def => Modules.Skills.CreateSkillDef(new SkillDefInfo(
+                    skillName: def.name,
+                    skillNameToken: def.nameToken,
+                    skillDescriptionToken: def.descriptionToken,
+                    skillIcon: Sprite.Create(def.icon as Texture2D, new Rect(0, 0, def.icon.width, def.icon.height), new Vector2(0.5f, 0.5f)),
+                    activationState: new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                    activationStateMachineName: "",
+                    interruptPriority: InterruptPriority.Any,
+                    isCombatSkill: false,
+                    baseRechargeInterval: 0
+                    ))).ToArray());
         }
 
         private static void InitializeScepterSkills()
