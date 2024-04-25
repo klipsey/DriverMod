@@ -23,8 +23,8 @@ namespace RobDriver.Modules.Components
     public class DriverController : MonoBehaviour 
     {
         public DriverWeaponDef weaponDef { get; private set; }
-        public DriverBulletDef currentBulletDef { get; private set; } =  DriverBulletCatalog.Default;
-        public DriverWeaponSkinDef[] currentSkinDef { get; private set; } = new DriverWeaponSkinDef[0];
+        public DriverBulletDef currentBulletDef { get; private set; }
+        public DriverWeaponSkinDef[] currentSkinDef { get; private set; }
         public DriverWeaponDef defaultWeaponDef { get; private set; }
 
         public bool HasSpecialBullets => this.currentBulletDef.index != DriverBulletCatalog.Default.index;
@@ -161,6 +161,7 @@ namespace RobDriver.Modules.Components
             this.InitShells();
             this.SetBulletAmmo();
         }
+
         public void SetToNemmandoGun(bool set)
         {
             if(set)
@@ -174,10 +175,10 @@ namespace RobDriver.Modules.Components
                 this.characterModel.baseRendererInfos[Driver.renderInfoDict["PistolModel"]].defaultMaterial = this.weaponDef.material;
             }
         }
+
         private void SetInventoryHook()
         {
-            if (this.skinController) this.currentSkinDef = DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex);
-            else this.currentSkinDef = new DriverWeaponSkinDef[0];
+            this.currentSkinDef = this.skinController ? DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex) : null;
 
             // swag
             if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
@@ -202,7 +203,7 @@ namespace RobDriver.Modules.Components
 
         private DriverWeaponDef CheckForSkin(DriverWeaponDef def)
         {
-            if (this.currentSkinDef.Length < 1) return def;
+            if (this.currentSkinDef?.Any() != true) return def;
 
             var skinOverride = currentSkinDef.FirstOrDefault(skin => skin.weaponDefIndex == def.index);
             if (skinOverride)
