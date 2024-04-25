@@ -39,9 +39,10 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
             this.damageType = iDrive.DamageType;
-            this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType | Modules.DamageTypes.Gouge);
-            if (this.swingIndex == 0) this.muzzleString = "SwingCenter2";
-            else this.muzzleString = this.muzzleString = "SwingCenter";
+            this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
+            this.moddedDamageTypeHolder.Add(Modules.DamageTypes.Gouge);
+            if (this.swingIndex == 0) this.muzzleString = "SwingMuzzle1";
+            else this.muzzleString = this.muzzleString = "SwingMuzzle2";
             base.OnEnter();
         }
         protected override void FireAttack()

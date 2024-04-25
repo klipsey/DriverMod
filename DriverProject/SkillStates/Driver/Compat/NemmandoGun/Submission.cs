@@ -64,6 +64,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
             this.shotTimer = this.shotDuration;
             this.remainingShots--;
+            this.iDrive.ConsumeAmmo(1, true);
             this.Fire();
         }
 
