@@ -3150,25 +3150,17 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
         internal static void RiskUIHudSetup(RoR2.UI.HUD hud)
         {
-
-            Transform skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
-            GameObject weaponSlot = skillsContainer?.Find("EquipmentSlotPos1")?.Find("WeaponSlot")?.gameObject;
-            if (weaponSlot)
+            GameObject weaponSlot = hud.equipmentIcons.First().transform.parent.Find("WeaponSlot")?.gameObject;
+            if (weaponSlot && hud.targetBodyObject?.GetComponent<DriverController>())
             {
-                var icon = weaponSlot.GetComponent<WeaponIcon>();
-                var matIcon = weaponSlot.GetComponent<MaterialWeaponIcon>();
-                icon.OnDestroy();
-                matIcon.OnDestroy();
-                icon.targetHUD = hud;
-                matIcon.targetHUD = hud;
-                icon.Start();
-                matIcon.Start();
+                weaponSlot.GetComponent<WeaponIcon>().iDrive = hud.targetBodyObject.GetComponent<DriverController>();
+                weaponSlot.GetComponent<MaterialWeaponIcon>().iDrive = hud.targetBodyObject.GetComponent<DriverController>();
                 return;
-            }
+            };
 
-            if (hud.equipmentIcons?.FirstOrDefault()?.gameObject) weaponSlot = GameObject.Instantiate(hud.equipmentIcons?.FirstOrDefault()?.gameObject);
-            else weaponSlot = GameObject.Instantiate(skillsContainer.Find("EquipmentSlotPos1").Find("EquipIcon").gameObject);
+            weaponSlot = GameObject.Instantiate(hud.equipmentIcons.First().gameObject);
             weaponSlot.name = "WeaponSlot";
+            MonoBehaviour.Destroy(weaponSlot.GetComponent<BepinConfigParentManager>());
 
             EquipmentIcon equipmentIconComponent = weaponSlot.GetComponent<EquipmentIcon>();
             Components.WeaponIcon weaponIconComponent = weaponSlot.AddComponent<Components.WeaponIcon>();
@@ -3182,13 +3174,13 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             weaponIconComponent.tooltipProvider = equipmentIconComponent.tooltipProvider;
             weaponIconComponent.targetHUD = hud;
 
-            MaterialHud.MaterialEquipmentIcon matEquipIcon = weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>();
-            Components.MaterialWeaponIcon matWeaponIcon = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
+            var weaponIcon = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
 
-            matWeaponIcon.targetHUD = hud;
-            matWeaponIcon.icon = weaponIconComponent;
-            matWeaponIcon.mask = weaponSlot.transform.Find("DisplayRoot").Find("Mask").gameObject.gameObject.GetComponent<UnityEngine.UI.Image>();
-            matWeaponIcon.cooldownRing = weaponSlot.transform.Find("DisplayRoot").Find("Mask").Find("CooldownRing").gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIcon.targetHUD = hud;
+            weaponIcon.icon = weaponIconComponent;
+            weaponIcon.mask = weaponSlot.transform.Find("DisplayRoot").Find("Mask").gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIcon.cooldownRing = weaponSlot.transform.Find("DisplayRoot").Find("Mask").Find("CooldownRing").gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIcon.cooldownRing.fillCenter = true;
 
             RectTransform iconRect = weaponSlot.GetComponent<RectTransform>();
             iconRect.localScale = new Vector3(2f, 2f, 2f);
@@ -3200,19 +3192,20 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 iconRect.anchoredPosition = new Vector2(-110f, 60f);
             }
             // text for ammo type
-            matWeaponIcon.ammoBackground = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("StockTextContainer").gameObject;
-            matWeaponIcon.ammoBackground.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 2.5f);
-            matWeaponIcon.ammoBackground.GetComponent<RectTransform>().localScale = new Vector3(0.8f, -0.8f, 0.8f);
-            matWeaponIcon.ammoBackground.transform.SetAsFirstSibling();
+            weaponIcon.ammoBackground = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("StockTextContainer").gameObject;
+            weaponIcon.ammoBackground.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 2.5f);
+            weaponIcon.ammoBackground.GetComponent<RectTransform>().localScale = new Vector3(0.8f, -0.8f, 0.8f);
+            weaponIcon.ammoBackground.transform.SetAsFirstSibling();
 
-            matWeaponIcon.ammoText = matWeaponIcon.ammoBackground.transform.Find("StockText").gameObject.GetComponent<TextMeshProUGUI>();
+            weaponIcon.ammoText = weaponIcon.ammoBackground.transform.Find("StockText").gameObject.GetComponent<TextMeshProUGUI>();
 
-            weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").gameObject.SetActive(false);
-            weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject.SetActive(false);
+            GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").gameObject);
+            GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject);
             weaponSlot.transform.Find("DisplayRoot").Find("BgImage").Find("IconPanel").Find("OnCooldown").gameObject.SetActive(false);
-            matWeaponIcon.cooldownRing.GetComponent<RedToColorRemapperIndividual>().gameObject.SetActive(false);
+            MonoBehaviour.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").gameObject.GetComponent<HideFromBepinConfig>());
+            MonoBehaviour.Destroy(weaponIcon.cooldownRing.GetComponent<RedToColorRemapperIndividual>());
+            MonoBehaviour.Destroy(weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>());
             MonoBehaviour.Destroy(equipmentIconComponent);
-            MonoBehaviour.Destroy(matEquipIcon);
 
             // duration bar
             /**
