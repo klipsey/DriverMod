@@ -3165,13 +3165,9 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
         internal static void RiskUIHudSetup(RoR2.UI.HUD hud)
         {
+            // Get rid of old hud, im tired of fighting this
             GameObject weaponSlot = hud.equipmentIcons.First().transform.parent.Find("WeaponSlot")?.gameObject;
-            if (weaponSlot && hud.targetBodyObject?.GetComponent<DriverController>())
-            {
-                weaponSlot.GetComponent<WeaponIcon>().iDrive = hud.targetBodyObject.GetComponent<DriverController>();
-                weaponSlot.GetComponent<MaterialWeaponIcon>().iDrive = hud.targetBodyObject.GetComponent<DriverController>();
-                return;
-            };
+            if (weaponSlot) GameObject.Destroy(weaponSlot);
 
             weaponSlot = GameObject.Instantiate(hud.equipmentIcons.First().gameObject);
             weaponSlot.name = "WeaponSlot";
@@ -3190,12 +3186,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             weaponIconComponent.targetHUD = hud;
 
             var weaponIcon = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
-
+            
             weaponIcon.targetHUD = hud;
             weaponIcon.icon = weaponIconComponent;
             weaponIcon.mask = weaponSlot.transform.Find("DisplayRoot").Find("Mask").gameObject.GetComponent<UnityEngine.UI.Image>();
             weaponIcon.cooldownRing = weaponSlot.transform.Find("DisplayRoot").Find("Mask").Find("CooldownRing").gameObject.GetComponent<UnityEngine.UI.Image>();
-            weaponIcon.cooldownRing.fillCenter = true;
+            weaponIcon.cooldownRing.fillCenter = false;
 
             RectTransform iconRect = weaponSlot.GetComponent<RectTransform>();
             iconRect.localScale = new Vector3(2f, 2f, 2f);
@@ -3217,8 +3213,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").gameObject);
             GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject);
             weaponSlot.transform.Find("DisplayRoot").Find("BgImage").Find("IconPanel").Find("OnCooldown").gameObject.SetActive(false);
-            MonoBehaviour.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").gameObject.GetComponent<HideFromBepinConfig>());
             MonoBehaviour.Destroy(weaponIcon.cooldownRing.GetComponent<RedToColorRemapperIndividual>());
+            MonoBehaviour.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").gameObject.GetComponent<HideFromBepinConfig>());
             MonoBehaviour.Destroy(weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>());
             MonoBehaviour.Destroy(equipmentIconComponent);
 

@@ -89,7 +89,7 @@ namespace RobDriver.SkillStates.Driver
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Any;
+            return InterruptPriority.Skill;
         }
     }
 }

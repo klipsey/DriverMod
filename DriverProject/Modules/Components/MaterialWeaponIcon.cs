@@ -23,13 +23,16 @@ namespace RobDriver.Modules.Components
 
 		public void Start()
         {
-            this.ammoText.enabled = true;
             this.ammoBackground.SetActive(false);
+            this.ammoText.enabled = true;
+            this.cooldownRing.enabled = true;
+            this.mask.enabled = true;
             this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
 
             if (this.iDrive)
 			{
-                this.defaultColor = this.cooldownRing.color;
+                this.defaultColor = this.targetHUD.healthBar.style.trailingOverHealthBarStyle.baseColor;
+                this.cooldownRing.color = defaultColor;
 
                 this.registerEvent = this.iDrive.passive.isBullets || this.iDrive.passive.isRyan;
                 if (this.registerEvent) this.iDrive.onConsumeAmmo += SetAmmoTypeDisplay;
@@ -68,7 +71,7 @@ namespace RobDriver.Modules.Components
             {
                 this.ammoText.text = string.Empty;
                 this.ammoBackground.SetActive(false);
-                if (!this.iDrive.HasSpecialBullets) this.cooldownRing.color = defaultColor;
+                this.cooldownRing.color = defaultColor;
             }
         }
 	}

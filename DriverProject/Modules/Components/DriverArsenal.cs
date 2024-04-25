@@ -10,7 +10,7 @@ namespace RobDriver.Modules.Components
     {
         public GenericSkill weaponSkillSlot;
 
-        private DriverWeaponDef weaponDef;
+        public DriverWeaponDef weaponDef;
 
         public DriverWeaponDef DefaultWeapon
         {
@@ -22,11 +22,6 @@ namespace RobDriver.Modules.Components
                 
                 return this.weaponDef;
             }
-        }
-
-        public void UnsetDefaultWeapon()
-        {
-            weaponDef = null;
         }
     }
 }
