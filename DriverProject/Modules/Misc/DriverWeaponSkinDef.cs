@@ -9,7 +9,7 @@ public class DriverWeaponSkinDef : ScriptableObject
 {
     [Header("General")]
     public string nameToken = "";
-    public string skinIndex = "";
+    public string mainSkinName = "";
     public ushort weaponDefIndex;
     public Mesh weaponSkinMesh;
     public Material weaponSkinMaterial;
@@ -18,7 +18,7 @@ public class DriverWeaponSkinDef : ScriptableObject
     {
         DriverWeaponSkinDef weaponSkinDef = (DriverWeaponSkinDef)ScriptableObject.CreateInstance(typeof(DriverWeaponSkinDef));
         weaponSkinDef.nameToken = skinDefInfo.nameToken;
-        weaponSkinDef.skinIndex = skinDefInfo.mainSkinName;
+        weaponSkinDef.mainSkinName = skinDefInfo.mainSkinName;
         weaponSkinDef.weaponDefIndex = skinDefInfo.weaponDefIndex;
         weaponSkinDef.weaponSkinMesh = skinDefInfo.weaponSkinMesh;
         weaponSkinDef.weaponSkinMaterial = skinDefInfo.weaponSkinMaterial;

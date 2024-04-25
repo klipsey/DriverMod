@@ -22,20 +22,21 @@ namespace RobDriver.Modules.Components
 		public Image durationBar;
 		public Image durationBarRed;
 
-		private void Start()
+		public void Start()
 		{
             this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
+			if (this.durationDisplay) this.durationDisplay.SetActive(false);
 			if (this.iDrive) this.iDrive.onWeaponUpdate += SetDisplay;
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             if (this.iDrive) this.iDrive.onWeaponUpdate -= SetDisplay;
         }
 
         private void Update()
         {
-			if (!this.iDrive || this.iDrive.passive.isPistolOnly) return;
+			if (!this.iDrive || this.iDrive.passive.isPistolOnly || !this.durationDisplay) return;
 
             if (this.iDrive.maxWeaponTimer > 0f)
             {
