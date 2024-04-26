@@ -83,7 +83,7 @@ namespace RobDriver.Modules.Components
                         blastAttack.procCoefficient = damageInfo.procCoefficient;
                         blastAttack.falloffModel = BlastAttack.FalloffModel.Linear;
                         blastAttack.position = damageInfo.position;
-                        blastAttack.radius = bounceCount + 3f;
+                        blastAttack.radius = bounceCount * 2f;
                         blastAttack.damageColorIndex = damageInfo.damageColorIndex;
                         blastAttack.damageType = damageInfo.damageType;
                         foreach (DamageAPI.ModdedDamageType i in moddedDamageTypeHolder)

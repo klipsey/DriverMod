@@ -5,7 +5,9 @@ using RoR2.Orbs;
 using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+using static UnityEngine.SendMouseEvents;
 
 namespace RobDriver.Modules.Components
 {
@@ -113,12 +115,50 @@ namespace RobDriver.Modules.Components
                 Destroy(base.gameObject);
             }
         }
-
         public struct CoinMethods
         {
             public static void ModifyCoinOnSpawn(CoinController coin, float damageMultiplier)
             {
                 coin.ricochetMultiplier = damageMultiplier;
+            }
+            public static void OverlapAttackLaunchCoin(OverlapAttack attack)
+            {
+                DamageInfo info = new DamageInfo();
+                info.attacker = attack.attacker;
+                info.inflictor = attack.inflictor;
+                info.crit = attack.isCrit;
+                info.damage = attack.damage;
+                info.procCoefficient = attack.procCoefficient;
+                info.procChainMask = attack.procChainMask;
+                info.force = attack.forceVector;
+                info.canRejectForce = attack.forceVector == null;
+                info.damageColorIndex = attack.damageColorIndex;
+                info.damageType = attack.damageType;
+                if (attack.HasModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType)) info.AddModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType);
+                foreach (IShootable coin in OverlapAttackGetCoins(attack))
+                {
+                    if (coin.CanBeShot())
+                    {
+                        info.procCoefficient = 0f;
+                        coin.OnShot(info);
+                    }
+                }
+            }
+            public static List<IShootable> OverlapAttackGetCoins(OverlapAttack attack)
+            {
+                List<IShootable> iShootable = new List<IShootable>();
+                foreach (HealthComponent healthComponent in attack.ignoredHealthComponentList)
+                {
+                    if (healthComponent)
+                    {
+                        IShootable coin = healthComponent.GetComponent<IShootable>();
+                        if (coin != null)
+                        {
+                            iShootable.Add(coin);
+                        }
+                    }
+                }
+                return iShootable;
             }
         }
     }
