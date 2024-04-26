@@ -9,13 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4802694844804007}
-  - component: {fileID: 6499294307855700769}
   - component: {fileID: 9114998794138200242}
-  - component: {fileID: 8116990955228649989}
-  - component: {fileID: 6499294307855700768}
-  - component: {fileID: 1572476690029910642}
-  - component: {fileID: 5000210956218530239}
-  - component: {fileID: 8223513086281500225}
   m_Layer: 9
   m_Name: CoinOrbEffect
   m_TagString: Untagged
@@ -39,24 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
---- !u!114 &6499294307855700769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702947716422087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 511512695, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  effectIndex: -1
-  positionAtReferencedTransform: 0
-  parentToReferencedTransform: 0
-  applyScale: 1
-  soundName: 
-  disregardZScale: 0
 --- !u!54 &9114998794138200242
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -73,129 +49,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8116990955228649989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702947716422087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1245112779, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentObjectTransform: {fileID: 0}
-  startVelocity1: {x: 0, y: 0, z: 0}
-  startVelocity2: {x: 0, y: 0, z: 0}
-  endVelocity1: {x: 0, y: 0, z: 0}
-  endVelocity2: {x: 0, y: 0, z: 0}
-  movementCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  bezierCurveLine: {fileID: 0}
-  faceMovement: 1
-  callArrivalIfTargetIsGone: 1
-  startEffect: {fileID: 0}
-  startEffectScale: 1
-  startEffectCopiesRotation: 0
-  endEffect: {fileID: 6399074728173142065, guid: f4d49a92a9cc700458a1df7fbbed5482,
-    type: 3}
-  endEffectScale: 1
-  endEffectCopiesRotation: 0
-  onArrival:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8223513086281500225}
-        m_MethodName: UnparentTransform
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 4889385719202109}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &6499294307855700768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702947716422087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 816898038, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vfxPriority: 2
-  vfxIntensity: 0
-  optionalLights: []
-  secondaryParticleSystem: []
---- !u!114 &1572476690029910642
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702947716422087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 2074666924, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleSystems:
-  - {fileID: 3667219606769924014}
-  effectComponent: {fileID: 6499294307855700769}
---- !u!114 &5000210956218530239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702947716422087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5e77a61b356f304ab1d39d5d299a910, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderers:
-  - {fileID: 96085777275911961}
-  effectComponent: {fileID: 6499294307855700769}
---- !u!114 &8223513086281500225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702947716422087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 733712478, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1810382522129667
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,7 +59,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4889385719202109}
   - component: {fileID: 96085777275911961}
-  - component: {fileID: 5681523924436523677}
   m_Layer: 9
   m_Name: Trail
   m_TagString: Untagged
@@ -247,7 +99,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ed53edc4865066042aa3dc2a59c70269, type: 2}
+  - {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -352,48 +204,6 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!114 &5681523924436523677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1810382522129667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -2051541306, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  alphaCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.9569588
-      inSlope: -0.8582684
-      outSlope: -0.8582684
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.9984741
-      value: 0.1
-      inSlope: -0.8582684
-      outSlope: -0.8582684
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  timeMax: 0.75
-  decal: {fileID: 0}
-  pauseTime: 0
-  destroyOnEnd: 1
-  disableOnEnd: 0
-  time: 0
 --- !u!1 &5804422462467189556
 GameObject:
   m_ObjectHideFlags: 0
@@ -5103,7 +4913,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 63537cb60e05b4041b01cf2db1627241, type: 2}
+  - {fileID: 2100000, guid: 93c97da0a9a11174ab89575db81f7917, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

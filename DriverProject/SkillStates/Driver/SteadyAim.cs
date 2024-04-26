@@ -395,7 +395,8 @@ namespace RobDriver.SkillStates.Driver
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                     };
                     bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
-                    bulletAttack.Fire();
+                    bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
+bulletAttack.Fire();
                 }
                 else
                 {
@@ -438,6 +439,7 @@ namespace RobDriver.SkillStates.Driver
                             if (BulletAttack.IsSniperTargetHit(hitInfo))
                             {
                                 if (this.iDrive.passive.isPistolOnly) damageInfo.damage *= 2f;
+                                else if (this.iDrive.passive.isBullets) damageInfo.damage *= 1.5f;
                                 else damageInfo.damage *= 1.25f;
                                 damageInfo.damageColorIndex = DamageColorIndex.Sniper;
 
@@ -458,6 +460,7 @@ namespace RobDriver.SkillStates.Driver
                         };
                     }
 
+                    bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
                 }
             }
@@ -549,6 +552,7 @@ namespace RobDriver.SkillStates.Driver
                     };
                 }
 
+                bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
             }
         }

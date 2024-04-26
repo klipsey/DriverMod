@@ -37,6 +37,8 @@ namespace RobDriver.Modules
         public static DamageAPI.ModdedDamageType Hemorrhage;
         public static DamageAPI.ModdedDamageType Gouge;
 
+        public static DamageAPI.ModdedDamageType bloodExplosionIdentifier;
+
         internal static void Init()
         {
             Generic = DamageAPI.ReserveDamageType();
@@ -55,7 +57,7 @@ namespace RobDriver.Modules
             MysteryShot = DamageAPI.ReserveDamageType();
             Hemorrhage = DamageAPI.ReserveDamageType();
             Gouge = DamageAPI .ReserveDamageType();
-
+            bloodExplosionIdentifier = DamageAPI .ReserveDamageType();
             Hook();
         }
 

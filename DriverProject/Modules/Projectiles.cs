@@ -1,5 +1,6 @@
 ﻿using R2API;
 using Rewired.ComponentControls.Effects;
+using RobDriver.Modules.Components;
 using RoR2;
 using RoR2.Projectile;
 using System;
@@ -29,6 +30,8 @@ namespace RobDriver.Modules
         public static GameObject lunarShardRed;
 
         public static GameObject lunarGrenadeProjectilePrefab;
+
+        public static GameObject coinProjectile;
 
         internal static GameObject punchShockwave;
         internal static void RegisterProjectiles()
@@ -101,6 +104,7 @@ namespace RobDriver.Modules
             CreateLunarShard();
             CreateLunarGrenade();
             CreateShockwave();
+            CreateCoin();
 
             rocketProjectilePrefab = CreateRocket(false, "DriverRocketProjectile", "DriverRocketGhost", "DriverBigRocketGhost");
             missileProjectilePrefab = CreateRocket(false, "DriverMissileProjectile", "DriverMissileGhost", "DriverMissileGhost");
@@ -205,6 +209,95 @@ namespace RobDriver.Modules
             Prefabs.projectilePrefabs.Add(lunarGrenadeProjectilePrefab);
         }
 
+        private static void CreateCoin()
+        {
+            var coinProjectileGhost = CreateGhostPrefab("CoinProjectileGhost");
+
+            var pG = coinProjectileGhost.GetComponent<ProjectileGhostController>();
+            pG.inheritScaleFromProjectile = false;
+
+            coinProjectileGhost.transform.GetChild(0).GetChild(0).GetComponent<ParticleSystemRenderer>().material = Modules.Assets.twinkleMat;
+            coinProjectileGhost.transform.GetChild(0).GetChild(0).GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.yellow);
+            coinProjectileGhost.transform.GetChild(1).GetComponent<TrailRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Captain/matCaptainTracerTrail.mat").WaitForCompletion();
+            coinProjectileGhost.transform.GetChild(1).GetComponent<TrailRenderer>().material.SetColor("_TintColor", Color.yellow);
+            coinProjectile = Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("CoinProjectile");
+            var soundLoop = coinProjectile.AddComponent<StopCoinSound>();
+            soundLoop.SoundEventToPlay = "sfx_driver_coin_spin";
+
+            var projectileController = coinProjectile.AddComponent<ProjectileController>();
+            projectileController.ghostPrefab = coinProjectileGhost;
+            projectileController.allowPrediction = true;
+            projectileController.procCoefficient = 1;
+
+            coinProjectile.AddComponent<SkillLocator>();
+            var teamComponent = coinProjectile.AddComponent<TeamComponent>();
+            teamComponent.hideAllyCardDisplay = false;
+
+
+            var characterBody = coinProjectile.AddComponent<CharacterBody>();
+            characterBody.baseVisionDistance = Mathf.Infinity;
+            characterBody.sprintingSpeedMultiplier = 1.45f;
+            characterBody.hullClassification = HullClassification.Human;
+            characterBody.SetSpreadBloom(0f);
+
+            var healthComponent = coinProjectile.AddComponent<HealthComponent>();
+            healthComponent.body = characterBody;
+            healthComponent.dontShowHealthbar = true;
+            healthComponent.globalDeathEventChanceCoefficient = 0f;
+
+            var projectileSimple = coinProjectile.AddComponent<ProjectileSimple>();
+            projectileSimple.lifetime = 5f;
+            projectileSimple.desiredForwardSpeed = 30f;
+            projectileSimple.updateAfterFiring = false;
+            projectileSimple.enableVelocityOverLifetime = false;
+            projectileSimple.oscillate = false;
+            projectileSimple.oscillateMagnitude = 20f;
+            projectileSimple.oscillateSpeed = 0f;
+
+            var dcbc = coinProjectile.AddComponent<DisableCollisionsBetweenColliders>();
+            dcbc.collidersA = new Collider[1];
+            dcbc.collidersA[0] = coinProjectile.GetComponent<SphereCollider>();
+            dcbc.collidersB = new Collider[1];
+            dcbc.collidersB[0] = coinProjectile.transform.GetChild(0).GetChild(0).gameObject.GetComponent<SphereCollider>();
+
+            var coinController = coinProjectile.AddComponent<CoinController>();
+            coinController.projectileHealthComponent = healthComponent;
+            coinController.controller = projectileController;
+            coinController.ricochetSound = Modules.Assets.CreateNetworkSoundEventDef("sfx_driver_stun_grenade");
+            coinController.canRicochet = true;
+            coinController.ricochetMultiplier = 2f;
+
+            var modelLocator = coinProjectile.AddComponent<ModelLocator>();
+            modelLocator.modelTransform = coinProjectile.transform.GetChild(0);
+            modelLocator.modelBaseTransform = coinProjectile.transform;
+            modelLocator.autoUpdateModelTransform = true;
+            modelLocator.dontDetatchFromParent = true;
+            modelLocator.noCorpse = true;
+            modelLocator.dontReleaseModelOnDeath = false;
+            modelLocator.preserveModel = false;
+            modelLocator.normalizeToFloor = false;
+            modelLocator.normalSmoothdampTime = 0.1f;
+            modelLocator.normalMaxAngleDelta = 90f;
+
+            var hurtBoxGroup = coinProjectile.transform.GetChild(0).gameObject.AddComponent<HurtBoxGroup>();
+            List<HurtBox> hurtboxes = new List<HurtBox>();
+
+            var hurtBox = coinProjectile.transform.GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
+            hurtBox.gameObject.layer = LayerIndex.entityPrecise.intVal;
+            hurtBox.healthComponent = healthComponent;
+            hurtBox.isBullseye = true;
+            hurtBox.isSniperTarget = true;
+            hurtBox.damageModifier = HurtBox.DamageModifier.Normal;
+            hurtBox.hurtBoxGroup = hurtBoxGroup;
+
+            hurtboxes.Add(hurtBox);
+
+            hurtBoxGroup.hurtBoxes = hurtboxes.ToArray();
+            hurtBoxGroup.mainHurtBox = hurtBox;
+            hurtBoxGroup.bullseyeCount = 1;
+
+            Prefabs.projectilePrefabs.Add(coinProjectile);
+        }
         private static void CreateShockwave()
         {
             punchShockwave = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/LoaderZapCone.prefab").WaitForCompletion().InstantiateClone("RavagerPunchShockwave", true);

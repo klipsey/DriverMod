@@ -116,18 +116,21 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;
-                    bulletAttack.Fire();
+                    bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
+bulletAttack.Fire();
 
                     uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = spread / 1.45f;
                     bulletAttack.bulletCount = secondShot;
-                    bulletAttack.Fire();
+                    bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
+bulletAttack.Fire();
 
                     bulletAttack.minSpread = spread / 1.45f;
                     bulletAttack.maxSpread = spread;
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
-                    bulletAttack.Fire();
+                    bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
+bulletAttack.Fire();
 
                     float x = this.selfForce;
                     if (this.isGrounded) x *= 0.25f;

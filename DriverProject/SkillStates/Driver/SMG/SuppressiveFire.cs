@@ -124,7 +124,8 @@ namespace RobDriver.SkillStates.Driver.SMG
                     HitEffectNormal = false,
                 };
                 bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
-                bulletAttack.Fire();
+                bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
+bulletAttack.Fire();
 
                 //this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
             }

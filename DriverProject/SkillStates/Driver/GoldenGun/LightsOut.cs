@@ -63,6 +63,7 @@ namespace RobDriver.SkillStates.Driver.GoldenGun
                 }
             };
 
+            bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
             bulletAttack.Fire();
         }
     }

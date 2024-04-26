@@ -15,6 +15,8 @@ using RobDriver.Modules.Components;
 using UnityEngine.Rendering.PostProcessing;
 using Moonstorm.Starstorm2.Survivors;
 using DriverMod.Modules.Components;
+using UnityEngine.SocialPlatforms;
+using IL.RoR2.Orbs;
 
 namespace RobDriver.Modules
 {
@@ -33,6 +35,8 @@ namespace RobDriver.Modules
 
         public static GameObject badassExplosionEffect;
         public static GameObject badassSmallExplosionEffect;
+
+        public static GameObject explosionEffect;
 
         public static GameObject jammedEffectPrefab;
         public static GameObject upgradeEffectPrefab;
@@ -66,6 +70,9 @@ namespace RobDriver.Modules
         public static GameObject ammoPickupModel;
         public static GameObject bloodExplosionEffect;
         public static GameObject bloodSpurtEffect;
+        public static GameObject coinTracer;
+        public static GameObject coinImpact;
+        public static GameObject coinOrbEffect;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -120,6 +127,8 @@ namespace RobDriver.Modules
         public static Material briefcaseGoldMat;
         public static Material briefcaseUniqueMat;
         public static Material briefcaseLunarMat;
+
+        public static Material twinkleMat;
 
         public static GameObject shotgunShell;
         public static GameObject shotgunSlug;
@@ -584,7 +593,8 @@ namespace RobDriver.Modules
             nemKatanaMat = CreateMaterial("matNemKatana", 5f, Color.white, 1f);
             knifeMat = CreateMaterial("matKnife");
             skateboardMat = CreateMaterial("matSkateboard");
-
+            Material die = Addressables.LoadAssetAsync<Material>("RoR2/Base/Firework/matFireworkSparkle.mat").WaitForCompletion();
+            twinkleMat = die;
             shotgunShell = mainAssetBundle.LoadAsset<GameObject>("ShotgunShell");
             shotgunShell.GetComponentInChildren<MeshRenderer>().material = CreateMaterial("matShotgunShell");
             shotgunShell.AddComponent<Modules.Components.ShellController>();
@@ -859,6 +869,18 @@ namespace RobDriver.Modules
             shake.radius = 60f;
             shake.scaleShakeRadiusWithLocalScale = false;
             shake.amplitudeTimeDecay = true;
+
+            explosionEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
+            explosionEffect.AddComponent<NetworkIdentity>();
+
+            GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
+            GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
+            radiusIndicator.transform.parent = explosionEffect.transform;
+            radiusIndicator.transform.localPosition = Vector3.zero;
+            radiusIndicator.transform.localScale = Vector3.one;
+            radiusIndicator.transform.localRotation = Quaternion.identity;
+
+            Assets.AddNewEffectDef(explosionEffect, "sfx_driver_explosion");
 
             GameObject obj = new GameObject();
             defaultMuzzleTrail = obj.InstantiateClone("PassiveMuzzleTrail", false);
@@ -1211,7 +1233,114 @@ namespace RobDriver.Modules
 
             bloodSpurtEffect.transform.Find("Blood").GetComponent<ParticleSystemRenderer>().material = bloodMat2;
             bloodSpurtEffect.transform.Find("Trails").GetComponent<ParticleSystemRenderer>().trailMaterial = bloodMat2;
+            #region coin
+            coinTracer = mainAssetBundle.LoadAsset<GameObject>("CoinTracer");
+            coinTracer.AddComponent<NetworkIdentity>(); 
+            var effect1 = coinTracer.AddComponent<EffectComponent>();
+            effect1.parentToReferencedTransform = false;
+            effect1.positionAtReferencedTransform = false;
+            effect1.applyScale = false;
+            effect1.disregardZScale = false;
+            coinTracer.AddComponent<EventFunctions>();
+            var tracer = coinTracer.AddComponent<CoinTracer>();
+            tracer.startTransform = coinTracer.transform.GetChild(2).GetChild(0);
+            tracer.beamObject = coinTracer.transform.GetChild(2).GetChild(0).gameObject;
+            tracer.beamDensity = 0.2f;
+            tracer.speed = 1000f;
+            tracer.headTransform = coinTracer.transform.GetChild(1);
+            tracer.tailTransform = coinTracer.transform.GetChild(2).GetChild(0);
+            tracer.length = 20f;
 
+            var destroyOnTimer = coinTracer.AddComponent<DestroyOnTimer>();
+            destroyOnTimer.duration = 2;
+            var trailChildObject = coinTracer.transform.GetChild(2).gameObject;
+
+            var beamPoints = trailChildObject.AddComponent<BeamPointsFromTransforms>();
+            beamPoints.target = trailChildObject.GetComponent<LineRenderer>();
+            Transform[] bleh = new Transform[2];
+            bleh[0] = coinTracer.transform.GetChild(1);
+            bleh[1] = trailChildObject.transform.GetChild(0);
+            beamPoints.pointTransforms = bleh;
+            trailChildObject.GetComponent<LineRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Captain/matCaptainTracerTrail.mat").WaitForCompletion();
+            trailChildObject.GetComponent<LineRenderer>().material.SetColor("_TintColor", Color.yellow);
+            var animateShader = trailChildObject.AddComponent<AnimateShaderAlpha>();
+            var curve = new AnimationCurve(new Keyframe(0, 1), new Keyframe(0.675f, 0.8f), new Keyframe(1, 0.3f));
+            curve.preWrapMode = WrapMode.Clamp;
+            curve.postWrapMode = WrapMode.Clamp;
+            animateShader.alphaCurve = curve;
+            animateShader.timeMax = 0.5f;
+            animateShader.pauseTime = false;
+            animateShader.destroyOnEnd = true;
+            animateShader.disableOnEnd = false;
+
+            AddNewEffectDef(coinTracer);
+
+            Log.Debug("Starting Coin Impact");
+            coinImpact = mainAssetBundle.LoadAsset<GameObject>("CoinImpactHit");
+            var attr = coinImpact.AddComponent<VFXAttributes>();
+            attr.vfxPriority = VFXAttributes.VFXPriority.Low;
+            attr.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+
+            coinImpact.AddComponent<EffectComponent>();
+            coinImpact.AddComponent<DestroyOnParticleEnd>();
+
+            var eff = coinImpact.transform.Find("Streaks_Ps").GetComponent<ParticleSystemRenderer>();
+            eff.material = die;
+            eff.material.SetColor("_TintColor", Color.yellow);
+            AddNewEffectDef(coinImpact);
+
+            Log.Debug("Starting Coin Orb");
+            coinOrbEffect = mainAssetBundle.LoadAsset<GameObject>("CoinOrbEffect");
+            coinOrbEffect.AddComponent<EventFunctions>();
+            var effectComp = coinOrbEffect.AddComponent<EffectComponent>();
+            effectComp.applyScale = true;
+            var orbEffect = coinOrbEffect.AddComponent<CoinOrbEffect>();
+
+            curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
+            curve.preWrapMode = WrapMode.Clamp;
+            curve.postWrapMode = WrapMode.Clamp;
+
+            orbEffect.movementCurve = curve;
+            orbEffect.faceMovement = true;
+            orbEffect.callArrivalIfTargetIsGone = true;
+            orbEffect.endEffect = coinOrbEffect;
+            orbEffect.endEffectCopiesRotation = false;
+
+            attr = coinOrbEffect.AddComponent<VFXAttributes>();
+            attr.vfxPriority = VFXAttributes.VFXPriority.Always;
+            attr.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+
+            coinOrbEffect.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Captain/matCaptainTracerTrail.mat").WaitForCompletion();
+            coinOrbEffect.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().material.SetColor("_TintColor", Color.yellow);
+
+            var pscfed = coinOrbEffect.AddComponent<ParticleSystemColorFromEffectData>();
+            pscfed.particleSystems = new ParticleSystem[1];
+            pscfed.particleSystems[0] = coinOrbEffect.transform.Find("Head").GetComponent<ParticleSystem>();
+            pscfed.effectComponent = effectComp;
+
+            var trcfed = coinOrbEffect.AddComponent<TrailRendererColorFromEffectData>();
+            trcfed.renderers = new TrailRenderer[1];
+            trcfed.renderers[0] = coinOrbEffect.transform.Find("Trail").GetComponent<TrailRenderer>();
+            trcfed.effectComponent = effectComp;
+
+            var shaderAlpha = coinOrbEffect.transform.Find("Trail").gameObject.AddComponent<AnimateShaderAlpha>();
+
+            curve = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0));
+            curve.preWrapMode = WrapMode.Clamp;
+            curve.postWrapMode = WrapMode.Clamp;
+
+            shaderAlpha.alphaCurve = curve;
+            shaderAlpha.timeMax = 0.75f;
+            shaderAlpha.pauseTime = false;
+            shaderAlpha.destroyOnEnd = true;
+            shaderAlpha.disableOnEnd = false;
+
+            var effect = coinOrbEffect.transform.Find("Head").GetComponent<ParticleSystemRenderer>();
+            effect.material = twinkleMat;
+            effect.material.SetColor("_TintColor", Color.yellow);
+
+            AddNewEffectDef(coinOrbEffect);
+            #endregion
             ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup").InstantiateClone("mdlAmmoPickup", false);
 
             ConvertAllRenderersToHopooShader(ammoPickupModel);

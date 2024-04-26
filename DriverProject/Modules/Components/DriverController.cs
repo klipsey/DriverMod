@@ -83,7 +83,7 @@ namespace RobDriver.Modules.Components
         private bool needReload = false;
 
         private bool hasEquippedConfigKatana;
-
+        private int coinIndex;
         private DriverWeaponTracker weaponTracker
         {
             get
@@ -997,7 +997,17 @@ namespace RobDriver.Modules.Components
                 this.StoreWeapon();
             }
         }
+        public float GetCoinAngle()
+        {
+            float angle = ((coinIndex <= 3) ? (60 + -40 * coinIndex) : (-60 + 40 * (coinIndex - 3)));
 
+            coinIndex++; // dont care shut up
+            if (coinIndex >= 5)
+            {
+                coinIndex = 0;
+            }
+            return angle;
+        }
         public void ExtendTimer()
         {
             return;
