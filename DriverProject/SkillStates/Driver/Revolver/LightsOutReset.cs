@@ -63,6 +63,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 }
             };
 
+            bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
             bulletAttack.Fire();
         }
     }

@@ -245,7 +245,8 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     }
                 };
 
-                bulletAttack.Fire();
+                bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
+bulletAttack.Fire();
             }
         }
 

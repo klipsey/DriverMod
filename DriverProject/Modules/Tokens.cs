@@ -255,6 +255,9 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_SCEPTER_NAME", "Perfected Syringe (Legacy)");
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a <style=cIsDamage>random offensive buff</style> for the next <style=cIsUtility>6 seconds</style>."
                 + Helpers.ScepterDescription("Applies all three buffs at once."));
+
+            LanguageAPI.Add(prefix + "SPECIAL_DRIVERCOIN_NAME", "Pay it Forward");
+            LanguageAPI.Add(prefix + "SPECIAL_DRIVERCOIN_DESCRIPTION", $"Flick out a <style=cIsUtility>Coin</style> which can be shot for multiplied <style=cIsDamage>damage</style>.");
             #endregion
 
             #region Achievements

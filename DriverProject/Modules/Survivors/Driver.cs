@@ -1973,6 +1973,30 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
+            SkillDef coinSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_DRIVERCOIN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_DRIVERCOIN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_DRIVERCOIN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Coin)),
+                activationStateMachineName = "Shard",
+                baseMaxStock = 2,
+                baseRechargeInterval = 5f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = false,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
             if (Modules.Config.cursed.Value)
             {
                 Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef, syringeLegacySkillDef);
@@ -1980,7 +2004,7 @@ namespace RobDriver.Modules.Survivors
             }
             else
             {
-                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef);
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef, coinSkillDef);
                 Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef);
             }
             #endregion
@@ -2910,9 +2934,9 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 if (isDriverOnPlayerTeam)
                 {
                     // headshot first
-                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken || damageReport.damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier))
                     {
-                        if (damageReport.victim.GetComponent<DriverHeadshotTracker>())
+                        if (damageReport.victim.GetComponent<DriverHeadshotTracker>() || damageReport.damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier))
                         {
                             NetworkIdentity identity = damageReport.victim.gameObject.GetComponent<NetworkIdentity>();
                             if (identity)

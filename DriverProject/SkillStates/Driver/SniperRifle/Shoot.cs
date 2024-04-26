@@ -141,6 +141,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         };
                     }
 
+                    bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);

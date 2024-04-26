@@ -124,7 +124,7 @@ namespace RobDriver.SkillStates.Driver
                 Ray aimRay = base.GetAimRay();
                 base.AddRecoil2(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
 
-                BulletAttack attack = new BulletAttack
+                BulletAttack bulletAttack = new BulletAttack
                 {
                     bulletCount = 1,
                     aimVector = aimRay.direction,
@@ -154,8 +154,9 @@ namespace RobDriver.SkillStates.Driver
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                attack.AddModdedDamageType(iDrive.ModdedDamageType);
-                attack.Fire();
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
+                bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
+                bulletAttack.Fire();
             }
 
             base.characterBody.AddSpreadBloom(1.25f);

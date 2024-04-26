@@ -147,6 +147,8 @@ namespace RobDriver.SkillStates.BaseStates
             {
                 this.TriggerHitStop();
             }
+
+            Modules.Components.CoinController.CoinMethods.OverlapAttackLaunchCoin(this.attack);
         }
 
         protected virtual void TriggerHitStop()
