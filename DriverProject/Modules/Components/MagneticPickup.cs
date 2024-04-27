@@ -1,11 +1,9 @@
-﻿using RobDriver.Modules;
-using RobDriver.Modules.Components;
-using RobDriver.Modules.Survivors;
+﻿using RobDriver.Modules.Survivors;
 using RoR2;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-namespace DriverMod.Modules.Components
+namespace RobDriver.Modules.Components
 {
     internal class MagneticPickup : MonoBehaviour
     {

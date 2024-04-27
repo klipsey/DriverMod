@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using EntityStates;
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine.AddressableAssets;
 using RoR2;
-using DriverMod;
 namespace RobDriver.SkillStates.Driver.LunarHammer
 {
     public class SwingCombo : BaseMeleeAttack

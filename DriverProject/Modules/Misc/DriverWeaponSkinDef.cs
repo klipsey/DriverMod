@@ -1,8 +1,4 @@
 ﻿using UnityEngine;
-using RoR2;
-using DriverMod.Modules;
-using RoR2.Skills;
-using RobDriver;
 
 [CreateAssetMenu(fileName = "rsd", menuName = "ScriptableObjects/DriverWeaponSkinDef", order = 3)]
 public class DriverWeaponSkinDef : ScriptableObject

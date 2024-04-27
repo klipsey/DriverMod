@@ -71,33 +71,21 @@ namespace RobDriver.SkillStates.Driver.Compat
 
         private bool AttemptEnemyStep()
         {
-            BullseyeSearch2 bullseyeSearch = new BullseyeSearch2
+            BullseyeSearch bullseyeSearch = new BullseyeSearch
             {
                 teamMaskFilter = TeamMask.GetEnemyTeams(base.GetTeam()),
                 filterByLoS = false,
                 searchOrigin = this.transform.position + (Vector3.up * 0.5f),
                 searchDirection = UnityEngine.Random.onUnitSphere,
-                sortMode = BullseyeSearch2.SortMode.Distance,
-                onlyBullseyes = false,
+                sortMode = BullseyeSearch.SortMode.None,
                 maxDistanceFilter = 5f,
                 maxAngleFilter = 360f
             };
 
             bullseyeSearch.RefreshCandidates();
             bullseyeSearch.FilterOutGameObject(base.gameObject);
-            List<HurtBox> list = bullseyeSearch.GetResults().ToList<HurtBox>();
-            foreach (HurtBox hurtBox in list)
-            {
-                if (hurtBox)
-                {
-                    if (hurtBox.healthComponent && hurtBox.healthComponent.body)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            bullseyeSearch.FilterCandidatesByHealthFraction();
+            return bullseyeSearch.GetResults().Where(Util.IsValid).Any();
         }
     }
 }
