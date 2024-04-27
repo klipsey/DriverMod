@@ -1,7 +1,6 @@
 ﻿using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
-using RobDriver.Modules.Misc;
 using RobDriver.Modules.Survivors;
 using RoR2;
 using RoR2.Skills;
@@ -176,7 +175,7 @@ namespace RobDriver.Modules.Components
 
         private void SetInventoryHook()
         {
-            this.currentSkinDef = this.skinController ? DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex) : null;
+            this.currentSkinDef = this.skinController ? Modules.Misc.DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex) : null;
 
             // swag
             if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
