@@ -15,7 +15,7 @@ using static UnityEngine.SendMouseEvents;
 
 namespace RobDriver.Modules.Components
 {
-    public class CoinController : NetworkBehaviour, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
+    public class CoinController : MonoBehaviour, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
     {
         public HealthComponent projectileHealthComponent;
         public ProjectileController controller;
