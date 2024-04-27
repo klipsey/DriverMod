@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using EntityStates;
 using RobDriver.SkillStates.BaseStates;
-using UnityEngine.AddressableAssets;
 using RoR2;
-using DriverMod;
-using LostInTransit.Buffs;
+
 namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
 {
     public class SwingSword : BaseMeleeAttack

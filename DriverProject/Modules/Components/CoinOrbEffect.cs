@@ -1,12 +1,8 @@
-﻿using System.Reflection;
-using R2API;
-using UnityEngine;
-using Unity;
+﻿
 using RoR2;
-using UnityEngine.Events;
 using RoR2.Orbs;
 
-namespace DriverMod.Modules.Components
+namespace RobDriver.Modules.Components
 {
     public class CoinOrbEffect : OrbEffect
     {

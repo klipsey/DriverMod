@@ -1,12 +1,9 @@
-﻿using System.Reflection;
-using R2API;
-using UnityEngine;
-using Unity;
+﻿using UnityEngine;
 using RoR2;
 using UnityEngine.Events;
 
 
-namespace DriverMod.Modules.Components
+namespace RobDriver.Modules.Components
 {
     public class CoinTracer : MonoBehaviour
     {

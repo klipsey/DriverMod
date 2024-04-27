@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using R2API;
-using RobDriver.Modules.Components;
 using RoR2;
 using RoR2.Orbs;
 using UnityEngine;

@@ -4,19 +4,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 using RoR2;
 using System.IO;
-using RoR2.Audio;
 using System.Collections.Generic;
-using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
 using TMPro;
 using RoR2.UI;
 using UnityEngine.UI;
 using RobDriver.Modules.Components;
 using UnityEngine.Rendering.PostProcessing;
-using Moonstorm.Starstorm2.Survivors;
-using DriverMod.Modules.Components;
-using UnityEngine.SocialPlatforms;
-using IL.RoR2.Orbs;
 
 namespace RobDriver.Modules
 {
@@ -196,6 +190,7 @@ namespace RobDriver.Modules
         public static GameObject lunarShardMuzzleFlashRed;
         public static GameObject redSwingEffect;
         public static GameObject bigRedSwingEffect;
+        public static GameObject consumeOrb;
 
         internal static DriverWeaponDef pistolWeaponDef;
         internal static DriverWeaponDef goldenGunWeaponDef;
@@ -1289,7 +1284,6 @@ namespace RobDriver.Modules
             eff.material.SetColor("_TintColor", Color.yellow);
             AddNewEffectDef(coinImpact);
 
-            Log.Debug("Starting Coin Orb");
             coinOrbEffect = mainAssetBundle.LoadAsset<GameObject>("CoinOrbEffect");
             coinOrbEffect.AddComponent<EventFunctions>();
             var effectComp = coinOrbEffect.AddComponent<EffectComponent>();
@@ -1358,6 +1352,29 @@ namespace RobDriver.Modules
 
             textShit5.GetComponent<DestroyOnTimer>().enabled = false;
 
+            // ravager orb succ
+            CreateOrb();
+        }
+
+        private static void CreateOrb()
+        {
+            consumeOrb = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/InfusionOrbEffect"), "RavagerConsumeOrbEffect", true);
+            //if (!consumeOrb.GetComponent<NetworkIdentity>()) consumeOrb.AddComponent<NetworkIdentity>();
+
+            TrailRenderer trail = consumeOrb.transform.Find("TrailParent").Find("Trail").GetComponent<TrailRenderer>();
+            trail.widthMultiplier = 0.35f;
+            trail.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/moon2/matBloodSiphon.mat").WaitForCompletion();
+
+            consumeOrb.transform.Find("VFX").Find("Core").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matBloodHumanLarge.mat").WaitForCompletion();
+            consumeOrb.transform.Find("VFX").localScale = Vector3.one * 0.5f;
+
+            consumeOrb.transform.Find("VFX").Find("Core").localScale = Vector3.one * 4.5f;
+
+            consumeOrb.transform.Find("VFX").Find("PulseGlow").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
+
+            //consumeOrb.GetComponent<OrbEffect>().endEffect = Modules.Assets.slowStartPickupEffect;
+
+            Modules.Assets.AddNewEffectDef(consumeOrb);
         }
 
         private static GameObject CreateTracer(string originalTracerName, string newTracerName)

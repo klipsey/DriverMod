@@ -1,16 +1,10 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
 using R2API.Utils;
 using RoR2;
 using System.Security;
 using System.Security.Permissions;
-using RobDriver.Modules;
 using R2API.Networking;
-using RobDriver.Modules.Components;
 using RobDriver.Modules.Survivors;
-using DriverMod.Modules.Misc;
-using static DriverWeaponSkinDef;
-using UnityEngine;
 using System.Collections.Generic;
 
 [module: UnverifiableCode]
@@ -61,7 +55,6 @@ namespace RobDriver
         public static bool greenAlienHeadInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Borbo.GreenAlienHead");
         public static bool ravagerInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rob.Ravager");
 
-        public static List<HurtBox> hurtboxesList = new List<HurtBox>();
         private void Awake()
         {
             instance = this;
@@ -125,23 +118,11 @@ namespace RobDriver
             if (Modules.Config.dynamicCrosshairUniversal.Value) On.RoR2.UI.CrosshairController.Awake += CrosshairController_Awake;
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
-            On.RoR2.HurtBox.OnEnable += HurtBox_OnEnable;
-            On.RoR2.HurtBox.OnDisable += HurtBox_OnDisable;
             On.RoR2.UI.MainMenu.MainMenuController.Start += MainMenuController_Start;
             // uncomment this if network testing
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
         }
-        private void HurtBox_OnEnable(On.RoR2.HurtBox.orig_OnEnable orig, HurtBox self)
-        {
-            orig(self);
-            hurtboxesList.Add(self);
-        }
 
-        private void HurtBox_OnDisable(On.RoR2.HurtBox.orig_OnDisable orig, HurtBox self)
-        {
-            orig(self);
-            hurtboxesList.Remove(self);
-        }
         private void MainMenuController_Start(On.RoR2.UI.MainMenu.MainMenuController.orig_Start orig, RoR2.UI.MainMenu.MainMenuController self)
         {
             orig(self);

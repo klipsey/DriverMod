@@ -4,9 +4,7 @@ using RoR2;
 using RoR2.Skills;
 using System.Collections.Generic;
 using UnityEngine;
-using KinematicCharacterController;
 using RoR2.CharacterAI;
-using RoR2.Orbs;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
 using RoR2.UI;
@@ -14,22 +12,11 @@ using System.Linq;
 using RobDriver.Modules.Components;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
-using UnityEngine.UI;
-using EntityStates.Missions.BrotherEncounter;
-using DriverMod.Modules.Misc;
-using static DriverWeaponSkinDef;
 using System;
-using UnityEngine.UIElements;
-using System.Security.Cryptography;
-using System.Reflection;
-using HarmonyLib;
-using UnityEngine.Rendering;
-using Moonstorm.Starstorm2;
-using System.Xml.Linq;
-using Newtonsoft.Json.Utilities;
 using MaterialHud;
 using TMPro;
 using EntityStates;
+using RobDriver.Modules.Misc;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -2413,7 +2400,7 @@ namespace RobDriver.Modules.Survivors
                     {
                         foreach (var weaponDef in DriverWeaponCatalog.weaponDefs.Where(weapon => weapon.mesh.name == meshReplacement.renderer.name))
                         {
-                            weaponReskins.Add(CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDefInfo
+                            weaponReskins.Add(DriverWeaponSkinDef.CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDef.DriverWeaponSkinDefInfo
                             {
                                 nameToken = skinDef.name + weaponDef.nameToken,
                                 mainSkinName = skinDef.name,
@@ -2800,7 +2787,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         private static void LoadoutPanelController_Rebuild(On.RoR2.UI.LoadoutPanelController.orig_Rebuild orig, LoadoutPanelController self)
         {
             orig(self);
-
+            return;
             // this is beyond stupid lmfao who let this monkey code
             if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("RobDriverBody"))
             {
@@ -2943,6 +2930,22 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                             {
                                 new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                             }
+                        }
+                    }
+
+                    // rav heal tracker
+                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken && 
+                        damageReport.victimBody.healthComponent &&
+                        damageReport.victimBody.healthComponent.health <= 0f)
+                    {
+                        var tracker = damageReport.victim.gameObject.GetComponent<ConsumeTracker>();
+
+                        if (tracker)
+                        {
+                            ConsumeOrb orb = new ConsumeOrb();
+                            orb.origin = damageReport.victim.transform.position;
+                            orb.target = Util.FindBodyMainHurtBox(tracker.attackerBody);
+                            RoR2.Orbs.OrbManager.instance.AddOrb(orb);
                         }
                     }
 
