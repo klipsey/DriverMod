@@ -5,6 +5,7 @@ using System.Linq;
 using EntityStates;
 using RobDriver.Modules;
 using RobDriver.SkillStates.BaseStates;
+using UnityEngine.UI;
 
 namespace RobDriver.SkillStates.Driver.Compat
 {
@@ -71,21 +72,14 @@ namespace RobDriver.SkillStates.Driver.Compat
 
         private bool AttemptEnemyStep()
         {
-            BullseyeSearch bullseyeSearch = new BullseyeSearch
+            SphereSearch s = new SphereSearch()
             {
-                teamMaskFilter = TeamMask.GetEnemyTeams(base.GetTeam()),
-                filterByLoS = false,
-                searchOrigin = this.transform.position + (Vector3.up * 0.5f),
-                searchDirection = UnityEngine.Random.onUnitSphere,
-                sortMode = BullseyeSearch.SortMode.None,
-                maxDistanceFilter = 5f,
-                maxAngleFilter = 360f
-            };
-
-            bullseyeSearch.RefreshCandidates();
-            bullseyeSearch.FilterOutGameObject(base.gameObject);
-            bullseyeSearch.FilterCandidatesByHealthFraction();
-            return bullseyeSearch.GetResults().Where(Util.IsValid).Any();
+                origin = this.transform.position,
+                radius = 5f,
+                mask = LayerIndex.entityPrecise.mask
+            }.RefreshCandidates().FilterCandidatesByHurtBoxTeam(TeamMask.GetEnemyTeams(base.GetTeam()));
+            s.searchData.FilterByHurtBoxHealthComponents();
+            return s.GetHurtBoxes().Any();
         }
     }
 }

@@ -10,6 +10,7 @@ using UnityEngine;
 using RobDriver.Modules;
 using UnityEngine.Networking;
 using static RoR2.CameraTargetParams;
+using RobDriver.Modules.Components;
 
 namespace RobDriver.SkillStates.Driver.Compat
 {
@@ -96,7 +97,7 @@ namespace RobDriver.SkillStates.Driver.Compat
                     characterMotor.rootMotion += aimDirection * (num * moveSpeedStat * Time.fixedDeltaTime);
                     characterMotor.velocity.y = 0f;
 
-                    AttemptGrab(grabRadius);
+                    AttemptGrab();
 
                     if (stopwatch >= grabDuration)
                     {
@@ -114,24 +115,19 @@ namespace RobDriver.SkillStates.Driver.Compat
             base.OnExit();
         }
 
-        public void AttemptGrab(float grabRadius)
+        public void AttemptGrab()
         {
             Ray aimRay = GetAimRay();
-
-            BullseyeSearch bullseyeSearch = new BullseyeSearch
+            SphereSearch s = new SphereSearch()
             {
-                teamMaskFilter = TeamMask.GetEnemyTeams(GetTeam()),
-                filterByLoS = false,
-                searchOrigin = transform.position,
-                searchDirection = UnityEngine.Random.onUnitSphere,
-                sortMode = BullseyeSearch.SortMode.Distance,
-                maxDistanceFilter = grabRadius,
-                maxAngleFilter = 360f
-            };
-            bullseyeSearch.RefreshCandidates();
-            bullseyeSearch.FilterOutGameObject(gameObject);
-            bullseyeSearch.FilterCandidatesByHealthFraction();
-            var hurtBox = bullseyeSearch.GetResults().Where(Util.IsValid).FirstOrDefault();
+                origin = this.transform.position,
+                radius = this.grabRadius,
+                mask = LayerIndex.entityPrecise.mask
+            }.RefreshCandidates()
+            .FilterCandidatesByHurtBoxTeam(TeamMask.GetEnemyTeams(base.GetTeam()))
+            .OrderCandidatesByDistance()
+            .FilterCandidatesByDistinctHurtBoxEntities();
+            var hurtBox = s.GetHurtBoxes().FirstOrDefault();
 
             if (hurtBox)
             {
@@ -152,6 +148,8 @@ namespace RobDriver.SkillStates.Driver.Compat
                     Util.PlaySound("Play_loader_shift_release", gameObject);
                     Util.PlaySound("sfx_driver_impact_hammer", hurtBox.gameObject);
                 }
+
+                hurtBox.gameObject.AddComponent<ConsumeTracker>().attackerBody = this.characterBody;
 
                 if (base.isAuthority)
                 {
