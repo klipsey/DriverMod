@@ -153,7 +153,7 @@ namespace RobDriver.SkillStates.Driver.Compat
                     Util.PlaySound("sfx_driver_impact_hammer", hurtBox.gameObject);
                 }
 
-                if (isAuthority)
+                if (base.isAuthority)
                 {
                     float dmg = punchDamageCoefficient * damageStat;
                     //if (this.empowered) dmg *= 2f;
@@ -184,7 +184,7 @@ namespace RobDriver.SkillStates.Driver.Compat
                     }.Fire();
 
                     // shockwave
-                    FireProjectileInfo fireProjectileInfo = default;
+                    FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
                     fireProjectileInfo.position = hurtBox.transform.position + aimRay.direction * -4f;
                     fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
                     fireProjectileInfo.crit = RollCrit();

@@ -33,7 +33,7 @@ namespace RobDriver.Modules
 
         public static GameObject coinProjectile;
 
-        internal static GameObject punchShockwave;
+        public static GameObject punchShockwave;
         internal static void RegisterProjectiles()
         {
             #region Stun Grenade

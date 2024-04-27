@@ -15,7 +15,7 @@ using static UnityEngine.SendMouseEvents;
 
 namespace RobDriver.Modules.Components
 {
-    public class CoinController : MonoBehaviour, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
+    public class CoinController : NetworkBehaviour, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
     {
         public HealthComponent projectileHealthComponent;
         public ProjectileController controller;
@@ -40,7 +40,7 @@ namespace RobDriver.Modules.Components
             {
                 damageInfo.rejected = true;
             }
-            else RicochetBullet(damageInfo);
+            RicochetBullet(damageInfo);
         }
 
         private void Start()
@@ -100,7 +100,25 @@ namespace RobDriver.Modules.Components
         {
             return RicochetUtils.RicochetPriority.Coin;
         }
-
+        [Command]
+        public void CmdRicochetBullet(GameObject attacker, GameObject inflictor, bool isCrit, float damage, uint procChainMask, Vector3 force, bool canRejectForce, byte colorIndex, uint damageType)
+        {
+            DamageInfo damageInfo = new DamageInfo();
+            damageInfo.attacker = attacker;
+            damageInfo.inflictor = inflictor;
+            damageInfo.crit = isCrit;
+            damageInfo.damage = damage;
+            damageInfo.procChainMask.mask = procChainMask;
+            damageInfo.procCoefficient = 0f;
+            damageInfo.force = force;
+            damageInfo.canRejectForce = canRejectForce;
+            damageInfo.damageColorIndex = (DamageColorIndex)colorIndex;
+            damageInfo.damageType = (DamageType)damageType;
+            bounceCountStored++;
+            coolStopwatchScale = (coolStopwatchScale * bounceCountStored) + 0.01f;
+            startCoolStopwatch = true;
+            this.damageInfo = damageInfo;
+        }
         public void RicochetBullet(DamageInfo damageInfo)
         {
             damageInfo.procCoefficient = 0f;
@@ -109,7 +127,6 @@ namespace RobDriver.Modules.Components
             startCoolStopwatch = true;
             this.damageInfo = damageInfo;
         }
-
         public void OnProjectileImpact(ProjectileImpactInfo impactInfo)
         {
             if (this.graceTimer <= 0f && !impactInfo.collider.GetComponent<HurtBox>() && !impactInfo.collider.GetComponent<CoinController>())
@@ -123,31 +140,7 @@ namespace RobDriver.Modules.Components
             {
                 coin.ricochetMultiplier = damageMultiplier;
             }
-
-            public static void OverlapAttackLaunchCoin(OverlapAttack attack)
-            {
-                DamageInfo info = new DamageInfo();
-                info.attacker = attack.attacker;
-                info.inflictor = attack.inflictor;
-                info.crit = attack.isCrit;
-                info.damage = attack.damage;
-                info.procCoefficient = attack.procCoefficient;
-                info.procChainMask = attack.procChainMask;
-                info.force = attack.forceVector;
-                info.canRejectForce = attack.forceVector == null;
-                info.damageColorIndex = attack.damageColorIndex;
-                info.damageType = attack.damageType;
-                if (attack.HasModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType)) info.AddModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType);
-                foreach (CoinController coin in OverlapAttackGetCoins(attack))
-                {
-                    if (coin.CanBeShot())
-                    {
-                        info.procCoefficient = 0f;
-
-                        coin.RicochetBullet(info);
-                    }
-                }
-            }
+           
             public static List<CoinController> OverlapAttackGetCoins(OverlapAttack attack)
             {
                 List<CoinController> CoinController = new List<CoinController>();
