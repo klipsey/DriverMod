@@ -23,9 +23,10 @@ namespace RobDriver.SkillStates.Driver
             base.OnEnter();
             duration = baseDuration / attackSpeedStat;
             Util.PlaySound("sfx_driver_coin", base.gameObject);
-            FireProjectile();
 
             base.PlayAnimation("LeftArm, Override", "FireShard");
+
+            this.FireProjectile();
         }
 
         public override void FixedUpdate()
@@ -38,7 +39,7 @@ namespace RobDriver.SkillStates.Driver
             }
         }
 
-        protected virtual void FireProjectile()
+        private void FireProjectile()
         {
             if (base.isAuthority)
             {

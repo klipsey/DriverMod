@@ -93,7 +93,7 @@ namespace RobDriver.SkillStates.Driver.DualUzi
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
                 bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
-                bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
+                //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
 
                 new BulletAttack

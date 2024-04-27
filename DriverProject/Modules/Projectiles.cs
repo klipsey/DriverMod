@@ -33,7 +33,7 @@ namespace RobDriver.Modules
 
         public static GameObject coinProjectile;
 
-        internal static GameObject punchShockwave;
+        public static GameObject punchShockwave;
         internal static void RegisterProjectiles()
         {
             #region Stun Grenade
@@ -220,7 +220,8 @@ namespace RobDriver.Modules
             coinProjectileGhost.transform.GetChild(0).GetChild(0).GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.yellow);
             coinProjectileGhost.transform.GetChild(1).GetComponent<TrailRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Captain/matCaptainTracerTrail.mat").WaitForCompletion();
             coinProjectileGhost.transform.GetChild(1).GetComponent<TrailRenderer>().material.SetColor("_TintColor", Color.yellow);
-            coinProjectile = Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("CoinProjectile");
+            coinProjectile = Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("CoinProjectile").InstantiateClone("CoinProjectile", true);
+            coinProjectile.AddComponent<NetworkIdentity>();
             var soundLoop = coinProjectile.AddComponent<StopCoinSound>();
             soundLoop.SoundEventToPlay = "sfx_driver_coin_spin";
 

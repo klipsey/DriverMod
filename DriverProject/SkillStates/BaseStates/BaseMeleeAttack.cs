@@ -1,6 +1,7 @@
 ﻿using EntityStates;
 using LostInTransit.DamageTypes;
 using R2API;
+using RobDriver.Modules.Components;
 using RoR2;
 using RoR2.Audio;
 using System;
@@ -147,8 +148,31 @@ namespace RobDriver.SkillStates.BaseStates
             {
                 this.TriggerHitStop();
             }
+            if(base.isAuthority)
+            {
+                DamageInfo info = new DamageInfo();
+                info.attacker = attack.attacker;
+                info.inflictor = attack.inflictor;
+                info.crit = attack.isCrit;
+                info.damage = attack.damage;
+                info.procCoefficient = attack.procCoefficient;
+                info.procChainMask = attack.procChainMask;
+                info.force = attack.forceVector;
+                info.canRejectForce = attack.forceVector == null;
+                info.damageColorIndex = attack.damageColorIndex;
+                info.damageType = attack.damageType;
+                if (attack.HasModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType)) info.AddModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType);
+                foreach (CoinController coin in CoinController.CoinMethods.OverlapAttackGetCoins(attack))
+                {
+                    if (coin.CanBeShot())
+                    {
+                        info.procCoefficient = 0f;
 
-            Modules.Components.CoinController.CoinMethods.OverlapAttackLaunchCoin(this.attack);
+                        coin.CmdRicochetBullet(info.attacker, info.inflictor, info.crit, info.damage, info.procChainMask.mask, info.force, info.canRejectForce, ((byte)info.damageColorIndex), ((uint)info.damageType));
+                    }
+                }
+            }
+
         }
 
         protected virtual void TriggerHitStop()

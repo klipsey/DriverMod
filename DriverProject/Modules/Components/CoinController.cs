@@ -1,14 +1,21 @@
 ﻿using R2API;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
+using RobDriver.SkillStates.Driver;
 using RoR2;
 using RoR2.Orbs;
 using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Security.Principal;
 using UnityEngine;
+using UnityEngine.Networking;
+using static UnityEngine.SendMouseEvents;
 
 namespace RobDriver.Modules.Components
 {
-    public class CoinController : MonoBehaviour, IShootable, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
+    public class CoinController : NetworkBehaviour, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
     {
         public HealthComponent projectileHealthComponent;
         public ProjectileController controller;
@@ -28,7 +35,12 @@ namespace RobDriver.Modules.Components
 
         public void OnIncomingDamageServer(DamageInfo damageInfo)
         {
-            damageInfo.rejected = true;
+            damageInfo.damageColorIndex = DamageColorIndex.Item;
+            if (damageInfo.attacker.GetComponent<DriverController>() == null)
+            {
+                damageInfo.rejected = true;
+            }
+            RicochetBullet(damageInfo);
         }
 
         private void Start()
@@ -75,18 +87,10 @@ namespace RobDriver.Modules.Components
                     OrbManager.instance.AddOrb(orb);
                     EffectManager.SimpleSoundEffect(this.ricochetSound.index, base.transform.position, true);
 
-                    if (DamageNumberManager.instance) DamageNumberManager.instance.SpawnDamageNumber(damageInfo.damage, damageInfo.position, damageInfo.crit, teamComponent.teamIndex, DamageColorIndex.Item);
-
                     Destroy(base.gameObject);
                 }
             }
         }
-
-        public void OnShot(DamageInfo damageInfo)
-        {
-            RicochetBullet(damageInfo);
-        }
-
         public bool CanBeShot()
         {
             return this.canRicochet;
@@ -96,15 +100,33 @@ namespace RobDriver.Modules.Components
         {
             return RicochetUtils.RicochetPriority.Coin;
         }
-
-        public void RicochetBullet(DamageInfo damageInfo)
+        [Command]
+        public void CmdRicochetBullet(GameObject attacker, GameObject inflictor, bool isCrit, float damage, uint procChainMask, Vector3 force, bool canRejectForce, byte colorIndex, uint damageType)
         {
+            DamageInfo damageInfo = new DamageInfo();
+            damageInfo.attacker = attacker;
+            damageInfo.inflictor = inflictor;
+            damageInfo.crit = isCrit;
+            damageInfo.damage = damage;
+            damageInfo.procChainMask.mask = procChainMask;
+            damageInfo.procCoefficient = 0f;
+            damageInfo.force = force;
+            damageInfo.canRejectForce = canRejectForce;
+            damageInfo.damageColorIndex = (DamageColorIndex)colorIndex;
+            damageInfo.damageType = (DamageType)damageType;
             bounceCountStored++;
             coolStopwatchScale = (coolStopwatchScale * bounceCountStored) + 0.01f;
             startCoolStopwatch = true;
             this.damageInfo = damageInfo;
         }
-
+        public void RicochetBullet(DamageInfo damageInfo)
+        {
+            damageInfo.procCoefficient = 0f;
+            bounceCountStored++;
+            coolStopwatchScale = (coolStopwatchScale * bounceCountStored) + 0.01f;
+            startCoolStopwatch = true;
+            this.damageInfo = damageInfo;
+        }
         public void OnProjectileImpact(ProjectileImpactInfo impactInfo)
         {
             if (this.graceTimer <= 0f && !impactInfo.collider.GetComponent<HurtBox>() && !impactInfo.collider.GetComponent<CoinController>())
@@ -118,44 +140,22 @@ namespace RobDriver.Modules.Components
             {
                 coin.ricochetMultiplier = damageMultiplier;
             }
-            public static void OverlapAttackLaunchCoin(OverlapAttack attack)
+           
+            public static List<CoinController> OverlapAttackGetCoins(OverlapAttack attack)
             {
-                DamageInfo info = new DamageInfo();
-                info.attacker = attack.attacker;
-                info.inflictor = attack.inflictor;
-                info.crit = attack.isCrit;
-                info.damage = attack.damage;
-                info.procCoefficient = attack.procCoefficient;
-                info.procChainMask = attack.procChainMask;
-                info.force = attack.forceVector;
-                info.canRejectForce = attack.forceVector == null;
-                info.damageColorIndex = attack.damageColorIndex;
-                info.damageType = attack.damageType;
-                if (attack.HasModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType)) info.AddModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType);
-                foreach (IShootable coin in OverlapAttackGetCoins(attack))
-                {
-                    if (coin.CanBeShot())
-                    {
-                        info.procCoefficient = 0f;
-                        coin.OnShot(info);
-                    }
-                }
-            }
-            public static List<IShootable> OverlapAttackGetCoins(OverlapAttack attack)
-            {
-                List<IShootable> iShootable = new List<IShootable>();
+                List<CoinController> CoinController = new List<CoinController>();
                 foreach (HealthComponent healthComponent in attack.ignoredHealthComponentList)
                 {
                     if (healthComponent)
                     {
-                        IShootable coin = healthComponent.GetComponent<IShootable>();
+                        CoinController coin = healthComponent.GetComponent<CoinController>();
                         if (coin != null)
                         {
-                            iShootable.Add(coin);
+                            CoinController.Add(coin);
                         }
                     }
                 }
-                return iShootable;
+                return CoinController;
             }
         }
     }
