@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using R2API;
-using RobDriver.Modules.Components;
+using UnityEngine.Networking;
 using RoR2;
 using RoR2.Orbs;
 using UnityEngine;
@@ -39,7 +39,6 @@ namespace RobDriver.Modules.Components
             };
             effectData.SetHurtBoxReference(this.target);
             EffectManager.SpawnEffect(Assets.coinOrbEffect, effectData, true);
-
         }
 
 
@@ -50,7 +49,7 @@ namespace RobDriver.Modules.Components
                 HealthComponent healthComponent = target.healthComponent;
                 if (healthComponent)
                 {
-                    IShootable shootable = healthComponent.GetComponent<IShootable>();
+                    CoinController coinController = target.GetComponent<CoinController>();
 
                     DamageInfo damageInfo = new DamageInfo();
                     damageInfo.damage = damageValue;
@@ -69,12 +68,12 @@ namespace RobDriver.Modules.Components
                     }
                     damageInfo.AddModdedDamageType(DamageTypes.bloodExplosionIdentifier);
 
-                    if (bounceCount > 2 && shootable == null)
+                    if (bounceCount > 2 && coinController == null)
                     {
                         BlastAttack blastAttack = new BlastAttack();
                         blastAttack.baseDamage = damageInfo.damage;
                         blastAttack.attacker = damageInfo.attacker;
-                        blastAttack.teamIndex = TeamIndex.Player;
+                        blastAttack.teamIndex = damageInfo.attacker.GetComponent<TeamComponent>().teamIndex;
                         blastAttack.inflictor = damageInfo.inflictor;
                         blastAttack.baseForce = 1000f;
                         blastAttack.bonusForce = damageInfo.force;
@@ -106,18 +105,18 @@ namespace RobDriver.Modules.Components
                     }
                     else
                     {
-                        healthComponent.TakeDamage(damageInfo);
-
-                        if (shootable != null)
+                        if (coinController != null)
                         {
                             healthComponent.gameObject.GetComponent<CoinController>().bounceCountStored = bounceCount;
-                            shootable.OnShot(damageInfo);
+                            healthComponent.TakeDamage(damageInfo);
                         }
                         else
                         {
+                            healthComponent.TakeDamage(damageInfo);
                             GlobalEventManager.instance.OnHitEnemy(damageInfo, healthComponent.gameObject);
                             GlobalEventManager.instance.OnHitAll(damageInfo, healthComponent.gameObject);
                         }
+
                     }
                 }
                 moddedDamageTypeHolder.Clear();
@@ -144,13 +143,13 @@ namespace RobDriver.Modules.Components
                 if (!hurtBox.healthComponent)
                     continue;
 
-                List<IShootable> shootables = new List<IShootable>();
-                hurtBox.healthComponent.GetComponents(shootables);
-                foreach (IShootable shootable in shootables)
+                List<CoinController> coins = new List<CoinController>();
+                hurtBox.healthComponent.GetComponents(coins);
+                foreach (CoinController coin in coins)
                 {
-                    if (shootable.CanBeShot())
+                    if (coin.CanBeShot())
                     {
-                        RicochetUtils.RicochetPriority myPrio = shootable.GetRicochetPriority();
+                        RicochetUtils.RicochetPriority myPrio = coin.GetRicochetPriority();
                         if (prio < myPrio)
                         {
                             target = hurtBox;

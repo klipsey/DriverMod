@@ -147,7 +147,7 @@ namespace RobDriver.SkillStates.BaseStates
             {
                 this.TriggerHitStop();
             }
-
+            //Network this for overlap attacks somehow?
             Modules.Components.CoinController.CoinMethods.OverlapAttackLaunchCoin(this.attack);
         }
 

@@ -257,7 +257,7 @@ namespace RobDriver.Modules
                 + Helpers.ScepterDescription("Applies all three buffs at once."));
 
             LanguageAPI.Add(prefix + "SPECIAL_DRIVERCOIN_NAME", "Pay it Forward");
-            LanguageAPI.Add(prefix + "SPECIAL_DRIVERCOIN_DESCRIPTION", $"Flick out a <style=cIsUtility>Coin</style> which can be shot for multiplied <style=cIsDamage>damage</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_DRIVERCOIN_DESCRIPTION", $"Flick out a <style=cIsUtility>coin</style> which can be shot to multiply <style=cIsDamage>damage</style>.");
             #endregion
 
             #region Achievements

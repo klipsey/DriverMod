@@ -103,7 +103,7 @@ namespace RobDriver.SkillStates.Driver.VoidRifle
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;
-                    bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
+                    //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);

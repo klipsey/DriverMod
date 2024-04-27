@@ -1,4 +1,6 @@
 ﻿using R2API;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
 using RobDriver.SkillStates.Driver;
 using RoR2;
 using RoR2.Orbs;
@@ -6,12 +8,14 @@ using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Principal;
 using UnityEngine;
+using UnityEngine.Networking;
 using static UnityEngine.SendMouseEvents;
 
 namespace RobDriver.Modules.Components
 {
-    public class CoinController : MonoBehaviour, IShootable, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
+    public class CoinController : NetworkBehaviour, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
     {
         public HealthComponent projectileHealthComponent;
         public ProjectileController controller;
@@ -31,7 +35,12 @@ namespace RobDriver.Modules.Components
 
         public void OnIncomingDamageServer(DamageInfo damageInfo)
         {
-            damageInfo.rejected = true;
+            damageInfo.damageColorIndex = DamageColorIndex.Item;
+            if (damageInfo.attacker.GetComponent<DriverController>() == null)
+            {
+                damageInfo.rejected = true;
+            }
+            else RicochetBullet(damageInfo);
         }
 
         private void Start()
@@ -78,18 +87,10 @@ namespace RobDriver.Modules.Components
                     OrbManager.instance.AddOrb(orb);
                     EffectManager.SimpleSoundEffect(this.ricochetSound.index, base.transform.position, true);
 
-                    if (DamageNumberManager.instance) DamageNumberManager.instance.SpawnDamageNumber(damageInfo.damage, damageInfo.position, damageInfo.crit, teamComponent.teamIndex, DamageColorIndex.Item);
-
                     Destroy(base.gameObject);
                 }
             }
         }
-
-        public void OnShot(DamageInfo damageInfo)
-        {
-            RicochetBullet(damageInfo);
-        }
-
         public bool CanBeShot()
         {
             return this.canRicochet;
@@ -102,6 +103,7 @@ namespace RobDriver.Modules.Components
 
         public void RicochetBullet(DamageInfo damageInfo)
         {
+            damageInfo.procCoefficient = 0f;
             bounceCountStored++;
             coolStopwatchScale = (coolStopwatchScale * bounceCountStored) + 0.01f;
             startCoolStopwatch = true;
@@ -121,6 +123,7 @@ namespace RobDriver.Modules.Components
             {
                 coin.ricochetMultiplier = damageMultiplier;
             }
+
             public static void OverlapAttackLaunchCoin(OverlapAttack attack)
             {
                 DamageInfo info = new DamageInfo();
@@ -135,30 +138,31 @@ namespace RobDriver.Modules.Components
                 info.damageColorIndex = attack.damageColorIndex;
                 info.damageType = attack.damageType;
                 if (attack.HasModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType)) info.AddModdedDamageType(attack.attacker.GetComponent<DriverController>().ModdedDamageType);
-                foreach (IShootable coin in OverlapAttackGetCoins(attack))
+                foreach (CoinController coin in OverlapAttackGetCoins(attack))
                 {
                     if (coin.CanBeShot())
                     {
                         info.procCoefficient = 0f;
-                        coin.OnShot(info);
+
+                        coin.RicochetBullet(info);
                     }
                 }
             }
-            public static List<IShootable> OverlapAttackGetCoins(OverlapAttack attack)
+            public static List<CoinController> OverlapAttackGetCoins(OverlapAttack attack)
             {
-                List<IShootable> iShootable = new List<IShootable>();
+                List<CoinController> CoinController = new List<CoinController>();
                 foreach (HealthComponent healthComponent in attack.ignoredHealthComponentList)
                 {
                     if (healthComponent)
                     {
-                        IShootable coin = healthComponent.GetComponent<IShootable>();
+                        CoinController coin = healthComponent.GetComponent<CoinController>();
                         if (coin != null)
                         {
-                            iShootable.Add(coin);
+                            CoinController.Add(coin);
                         }
                     }
                 }
-                return iShootable;
+                return CoinController;
             }
         }
     }
