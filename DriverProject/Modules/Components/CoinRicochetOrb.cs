@@ -135,21 +135,18 @@ namespace RobDriver.Modules.Components
             };
 
             TeamMask teamMask = TeamMask.GetUnprotectedTeams(teamIndex);
-            HurtBox[] hurtBoxes = search.RefreshCandidates().OrderCandidatesByDistance().GetHurtBoxes();
-            RicochetUtils.RicochetPriority prio = RicochetUtils.RicochetPriority.None;
+            HurtBox[] hurtBoxes = search.RefreshCandidates().OrderCandidatesByDistance().FilterCandidatesByDistinctHurtBoxEntities().GetHurtBoxes();
+            CoinController.RicochetPriority prio = CoinController.RicochetPriority.None;
 
             foreach (HurtBox hurtBox in hurtBoxes)
             {
-                if (!hurtBox.healthComponent)
-                    continue;
-
                 List<CoinController> coins = new List<CoinController>();
                 hurtBox.healthComponent.GetComponents(coins);
                 foreach (CoinController coin in coins)
                 {
                     if (coin.CanBeShot())
                     {
-                        RicochetUtils.RicochetPriority myPrio = coin.GetRicochetPriority();
+                        CoinController.RicochetPriority myPrio = coin.GetRicochetPriority();
                         if (prio < myPrio)
                         {
                             target = hurtBox;
@@ -160,10 +157,10 @@ namespace RobDriver.Modules.Components
                 CharacterBody body = hurtBox.healthComponent.body;
                 if (teamMask.HasTeam(body.teamComponent.teamIndex))
                 {
-                    if (prio < RicochetUtils.RicochetPriority.Body && body)
+                    if (prio < CoinController.RicochetPriority.Body && body)
                     {
                         target = hurtBox;
-                        prio = RicochetUtils.RicochetPriority.Body;
+                        prio = CoinController.RicochetPriority.Body;
                     }
                 }
             }

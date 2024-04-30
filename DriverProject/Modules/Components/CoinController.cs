@@ -17,6 +17,18 @@ namespace RobDriver.Modules.Components
 {
     public class CoinController : NetworkBehaviour, IProjectileImpactBehavior, IOnIncomingDamageServerReceiver
     {
+        public enum RicochetPriority
+        {
+            None,
+            StunnedBody,
+            Body,
+            Projectile,
+            Explosive,
+            Rocket,
+            Bike,
+            Coin
+        }
+
         public HealthComponent projectileHealthComponent;
         public ProjectileController controller;
         public DriverController iDrive;
@@ -96,9 +108,9 @@ namespace RobDriver.Modules.Components
             return this.canRicochet;
         }
 
-        public RicochetUtils.RicochetPriority GetRicochetPriority()
+        public RicochetPriority GetRicochetPriority()
         {
-            return RicochetUtils.RicochetPriority.Coin;
+            return RicochetPriority.Coin;
         }
         [Command]
         public void CmdRicochetBullet(GameObject attacker, GameObject inflictor, bool isCrit, float damage, uint procChainMask, Vector3 force, bool canRejectForce, byte colorIndex, uint damageType)

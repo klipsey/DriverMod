@@ -22,6 +22,7 @@ namespace RobDriver.SkillStates.Driver
         protected DriverController iDrive;
         protected DriverWeaponDef cachedWeaponDef;
         protected RedGuyController ravController;
+
         protected virtual string prop
         {
             get
@@ -43,8 +44,9 @@ namespace RobDriver.SkillStates.Driver
         {
             if (!this.iDrive) this.iDrive = this.GetComponent<DriverController>();
             if (this.iDrive) this.cachedWeaponDef = this.iDrive.weaponDef;
-            if (!this.ravController && this.iDrive.weaponDef.nameToken == "ROB_DRIVER_WEAPON_RAV_SWORD_NAME") this.ravController = this.gameObject.GetComponent<RedGuyController>();
+            if (this.iDrive.weaponDef.nameToken == "ROB_DRIVER_WEAPON_RAV_SWORD_NAME" && !this.ravController) this.ravController = this.gameObject.GetComponent<RedGuyController>();
         }
+
         public override void OnExit()
         {
             base.OnExit();
