@@ -17,36 +17,20 @@ namespace RobDriver.SkillStates.Driver.Compat
         protected float jumpForce;
         private bool isSliding;
         private uint playID;
-        private bool permaCling;
         private Animator animator;
-        private bool snapped;
 
         public override void OnEnter()
         {
-            RefreshState();
             base.OnEnter();
             origin = this.transform.position;
             base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
-            this.ravController.isWallClinging = true;
+            this.iDrive.isWallClinging = true;
             animator = this.GetModelAnimator();
 
-            SnapToGround();
             PlayAnim();
 
             if (DriverPlugin.ravagerInstalled) playID = Util.PlaySound("sfx_ravager_charge_jump", this.gameObject);
             else playID = Util.PlaySound("HenryBazookaCharge", this.gameObject);
-
-            this.ravController.IncrementWallJump();
-        }
-
-        private void SnapToGround()
-        {
-            RaycastHit raycastHit;
-            if (Physics.Raycast(origin, Vector3.down, out raycastHit, 3f, LayerIndex.world.mask))
-            {
-                //this.origin = raycastHit.point + new Vector3(0f, -0.35f, 0f);
-                snapped = true;
-            }
         }
 
         protected virtual void PlayAnim()
@@ -59,7 +43,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         {
             base.OnExit();
             base.PlayAnimation("Body", "AscendDescend");
-            this.ravController.isWallClinging = false;
+            this.iDrive.isWallClinging = false;
             AkSoundEngine.StopPlayingID(playID);
         }
 
@@ -74,7 +58,7 @@ namespace RobDriver.SkillStates.Driver.Compat
 
             if (animator)
             {
-                if (this.isGrounded || snapped) animator.SetFloat("airBlend", 0f);
+                if (this.isGrounded) animator.SetFloat("airBlend", 0f);
                 else animator.SetFloat("airBlend", 1f);
             }
 
@@ -110,7 +94,7 @@ namespace RobDriver.SkillStates.Driver.Compat
                     EntityStateMachine.FindByCustomName(this.gameObject, "Weapon").SetInterruptState(new ChargeSlash(), InterruptPriority.Skill);
                 }
 
-                if (base.fixedAge >= duration && !permaCling || !this.inputBank.jump.down)
+                if (base.fixedAge >= duration || !this.inputBank.jump.down)
                 {
 
                     if (base.fixedAge <= 0.2f)

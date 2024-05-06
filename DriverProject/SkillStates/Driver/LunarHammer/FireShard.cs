@@ -15,6 +15,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
         public static string muzzleString = "HandL";
 
         private float duration;
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.lunarShard;
 
         public override void OnEnter()
         {
@@ -24,26 +25,32 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
-                GameObject modify = Modules.Projectiles.lunarShard;
-                modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
-                if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
-                FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
-                fireProjectileInfo.position = aimRay.origin;
-                fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
-                fireProjectileInfo.crit = base.characterBody.RollCrit();
-                fireProjectileInfo.damage = base.characterBody.damage * FireShard.damageCoefficient;
-                fireProjectileInfo.damageColorIndex = DamageColorIndex.Default;
-                fireProjectileInfo.owner = base.gameObject;
-                fireProjectileInfo.procChainMask = default(ProcChainMask);
-                fireProjectileInfo.force = 0f;
-                fireProjectileInfo.useFuseOverride = false;
-                fireProjectileInfo.useSpeedOverride = false;
-                fireProjectileInfo.target = null;
-                fireProjectileInfo.projectilePrefab = modify;
+                var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
+                projectileDamage.damageType = iDrive.DamageType;
+
+                var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                moddedDamage.Add(iDrive.ModdedDamageType);
+
+                FireProjectileInfo fireProjectileInfo = new FireProjectileInfo
+                {
+                    position = aimRay.origin,
+                    rotation = Quaternion.LookRotation(aimRay.direction),
+                    crit = base.characterBody.RollCrit(),
+                    damage = base.characterBody.damage * FireShard.damageCoefficient,
+                    damageColorIndex = DamageColorIndex.Default,
+                    owner = base.gameObject,
+                    procChainMask = default(ProcChainMask),
+                    force = 0f,
+                    useFuseOverride = false,
+                    useSpeedOverride = false,
+                    target = null,
+                    projectilePrefab = this.projectilePrefab
+                };
 
                 ProjectileManager.instance.FireProjectile(fireProjectileInfo);
-                modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
+
+                projectileDamage.damageType = DamageType.Generic;
+                moddedDamage.Remove(iDrive.ModdedDamageType);
             }
 
             base.PlayAnimation("LeftArm, Override", "FireShard", "Shard.playbackRate", this.duration * 5f);

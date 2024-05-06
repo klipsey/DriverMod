@@ -62,10 +62,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            if(this.ravController)
-            {
-                this.ravController.RefreshBlink();
-            }
+            this.iDrive.RefreshBlink();
             if (this.iDrive.maxWeaponTimer > 0 && !ammoConsumed)
             {
                 ammoConsumed = true;

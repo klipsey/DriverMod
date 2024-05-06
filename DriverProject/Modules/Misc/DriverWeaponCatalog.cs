@@ -26,6 +26,7 @@ namespace RobDriver
         internal static DriverWeaponDef LunarHammer;
         internal static DriverWeaponDef NemmandoGun;
         internal static DriverWeaponDef NemmercGun;
+        internal static DriverWeaponDef RavSword;
 
         public static void AddWeapon(DriverWeaponDef weaponDef)
         {

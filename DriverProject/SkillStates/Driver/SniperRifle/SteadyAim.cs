@@ -51,7 +51,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
             this.autoFocus = Modules.Config.autoFocus.Value;
 
-            //
             this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
             {
                 prefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerScopeLightOverlay.prefab").WaitForCompletion(),
@@ -245,8 +244,8 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     }
                 };
 
-//                    bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
-bulletAttack.Fire();
+                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
+                bulletAttack.Fire();
             }
         }
 

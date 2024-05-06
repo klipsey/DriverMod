@@ -1,4 +1,5 @@
 ﻿using RoR2.Skills;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -60,6 +61,7 @@ namespace RobDriver.Modules.Weapons
         {
             CreateLang();
             CreateWeapon();
+            DriverWeaponCatalog.RavSword = DriverWeaponCatalog.weaponDefs.Last();
         }
     }
 }

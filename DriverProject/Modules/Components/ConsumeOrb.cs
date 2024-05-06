@@ -1,19 +1,14 @@
 ﻿using UnityEngine;
 using RoR2;
 using RoR2.Orbs;
-using UnityEngine.Networking;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
 
 namespace RobDriver.Modules.Components
 {
     public class ConsumeOrb : Orb
     {
-        public float healOverride = -1f;
-
         public override void Begin()
         {
-            base.duration = Random.Range(2f, 4f);
+            base.duration = Random.Range(1f, 3f);
 
             EffectData effectData = new EffectData
             {
@@ -30,20 +25,9 @@ namespace RobDriver.Modules.Components
 
         public override void OnArrival()
         {
-            if (this.target)
+            if (this.target && this.target.healthComponent)
             {
-                if (this.target.healthComponent)
-                {
-                    if (this.healOverride != -1f)
-                    {
-                        this.target.healthComponent.Heal(this.healOverride, default(ProcChainMask));
-                    }
-                    else this.target.healthComponent.HealFraction(0.1f, default(ProcChainMask));
-                    /**
-                    NetworkIdentity identity = this.target.healthComponent.gameObject.GetComponent<NetworkIdentity>();
-                    if (!identity) return;
-                    new Modules.Components.SyncOverlay(identity.netId, this.target.healthComponent.gameObject).Send(NetworkDestination.Clients);**/
-                }
+                this.target.healthComponent.HealFraction(0.1f, default(ProcChainMask));
             }
         }
     }

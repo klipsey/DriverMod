@@ -1228,14 +1228,18 @@ namespace RobDriver.Modules
 
             bloodSpurtEffect.transform.Find("Blood").GetComponent<ParticleSystemRenderer>().material = bloodMat2;
             bloodSpurtEffect.transform.Find("Trails").GetComponent<ParticleSystemRenderer>().trailMaterial = bloodMat2;
+            
             #region coin
+
             coinTracer = mainAssetBundle.LoadAsset<GameObject>("CoinTracer");
             coinTracer.AddComponent<NetworkIdentity>(); 
+
             var effect1 = coinTracer.AddComponent<EffectComponent>();
             effect1.parentToReferencedTransform = false;
             effect1.positionAtReferencedTransform = false;
             effect1.applyScale = false;
             effect1.disregardZScale = false;
+
             coinTracer.AddComponent<EventFunctions>();
             var tracer = coinTracer.AddComponent<CoinTracer>();
             tracer.startTransform = coinTracer.transform.GetChild(2).GetChild(0);
@@ -1270,7 +1274,6 @@ namespace RobDriver.Modules
 
             AddNewEffectDef(coinTracer);
 
-            Log.Debug("Starting Coin Impact");
             coinImpact = mainAssetBundle.LoadAsset<GameObject>("CoinImpactHit");
             var attr = coinImpact.AddComponent<VFXAttributes>();
             attr.vfxPriority = VFXAttributes.VFXPriority.Low;
@@ -1289,6 +1292,7 @@ namespace RobDriver.Modules
             var effectComp = coinOrbEffect.AddComponent<EffectComponent>();
             effectComp.applyScale = true;
             var orbEffect = coinOrbEffect.AddComponent<CoinOrbEffect>();
+            orbEffect.duration = 2f;
 
             curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
             curve.preWrapMode = WrapMode.Clamp;
@@ -1334,10 +1338,12 @@ namespace RobDriver.Modules
             effect.material.SetColor("_TintColor", Color.yellow);
 
             AddNewEffectDef(coinOrbEffect);
+
             #endregion
+
             ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup").InstantiateClone("mdlAmmoPickup", false);
 
-            ConvertAllRenderersToHopooShader(ammoPickupModel);
+            //ConvertAllRenderersToHopooShader(ammoPickupModel);
 
             GameObject textShit5 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
             MonoBehaviour.Destroy(textShit5.GetComponent<EffectComponent>());
@@ -1359,7 +1365,7 @@ namespace RobDriver.Modules
         private static void CreateOrb()
         {
             consumeOrb = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/InfusionOrbEffect"), "RavagerConsumeOrbEffect", true);
-            //if (!consumeOrb.GetComponent<NetworkIdentity>()) consumeOrb.AddComponent<NetworkIdentity>();
+            if (!consumeOrb.GetComponent<NetworkIdentity>()) consumeOrb.AddComponent<NetworkIdentity>();
 
             TrailRenderer trail = consumeOrb.transform.Find("TrailParent").Find("Trail").GetComponent<TrailRenderer>();
             trail.widthMultiplier = 0.35f;

@@ -15,37 +15,11 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         public float baseShotDuration = 0.05f;
         public static float recoil = 11f;
 
-        protected virtual int baseRocketCount
-        {
-            get
-            {
-                return 7;
-            }
-        }
-
-        protected virtual float maxSpread
-        {
-            get
-            {
-                return 0f;
-            }
-        }
-
-        protected virtual GameObject projectilePrefab
-        {
-            get
-            {
-                return Modules.Projectiles.missileProjectilePrefab;
-            }
-        }
-
-        protected virtual float ammoMod
-        {
-            get
-            {
-                return 1.5f;
-            }
-        }
+        protected virtual int baseRocketCount => 7;
+        protected virtual float maxSpread => 0f;
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.missileProjectilePrefab;
+        protected virtual float ammoMod => 1.5f;
+        protected virtual float _damageCoefficient => Barrage.damageCoefficient;
 
         private int remainingShots;
         private float shotTimer;
@@ -63,14 +37,6 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             this.shotTimer = this.shotDuration;
             this.remainingShots--;
             this.Fire();
-        }
-
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Barrage.damageCoefficient;
-            }
         }
 
         public virtual void Fire()
@@ -93,6 +59,12 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                 Ray aimRay = this.GetAimRay();
                 aimRay.direction = Util.ApplySpread(aimRay.direction, 0f, this.maxSpread, 1f, 1f, 0f, 0f);
 
+                var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
+                projectileDamage.damageType = iDrive.DamageType;
+
+                var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                moddedDamage.Add(iDrive.ModdedDamageType);
+
                 // copied from moff's rocket
                 // the fact that this item literally has to be hardcoded into character skillstates makes me so fucking angry you have no idea
                 if (this.characterBody.inventory && this.characterBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile) > 0)
@@ -102,35 +74,25 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                     Vector3 rhs = Vector3.Cross(Vector3.up, aimRay.direction);
                     Vector3 axis = Vector3.Cross(aimRay.direction, rhs);
 
-                    float currentSpread = 0f;
-                    float angle = 0f;
-                    float num2 = 0f;
-                    num2 = UnityEngine.Random.Range(1f + currentSpread, 1f + currentSpread) * 3f;   //Bandit is x2
-                    angle = num2 / 2f;  //3 - 1 rockets
-
-                    Vector3 direction = Quaternion.AngleAxis(-num2 * 0.5f, axis) * aimRay.direction;
-                    Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+                    Vector3 direction = Quaternion.AngleAxis(-1.5f, axis) * aimRay.direction;
+                    Quaternion rotation = Quaternion.AngleAxis(1.5f, axis);
                     Ray aimRay2 = new Ray(aimRay.origin, direction);
                     for (int i = 0; i < 3; i++)
                     {
-                        GameObject modify = this.projectilePrefab;
-                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
-                        if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
-                        ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
+                        ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), 
+                            this.gameObject, damageMult * this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
+                        
                         aimRay2.direction = rotation * aimRay2.direction;
                     }
                 }
                 else
                 {
-                    GameObject modify = this.projectilePrefab;
-                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
-                    if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
-                    ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
+                    ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction),
+                        this.gameObject, this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
                 }
+
+                projectileDamage.damageType = DamageType.Generic;
+                moddedDamage.Remove(iDrive.ModdedDamageType);
             }
         }
 

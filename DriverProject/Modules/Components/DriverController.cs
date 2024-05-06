@@ -69,6 +69,7 @@ namespace RobDriver.Modules.Components
         public ParticleSystem machineGunVFX;
 
         private bool hasPickedUpHammer;
+        private bool pickedUpRavSword;
         private GameObject hammerEffectInstance;
         private GameObject hammerEffectInstance2;
 
@@ -77,7 +78,14 @@ namespace RobDriver.Modules.Components
         private bool needReload = false;
 
         private bool hasEquippedConfigKatana;
-        private int coinIndex;
+        public bool isWallClinging;
+        public bool clingReady;
+        public float featherTimer;
+
+        public void RefreshBlink()
+        {
+            if (this.characterBody.characterMotor.jumpCount > 0) this.characterBody.characterMotor.jumpCount--;
+        }
         private DriverWeaponTracker weaponTracker
         {
             get
@@ -93,6 +101,7 @@ namespace RobDriver.Modules.Components
         }
 
         public DriverArsenal arsenal;
+
 
         private void Awake()
         {
@@ -178,7 +187,17 @@ namespace RobDriver.Modules.Components
             this.currentSkinDef = this.skinController ? Modules.Misc.DriverWeaponSkinCatalog.GetSkin(this.skinController.currentSkinIndex) : null;
 
             // swag
-            if (this.skillLocator.utility.skillDef == Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
+            if (this.skillLocator.utility.skillDef.skillNameToken == Driver.skateboardSkillDef.skillNameToken) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
+
+            // more swag
+            // Do you have cool config -> are you currently ramboing it -> if not nvm go away cool shit
+            if (Config.enableRevengence.Value && skillLocator.special.skillDef.skillNameToken == Driver.knifeSkillDef.skillNameToken && !this.childLocator.FindChild("BackWeaponModel").gameObject.activeSelf)
+            {
+                this.characterModel.baseRendererInfos[Driver.renderInfoDict["BackWeaponModel"]].defaultMaterial = Assets.nemKatanaMat;
+                this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshFilter>().mesh = Assets.nemKatanaMesh;
+                this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(true);
+            }
+
 
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
@@ -236,6 +255,8 @@ namespace RobDriver.Modules.Components
         {
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
+                if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) > 0) return;
+
                 int count = this.characterBody.master.inventory.GetItemCount(DLC1Content.Items.EquipmentMagazineVoid);
                 if (count > this.lysateCellCount)
                 {
@@ -431,7 +452,7 @@ namespace RobDriver.Modules.Components
 
         public void ConsumeAmmo(float multiplier = 1f, bool scaleWithAttackSpeed = true)
         {
-            //if (this.weaponDef.nameToken == this.defaultWeaponDef.nameToken && !HasSpecialBullets) return;
+            if (this.weaponDef.isMelee && this.defaultWeaponDef.nameToken == this.weaponDef.nameToken && !this.HasSpecialBullets) return;
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
             if (this.characterBody && this.characterBody.inventory && scaleWithAttackSpeed)
@@ -471,7 +492,7 @@ namespace RobDriver.Modules.Components
                     if (this.HasSpecialBullets)
                     {
                         currentBulletDef = DriverBulletCatalog.Default;
-                        UnityEngine.Object.Destroy(muzzleTrail.gameObject);
+                        if (muzzleTrail) GameObject.Destroy(muzzleTrail.gameObject);
                     }
                 }
 
@@ -488,31 +509,21 @@ namespace RobDriver.Modules.Components
                     this.ReturnToDefaultWeapon();
                 }
             }
-            this.CheckSupplyDrop();
-        }
 
-        private void CheckSupplyDrop()
-        {
-            if (this.skillLocator)
+            if (pickedUpRavSword)
             {
-                if (this.skillLocator.special.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_NAME")
-                {
-                    if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
-                    {
-                        if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) > 0)
-                        {
-                            return;
-                        }
-                    }
+                this.featherTimer -= Time.fixedDeltaTime;
 
-                    this.skillLocator.special.stock = this.availableSupplyDrops;
+                if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount)
+                {
+                    this.clingReady = true;
                 }
             }
         }
 
         public void ConsumeSupplyDrop()
         {
-            this.availableSupplyDrops--;
+            this.skillLocator.special.stock = --this.availableSupplyDrops;
         }
 
         public void ServerResetTimer()
@@ -611,33 +622,21 @@ namespace RobDriver.Modules.Components
         {
             this.weaponDef = CheckForSkin(newWeapon);
 
-            //Do you have cool config -> are you currently ramboing it -> if not nvm go away cool shit
-            if (Config.enableRevengence.Value && skillLocator.special.skillDef == Driver.knifeSkillDef)
-            {
-                if (!hasEquippedConfigKatana)
-                {
-                    this.characterModel.baseRendererInfos[Driver.renderInfoDict["BackWeaponModel"]].defaultMaterial = Assets.nemKatanaMat;
-                    this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshFilter>().mesh = Assets.nemKatanaMesh;
-                    hasEquippedConfigKatana = true;
-                    this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(true);
-                }
-            }
-            else if (this.weaponDef.nameToken != this.defaultWeaponDef.nameToken)
-            {
-                this.characterModel.baseRendererInfos[Driver.renderInfoDict["BackWeaponModel"]].defaultMaterial = defaultWeaponDef.material;
-                this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshFilter>().mesh = defaultWeaponDef.mesh;
-                this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(true);
-            }
-            else
-            {
-                this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(false);
-            }
-
             if (newWeapon.nameToken == DriverWeaponCatalog.LunarHammer.nameToken)
             {
                 this.hasPickedUpHammer = true; // keeping this for now
                 this.defaultWeaponDef = DriverWeaponCatalog.LunarHammer;
-                this.childLocator.FindChild("BackWeapon").gameObject.SetActive(false);
+            }
+            
+            if (newWeapon.nameToken == DriverWeaponCatalog.RavSword.nameToken && !this.pickedUpRavSword)
+            {
+                this.gameObject.GetComponents<EntityStateMachine>().First(state => state.customName == "Passive").enabled = true;
+                this.pickedUpRavSword = true;
+            }
+            else if (pickedUpRavSword)
+            {
+                this.gameObject.GetComponents<EntityStateMachine>().First(state => state.customName == "Passive").enabled = false;
+                this.pickedUpRavSword = false;
             }
 
             this.EquipWeapon();
@@ -991,17 +990,7 @@ namespace RobDriver.Modules.Components
                 this.StoreWeapon();
             }
         }
-        public float GetCoinAngle()
-        {
-            float angle = ((coinIndex <= 3) ? (60 + -40 * coinIndex) : (-60 + 40 * (coinIndex - 3)));
 
-            coinIndex++; // dont care shut up
-            if (coinIndex >= 5)
-            {
-                coinIndex = 0;
-            }
-            return angle;
-        }
         public void ExtendTimer()
         {
             return;

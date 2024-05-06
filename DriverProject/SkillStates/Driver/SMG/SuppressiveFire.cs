@@ -18,29 +18,10 @@ namespace RobDriver.SkillStates.Driver.SMG
 
         private bool finishing;
 
-        protected virtual int baseShotCount
-        {
-            get
-            {
-                return 7;
-            }
-        }
-
-        protected virtual float maxSpread
-        {
-            get
-            {
-                return 0f;
-            }
-        }
-
-        protected virtual GameObject tracerPrefab
-        {
-            get
-            {
-                return Modules.Assets.shotgunTracer;
-            }
-        }
+        protected virtual int baseShotCount => 7;
+        protected virtual float maxSpread => 0f;
+        protected virtual GameObject tracerPrefab => Modules.Assets.shotgunTracer;
+        protected virtual float _damageCoefficient => SuppressiveFire.damageCoefficient;
 
         private int remainingShots;
         private float shotTimer;
@@ -60,14 +41,6 @@ namespace RobDriver.SkillStates.Driver.SMG
             this.shotTimer = this.shotDuration;
             this.remainingShots--;
             this.Fire();
-        }
-
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return SuppressiveFire.damageCoefficient;
-            }
         }
 
         public virtual void Fire()
@@ -124,8 +97,8 @@ namespace RobDriver.SkillStates.Driver.SMG
                     HitEffectNormal = false,
                 };
                 bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
-//                    bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
-bulletAttack.Fire();
+                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
+                bulletAttack.Fire();
 
                 //this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
             }

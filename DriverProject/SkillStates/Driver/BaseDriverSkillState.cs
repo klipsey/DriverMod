@@ -12,24 +12,12 @@ namespace RobDriver.SkillStates.Driver
             this.AddRecoil(x1, x2, y1, y2);
         }
 
-        protected virtual bool hideGun
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected virtual bool hideGun => false;
+        protected virtual string prop => string.Empty;
+
         protected DriverController iDrive;
         protected DriverWeaponDef cachedWeaponDef;
-        protected RedGuyController ravController;
 
-        protected virtual string prop
-        {
-            get
-            {
-                return "";
-            }
-        }
 
         public override void OnEnter()
         {
@@ -37,14 +25,13 @@ namespace RobDriver.SkillStates.Driver
             base.OnEnter();
 
             if (this.hideGun) this.iDrive.weaponRenderer.gameObject.SetActive(false);
-            if (this.prop != "") this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(true);
+            if (this.prop != string.Empty) this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(true);
         }
 
         public void RefreshState()
         {
             if (!this.iDrive) this.iDrive = this.GetComponent<DriverController>();
             if (this.iDrive) this.cachedWeaponDef = this.iDrive.weaponDef;
-            if (this.iDrive.weaponDef.nameToken == "ROB_DRIVER_WEAPON_RAV_SWORD_NAME" && !this.ravController) this.ravController = this.gameObject.GetComponent<RedGuyController>();
         }
 
         public override void OnExit()
@@ -52,7 +39,7 @@ namespace RobDriver.SkillStates.Driver
             base.OnExit();
 
             if (this.hideGun) this.GetModelChildLocator().FindChild("PistolModel").gameObject.SetActive(true);
-            if (this.prop != "") this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(false);
+            if (this.prop != string.Empty) this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(false);
         }
     }
 }
