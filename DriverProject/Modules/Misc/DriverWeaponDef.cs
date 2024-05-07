@@ -26,7 +26,6 @@ public class DriverWeaponDef : ScriptableObject
     public GameObject crosshairPrefab = null;
     public DriverWeaponTier tier = DriverWeaponTier.Common;
     public int shotCount = 8;
-    public bool isMelee = false;
     public BuffType buffType = BuffType.Damage;
 
     [Header("Skills")]

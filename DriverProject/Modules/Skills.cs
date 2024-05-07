@@ -13,6 +13,7 @@ namespace RobDriver.Modules
     {
         internal static List<SkillFamily> skillFamilies = new List<SkillFamily>();
         internal static List<SkillDef> skillDefs = new List<SkillDef>();
+        internal static List<UnlockableDef> unlockableDefs = new List<UnlockableDef>();
 
         #region genericskills
         public static void CreateSkillFamilies(GameObject targetPrefab, int families = 15, bool destroyExisting = true) {
@@ -113,12 +114,23 @@ namespace RobDriver.Modules
         /// </summary>
         public static void AddUnlockablesToFamily(SkillFamily skillFamily, params UnlockableDef[] unlockableDefs) {
 
-            for (int i = 0; i < unlockableDefs.Length; i++) {
-                SkillFamily.Variant variant = skillFamily.variants[i];
-                variant.unlockableDef = unlockableDefs[i];
-                skillFamily.variants[i] = variant;
+            for (int i = 0; i < unlockableDefs.Length; i++) 
+            {
+                skillFamily.variants[i].unlockableDef = unlockableDefs[i];
             }
         }
+
+        public static UnlockableDef CreateUnlockableDef(string nameToken)
+        {
+            var unlockableDef = ScriptableObject.CreateInstance<UnlockableDef>();
+            unlockableDef.cachedName = nameToken;
+            unlockableDef.nameToken = nameToken;
+            unlockableDef.hidden = true;
+
+            unlockableDefs.Add(unlockableDef);
+            return unlockableDef;
+        }
+
         #endregion
 
         #region skilldefs

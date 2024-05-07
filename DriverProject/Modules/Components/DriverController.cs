@@ -35,6 +35,7 @@ namespace RobDriver.Modules.Components
         private CharacterModel characterModel;
         private Animator animator;
         private SkillLocator skillLocator;
+        private DriverArsenal arsenal;
 
         private readonly int maxShellCount = 12;
         private readonly int basePistolAmmo = 26;
@@ -77,15 +78,11 @@ namespace RobDriver.Modules.Components
         private WeaponNotificationQueue notificationQueue;
         private bool needReload = false;
 
-        private bool hasEquippedConfigKatana;
+        // rav compat
         public bool isWallClinging;
         public bool clingReady;
         public float featherTimer;
 
-        public void RefreshBlink()
-        {
-            if (this.characterBody.characterMotor.jumpCount > 0) this.characterBody.characterMotor.jumpCount--;
-        }
         private DriverWeaponTracker weaponTracker
         {
             get
@@ -99,8 +96,6 @@ namespace RobDriver.Modules.Components
                 return null;
             }
         }
-
-        public DriverArsenal arsenal;
 
 
         private void Awake()
@@ -166,20 +161,6 @@ namespace RobDriver.Modules.Components
         {
             this.InitShells();
             this.SetBulletAmmo();
-        }
-
-        public void SetToNemmandoGun(bool set)
-        {
-            if(set)
-            {
-                this.weaponRenderer.sharedMesh = Assets.nemmandoGunMesh;
-                this.characterModel.baseRendererInfos[Driver.renderInfoDict["PistolModel"]].defaultMaterial = Assets.nemmandoGunMat;
-            }
-            else
-            {
-                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
-                this.characterModel.baseRendererInfos[Driver.renderInfoDict["PistolModel"]].defaultMaterial = this.weaponDef.material;
-            }
         }
 
         private void SetInventoryHook()
@@ -452,7 +433,9 @@ namespace RobDriver.Modules.Components
 
         public void ConsumeAmmo(float multiplier = 1f, bool scaleWithAttackSpeed = true)
         {
-            if (this.weaponDef.isMelee && this.defaultWeaponDef.nameToken == this.weaponDef.nameToken && !this.HasSpecialBullets) return;
+            if (this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.BigMelee &&
+                this.defaultWeaponDef.nameToken == this.weaponDef.nameToken && !this.HasSpecialBullets) return;
+
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
             if (this.characterBody && this.characterBody.inventory && scaleWithAttackSpeed)
@@ -519,6 +502,12 @@ namespace RobDriver.Modules.Components
                     this.clingReady = true;
                 }
             }
+        }
+         
+        // rav compat
+        public void RefreshBlink()
+        {
+            if (this.characterBody.characterMotor.jumpCount > 0) this.characterBody.characterMotor.jumpCount--;
         }
 
         public void ConsumeSupplyDrop()
@@ -633,7 +622,7 @@ namespace RobDriver.Modules.Components
                 this.gameObject.GetComponents<EntityStateMachine>().First(state => state.customName == "Passive").enabled = true;
                 this.pickedUpRavSword = true;
             }
-            else if (pickedUpRavSword)
+            else if (pickedUpRavSword) // swapped to new weapon, no more wall/air cling
             {
                 this.gameObject.GetComponents<EntityStateMachine>().First(state => state.customName == "Passive").enabled = false;
                 this.pickedUpRavSword = false;
@@ -644,6 +633,7 @@ namespace RobDriver.Modules.Components
 
             this.TryCallout();
             this.TryPickupNotification();
+            this.TryUnlock();
 
             this.onWeaponUpdate?.Invoke();
             this.onConsumeAmmo?.Invoke();
@@ -773,6 +763,18 @@ namespace RobDriver.Modules.Components
             }
         }
 
+        private void TryUnlock()
+        {
+            if (this.weaponDef.nameToken != this.defaultWeaponDef.nameToken && this.characterBody)
+            {
+                NetworkUser networkUser = Util.LookUpBodyNetworkUser(this.characterBody);
+                if (networkUser && networkUser.localUser != null)
+                {
+                    networkUser.localUser.userProfile.AddUnlockToken(this.weaponDef.nameToken);
+                }
+            }
+        }
+
         private void EquipWeapon()
         {
             // unset all the overrides....
@@ -848,6 +850,20 @@ namespace RobDriver.Modules.Components
                     this.hammerEffectInstance.SetActive(false);
                     this.hammerEffectInstance2.SetActive(false);
                 }
+            }
+        }
+
+        public void SetToNemmandoGun(bool set)
+        {
+            if (set)
+            {
+                this.weaponRenderer.sharedMesh = Assets.nemmandoGunMesh;
+                this.characterModel.baseRendererInfos[Driver.renderInfoDict["PistolModel"]].defaultMaterial = Assets.nemmandoGunMat;
+            }
+            else
+            {
+                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
+                this.characterModel.baseRendererInfos[Driver.renderInfoDict["PistolModel"]].defaultMaterial = this.weaponDef.material;
             }
         }
 

@@ -9,7 +9,7 @@ namespace RobDriver.SkillStates.Driver
     public class SwingKnife : BaseMeleeAttack
     {
         protected override string prop => "KnifeModel";
-        protected override bool hideGun => iDrive.weaponDef.isMelee && Modules.Config.enableRevengence.Value;
+        protected override bool hideGun => iDrive.weaponDef.animationSet == DriverWeaponDef.AnimationSet.BigMelee && Modules.Config.enableRevengence.Value;
 
         private GameObject swingEffectInstance;
         private bool wasActive;

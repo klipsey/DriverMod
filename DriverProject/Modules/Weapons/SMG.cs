@@ -13,7 +13,6 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.smgCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Uncommon;
         public override int shotCount => 48;
-        public override bool isMelee => false;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshCommandoGun");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Commando/matCommandoDualies.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;

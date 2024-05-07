@@ -1995,18 +1995,21 @@ namespace RobDriver.Modules.Survivors
             Modules.Assets.InitWeaponDefs();
 
             // linq is wonderful
-            Modules.Skills.AddSkillsToFamily(arsenal.weaponSkillSlot.skillFamily,
-                DriverWeaponCatalog.weaponDefs.Select(def => Modules.Skills.CreateSkillDef(new SkillDefInfo(
+            arsenal.weaponSkillSlot.skillFamily.variants = DriverWeaponCatalog.weaponDefs.Select(def => new SkillFamily.Variant()
+            {
+                viewableNode = new ViewablesCatalog.Node(def.nameToken, false, null),
+                unlockableDef = def.index == 0 ? null : Skills.CreateUnlockableDef(def.nameToken),
+                skillDef = Skills.CreateSkillDef(new SkillDefInfo(
                     skillName: def.name,
                     skillNameToken: def.nameToken,
                     skillDescriptionToken: def.descriptionToken,
                     skillIcon: Sprite.Create(def.icon as Texture2D, new Rect(0, 0, def.icon.width, def.icon.height), new Vector2(0.5f, 0.5f)),
-                    activationState: new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                    activationState: new SerializableEntityStateType(typeof(EntityStates.Idle)),
                     activationStateMachineName: "",
                     interruptPriority: InterruptPriority.Any,
                     isCombatSkill: false,
                     baseRechargeInterval: 0
-                    ))).ToArray());
+            ))}).ToArray(); // hehehehe ))})
         }
 
         private static void InitializeScepterSkills()
@@ -2377,6 +2380,7 @@ namespace RobDriver.Modules.Survivors
             skinController.skins = skins.ToArray();
             baseSkinCount = skinController.skins.Length;
         }
+
         internal static void LateSkinSetup()
         {
             GameObject model = characterPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
@@ -2408,6 +2412,7 @@ namespace RobDriver.Modules.Survivors
                 DriverWeaponSkinCatalog.AddSkin(skinDef.name, weaponReskins.ToArray());
             }
         }
+
         private static void InitializeItemDisplays(GameObject prefab)
         {
             CharacterModel characterModel = prefab.GetComponentInChildren<CharacterModel>();
@@ -2808,7 +2813,6 @@ namespace RobDriver.Modules.Survivors
             }
         }
 
-
         private static void BaseAIState_AimInDirection(On.EntityStates.AI.BaseAIState.orig_AimInDirection orig, EntityStates.AI.BaseAIState self, ref BaseAI.BodyInputs dest, Vector3 aimDirection)
         {
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
@@ -2859,11 +2863,12 @@ namespace RobDriver.Modules.Survivors
                 }
             }
 
+            // stupid fucking solution
             if (damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier) && damageInfo.attacker && damageInfo.attacker.name.Contains("RobDriverBody"))
             {
-                if (self && self.alive)
+                if (self && self.alive && damageInfo.attacker.TryGetComponent<CharacterBody>(out var attackerBody))
                 {
-                    self.gameObject.AddComponent<Components.ConsumeTracker>();
+                    self.gameObject.AddComponent<Components.ConsumeTracker>().attackerBody = attackerBody;
                 }
             }
 

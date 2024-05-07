@@ -30,8 +30,6 @@ namespace RobDriver.Modules.Weapons
         public abstract GameObject crosshairPrefab { get; }
         public abstract DriverWeaponTier tier { get; }
         public abstract int shotCount { get; }
-        public abstract bool isMelee { get; }
-
         public abstract DriverWeaponDef.BuffType buffType { get; }
         public abstract SkillDef primarySkillDef { get; }
         public abstract SkillDef secondarySkillDef { get; }
@@ -73,7 +71,6 @@ namespace RobDriver.Modules.Weapons
                 crosshairPrefab = crosshairPrefab,
                 tier = changeTier,
                 shotCount = shotCount,
-                isMelee = isMelee,
                 primarySkillDef = primarySkillDef,
                 secondarySkillDef = secondarySkillDef,
                 mesh = mesh,

@@ -1,1 +1,0 @@
-﻿//Lmao???? Why tf was the coin made to be unnetworked. Like literal effort was put in to have it not networked. It's legit easier to network it by deleting 90% of the garbage that was attached to the coin
