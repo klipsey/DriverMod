@@ -61,7 +61,6 @@ namespace RobDriver.Modules.Components
 
         public GameObject crosshairPrefab;
 
-        private int availableSupplyDrops;
         private int lysateCellCount = 0;
 
         private GameObject muzzleTrail;
@@ -82,6 +81,8 @@ namespace RobDriver.Modules.Components
         public bool isWallClinging;
         public bool clingReady;
         public float featherTimer;
+
+        public float ammo => this.weaponTimer;
 
         private DriverWeaponTracker weaponTracker
         {
@@ -130,7 +131,7 @@ namespace RobDriver.Modules.Components
 
             PickUpWeapon(defaultWeaponDef);
 
-            this.availableSupplyDrops = 1;
+            this.skillLocator.special.AddOneStock();
 
             this.CreateHammerEffect();
 
@@ -191,8 +192,6 @@ namespace RobDriver.Modules.Components
             PickUpWeapon(defaultWeaponDef);
 
             // upgrade shit
-            this.CheckForLysateCell();
-
             this.CheckForNeedler();
 
             this.CheckForStoredWeapon();
@@ -232,22 +231,6 @@ namespace RobDriver.Modules.Components
             this.weaponTracker?.StoreWeapon(this.weaponDef, this.currentBulletDef, this.weaponTimer);
         }
 
-        private void CheckForLysateCell()
-        {
-            if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
-            {
-                if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) > 0) return;
-
-                int count = this.characterBody.master.inventory.GetItemCount(DLC1Content.Items.EquipmentMagazineVoid);
-                if (count > this.lysateCellCount)
-                {
-                    int diff = count - this.lysateCellCount;
-                    this.availableSupplyDrops += diff;
-                    this.lysateCellCount = count;
-                }
-            }
-        }
-
         private void CheckForNeedler()
         {
             if (this.hasPickedUpHammer) return;
@@ -280,7 +263,6 @@ namespace RobDriver.Modules.Components
         private void Inventory_onInventoryChanged()
         {
             this.CheckForNeedler();
-            this.CheckForLysateCell();
         }
 
         private void CheckForUpgrade()
@@ -310,6 +292,7 @@ namespace RobDriver.Modules.Components
 
         private bool TryUpgradeWeapon(DriverWeaponDef newWeaponDef)
         {
+            if (newWeaponDef.nameToken == defaultWeaponDef.nameToken) return true;
             if (!DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef)) return false;
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
@@ -368,6 +351,10 @@ namespace RobDriver.Modules.Components
 
         private void Inventory_onItemAddedClient(ItemIndex itemIndex)
         {
+            if (itemIndex == DLC1Content.Items.EquipmentMagazineVoid.itemIndex)
+            {
+                this.skillLocator.special.AddOneStock();
+            }
             // quit resetting my shit
             if (this.passive.isBullets || this.passive.isPistolOnly) return;
 
@@ -433,9 +420,6 @@ namespace RobDriver.Modules.Components
 
         public void ConsumeAmmo(float multiplier = 1f, bool scaleWithAttackSpeed = true)
         {
-            if (this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.BigMelee &&
-                this.defaultWeaponDef.nameToken == this.weaponDef.nameToken && !this.HasSpecialBullets) return;
-
             if (this.characterBody && this.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns)) return;
 
             if (this.characterBody && this.characterBody.inventory && scaleWithAttackSpeed)
@@ -479,7 +463,7 @@ namespace RobDriver.Modules.Components
                     }
                 }
 
-                if (weaponDef.nameToken == defaultWeaponDef.nameToken)
+                if (weaponDef.nameToken == defaultWeaponDef.nameToken && weaponDef.animationSet != DriverWeaponDef.AnimationSet.BigMelee)
                 {
                     if (!needReload)
                     {
@@ -497,7 +481,7 @@ namespace RobDriver.Modules.Components
             {
                 this.featherTimer -= Time.fixedDeltaTime;
 
-                if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount)
+                if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount || this.characterBody.characterMotor.isGrounded)
                 {
                     this.clingReady = true;
                 }
@@ -508,11 +492,6 @@ namespace RobDriver.Modules.Components
         public void RefreshBlink()
         {
             if (this.characterBody.characterMotor.jumpCount > 0) this.characterBody.characterMotor.jumpCount--;
-        }
-
-        public void ConsumeSupplyDrop()
-        {
-            this.skillLocator.special.stock = --this.availableSupplyDrops;
         }
 
         public void ServerResetTimer()
@@ -596,7 +575,15 @@ namespace RobDriver.Modules.Components
                 // change ammo type
                 if (isNewAmmoType) LoadNewBullets(newBullet, ammo, cutAmmo);
                 // picked up new weapon
-                else PickUpWeapon(newWeapon, ammo, cutAmmo);
+                else
+                {
+                    // keep the current ammo fraction
+                    if (this.HasSpecialBullets && ammo == -1 && weaponDef.nameToken != newWeapon.nameToken)
+                    {
+                        ammo = (weaponTimer / maxWeaponTimer) * newWeapon.shotCount;
+                    }
+                    PickUpWeapon(newWeapon, ammo, cutAmmo);
+                }
             }
             else
             {
@@ -604,10 +591,11 @@ namespace RobDriver.Modules.Components
             }
         }
 
+
         /// <summary>
         /// Changes weapon, does not change ammo type
         /// </summary>
-        private void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool cutAmmo = false)
+        public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool cutAmmo = false)
         {
             this.weaponDef = CheckForSkin(newWeapon);
 
@@ -642,7 +630,7 @@ namespace RobDriver.Modules.Components
         /// <summary>
         /// Changes ammo type, does not change weapon
         /// </summary>
-        private void LoadNewBullets(DriverBulletDef newBullet, float ammo, bool cutAmmo)
+        public void LoadNewBullets(DriverBulletDef newBullet, float ammo, bool cutAmmo)
         {
             if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
@@ -775,7 +763,7 @@ namespace RobDriver.Modules.Components
             }
         }
 
-        private void EquipWeapon()
+        public void EquipWeapon()
         {
             // unset all the overrides....
             for (int i = 0; i < this.primarySkillOverrides.Length; i++)

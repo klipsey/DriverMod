@@ -145,8 +145,6 @@ namespace RobDriver.SkillStates.Driver.Compat
                         Util.PlaySound("sfx_driver_impact_hammer", hurtBox.gameObject);
                     }
 
-                    hurtBox.healthComponent.gameObject.AddComponent<ConsumeTracker>().attackerBody = this.characterBody;
-
                     if (base.isAuthority)
                     {
                         float dmg = punchDamageCoefficient * this.damageStat;

@@ -104,12 +104,11 @@ namespace RobDriver.Modules.Components
             {
                 if (i.cachedBody.hasEffectiveAuthority)
                 {
-                    var driverController = i.cachedBody.GetComponent<DriverController>();
-                    if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && driverController)
+                    if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && i.cachedBody.TryGetComponent<DriverController>(out var iDrive))
                     {
-                        if (driverController.passive.isPistolOnly || driverController.passive.isBullets || (driverController.passive.isRyan && this.isNewAmmoType))
+                        if (iDrive.passive.isPistolOnly || iDrive.passive.isBullets || (iDrive.passive.isRyan && this.isNewAmmoType))
                         {
-                            BeginRapidlyActivatingAndDeactivating blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+                            var blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
                             if (blinker)
                             {
                                 foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
@@ -117,7 +116,7 @@ namespace RobDriver.Modules.Components
                                     h.enabled = false;
                                 }
 
-                                GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+                                GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, this.transform.parent);
                                 ammoPickup.transform.localPosition = Vector3.zero;
                                 ammoPickup.transform.localRotation = Quaternion.identity;
                                 DoTextStuff(ammoPickup.transform, true);

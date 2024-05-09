@@ -45,7 +45,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
             this.shotTimer = this.shotDuration;
             this.remainingShots--;
-            this.iDrive.ConsumeAmmo(remainingShots, true);
+            if (this.iDrive.HasSpecialBullets) this.iDrive.ConsumeAmmo(remainingShots, true);
             this.Fire();
         }
 
@@ -105,20 +105,17 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
                 bulletAttack.minSpread = 0;
                 bulletAttack.maxSpread = 0;
                 bulletAttack.bulletCount = 1;
-                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
 
                 uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
                 bulletAttack.minSpread = 0;
                 bulletAttack.maxSpread = spread / 1.45f;
                 bulletAttack.bulletCount = secondShot;
-                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
 
                 bulletAttack.minSpread = spread / 1.45f;
                 bulletAttack.maxSpread = spread;
                 bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
-                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
 
                 //this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);

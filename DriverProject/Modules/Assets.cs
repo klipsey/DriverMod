@@ -1342,8 +1342,9 @@ namespace RobDriver.Modules
             #endregion
 
             ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup").InstantiateClone("mdlAmmoPickup", false);
+            ammoPickupModel.transform.localScale = Vector3.one;
 
-            //ConvertAllRenderersToHopooShader(ammoPickupModel);
+            ConvertAllRenderersToHopooShader(ammoPickupModel);
 
             GameObject textShit5 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
             MonoBehaviour.Destroy(textShit5.GetComponent<EffectComponent>());

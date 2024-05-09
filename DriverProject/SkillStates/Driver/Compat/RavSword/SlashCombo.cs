@@ -63,7 +63,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         {
             base.OnHitEnemyAuthority(amount);
             this.iDrive.RefreshBlink();
-            if (this.iDrive.maxWeaponTimer > 0 && !ammoConsumed)
+            if (this.iDrive.HasSpecialBullets && !ammoConsumed)
             {
                 ammoConsumed = true;
                 this.iDrive.ConsumeAmmo(1f, true);

@@ -15,7 +15,6 @@ using R2API.Networking.Interfaces;
 using System;
 using MaterialHud;
 using TMPro;
-using EntityStates;
 using RobDriver.Modules.Misc;
 
 namespace RobDriver.Modules.Survivors
@@ -547,6 +546,7 @@ namespace RobDriver.Modules.Survivors
             //skillLocator.passiveSkill.skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE_DESCRIPTION";
             //skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
 
+            #region Misc
             Driver.pistolReloadSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_PRIMARY_RELOAD_NAME",
@@ -618,6 +618,7 @@ namespace RobDriver.Modules.Survivors
                 requiredStock = 1,
                 stockToConsume = 0,
             });
+            #endregion Misc
 
             #region Passive
             passive.defaultPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
@@ -718,23 +719,21 @@ namespace RobDriver.Modules.Survivors
 
             if (Modules.Config.cursed.Value)
             {
-                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                Modules.Skills.AddPassiveSkills(prefab,
                     passive.defaultPassive,
                     passive.bulletsPassive,
                     passive.godslingPassive,
-                    passive.pistolOnlyPassive,
-                });
+                    passive.pistolOnlyPassive);
 
                 Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
                 null, pistolPassiveUnlockableDef, godslingPassiveUnlockableDef, pistolPassiveUnlockableDef);
             }
             else
             {
-                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                Modules.Skills.AddPassiveSkills(prefab,
                     passive.defaultPassive,
                     passive.bulletsPassive,
-                    passive.godslingPassive
-                });
+                    passive.godslingPassive);
 
                 Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
                 null, pistolPassiveUnlockableDef, godslingPassiveUnlockableDef);
@@ -1831,7 +1830,7 @@ namespace RobDriver.Modules.Survivors
                 cancelSprintingOnActivation = true,
                 rechargeStock = 0,
                 requiredStock = 1,
-                stockToConsume = 1
+                stockToConsume = 0
             });
 
             SkillDef healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
@@ -1994,22 +1993,8 @@ namespace RobDriver.Modules.Survivors
 
             Modules.Assets.InitWeaponDefs();
 
-            // linq is wonderful
-            arsenal.weaponSkillSlot.skillFamily.variants = DriverWeaponCatalog.weaponDefs.Select(def => new SkillFamily.Variant()
-            {
-                viewableNode = new ViewablesCatalog.Node(def.nameToken, false, null),
-                unlockableDef = def.index == 0 ? null : Skills.CreateUnlockableDef(def.nameToken),
-                skillDef = Skills.CreateSkillDef(new SkillDefInfo(
-                    skillName: def.name,
-                    skillNameToken: def.nameToken,
-                    skillDescriptionToken: def.descriptionToken,
-                    skillIcon: Sprite.Create(def.icon as Texture2D, new Rect(0, 0, def.icon.width, def.icon.height), new Vector2(0.5f, 0.5f)),
-                    activationState: new SerializableEntityStateType(typeof(EntityStates.Idle)),
-                    activationStateMachineName: "",
-                    interruptPriority: InterruptPriority.Any,
-                    isCombatSkill: false,
-                    baseRechargeInterval: 0
-            ))}).ToArray(); // hehehehe ))})
+            Skills.AddWeaponSkill(prefab, DriverWeaponCatalog.Pistol);
+            Skills.AddWeaponSkills(prefab, DriverWeaponCatalog.weaponDefs.Skip(1), locked: true);
         }
 
         private static void InitializeScepterSkills()
@@ -2394,9 +2379,10 @@ namespace RobDriver.Modules.Survivors
                 for (int i = 0; i < skinDef.meshReplacements.Length; i++)
                 {
                     var meshReplacement = skinDef.meshReplacements[i];
-                    if (model.transform.Find(meshReplacement.renderer.name))
+                    if (!string.IsNullOrEmpty(meshReplacement.renderer?.name) && 
+                        model.transform.Find(meshReplacement.renderer.name))
                     {
-                        foreach (var weaponDef in DriverWeaponCatalog.weaponDefs.Where(weapon => weapon.mesh.name == meshReplacement.renderer.name))
+                        foreach (var weaponDef in DriverWeaponCatalog.weaponDefs.Where(weapon => weapon.mesh?.name == meshReplacement.renderer.name))
                         {
                             weaponReskins.Add(DriverWeaponSkinDef.CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDef.DriverWeaponSkinDefInfo
                             {
@@ -2787,7 +2773,7 @@ namespace RobDriver.Modules.Survivors
         private static void LoadoutPanelController_Rebuild(On.RoR2.UI.LoadoutPanelController.orig_Rebuild orig, LoadoutPanelController self)
         {
             orig(self);
-            return;
+
             // this is beyond stupid lmfao who let this monkey code
             if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("RobDriverBody"))
             {
@@ -2863,15 +2849,6 @@ namespace RobDriver.Modules.Survivors
                 }
             }
 
-            // stupid fucking solution
-            if (damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier) && damageInfo.attacker && damageInfo.attacker.name.Contains("RobDriverBody"))
-            {
-                if (self && self.alive && damageInfo.attacker.TryGetComponent<CharacterBody>(out var attackerBody))
-                {
-                    self.gameObject.AddComponent<Components.ConsumeTracker>().attackerBody = attackerBody;
-                }
-            }
-
             orig(self, damageInfo);
         }
 
@@ -2917,23 +2894,27 @@ namespace RobDriver.Modules.Survivors
                 // weapon drops
                 if (isDriverOnPlayerTeam)
                 {
-                    // headshot first
-                    if ((damageReport.attackerBody.baseNameToken == Driver.bodyNameToken && damageReport.victim.TryGetComponent<DriverHeadshotTracker>(out _)) ||
-                         damageReport.damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier))
-                    {
-                        if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
-                        {
-                            new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
-                        }
 
-                        // rav orb
-                        if (damageReport.victim.gameObject.TryGetComponent<ConsumeTracker>(out var tracker))
+                    // headshot first
+                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                    {
+                        if (damageReport.victim.TryGetComponent<DriverHeadshotTracker>(out _) ||
+                            damageReport.damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier))
                         {
-                            RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
+                            if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
                             {
-                                origin = damageReport.victim.transform.position,
-                                target = Util.FindBodyMainHurtBox(tracker.attackerBody)
-                            });
+                                new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
+                            }
+                            
+                            // rav orb yep
+                            if (damageReport.attackerBody.skillLocator.primary.skillDef.skillNameToken == DriverWeaponCatalog.RavSword.primarySkillDef.skillNameToken)
+                            {
+                                RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
+                                {
+                                    origin = damageReport.victim.transform.position,
+                                    target = Util.FindBodyMainHurtBox(damageReport.attackerBody)
+                                });
+                            }
                         }
                     }
 

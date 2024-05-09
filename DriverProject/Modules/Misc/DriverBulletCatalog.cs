@@ -196,9 +196,11 @@ namespace RobDriver.Modules
         public static DriverBulletDef GetRandomBulletFromTier(DriverWeaponTier tier)
         {
             var validBullets = bulletDefs.Where(bullet => bullet.tier == tier);
-            int rnd = UnityEngine.Random.Range(0, validBullets.Count());
 
-            return validBullets.ElementAtOrDefault(rnd) ?? Default;
+            if (!validBullets.Any()) return Default;
+
+            int rnd = UnityEngine.Random.Range(0, validBullets.Count());
+            return validBullets.ElementAt(rnd);
         }
     }
 }

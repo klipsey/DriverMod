@@ -24,8 +24,6 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
             base.OnEnter();
             this.duration = this.baseDuration / this.attackSpeedStat;
 
-            this.skillLocator.special.DeductStock(1);
-
             this.PlayAnim();
         }
 
@@ -55,7 +53,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 if (!this.hasFired)
                 {
                     this.hasFired = true;
-                    this.iDrive.ConsumeSupplyDrop();
+                    this.skillLocator.special.DeductStock(1);
                     this.Fire();
                 }
             }

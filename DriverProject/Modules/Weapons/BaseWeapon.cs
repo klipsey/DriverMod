@@ -53,15 +53,7 @@ namespace RobDriver.Modules.Weapons
         protected void CreateWeapon()
         {
             Texture icon = null;
-            DriverWeaponTier changeTier = tier;
-            float changeDropChance = dropChance;
-            if (iconName != "") icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
-
-            if(tier == DriverWeaponTier.Unique && Modules.Config.uniqueDropsAreLegendary.Value)
-            {
-                changeTier = DriverWeaponTier.Legendary;
-                changeDropChance = 0f;
-            }
+            if (!string.IsNullOrEmpty(iconName)) icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
 
             weaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
@@ -69,7 +61,7 @@ namespace RobDriver.Modules.Weapons
                 descriptionToken = "ROB_DRIVER_WEAPON_" + weaponNameToken + "_DESC",
                 icon = icon,
                 crosshairPrefab = crosshairPrefab,
-                tier = changeTier,
+                tier = tier,
                 shotCount = shotCount,
                 primarySkillDef = primarySkillDef,
                 secondarySkillDef = secondarySkillDef,
@@ -78,27 +70,12 @@ namespace RobDriver.Modules.Weapons
                 animationSet = animationSet,
                 calloutSoundString = calloutSoundString,
                 configIdentifier = configIdentifier,
-                dropChance = changeDropChance,
+                dropChance = dropChance,
                 buffType = buffType
             });
             DriverWeaponCatalog.AddWeapon(weaponDef);
-
-            Skills.AddSkillToFamily(Driver.characterPrefab.GetComponent<Components.DriverArsenal>().weaponSkillSlot.skillFamily,
-                Modules.Skills.CreateSkillDef(new SkillDefInfo(
-                skillName: weaponDef.name,
-                skillNameToken: weaponDef.nameToken,
-                skillDescriptionToken: weaponDef.descriptionToken,
-                skillIcon: Sprite.Create(weaponDef.icon as Texture2D, new Rect(0, 0, weaponDef.icon.width, weaponDef.icon.height), new Vector2(0.5f, 0.5f)),
-                activationState: new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
-                activationStateMachineName: "",
-                interruptPriority: InterruptPriority.Any,
-                isCombatSkill: false,
-                baseRechargeInterval: 0)));
-
-            if (uniqueDropBodyName != "")
-            {
-                DriverWeaponCatalog.AddWeaponDrop(uniqueDropBodyName, weaponDef);
-            }
+            DriverWeaponCatalog.AddWeaponDrop(uniqueDropBodyName, weaponDef);
+            Skills.AddWeaponSkill(Driver.characterPrefab, weaponDef);
         }
     }
 }

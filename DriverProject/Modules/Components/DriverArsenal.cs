@@ -20,7 +20,7 @@ namespace RobDriver.Modules.Components
                 if (this.weaponSkillSlot?.skillDef is null) this.weaponDef = DriverWeaponCatalog.Pistol;
                 else if (this.weaponDef is null) this.weaponDef = DriverWeaponCatalog.weaponDefs.FirstOrDefault(def =>
                         def.name == this.weaponSkillSlot.skillDef.skillName) ?? DriverWeaponCatalog.Pistol;
-                
+
                 return this.weaponDef;
             }
         }
