@@ -98,7 +98,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                         procCoefficient = procCoefficient,
                         radius = thiccness,
                         sniper = false,
-                        stopperMask = LayerIndex.world.collisionMask,
+                        stopperMask = LayerIndex.CommonMasks.bullet,
                         weapon = null,
                         tracerEffectPrefab = tracer,
                         spreadPitchScale = 1f,
@@ -112,20 +112,17 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = spread / 1.45f;
                     bulletAttack.bulletCount = secondShot;
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     bulletAttack.minSpread = spread / 1.45f;
                     bulletAttack.maxSpread = spread;
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);

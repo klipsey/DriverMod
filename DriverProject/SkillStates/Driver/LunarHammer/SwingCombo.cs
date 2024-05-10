@@ -2,6 +2,7 @@
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine.AddressableAssets;
 using RoR2;
+using R2API;
 namespace RobDriver.SkillStates.Driver.LunarHammer
 {
     public class SwingCombo : BaseMeleeAttack
@@ -35,11 +36,18 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
 
             this.damageType = DamageType.Stun1s | iDrive.DamageType;
-            this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
             if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
             else this.muzzleString = this.muzzleString ="SwingCenter2";
             base.OnEnter();
         }
+
+        protected override void InitializeAttack()
+        {
+            base.InitializeAttack();
+
+            this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
+        }
+
         protected override void FireAttack()
         {
             if (base.isAuthority)

@@ -116,13 +116,11 @@ namespace RobDriver.SkillStates.Driver.SlugShotgun
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = spread / 1.45f;
                     bulletAttack.bulletCount = secondShot;
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     bulletAttack.minSpread = spread / 1.45f;
                     bulletAttack.maxSpread = spread;
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce((aimRay.direction * -this.selfForce) / this.attackSpeedStat);

@@ -309,6 +309,7 @@ namespace RobDriver.Modules
             hurtBoxGroup.mainHurtBox = hurtBox;
             hurtBoxGroup.bullseyeCount = 1;
 
+            Prefabs.bodyPrefabs.Add(coinProjectile);
             Prefabs.projectilePrefabs.Add(coinProjectile);
         }
         private static void CreateShockwave()

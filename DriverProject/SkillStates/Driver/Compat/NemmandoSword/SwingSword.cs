@@ -16,7 +16,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
         {
             RefreshState();
 
-            this.hitboxName = "Knife";
+            this.hitboxName = "Sword";
 
             this.damageCoefficient = _damageCoefficient;
             this.pushForce = 0f;
@@ -38,12 +38,19 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
             this.damageType = iDrive.DamageType | DamageType.Stun1s;
-            this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
-            this.moddedDamageTypeHolder.Add(Modules.DamageTypes.Gouge);
             this.muzzleString = this.swingIndex == 0 ? "SwingMuzzle1" : "SwingMuzzle2";
 
             base.OnEnter();
         }
+
+        protected override void InitializeAttack()
+        {
+            base.InitializeAttack();
+
+            this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
+            this.attack.AddModdedDamageType(Modules.DamageTypes.Gouge);
+        }
+
         protected override void FireAttack()
         {
             if (base.isAuthority)
@@ -55,6 +62,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
 
             base.FireAttack();
         }
+
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);

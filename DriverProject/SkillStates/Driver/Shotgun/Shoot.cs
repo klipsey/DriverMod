@@ -90,7 +90,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                         damageType = iDrive.DamageType,
                         falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                         maxDistance = bulletRange,
-                        force = force,// RiotShotgun.bulletForce,
+                        force = force,
                         hitMask = LayerIndex.CommonMasks.bullet,
                         isCrit = this.isCrit,
                         owner = gameObject,
@@ -113,20 +113,17 @@ namespace RobDriver.SkillStates.Driver.Shotgun
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = spread / 1.45f;
                     bulletAttack.bulletCount = secondShot;
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     bulletAttack.minSpread = spread / 1.45f;
                     bulletAttack.maxSpread = spread;
                     bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
-                    //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
@@ -152,7 +149,6 @@ namespace RobDriver.SkillStates.Driver.Shotgun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                //this.outer.SetNextStateToMain();
                 this.outer.SetNextState(new Reload());
             }
         }

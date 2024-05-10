@@ -2,6 +2,7 @@
 using RoR2;
 using RobDriver.SkillStates.BaseStates;
 using System.Reflection;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver.Compat
 {
@@ -13,7 +14,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         public override void OnEnter()
         {
             this.RefreshState();
-            this.hitboxName = "Knife";
+            this.hitboxName = "Sword";
 
             this.charge = Mathf.Clamp01(Util.Remap(this.characterMotor.velocity.magnitude, 0f, 60f, 0f, 1f));
 
@@ -36,9 +37,7 @@ namespace RobDriver.SkillStates.Driver.Compat
             this.hitEffectPrefab = Modules.Assets.redSlashImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
-            this.damageType = DamageType.Generic | iDrive.DamageType;
-
-            this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
+            this.damageType = iDrive.DamageType;
 
             this.muzzleString = "KnifeSwingMuzzle";
 
@@ -54,6 +53,13 @@ namespace RobDriver.SkillStates.Driver.Compat
             }
 
             base.OnEnter();
+        }
+
+        protected override void InitializeAttack()
+        {
+            base.InitializeAttack();
+
+            this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
         }
 
         protected override void OnHitEnemyAuthority(int amount)

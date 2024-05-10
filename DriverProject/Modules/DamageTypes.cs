@@ -220,11 +220,11 @@ namespace RobDriver.Modules
                     float damage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, damageCoefficient);
 
                     EffectManager.SimpleImpactEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/IceRingExplosion"), damageInfo.position, Vector3.up, transmit: true);
-                    victimBody.AddTimedBuff(RoR2Content.Buffs.Slow80, 3f * attackerBody.inventory.GetItemCount(RoR2Content.Items.IceRing));
+                    if (victimBody) victimBody.AddTimedBuff(RoR2Content.Buffs.Slow80, 3f + 3f * attackerBody.inventory.GetItemCount(RoR2Content.Items.IceRing));
 
                     ProcChainMask procChainMask = damageInfo.procChainMask;
                     procChainMask.AddProc(ProcType.Rings);
-                    victimBody.healthComponent.TakeDamage(new DamageInfo
+                    if (victimBody && victimBody.healthComponent) victimBody.healthComponent.TakeDamage(new DamageInfo
                     {
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Item,
@@ -232,7 +232,7 @@ namespace RobDriver.Modules
                         attacker = damageInfo.attacker,
                         crit = damageInfo.crit,
                         force = Vector3.zero,
-                        inflictor = null,
+                        inflictor = damageInfo.inflictor,
                         position = damageInfo.position,
                         procChainMask = procChainMask,
                         procCoefficient = 0f
@@ -420,7 +420,7 @@ namespace RobDriver.Modules
 
                 if (damageInfo.HasModdedDamageType(Hemorrhage) && CheckRoll(procChance, attackerBody.master))
                 {
-                    DotController.InflictDot(
+                    if (victimBody && victimBody.healthComponent && victimBody.healthComponent.alive) DotController.InflictDot(
                         victim, 
                         damageInfo.attacker, 
                         DotController.DotIndex.SuperBleed,
@@ -429,11 +429,10 @@ namespace RobDriver.Modules
 
                 if (damageInfo.HasModdedDamageType(Gouge) && CheckRoll(procChance, attackerBody.master))
                 {
-                    DotController.InflictDot(
+                    if (victimBody && victimBody.healthComponent && victimBody.healthComponent.alive) DotController.InflictDot(
                         victim, 
                         damageInfo.attacker,
-                        Buffs.gougeIndex,
-                        4f * damageInfo.procCoefficient);
+                        Buffs.gougeIndex);
                 } // end gouge
             }
         }

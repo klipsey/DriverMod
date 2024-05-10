@@ -49,7 +49,6 @@ namespace RobDriver.SkillStates.Driver
                 Vector3 flickDirection = aimRay.direction;
                 flickDirection *= Mathf.Clamp(base.rigidbody.velocity.magnitude, 1f, 20f);
                 flickDirection.y += base.rigidbody.velocity.y;
-                CoinController.onCoinAwakeGlobal += (coin) => CoinController.CoinMethods.ModifyCoinOnSpawn(coin, ricochetMultiplier);
                 ProjectileManager.instance.FireProjectile(Projectiles.coinProjectile, aimRay.origin, Util.QuaternionSafeLookRotation(flickDirection),
                     base.gameObject, 0f, 0f, false, DamageColorIndex.Default, null);
             }
