@@ -2164,7 +2164,7 @@ namespace RobDriver.Modules.Survivors
             Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
             SkinRendererInfos(defaultRenderers, new Material[]
             {
-                            Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
+                Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
             }),
             mainRenderer,
             model);
