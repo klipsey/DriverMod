@@ -476,10 +476,20 @@ namespace RobDriver.Modules.Components
                 }
             }
 
-            if (pickedUpRavSword && !this.characterBody.characterMotor.isGrounded)
+            if (pickedUpRavSword)
             {
                 this.featherTimer -= Time.fixedDeltaTime;
+
+                if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount)
+                {
+                    this.clingReady = true;
+                }
             }
+        }
+
+        public void RefreshCling()
+        {
+            if (this.characterBody.characterMotor.jumpCount > 0) this.characterBody.characterMotor.jumpCount--;
         }
 
         public void ServerResetTimer()

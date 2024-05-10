@@ -53,6 +53,13 @@ namespace RobDriver.SkillStates.Driver.Revolver
             base.StartAimMode(0.5f);
             this.animator.SetFloat("aimY", this.inputBank.aimDirection.y);
 
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                this.outer.SetNextStateToMain();
+                return;
+            }
+
             if (base.fixedAge >= (0.9f * this.duration))
             {
                 if (this.effectInstance)
@@ -87,7 +94,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 EntityState.Destroy(this.effectInstance);
             }
             this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
-            if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
+            this.crosshairOverrideRequest?.Dispose();
             if (this.overlayController != null)
             {
                 HudOverlayManager.RemoveOverlay(this.overlayController);

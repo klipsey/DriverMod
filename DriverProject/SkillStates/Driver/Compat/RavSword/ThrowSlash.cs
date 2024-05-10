@@ -61,7 +61,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         {
             base.OnHitEnemyAuthority(amount);
 
-            this.iDrive.clingReady = true;
+            this.iDrive.RefreshCling();
             if (this.iDrive.HasSpecialBullets && !ammoConsumed)
             {
                 ammoConsumed = true;

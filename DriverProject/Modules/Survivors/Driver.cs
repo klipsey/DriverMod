@@ -1991,9 +1991,9 @@ namespace RobDriver.Modules.Survivors
 
             if (DriverPlugin.scepterInstalled) InitializeScepterSkills();
 
-            Modules.Assets.InitWeaponDefs();
+            Assets.InitWeaponDefs();
 
-            Skills.AddWeaponSkill(prefab, DriverWeaponCatalog.Pistol);
+            Skills.AddWeaponSkill(prefab, DriverWeaponCatalog.Pistol, locked: false);
             Skills.AddWeaponSkills(prefab, DriverWeaponCatalog.weaponDefs.Skip(1), locked: true);
         }
 
@@ -2841,7 +2841,7 @@ namespace RobDriver.Modules.Survivors
                 }
             }
 
-            if (damageInfo.dotIndex == Buffs.gougeIndex && self.alive)
+            if (damageInfo.dotIndex == Buffs.gougeIndex && self && self.alive)
             {
                 if (damageInfo.attacker && damageInfo.attacker.TryGetComponent<CharacterBody>(out var attackerBody))
                 {
@@ -2894,27 +2894,24 @@ namespace RobDriver.Modules.Survivors
                 // weapon drops
                 if (isDriverOnPlayerTeam)
                 {
-
                     // headshot first
-                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken && 
+                       (damageReport.victim.TryGetComponent<DriverHeadshotTracker>(out _) ||
+                        damageReport.damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier)))
                     {
-                        if (damageReport.victim.TryGetComponent<DriverHeadshotTracker>(out _) ||
-                            damageReport.damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier))
+                        if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
                         {
-                            if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
-                            {
-                                new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
-                            }
+                            new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
+                        }
                             
-                            // rav orb yep
-                            if (damageReport.attackerBody.skillLocator.primary.skillDef.skillNameToken == DriverWeaponCatalog.RavSword.primarySkillDef.skillNameToken)
+                        // rav orb yep
+                        if (damageReport.attackerBody.skillLocator.primary.skillDef.skillNameToken == DriverWeaponCatalog.RavSword.primarySkillDef.skillNameToken)
+                        {
+                            RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
                             {
-                                RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
-                                {
-                                    origin = damageReport.victim.transform.position,
-                                    target = Util.FindBodyMainHurtBox(damageReport.attackerBody)
-                                });
-                            }
+                                origin = damageReport.victim.transform.position,
+                                target = Util.FindBodyMainHurtBox(damageReport.attackerBody)
+                            });
                         }
                     }
 
@@ -2954,57 +2951,38 @@ namespace RobDriver.Modules.Survivors
                     // stop dropping weapons when void monsters kill each other plz this is an annoying bug
                     if (damageReport.attackerTeamIndex != TeamIndex.Player) droppedWeapon = false;
 
-                    if (DriverWeaponCatalog.weaponDrops.ContainsKey(damageReport.victimBody.gameObject.name))
+                    if (DriverWeaponCatalog.weaponDrops.TryGetValue(damageReport.victimBody.gameObject.name,
+                        out var uniqueDrop) && uniqueDrop.dropChance >= 100f)
                     {
-                        DriverWeaponDef z = DriverWeaponCatalog.weaponDrops[damageReport.victimBody.gameObject.name];
-                        if (z.dropChance >= 100f) droppedWeapon = true;
+                        droppedWeapon = true;
                     }
 
                     if (droppedWeapon)
                     {
                         Driver.instance.pityMultiplier = 1f;
 
-                        Vector3 position = Vector3.zero;
-                        Transform transform = damageReport.victim.transform;
-                        if (transform)
-                        {
-                            position = damageReport.victim.transform.position;
-                        }
+                        Vector3 position = damageReport.victim.transform ? damageReport.victim.transform.position : Vector3.zero;
 
                         //if (Modules.Config.oldPickupModel.Value) pickupPrefab = Modules.Assets.weaponPickupOld;
 
-                        DriverWeaponTier weaponTier = DriverWeaponTier.Uncommon;
-                        if (damageReport.victimBody.isChampion) weaponTier = DriverWeaponTier.Legendary;
+                        DriverWeaponTier weaponTier = damageReport.victimBody.isChampion ? DriverWeaponTier.Legendary : DriverWeaponTier.Uncommon;
 
-                        DriverWeaponDef weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
-
-                        if (DriverWeaponCatalog.weaponDrops.ContainsKey(damageReport.victimBody.gameObject.name))
-                        {
-                            DriverWeaponDef newWeapon = DriverWeaponCatalog.weaponDrops[damageReport.victimBody.gameObject.name];
-                            if (Util.CheckRoll(newWeapon.dropChance)) weaponDef = newWeapon;
-                        }
+                        // use unique drop, otherwise roll random
+                        DriverWeaponDef weaponDef;
+                        if (uniqueDrop != null && Util.CheckRoll(uniqueDrop.dropChance)) weaponDef = uniqueDrop;
+                        else weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
-
-                        var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
+                        var weaponComponent = weaponPickup.GetComponentInChildren<WeaponPickup>();
 
                         // add passive specific stuff
-                        float splitChance = Modules.Config.godslingDropRateSplit.Value;
-                        weaponComponent.isNewAmmoType = Util.CheckRoll(splitChance);
+                        weaponComponent.isNewAmmoType = Util.CheckRoll(Config.godslingDropRateSplit.Value);
 
                         // non-legendary gets rerolled
-                        if (isBoss)
-                        {
-                            weaponComponent.bulletDef = DriverBulletCatalog.GetRandomBulletFromTier(DriverWeaponTier.Legendary);
-                        }
-                        else
-                        {
-                            weaponComponent.bulletDef = DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Uncommon);
-                        }
+                        weaponComponent.bulletDef = DriverBulletCatalog.GetRandomBulletFromTier(isBoss ? DriverWeaponTier.Legendary : DriverWeaponTier.Uncommon);
 
-                        TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
-                        if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
-
+                        if (weaponPickup.TryGetComponent<TeamFilter>(out var teamFilter) && teamFilter)
+                            teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
                         NetworkServer.Spawn(weaponPickup);
                     }

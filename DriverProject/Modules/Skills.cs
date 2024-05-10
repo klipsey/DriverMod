@@ -150,7 +150,8 @@ namespace RobDriver.Modules
             unlockableDef.cachedName = weaponDef.nameToken;
             unlockableDef.nameToken = weaponDef.nameToken;
             unlockableDef.getHowToUnlockString = () => Language.GetString(weaponDef.descriptionToken);
-            unlockableDef.hidden = true;
+            unlockableDef.getUnlockedString = () => Language.GetString(weaponDef.descriptionToken);
+            unlockableDef.hidden = false;
 
             unlockableDefs.Add(unlockableDef);
             return unlockableDef;
@@ -238,7 +239,6 @@ namespace RobDriver.Modules
     /// </summary>
 internal class SkillDefInfo
 {
-
         public string skillName;
         public string skillNameToken;
         public string skillDescriptionToken;

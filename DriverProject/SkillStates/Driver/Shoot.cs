@@ -1,5 +1,4 @@
 ﻿using EntityStates;
-using RobDriver.Modules;
 using RoR2;
 using R2API;
 using UnityEngine;
@@ -12,8 +11,6 @@ namespace RobDriver.SkillStates.Driver
         public static float damageCoefficient = 2.2f;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.7f;
-        public static float baseCritDuration = 0.9f;
-        public static float baseCritDuration2 = 1.4f;
         public static float force = 200f;
         public static float recoil = 2f;
         public static float range = 2000f;
@@ -32,6 +29,11 @@ namespace RobDriver.SkillStates.Driver
         private bool oldShoot;
 
         protected virtual float _damageCoefficient => Shoot.damageCoefficient;
+        protected virtual GameObject tracerPrefab => this.isCrit ? Shoot.critTracerEffectPrefab : Shoot.tracerEffectPrefab;
+        public virtual string shootSoundString => this.isCrit ? "sfx_driver_pistol_shoot_critical" : "sfx_driver_pistol_shoot";
+        public virtual BulletAttack.FalloffModel falloff => BulletAttack.FalloffModel.DefaultBullet;
+        protected virtual float baseCritDuration => 0.9f;
+        protected virtual float baseCritDuration2 => 1.4f;
 
         public override void OnEnter()
         {
@@ -51,7 +53,7 @@ namespace RobDriver.SkillStates.Driver
             {
                 if (this.oldShoot)
                 {
-                    this.duration = Shoot.baseCritDuration / this.attackSpeedStat;
+                    this.duration = this.baseCritDuration / this.attackSpeedStat;
                     this.fireTime = 0.5f * this.duration;
                     this.fireTime2 = 0.55f * this.duration;
 
@@ -66,7 +68,7 @@ namespace RobDriver.SkillStates.Driver
                 }
                 else
                 {
-                    this.duration = Shoot.baseCritDuration2 / this.attackSpeedStat;
+                    this.duration = this.baseCritDuration2 / this.attackSpeedStat;
                     this.fireTime = 0f * this.duration;
                     this.fireTime2 = 0.05f * this.duration;
 
@@ -93,23 +95,6 @@ namespace RobDriver.SkillStates.Driver
 
             if (this.spinPlayID != 0u) AkSoundEngine.StopPlayingID(this.spinPlayID);
             if (this.effectInstance) EntityState.Destroy(this.effectInstance);
-        }
-
-        public virtual string shootSoundString
-        {
-            get
-            {
-                if (this.isCrit) return "sfx_driver_pistol_shoot_critical";
-                return "sfx_driver_pistol_shoot";
-            }
-        }
-
-        public virtual BulletAttack.FalloffModel falloff
-        {
-            get
-            {
-                return BulletAttack.FalloffModel.DefaultBullet;
-            }
         }
 
         private void Fire()
@@ -159,15 +144,6 @@ namespace RobDriver.SkillStates.Driver
             }
 
             base.characterBody.AddSpreadBloom(1.25f);
-        }
-
-        protected virtual GameObject tracerPrefab
-        {
-            get
-            {
-                if (this.isCrit) return Shoot.critTracerEffectPrefab;
-                else return Shoot.tracerEffectPrefab;
-            }
         }
 
         public override void FixedUpdate()

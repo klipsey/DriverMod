@@ -53,7 +53,7 @@ namespace RobDriver.Modules.Weapons
         protected void CreateWeapon()
         {
             Texture icon = null;
-            if (!string.IsNullOrEmpty(iconName)) icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
+            if (!string.IsNullOrEmpty(iconName)) icon = Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
 
             weaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {

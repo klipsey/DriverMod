@@ -127,6 +127,8 @@ namespace RobDriver.SkillStates.Driver.Compat
             {
                 if (hurtBox && hurtBox.healthComponent && hurtBox.healthComponent.body)
                 {
+                    this.iDrive.RefreshCling();
+
                     EffectManager.SpawnEffect(Modules.Assets.bloodExplosionEffect, new EffectData
                     {
                         origin = hurtBox.transform.position,
@@ -184,8 +186,7 @@ namespace RobDriver.SkillStates.Driver.Compat
                             crit = this.RollCrit(),
                             damage = 10f * this.damageStat,
                             owner = this.gameObject,
-                            projectilePrefab = Modules.Projectiles.punchShockwave,
-                            damageTypeOverride = this.iDrive.DamageType
+                            projectilePrefab = Modules.Projectiles.punchShockwave
                         });
                         dmgType.Remove(this.iDrive.ModdedDamageType);
 

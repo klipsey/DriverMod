@@ -49,7 +49,6 @@ namespace RobDriver.SkillStates.Driver.Compat
         public override void OnExit()
         {
             base.OnExit();
-            this.iDrive.clingReady = true;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
