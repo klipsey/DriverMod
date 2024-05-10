@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using RobDriver.SkillStates.BaseStates;
 using RoR2;
+using R2API;
+using RobDriver.Modules;
 
 namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
 {
@@ -13,7 +15,8 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
         public override void OnEnter()
         {
             RefreshState();
-            this.hitboxName = "Hammer";
+
+            this.hitboxName = "Knife";
 
             this.damageCoefficient = _damageCoefficient;
             this.pushForce = 0f;
@@ -27,19 +30,18 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
             this.hitStopDuration = 0.2f;
             this.smoothHitstop = true;
 
-            if(DriverPlugin.starstormInstalled) this.swingSoundString = "NemmandoSwing";
-            else this.swingSoundString = "Play_merc_sword_swing";
+            this.swingSoundString = DriverPlugin.starstormInstalled ? "NemmandoSwing" : "Play_merc_sword_swing";
 
             this.swingEffectPrefab = Modules.Assets.redMercSwing;
             this.hitSoundString = "";
             this.hitEffectPrefab = Modules.Assets.redSlashImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
-            this.damageType = iDrive.DamageType;
+            this.damageType = iDrive.DamageType | DamageType.Stun1s;
             this.moddedDamageTypeHolder.Add(iDrive.ModdedDamageType);
             this.moddedDamageTypeHolder.Add(Modules.DamageTypes.Gouge);
-            if (this.swingIndex == 0) this.muzzleString = "SwingMuzzle1";
-            else this.muzzleString = this.muzzleString = "SwingMuzzle2";
+            this.muzzleString = this.swingIndex == 0 ? "SwingMuzzle1" : "SwingMuzzle2";
+
             base.OnEnter();
         }
         protected override void FireAttack()
@@ -56,7 +58,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            if (this.iDrive.maxWeaponTimer > 0 && !ammoConsumed)
+            if (this.iDrive.HasSpecialBullets && !ammoConsumed)
             {
                 ammoConsumed = true;
                 this.iDrive.ConsumeAmmo(1f, true);

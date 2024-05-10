@@ -13,7 +13,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         public override void OnEnter()
         {
             this.RefreshState();
-            this.hitboxName = "Hammer";
+            this.hitboxName = "Knife";
 
             this.charge = Mathf.Clamp01(Util.Remap(this.characterMotor.velocity.magnitude, 0f, 60f, 0f, 1f));
 
@@ -59,11 +59,9 @@ namespace RobDriver.SkillStates.Driver.Compat
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            if (this.ravController)
-            {
-                this.ravController.RefreshBlink();
-            }
-            if (this.iDrive.maxWeaponTimer > 0 && !ammoConsumed)
+
+            this.iDrive.RefreshBlink();
+            if (this.iDrive.HasSpecialBullets && !ammoConsumed)
             {
                 ammoConsumed = true;
                 this.iDrive.ConsumeAmmo(1f, true);

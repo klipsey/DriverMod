@@ -1,4 +1,5 @@
 ﻿using RoR2.Skills;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -13,7 +14,6 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.needlerCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Unique;
         public override int shotCount => 64;
-        public override bool isMelee => true;
         public override Mesh mesh => Config.enableRevengence.Value ? Assets.nemKatanaMesh : Modules.Assets.LoadMesh("meshRavagerSword");
         public override Material material => Config.enableRevengence.Value ? Assets.nemKatanaMat : Modules.Assets.CreateMaterial("matRavagerSword");
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.BigMelee;
@@ -60,6 +60,7 @@ namespace RobDriver.Modules.Weapons
         {
             CreateLang();
             CreateWeapon();
+            DriverWeaponCatalog.RavSword = DriverWeaponCatalog.weaponDefs.Last();
         }
     }
 }

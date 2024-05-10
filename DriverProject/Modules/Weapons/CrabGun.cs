@@ -13,7 +13,6 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.circleCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Void;
         public override int shotCount => 120;
-        public override bool isMelee => false;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshCrabGun");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidMegaCrab.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.TwoHanded;

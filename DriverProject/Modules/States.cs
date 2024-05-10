@@ -119,7 +119,6 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.WallJumpBig));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.WallJumpSmall));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.ChargeJump));
-            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.ChargeBlink));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.WallJump));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.Shoot));

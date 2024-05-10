@@ -89,7 +89,8 @@ namespace RobDriver.SkillStates.Driver
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Skill;
+            if (iDrive.weaponTimer > 0) return InterruptPriority.Any;
+            return InterruptPriority.PrioritySkill;
         }
     }
 }

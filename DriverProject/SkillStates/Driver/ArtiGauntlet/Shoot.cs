@@ -22,6 +22,9 @@ namespace RobDriver.SkillStates.Driver.ArtiGauntlet
         private bool isCrit;
         protected string muzzleString;
 
+        protected virtual float _damageCoefficient => Shoot.damageCoefficient;
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.artiGauntletPrefab;
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -42,14 +45,6 @@ namespace RobDriver.SkillStates.Driver.ArtiGauntlet
             if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Shoot.damageCoefficient;
-            }
-        }
-
         public virtual void Fire()
         {
             if (!this.hasFired)
@@ -65,12 +60,19 @@ namespace RobDriver.SkillStates.Driver.ArtiGauntlet
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
-                    GameObject modify = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageFireboltBasic.prefab").WaitForCompletion();
-                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
-                    if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
-                    ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
+
+                    var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
+                    var dmgTypeOld = projectileDamage.damageType;
+                    projectileDamage.damageType |= iDrive.DamageType;
+
+                    var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                    moddedDamage.Add(iDrive.ModdedDamageType);
+
+                    ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), 
+                        this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
+
+                    projectileDamage.damageType = dmgTypeOld;
+                    moddedDamage.Remove(iDrive.ModdedDamageType);
                 }
             }
         }

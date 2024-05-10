@@ -20,6 +20,8 @@ namespace RobDriver.SkillStates.Driver.LunarGrenade
         protected bool hasFired;
         protected string muzzleString;
 
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.lunarGrenadeProjectilePrefab;
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -57,6 +59,12 @@ namespace RobDriver.SkillStates.Driver.LunarGrenade
                     Ray aimRay = this.GetAimRay();
                     aimRay.direction = Util.ApplySpread(aimRay.direction, 0f, 0f, 1f, 1f, 0f, -5f);
 
+                    var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
+                    projectileDamage.damageType = iDrive.DamageType;
+
+                    var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                    moddedDamage.Add(iDrive.ModdedDamageType);
+
                     // copied from moff's rocket
                     // the fact that this item literally has to be hardcoded into character skillstates makes me so fucking angry you have no idea
                     if (this.characterBody.inventory && this.characterBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile) > 0)
@@ -66,35 +74,25 @@ namespace RobDriver.SkillStates.Driver.LunarGrenade
                         Vector3 rhs = Vector3.Cross(Vector3.up, aimRay.direction);
                         Vector3 axis = Vector3.Cross(aimRay.direction, rhs);
 
-                        float currentSpread = 0f;
-                        float angle = 0f;
-                        float num2 = 0f;
-                        num2 = UnityEngine.Random.Range(1f + currentSpread, 1f + currentSpread) * 3f;   //Bandit is x2
-                        angle = num2 / 2f;  //3 - 1 rockets
-
-                        Vector3 direction = Quaternion.AngleAxis(-num2 * 0.5f, axis) * aimRay.direction;
-                        Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+                        Vector3 direction = Quaternion.AngleAxis(-1.5f, axis) * aimRay.direction;
+                        Quaternion rotation = Quaternion.AngleAxis(1.5f, axis);
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            GameObject modify = Modules.Projectiles.lunarGrenadeProjectilePrefab;
-                            modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
-                            if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
-                            ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
-                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
+                            ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction),
+                                this.gameObject, damageMult * this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
+                            
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        GameObject modify = Modules.Projectiles.lunarGrenadeProjectilePrefab;
-                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.DamageType;
-                        if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.ModdedDamageType);
-                        ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.ModdedDamageType);
+                        ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction),
+                            this.gameObject, this.damageStat * Shoot.damageCoefficient, 120f, this.RollCrit(), DamageColorIndex.Default, null, 75f);
                     }
+
+                    projectileDamage.damageType = DamageType.Generic;
+                    moddedDamage.Remove(iDrive.ModdedDamageType);
                 }
             }
         }

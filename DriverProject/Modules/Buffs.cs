@@ -21,12 +21,12 @@ namespace RobDriver.Modules
 
         internal static BuffDef dazedDebuff;
         internal static BuffDef woundDebuff;
+        internal static BuffDef gougeDebuff;
         internal static BuffDef syringeDamageBuff;
         internal static BuffDef syringeAttackSpeedBuff;
         internal static BuffDef syringeCritBuff;
         internal static BuffDef syringeScepterBuff;
         internal static BuffDef syringeNewBuff;
-        internal static BuffDef gougeBuff;
 
         internal static void RegisterBuffs()
         {
@@ -37,42 +37,11 @@ namespace RobDriver.Modules
             syringeCritBuff = AddNewBuff("RobDriverSyringeCritBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 80f / 255f, 17f / 255f), false, false);
             syringeNewBuff = AddNewBuff("RobDriverSyringeNewBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), new Color(1f, 70f / 255f, 75f / 255f), false, false);
             syringeScepterBuff = AddNewBuff("RobDriverSyringeScepterBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBuffSyringe"), Modules.Survivors.Driver.characterColor, false, false);
-            gougeBuff = AddNewBuff("BuffGouge", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texIconBuffGouge"), new Color (0.67058825f, 0.15686275f, 0.16862746f), false, false);
+            gougeDebuff = AddNewBuff("RobDriverGougeDebuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texIconBuffGouge"), new Color (0.67058825f, 0.15686275f, 0.16862746f), false, false);
 
-            gougeIndex = DotAPI.RegisterDotDef(0.25f, 0.25f, DamageColorIndex.SuperBleed, gougeBuff);
-
-            On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
+            gougeIndex = DotAPI.RegisterDotDef(0.25f, 0.25f, DamageColorIndex.SuperBleed, gougeDebuff);
         }
-        private static void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
-        {
-            bool triggerGougeProc = false;
-            if (NetworkServer.active)
-            {
-                if (damageInfo.dotIndex == gougeIndex && damageInfo.procCoefficient == 0f && self.alive)
-                {
-                    if (damageInfo.attacker)
-                    {
-                        CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
-                        if (attackerBody)
-                        {
-                            damageInfo.crit = Util.CheckRoll(attackerBody.crit, attackerBody.master);
-                        }
-                    }
-                    damageInfo.procCoefficient = 0.2f;
-                    triggerGougeProc = true;
-                }
-            }
 
-            orig(self, damageInfo);
-
-            if (NetworkServer.active && !damageInfo.rejected && self.alive)
-            {
-                if (triggerGougeProc)
-                {
-                    GlobalEventManager.instance.OnHitEnemy(damageInfo, self.gameObject);
-                }
-            }
-        }
         // simple helper method
         internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff)
         {

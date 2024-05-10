@@ -13,8 +13,6 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.grenadeLauncherCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Legendary;
         public override int shotCount => 12;
-        public override bool isMelee => false;
-
         public override Mesh mesh => Modules.Assets.LoadMesh("meshArmBFG");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/BFG/matBFG.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.Default;

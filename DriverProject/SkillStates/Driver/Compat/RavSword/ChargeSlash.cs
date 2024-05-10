@@ -24,7 +24,7 @@ namespace RobDriver.SkillStates.Driver.Compat
             {
                 if (!this.inputBank.skill1.down && base.fixedAge >= 0.1f || this.isGrounded && base.fixedAge >= 1.25f)
                 {
-                    if (!this.ravController.isWallClinging)
+                    if (!this.iDrive.isWallClinging)
                     {
                         this.outer.SetNextState(new ThrowSlash());
                         return;

@@ -28,7 +28,7 @@ namespace RobDriver.SkillStates.Driver.Skateboard
             }
 
             Util.PlaySound("sfx_driver_foley_syringe", this.gameObject);
-            base.PlayCrossfade("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration, 0.1f);
+            base.PlayCrossfade("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration, 0.2f / this.attackSpeedStat);
 
             this.SmallHop(this.characterMotor, 10f);
 
@@ -56,7 +56,7 @@ namespace RobDriver.SkillStates.Driver.Skateboard
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Death;
+            return InterruptPriority.Frozen;
         }
     }
 }

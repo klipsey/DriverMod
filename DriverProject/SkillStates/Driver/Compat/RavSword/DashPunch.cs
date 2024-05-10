@@ -7,10 +7,9 @@ using RoR2;
 using RoR2.Audio;
 using RoR2.Projectile;
 using UnityEngine;
-using RobDriver.Modules;
-using UnityEngine.Networking;
-using static RoR2.CameraTargetParams;
 using RobDriver.Modules.Components;
+using R2API;
+using RobDriver.Modules;
 
 namespace RobDriver.SkillStates.Driver.Compat
 {
@@ -42,7 +41,6 @@ namespace RobDriver.SkillStates.Driver.Compat
 
         public override void OnEnter()
         {
-            RefreshState();
             base.OnEnter();
             aimDirection = GetAimRay().direction;
             aimDirection.y = Mathf.Clamp(aimDirection.y, -0.75f, 0.75f);
@@ -63,7 +61,6 @@ namespace RobDriver.SkillStates.Driver.Compat
             });
 
             subState = SubState.Windup;
-
 
             GetModelAnimator().SetFloat("leapDir", inputBank.aimDirection.y);
         }
@@ -109,89 +106,94 @@ namespace RobDriver.SkillStates.Driver.Compat
             }
         }
 
-
-        public override void OnExit()
-        {
-            base.OnExit();
-        }
-
         public void AttemptGrab()
         {
-            Ray aimRay = GetAimRay();
-            SphereSearch s = new SphereSearch()
+            Ray aimRay = base.GetAimRay();
+
+            BullseyeSearch bullseyeSearch = new BullseyeSearch
             {
-                origin = this.transform.position,
-                radius = this.grabRadius,
-                mask = LayerIndex.entityPrecise.mask
-            }.RefreshCandidates()
-            .FilterCandidatesByHurtBoxTeam(TeamMask.GetEnemyTeams(base.GetTeam()))
-            .OrderCandidatesByDistance()
-            .FilterCandidatesByDistinctHurtBoxEntities();
-            var hurtBox = s.GetHurtBoxes().FirstOrDefault();
+                teamMaskFilter = TeamMask.GetEnemyTeams(base.GetTeam()),
+                filterByLoS = false,
+                searchOrigin = base.transform.position,
+                searchDirection = UnityEngine.Random.onUnitSphere,
+                sortMode = BullseyeSearch.SortMode.Distance,
+                maxDistanceFilter = grabRadius,
+                maxAngleFilter = 360f
+            };
+            bullseyeSearch.RefreshCandidates();
+            bullseyeSearch.FilterOutGameObject(base.gameObject);
 
-            if (hurtBox)
+            foreach (HurtBox hurtBox in bullseyeSearch.GetResults())
             {
-                this.ravController.RefreshBlink();
-                EffectManager.SpawnEffect(Modules.Assets.bloodExplosionEffect, new EffectData
+                if (hurtBox && hurtBox.healthComponent && hurtBox.healthComponent.body)
                 {
-                    origin = hurtBox.transform.position,
-                    scale = 2f
-                }, false);
-
-                if (DriverPlugin.ravagerInstalled)
-                {
-                    Util.PlaySound("sfx_ravager_punch", gameObject);
-                    Util.PlaySound("sfx_ravager_punch_generic", hurtBox.gameObject);
-                }
-                else
-                {
-                    Util.PlaySound("Play_loader_shift_release", gameObject);
-                    Util.PlaySound("sfx_driver_impact_hammer", hurtBox.gameObject);
-                }
-
-                hurtBox.gameObject.AddComponent<ConsumeTracker>().attackerBody = this.characterBody;
-
-                if (base.isAuthority)
-                {
-                    float dmg = punchDamageCoefficient * damageStat;
-                    //if (this.empowered) dmg *= 2f;
-
-                    float force = 4000f;
-                    if (hurtBox.healthComponent.body.isChampion) force = 24000f;
-
-                    // damage
-                    BlastAttack.Result result = new BlastAttack
+                    this.iDrive.RefreshBlink();
+                    EffectManager.SpawnEffect(Modules.Assets.bloodExplosionEffect, new EffectData
                     {
-                        attacker = gameObject,
-                        procChainMask = default,
-                        impactEffect = EffectIndex.Invalid,
-                        losType = BlastAttack.LoSType.None,
-                        damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Stun1s | DamageType.NonLethal,
-                        procCoefficient = 1f,
-                        bonusForce = GetAimRay().direction.normalized * force,
-                        baseForce = 0f,
-                        baseDamage = dmg,
-                        falloffModel = BlastAttack.FalloffModel.None,
-                        radius = 0.4f,
-                        position = hurtBox.transform.position,
-                        attackerFiltering = AttackerFiltering.NeverHitSelf,
-                        teamIndex = GetTeam(),
-                        inflictor = gameObject,
-                        crit = RollCrit()
-                    }.Fire();
+                        origin = hurtBox.transform.position,
+                        scale = 2f
+                    }, false);
 
-                    // shockwave
-                    FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
-                    fireProjectileInfo.position = hurtBox.transform.position + aimRay.direction * -4f;
-                    fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
-                    fireProjectileInfo.crit = RollCrit();
-                    fireProjectileInfo.damage = 10f * damageStat;
-                    fireProjectileInfo.owner = gameObject;
-                    fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchShockwave;
-                    ProjectileManager.instance.FireProjectile(fireProjectileInfo);
+                    if (DriverPlugin.ravagerInstalled)
+                    {
+                        Util.PlaySound("sfx_ravager_punch", gameObject);
+                        Util.PlaySound("sfx_ravager_punch_generic", hurtBox.gameObject);
+                    }
+                    else
+                    {
+                        Util.PlaySound("Play_loader_shift_release", gameObject);
+                        Util.PlaySound("sfx_driver_impact_hammer", hurtBox.gameObject);
+                    }
 
-                    outer.SetNextState(new PunchRecoil());
+                    if (base.isAuthority)
+                    {
+                        float dmg = punchDamageCoefficient * this.damageStat;
+                        //if (this.empowered) dmg *= 2f;
+
+                        float force = 4000f;
+                        if (hurtBox.healthComponent.body.isChampion) force = 24000f;
+
+                        // damage
+                        new BlastAttack
+                        {
+                            attacker = base.gameObject,
+                            procChainMask = default(ProcChainMask),
+                            impactEffect = EffectIndex.Invalid,
+                            losType = BlastAttack.LoSType.None,
+                            damageColorIndex = DamageColorIndex.Default,
+                            damageType = DamageType.Stun1s | DamageType.NonLethal,
+                            procCoefficient = 1f,
+                            bonusForce = this.GetAimRay().direction.normalized * force,
+                            baseForce = 0f,
+                            baseDamage = dmg,
+                            falloffModel = BlastAttack.FalloffModel.None,
+                            radius = 0.4f,
+                            position = hurtBox.transform.position,
+                            attackerFiltering = AttackerFiltering.NeverHitSelf,
+                            teamIndex = base.GetTeam(),
+                            inflictor = base.gameObject,
+                            crit = base.RollCrit()
+                        }.Fire();
+
+                        var dmgType = Projectiles.punchShockwave.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+                        dmgType.Add(this.iDrive.ModdedDamageType);
+                        // shockwave
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                        {
+                            position = hurtBox.transform.position + (aimRay.direction * -4f),
+                            rotation = Quaternion.LookRotation(aimRay.direction),
+                            crit = this.RollCrit(),
+                            damage = 10f * this.damageStat,
+                            owner = this.gameObject,
+                            projectilePrefab = Modules.Projectiles.punchShockwave,
+                            damageTypeOverride = this.iDrive.DamageType
+                        });
+                        dmgType.Remove(this.iDrive.ModdedDamageType);
+
+                        this.outer.SetNextState(new PunchRecoil());
+                    }
+
+                    return;
                 }
             }
         }

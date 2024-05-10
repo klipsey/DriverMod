@@ -1,6 +1,9 @@
-﻿using RobDriver.Modules;
+﻿using EntityStates;
+using RobDriver.Modules;
+using RobDriver.Modules.Survivors;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RobDriver
@@ -26,6 +29,7 @@ namespace RobDriver
         internal static DriverWeaponDef LunarHammer;
         internal static DriverWeaponDef NemmandoGun;
         internal static DriverWeaponDef NemmercGun;
+        internal static DriverWeaponDef RavSword;
 
         public static void AddWeapon(DriverWeaponDef weaponDef)
         {
@@ -68,11 +72,14 @@ namespace RobDriver
 
             // add config
             Modules.Config.InitWeaponConfig(weaponDef);
+
             Debug.Log("Added " + weaponDef.nameToken + " to catalog with index: " + weaponDef.index);
         }
 
         public static void AddWeaponDrop(string bodyName, DriverWeaponDef weaponDef, bool autoComplete = true)
         {
+            if (string.IsNullOrWhiteSpace(bodyName)) return;
+
             if (autoComplete)
             {
                 if (!bodyName.Contains("Body")) bodyName += "Body";
@@ -100,37 +107,29 @@ namespace RobDriver
 
         public static DriverWeaponDef GetRandomWeapon()
         {
-            List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();
+            var validWeapons = weaponDefs.Where(def => Config.GetWeaponConfigEnabled(def) && def.shotCount > 0);
 
-            for (int i = 0; i < weaponDefs.Length; i++)
-            {
-                if (Modules.Config.GetWeaponConfigEnabled(weaponDefs[i]) && weaponDefs[i].shotCount > 0) validWeapons.Add(weaponDefs[i]);
-            }
+            if (!validWeapons.Any()) return Pistol; // pistol failsafe
 
-            DriverWeaponDef[] _validWeapons = validWeapons.ToArray();
-
-            if (_validWeapons.Length <= 0) return weaponDefs[0]; // pistol failsafe
-
-            return _validWeapons[UnityEngine.Random.Range(0, _validWeapons.Length)];
+            return validWeapons.ElementAt(UnityEngine.Random.Range(0, validWeapons.Count()));
         }
 
         public static DriverWeaponDef GetRandomWeaponFromTier(DriverWeaponTier tier)
         {
-            List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();
-
-            for (int i = 0; i < weaponDefs.Length; i++)
+            var validWeapons = weaponDefs.Where(def =>
             {
-                if (weaponDefs[i] && weaponDefs[i].tier == tier)
+                if (!Config.GetWeaponConfigEnabled(def) || def.shotCount == 0) return false;
+
+                if (tier == DriverWeaponTier.Legendary && Config.uniqueDropsAreLegendary.Value)
                 {
-                    if (Modules.Config.GetWeaponConfigEnabled(weaponDefs[i])) validWeapons.Add(weaponDefs[i]);
+                    return def.tier >= DriverWeaponTier.Legendary;
                 }
-            }
+                return def.tier == tier;
+            });
 
-            DriverWeaponDef[] _validWeapons = validWeapons.ToArray();
+            if (!validWeapons.Any()) return Pistol; // pistol failsafe if you disabled rocket launcher like a fucking retard or something
 
-            if (_validWeapons.Length <= 0) return weaponDefs[0]; // pistol failsafe if you disabled rocket launcher like a fucking retard or something
-
-            return _validWeapons[UnityEngine.Random.Range(0, _validWeapons.Length)];
+            return validWeapons.ElementAt(UnityEngine.Random.Range(0, validWeapons.Count()));
         }
     }
 }

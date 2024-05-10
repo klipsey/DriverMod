@@ -16,10 +16,11 @@ namespace RobDriver.Modules.Components
         {
             get
             {
+                // what the fuck was i smoking, this is hideous
                 if (this.weaponSkillSlot?.skillDef is null) this.weaponDef = DriverWeaponCatalog.Pistol;
                 else if (this.weaponDef is null) this.weaponDef = DriverWeaponCatalog.weaponDefs.FirstOrDefault(def =>
                         def.name == this.weaponSkillSlot.skillDef.skillName) ?? DriverWeaponCatalog.Pistol;
-                
+
                 return this.weaponDef;
             }
         }

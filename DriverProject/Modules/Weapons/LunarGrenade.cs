@@ -13,7 +13,6 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.grenadeLauncherCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Lunar;
         public override int shotCount => 40;
-        public override bool isMelee => false;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshLunarGrenade");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarGolem/matLunarGolem.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.TwoHanded;

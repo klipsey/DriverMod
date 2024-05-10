@@ -13,7 +13,6 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.grenadeLauncherCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Unique;
         public override int shotCount => 12;
-        public override bool isMelee => false;
         public override Mesh mesh => Modules.Assets.LoadMesh("meshScavGun");
         public override Material material => Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/TrimSheets/matTrimSheetConstructionBlueEmission.mat").WaitForCompletion();
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.TwoHanded;

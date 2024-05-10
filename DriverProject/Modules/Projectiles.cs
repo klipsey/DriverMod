@@ -34,6 +34,10 @@ namespace RobDriver.Modules
         public static GameObject coinProjectile;
 
         public static GameObject punchShockwave;
+
+        public static GameObject armCannonPrefab;
+        public static GameObject artiGauntletPrefab;
+
         internal static void RegisterProjectiles()
         {
             #region Stun Grenade
@@ -113,6 +117,12 @@ namespace RobDriver.Modules
             plasmaCannonProjectilePrefab = CreateRocket(false, "DriverPlasmaCannonProjectile");
             plasmaCannonProjectilePrefab.GetComponent<ProjectileController>().ghostPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BFG/BeamSphereGhost.prefab").WaitForCompletion();
             plasmaCannonProjectilePrefab.GetComponent<ProjectileImpactExplosion>().impactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BFG/BeamSphereExplosion.prefab").WaitForCompletion();
+
+            armCannonPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Vagrant/VagrantCannon.prefab").WaitForCompletion().InstantiateClone("ArmCannonPrefab", true);
+            armCannonPrefab.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+
+            artiGauntletPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageFireboltBasic.prefab").WaitForCompletion().InstantiateClone("ArtiGauntletPrefab", true);
+            artiGauntletPrefab.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
         }
 
         private static void CreateLunarShard()
@@ -120,6 +130,7 @@ namespace RobDriver.Modules
             lunarShard = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/LunarShardProjectile"), "DriverLunarShard", true);
             DriverPlugin.Destroy(lunarShard.GetComponent<ProjectileSteerTowardTarget>());
             lunarShard.GetComponent<ProjectileImpactExplosion>().blastDamageCoefficient = 1f;
+            lunarShard.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
 
             Prefabs.projectilePrefabs.Add(lunarShard);
 
@@ -181,6 +192,7 @@ namespace RobDriver.Modules
             rocketController.startSound = "";
 
             hmgGrenadeProjectilePrefab.GetComponent<Rigidbody>().useGravity = true;
+            hmgGrenadeProjectilePrefab.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
 
             Prefabs.projectilePrefabs.Add(hmgGrenadeProjectilePrefab);
         }
@@ -205,6 +217,7 @@ namespace RobDriver.Modules
             rocketController.startSound = "";
 
             lunarGrenadeProjectilePrefab.GetComponent<Rigidbody>().useGravity = true;
+            lunarGrenadeProjectilePrefab.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
 
             Prefabs.projectilePrefabs.Add(lunarGrenadeProjectilePrefab);
         }
@@ -233,7 +246,6 @@ namespace RobDriver.Modules
             coinProjectile.AddComponent<SkillLocator>();
             var teamComponent = coinProjectile.AddComponent<TeamComponent>();
             teamComponent.hideAllyCardDisplay = false;
-
 
             var characterBody = coinProjectile.AddComponent<CharacterBody>();
             characterBody.baseVisionDistance = Mathf.Infinity;
@@ -301,7 +313,7 @@ namespace RobDriver.Modules
         }
         private static void CreateShockwave()
         {
-            punchShockwave = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/LoaderZapCone.prefab").WaitForCompletion().InstantiateClone("RavagerPunchShockwave", true);
+            punchShockwave = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/LoaderZapCone.prefab").WaitForCompletion().InstantiateClone("DriverPunchShockwave", true);
 
             var p = punchShockwave.GetComponent<ProjectileProximityBeamController>();
             p.lightningType = RoR2.Orbs.LightningOrb.LightningType.MageLightning;
@@ -322,6 +334,8 @@ namespace RobDriver.Modules
             punchShockwave.transform.Find("Effect/Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat").WaitForCompletion();
 
             punchShockwave.transform.Find("Effect/Point Light").GetComponent<Light>().color = Color.red;
+
+            punchShockwave.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(DamageTypes.bloodExplosionIdentifier);
 
             Modules.Prefabs.projectilePrefabs.Add(punchShockwave);
 
@@ -379,6 +393,7 @@ namespace RobDriver.Modules
             }
 
             projectilePrefab.GetComponent<Rigidbody>().useGravity = gravity;
+            projectilePrefab.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
 
             Prefabs.projectilePrefabs.Add(projectilePrefab);
 

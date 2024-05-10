@@ -14,7 +14,6 @@ namespace RobDriver.Modules.Weapons
         public override GameObject crosshairPrefab => Modules.Assets.needlerCrosshairPrefab;
         public override DriverWeaponTier tier => DriverWeaponTier.Unique;
         public override int shotCount => 64;
-        public override bool isMelee => true;
         public override Mesh mesh => Modules.Assets.nemKatanaMesh;
         public override Material material => Assets.nemKatanaMat;
         public override DriverWeaponDef.AnimationSet animationSet => DriverWeaponDef.AnimationSet.BigMelee;
