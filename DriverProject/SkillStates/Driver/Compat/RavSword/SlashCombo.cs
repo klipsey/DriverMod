@@ -61,6 +61,18 @@ namespace RobDriver.SkillStates.Driver.Compat
             this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
         }
 
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
+            {
+                base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
+                this.outer.SetNextStateToMain();
+                return;
+            }
+        }
+
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);

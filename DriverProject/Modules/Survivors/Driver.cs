@@ -2777,9 +2777,16 @@ namespace RobDriver.Modules.Survivors
             // this is beyond stupid lmfao who let this monkey code
             if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("RobDriverBody"))
             {
+                int j = 0;
                 foreach (LanguageTextMeshController i in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>())
                 {
-                    if (i && i.token == "LOADOUT_SKILL_MISC") i.token = "Passive";
+                    // ?XD
+                    if (i && i.token == "LOADOUT_SKILL_MISC")
+                    {
+                        if (j <= 0) i.token = "Passive";
+                        else i.token = "Arsenal";
+                        j++;
+                    }
                 }
             }
         }
@@ -2969,7 +2976,7 @@ namespace RobDriver.Modules.Survivors
 
                         // use unique drop, otherwise roll random
                         DriverWeaponDef weaponDef;
-                        if (uniqueDrop != null && Util.CheckRoll(uniqueDrop.dropChance)) weaponDef = uniqueDrop;
+                        if (uniqueDrop && Util.CheckRoll(uniqueDrop.dropChance)) weaponDef = uniqueDrop;
                         else weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);

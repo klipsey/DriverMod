@@ -116,7 +116,7 @@ namespace RobDriver.Modules.Components
                                     h.enabled = false;
                                 }
 
-                                GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, this.transform.parent);
+                                GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
                                 ammoPickup.transform.localPosition = Vector3.zero;
                                 ammoPickup.transform.localRotation = Quaternion.identity;
                                 DoTextStuff(ammoPickup.transform, true);
