@@ -34,6 +34,7 @@ namespace RobDriver.Modules.Components
                 origin = this.coinPosition,
                 genericFloat = this.duration,
                 color = color,
+                genericFloat = this.duration
             };
             effectData.SetHurtBoxReference(this.target);
             EffectManager.SpawnEffect(Assets.coinOrbEffect, effectData, true);
@@ -75,7 +76,7 @@ namespace RobDriver.Modules.Components
                             origin = target.transform.position,
                             scale = bounceCount
                         };
-                        EffectManager.SpawnEffect(Assets.explosionEffect, effectData, transmit: true);
+                        EffectManager.SpawnEffect(Assets.coinImpact, effectData, transmit: true);
                     }
                     else
                     {
