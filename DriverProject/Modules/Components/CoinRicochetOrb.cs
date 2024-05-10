@@ -33,8 +33,7 @@ namespace RobDriver.Modules.Components
                 scale = this.scale * scale,
                 origin = this.coinPosition,
                 genericFloat = this.duration,
-                color = color,
-                genericFloat = this.duration
+                color = color
             };
             effectData.SetHurtBoxReference(this.target);
             EffectManager.SpawnEffect(Assets.coinOrbEffect, effectData, true);
