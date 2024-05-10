@@ -16,7 +16,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         public override void OnEnter()
         {
             base.OnEnter();
-            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, true);
+            if (this.iDrive.HasSpecialBullets) this.iDrive.ConsumeAmmo(1f, true);
             this.duration = this.baseDuration / this.attackSpeedStat;
             base.PlayAnimation("FullBody, Override", "PunchHit", "Grab.playbackRate", this.duration);
         }
@@ -44,6 +44,12 @@ namespace RobDriver.SkillStates.Driver.Compat
             {
                 this.outer.SetNextStateToMain();
             }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            this.iDrive.clingReady = true;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

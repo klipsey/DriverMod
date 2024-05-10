@@ -15,7 +15,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         public override void OnEnter()
         {
             this.RefreshState();
-            this.hitboxName = "Sword";
+            this.hitboxName = "Knife";
 
             this.damageCoefficient = _damageCoefficient;
             this.pushForce = 200f;
@@ -49,7 +49,7 @@ namespace RobDriver.SkillStates.Driver.Compat
                 this.baseEarlyExitTime = 0.75f;
                 this.hitStopDuration *= 2.5f;
                 this.attackStartTime = 0.22f;
-                this.damageType = DamageType.Stun1s | iDrive.DamageType;
+                this.damageType |= DamageType.Stun1s;
                 if (DriverPlugin.ravagerInstalled) this.swingSoundString = "sfx_ravager_bigswing";
                 else this.swingSoundString = "sfx_driver_swing_hammer";
                 this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
@@ -57,11 +57,6 @@ namespace RobDriver.SkillStates.Driver.Compat
             }
 
             base.OnEnter();
-        }
-
-        protected override void InitializeAttack()
-        {
-            base.InitializeAttack();
 
             this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
         }
@@ -69,7 +64,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            this.iDrive.RefreshBlink();
+            this.iDrive.clingReady = true;
             if (this.iDrive.HasSpecialBullets && !ammoConsumed)
             {
                 ammoConsumed = true;
@@ -133,17 +128,14 @@ namespace RobDriver.SkillStates.Driver.Compat
             if (this.swingIndex == 0) animString = "Slash1";
             if (this.swingIndex == 1) animString = "Slash2";
 
-            base.PlayCrossfade("Gesture, Override", animString, "Slash.playbackRate", this.duration, 0.1f);
+            base.PlayAnimation("Gesture, Override", animString, "Slash.playbackRate", this.duration);
         }
 
         protected override void SetNextState()
         {
             this.FireShuriken();
 
-            int index = this.swingIndex;
-            if (index == 0) index = 1;
-            else if (index == 1) index = 2;
-            else index = 0;
+            int index = (this.swingIndex + 1) % 3;
 
             this.outer.SetNextState(new SlashCombo
             {

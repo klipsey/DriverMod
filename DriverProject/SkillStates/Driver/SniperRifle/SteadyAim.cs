@@ -243,8 +243,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         Util.PlaySound("sfx_driver_headshot", base.gameObject);
                     }
                 };
-
-                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
             }
         }

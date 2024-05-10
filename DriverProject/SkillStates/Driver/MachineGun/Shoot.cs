@@ -104,7 +104,6 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
                 bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
-                //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
             }
 

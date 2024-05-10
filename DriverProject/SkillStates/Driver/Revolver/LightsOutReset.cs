@@ -62,8 +62,6 @@ namespace RobDriver.SkillStates.Driver.Revolver
                     hitInfo.hitHurtBox.healthComponent.gameObject.AddComponent<Modules.Components.DriverHeadshotTracker>();
                 }
             };
-
-            //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
             bulletAttack.Fire();
         }
     }

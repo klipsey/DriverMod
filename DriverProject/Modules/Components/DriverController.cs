@@ -24,6 +24,7 @@ namespace RobDriver.Modules.Components
         public bool HasSpecialBullets => this.currentBulletDef.index != DriverBulletCatalog.Default.index;
         public DamageType DamageType => this.currentBulletDef.bulletType;
         public DamageAPI.ModdedDamageType ModdedDamageType => this.currentBulletDef.moddedBulletType;
+        public float ammo => this.weaponTimer;
 
         public float chargeValue;
         //private bool timerStarted;
@@ -69,7 +70,7 @@ namespace RobDriver.Modules.Components
         public ParticleSystem machineGunVFX;
 
         private bool hasPickedUpHammer;
-        private bool pickedUpRavSword;
+        public bool pickedUpRavSword;
         private GameObject hammerEffectInstance;
         private GameObject hammerEffectInstance2;
 
@@ -81,8 +82,6 @@ namespace RobDriver.Modules.Components
         public bool isWallClinging;
         public bool clingReady;
         public float featherTimer;
-
-        public float ammo => this.weaponTimer;
 
         private DriverWeaponTracker weaponTracker
         {
@@ -477,21 +476,10 @@ namespace RobDriver.Modules.Components
                 }
             }
 
-            if (pickedUpRavSword)
+            if (pickedUpRavSword && !this.characterBody.characterMotor.isGrounded)
             {
                 this.featherTimer -= Time.fixedDeltaTime;
-
-                if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount || this.characterBody.characterMotor.isGrounded)
-                {
-                    this.clingReady = true;
-                }
             }
-        }
-         
-        // rav compat
-        public void RefreshBlink()
-        {
-            if (this.characterBody.characterMotor.jumpCount > 0) this.characterBody.characterMotor.jumpCount--;
         }
 
         public void ServerResetTimer()

@@ -24,12 +24,12 @@ namespace RobDriver.Modules.Weapons
         public override string uniqueDropBodyName => "VoidMegaCrab";
 
         public override SkillDef primarySkillDef => Modules.Skills.CreatePrimarySkillDef(
-new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.VoidRifle.Shoot)),
-"Weapon",
-"ROB_DRIVER_BODY_PRIMARY_VOIDRIFLE_NAME",
-"ROB_DRIVER_BODY_PRIMARY_VOIDRIFLE_DESCRIPTION",
-Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
-false);
+            new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.VoidRifle.Shoot)),
+            "Weapon",
+            "ROB_DRIVER_BODY_PRIMARY_VOIDRIFLE_NAME",
+            "ROB_DRIVER_BODY_PRIMARY_VOIDRIFLE_DESCRIPTION",
+            Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
+            false);
 
         public override SkillDef secondarySkillDef => Modules.Skills.CreateSkillDef(new SkillDefInfo
         {

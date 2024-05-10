@@ -395,8 +395,7 @@ namespace RobDriver.SkillStates.Driver
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                     };
                     bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
-                    //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
-bulletAttack.Fire();
+                    bulletAttack.Fire();
                 }
                 else
                 {
@@ -432,7 +431,7 @@ bulletAttack.Fire();
                     };
                     bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
-                    if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+                    if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
                     {
                         bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                         {
@@ -459,8 +458,6 @@ bulletAttack.Fire();
                             }
                         };
                     }
-
-                    //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                     bulletAttack.Fire();
                 }
             }
@@ -525,7 +522,7 @@ bulletAttack.Fire();
                 };
                 bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+                if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
                 {
                     bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                     {
@@ -551,8 +548,6 @@ bulletAttack.Fire();
                         }
                     };
                 }
-
-                //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
             }
         }

@@ -25,12 +25,12 @@ namespace RobDriver.Modules.Weapons
         public override string uniqueDropBodyName => "RobRavagerBody";
 
         public override SkillDef primarySkillDef => Modules.Skills.CreatePrimarySkillDef(
-        new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.SlashCombo)),
-        "Weapon",
-        DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_SLASHCOMBO_NAME",
-        DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_SLASHCOMBO_DESCRIPTION",
-        Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"),
-        true);
+            new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.SlashCombo)),
+            "Weapon",
+            DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_SLASHCOMBO_NAME",
+            DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_SLASHCOMBO_DESCRIPTION",
+            Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"),
+            true);
 
         public override SkillDef secondarySkillDef => Modules.Skills.CreateSkillDef(new SkillDefInfo
         {

@@ -36,7 +36,9 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
             base.PlayAnimation("Gesture, Override", "AimLightsOut", "Action.playbackRate", this.duration);
 
-            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolver.prefab").WaitForCompletion(), CrosshairUtils.OverridePriority.Skill);
+            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, 
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolver.prefab").WaitForCompletion(), 
+                CrosshairUtils.OverridePriority.Skill);
 
             this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
             {

@@ -1,19 +1,12 @@
-﻿using RobDriver.Modules.Components;
-using RobDriver.Modules;
+﻿using RobDriver.Modules;
 using RoR2.Projectile;
 using RoR2;
 using UnityEngine;
-using static UnityEngine.ParticleSystem.PlaybackState;
-using static UnityEngine.UI.GridLayoutGroup;
-using static UnityEngine.UI.Image;
 
 namespace RobDriver.SkillStates.Driver
 {
     public class Coin : BaseDriverSkillState
     {
-        public static float coinHorizontalSpeed = 7f;
-        public static GameObject coinPrefab = Projectiles.coinProjectile;
-        public static float ricochetMultiplier = 1.75f;
         private float baseDuration = 0.5f;
         private float duration;
 

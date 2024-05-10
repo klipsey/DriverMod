@@ -102,7 +102,7 @@ namespace RobDriver.SkillStates.Driver
 
 					if (base.characterMotor.jumpCount >= base.characterBody.baseJumpCount)
 					{
-						this.iDrive.featherTimer = 0.1f;
+						if (this.iDrive.pickedUpRavSword) this.iDrive.featherTimer = 0.1f;
 						hopooFeather = true;
 						horizontalBonus = 1.5f;
 						verticalBonus = 1.5f;

@@ -127,7 +127,6 @@ namespace RobDriver.SkillStates.Driver.Compat
             {
                 if (hurtBox && hurtBox.healthComponent && hurtBox.healthComponent.body)
                 {
-                    this.iDrive.RefreshBlink();
                     EffectManager.SpawnEffect(Modules.Assets.bloodExplosionEffect, new EffectData
                     {
                         origin = hurtBox.transform.position,

@@ -146,7 +146,7 @@ namespace RobDriver.SkillStates.BaseStates
             {
                 this.TriggerHitStop();
             }
-            if(base.isAuthority)
+            if (base.isAuthority)
             {
                 foreach (CoinController coin in CoinController.OverlapAttackGetCoins(attack).Where(c => c.canRicochet))
                 {

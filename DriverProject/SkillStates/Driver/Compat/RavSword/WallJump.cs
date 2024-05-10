@@ -49,6 +49,8 @@ namespace RobDriver.SkillStates.Driver.Compat
                         base.PlayAnimation("Body", "JumpEnemy");
                         Util.PlaySound("sfx_ravager_enemystep", this.gameObject);
                         GenericCharacterMain.ApplyJumpVelocity(base.characterMotor, base.characterBody, 1.5f, 1.5f, false);
+                        this.iDrive.clingReady = true;
+                        this.airTime = 0f;
                         return;
                     }
                 }

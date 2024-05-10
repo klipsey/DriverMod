@@ -37,7 +37,9 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
             this.Fire();
 
-            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolverFire.prefab").WaitForCompletion(), CrosshairUtils.OverridePriority.Skill);
+            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody,
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolverFire.prefab").WaitForCompletion(), 
+                CrosshairUtils.OverridePriority.Skill);
         }
 
         private void Fire()
@@ -112,8 +114,6 @@ namespace RobDriver.SkillStates.Driver.Revolver
                     hitInfo.hitHurtBox.healthComponent.gameObject.AddComponent<Modules.Components.DriverHeadshotTracker>();
                 }
             };
-
-            //bulletAttack.modifyOutgoingDamageCallback += Modules.Components.RicochetUtils.BulletAttackShootableDamageCallback;
             bulletAttack.Fire();
         }
 
@@ -148,7 +148,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
         public override void OnExit()
         {
             base.OnExit();
-            if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
+            this.crosshairOverrideRequest?.Dispose();
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

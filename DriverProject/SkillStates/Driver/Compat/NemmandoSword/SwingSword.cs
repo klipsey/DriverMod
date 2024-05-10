@@ -16,7 +16,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
         {
             RefreshState();
 
-            this.hitboxName = "Sword";
+            this.hitboxName = "Knife";
 
             this.damageCoefficient = _damageCoefficient;
             this.pushForce = 0f;
@@ -41,14 +41,9 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
             this.muzzleString = this.swingIndex == 0 ? "SwingMuzzle1" : "SwingMuzzle2";
 
             base.OnEnter();
-        }
 
-        protected override void InitializeAttack()
-        {
-            base.InitializeAttack();
-
-            this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
-            this.attack.AddModdedDamageType(Modules.DamageTypes.Gouge);
+            base.attack.AddModdedDamageType(iDrive.ModdedDamageType);
+            base.attack.AddModdedDamageType(DamageTypes.Gouge);
         }
 
         protected override void FireAttack()
@@ -111,15 +106,13 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
 
         protected override void PlayAttackAnimation()
         {
-            if (this.swingIndex == 1) base.PlayCrossfade("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration, 0.1f);
-            else base.PlayCrossfade("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration, 0.1f);
+            if (this.swingIndex == 1) base.PlayAnimation("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration);
+            else base.PlayAnimation("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration);
         }
 
         protected override void SetNextState()
         {
-            int index = this.swingIndex;
-            if (index == 0) index = 1;
-            else index = 0;
+            int index = (this.swingIndex + 1) % 2;
 
             this.outer.SetNextState(new SwingSword
             {

@@ -14,7 +14,7 @@ namespace RobDriver.SkillStates.Driver.Compat
         public override void OnEnter()
         {
             this.RefreshState();
-            this.hitboxName = "Sword";
+            this.hitboxName = "Knife";
 
             this.charge = Mathf.Clamp01(Util.Remap(this.characterMotor.velocity.magnitude, 0f, 60f, 0f, 1f));
 
@@ -37,7 +37,7 @@ namespace RobDriver.SkillStates.Driver.Compat
             this.hitEffectPrefab = Modules.Assets.redSlashImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
-            this.damageType = iDrive.DamageType;
+            this.damageType = this.iDrive.DamageType;
 
             this.muzzleString = "KnifeSwingMuzzle";
 
@@ -49,24 +49,19 @@ namespace RobDriver.SkillStates.Driver.Compat
                 else this.swingSoundString = "sfx_driver_swing_hammer";
                 this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
                 this.swingEffectPrefab = Modules.Assets.bigRedSwingEffect;
-                this.damageType = DamageType.Stun1s | iDrive.DamageType;
+                this.damageType |= DamageType.Stun1s;
             }
 
             base.OnEnter();
-        }
 
-        protected override void InitializeAttack()
-        {
-            base.InitializeAttack();
-
-            this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
+            base.attack.AddModdedDamageType(this.iDrive.ModdedDamageType);
         }
 
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
 
-            this.iDrive.RefreshBlink();
+            this.iDrive.clingReady = true;
             if (this.iDrive.HasSpecialBullets && !ammoConsumed)
             {
                 ammoConsumed = true;

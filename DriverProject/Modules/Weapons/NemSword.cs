@@ -25,12 +25,12 @@ namespace RobDriver.Modules.Weapons
         public override string uniqueDropBodyName => "NemCommando";
 
         public override SkillDef primarySkillDef => Modules.Skills.CreatePrimarySkillDef(
-        new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.NemmandoSword.SwingSword)),
-        "Weapon",
-        DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_NEMMANDOSWORD_NAME",
-        DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_NEMMANDOSWORD_DESCRIPTION",
-        Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texNemCommandoPrimary"),
-        false);
+            new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.NemmandoSword.SwingSword)),
+            "Weapon",
+            DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_NEMMANDOSWORD_NAME",
+            DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_NEMMANDOSWORD_DESCRIPTION",
+            Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texNemCommandoPrimary"),
+            false);
 
         public override SkillDef secondarySkillDef => Driver.nemmandoGunSecondarySkillDef;
 

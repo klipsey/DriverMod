@@ -35,15 +35,11 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
 
-            this.damageType = DamageType.Stun1s | iDrive.DamageType;
+            this.damageType = DamageType.Stun1s | this.iDrive.DamageType;
             if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
             else this.muzzleString = this.muzzleString ="SwingCenter2";
-            base.OnEnter();
-        }
 
-        protected override void InitializeAttack()
-        {
-            base.InitializeAttack();
+            base.OnEnter();
 
             this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
         }
@@ -59,6 +55,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 
             base.FireAttack();
         }
+
         public override void FixedUpdate()
         {
             base.FixedUpdate();
@@ -85,6 +82,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
                 }
             }
         }
+
         protected override void TriggerHitStop()
         {
             base.TriggerHitStop();
@@ -98,15 +96,13 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 
         protected override void PlayAttackAnimation()
         {
-            if (this.swingIndex == 1) base.PlayCrossfade("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration, 0.1f);
-            else base.PlayCrossfade("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration, 0.1f);
+            if (this.swingIndex == 1) base.PlayAnimation("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration);
+            else base.PlayAnimation("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration);
         }
 
         protected override void SetNextState()
         {
-            int index = this.swingIndex;
-            if (index == 0) index = 1;
-            else index = 0;
+            int index = (this.swingIndex + 1) % 2;
 
             this.outer.SetNextState(new SwingCombo
             {
