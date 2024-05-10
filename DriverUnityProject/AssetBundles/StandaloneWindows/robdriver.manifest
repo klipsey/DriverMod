@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1441634523
+CRC: 1500429952
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6e99a31143c3761758a50ed153296524
+    Hash: d7358ce3d689e9232b7b52305b6f5c1e
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ceef03d11c7d764988614db5f4eecd54
+    Hash: ce45ceba70adf8b6daea624248c4b20e
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -55,6 +55,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: db294d07add6b364f99a346939dd2a8a, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: fef0780b96a0f12448b6dd86f9c8139b, type: 3}
+- Class: 114
+  Script: {fileID: -1387411909, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 120
@@ -86,6 +88,7 @@ Assets:
 - Assets/Driver/Projectiles/texRampCrocoDiseaseDark.png
 - Assets/Driver/Animations/Skateboard/SkateFastest.anim
 - Assets/Driver/Animations/animDriverCSS.controller
+- Assets/Driver/Projectiles/lsdCoin.asset
 - Assets/Driver/Animations/Hammer/SprintFast.anim
 - Assets/Driver/Icons/Skill/texDashIcon.png
 - Assets/Driver/Materials/matSkateboard.mat

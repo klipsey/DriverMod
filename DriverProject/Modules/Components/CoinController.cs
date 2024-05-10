@@ -44,14 +44,14 @@ namespace RobDriver.Modules.Components
 
         public void OnProjectileImpact(ProjectileImpactInfo impactInfo)
         {
-            if (this.graceTimer <= 0f && !impactInfo.collider.GetComponent<HurtBox>() && !impactInfo.collider.GetComponent<CoinController>())
+            if (!impactInfo.collider.GetComponent<HurtBox>() && !impactInfo.collider.GetComponent<CoinController>())
             {
                 EffectData effectData = new EffectData
                 {
                     origin = base.transform.position,
-                    scale = 0.5f
+                    scale = 1f
                 };
-                EffectManager.SpawnEffect(Assets.explosionEffect, effectData, transmit: true);
+                EffectManager.SpawnEffect(Assets.coinImpact, effectData, transmit: true);
                 Destroy(base.gameObject);
             }
         }
@@ -101,9 +101,9 @@ namespace RobDriver.Modules.Components
                     EffectData effectData = new EffectData
                     {
                         origin = base.transform.position,
-                        scale = 0.5f
+                        scale = 1f
                     };
-                    EffectManager.SpawnEffect(Assets.explosionEffect, effectData, transmit: true);
+                    EffectManager.SpawnEffect(Assets.coinImpact, effectData, transmit: true);
                     EffectManager.SimpleSoundEffect(this.ricochetSound.index, base.transform.position, true);
 
                     Destroy(base.gameObject);

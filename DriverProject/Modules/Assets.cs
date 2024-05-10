@@ -588,8 +588,7 @@ namespace RobDriver.Modules
             nemKatanaMat = CreateMaterial("matNemKatana", 5f, Color.white, 1f);
             knifeMat = CreateMaterial("matKnife");
             skateboardMat = CreateMaterial("matSkateboard");
-            Material die = Addressables.LoadAssetAsync<Material>("RoR2/Base/Firework/matFireworkSparkle.mat").WaitForCompletion();
-            twinkleMat = die;
+            twinkleMat = Addressables.LoadAssetAsync<Material>("RoR2/Base/Firework/matFireworkSparkle.mat").WaitForCompletion(); ;
             shotgunShell = mainAssetBundle.LoadAsset<GameObject>("ShotgunShell");
             shotgunShell.GetComponentInChildren<MeshRenderer>().material = CreateMaterial("matShotgunShell");
             shotgunShell.AddComponent<Modules.Components.ShellController>();
@@ -1283,7 +1282,10 @@ namespace RobDriver.Modules
             coinImpact.AddComponent<DestroyOnParticleEnd>();
 
             var eff = coinImpact.transform.Find("Streaks_Ps").GetComponent<ParticleSystemRenderer>();
-            eff.material = die;
+            eff.material = twinkleMat;
+            eff.material.SetColor("_TintColor", Color.yellow);
+            eff = coinImpact.transform.Find("Flash_Ps").GetComponent<ParticleSystemRenderer>();
+            eff.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarSkillReplacements/matBirdHeartRuin.mat").WaitForCompletion();
             eff.material.SetColor("_TintColor", Color.yellow);
             AddNewEffectDef(coinImpact);
 
@@ -1292,7 +1294,6 @@ namespace RobDriver.Modules
             var effectComp = coinOrbEffect.AddComponent<EffectComponent>();
             effectComp.applyScale = true;
             var orbEffect = coinOrbEffect.AddComponent<CoinOrbEffect>();
-            orbEffect.duration = 2f;
 
             curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
             curve.preWrapMode = WrapMode.Clamp;
@@ -1342,7 +1343,6 @@ namespace RobDriver.Modules
             #endregion
 
             ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup").InstantiateClone("mdlAmmoPickup", false);
-            ammoPickupModel.transform.localScale = Vector3.one;
 
             ConvertAllRenderersToHopooShader(ammoPickupModel);
 
