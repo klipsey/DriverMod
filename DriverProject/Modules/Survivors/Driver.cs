@@ -2941,6 +2941,7 @@ namespace RobDriver.Modules.Survivors
 
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
+                    if (chance <= 0) return; // drop nothing
 
                     bool fuckMyAss = chance >= 100f;
 
