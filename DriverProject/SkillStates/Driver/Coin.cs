@@ -41,7 +41,7 @@ namespace RobDriver.SkillStates.Driver
                 aimRay.direction = Util.ApplySpread(aimRay.direction, 0, 0, 1f, 1f, 0f, -10);
                 Vector3 flickDirection = aimRay.direction;
                 flickDirection *= Mathf.Clamp(base.rigidbody.velocity.magnitude, 1f, 20f);
-                flickDirection.y += base.rigidbody.velocity.y;
+                flickDirection.y += Mathf.Max(base.rigidbody.velocity.y, 0);
                 ProjectileManager.instance.FireProjectile(Projectiles.coinProjectile, aimRay.origin, Util.QuaternionSafeLookRotation(flickDirection),
                     base.gameObject, 0f, 0f, false, DamageColorIndex.Default, null);
             }

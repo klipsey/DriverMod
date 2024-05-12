@@ -109,7 +109,7 @@ namespace RobDriver.Modules
         /// Adds a group of weapons to the default weapon skill family
         /// </summary>
         /// <param name="locked">If true, weapons will need to be randomly encountered before they are selectable</param>
-        public static void AddWeaponSkills(GameObject targetPrefab, IEnumerable<DriverWeaponDef> weaponDefs, bool locked = false)
+        public static void AddWeaponSkills(GameObject targetPrefab, IEnumerable<DriverWeaponDef> weaponDefs, bool locked)
         {
             var family = targetPrefab.GetComponent<DriverArsenal>().weaponSkillSlot.skillFamily;
             foreach (DriverWeaponDef weapon in weaponDefs)
@@ -121,7 +121,7 @@ namespace RobDriver.Modules
         /// Adds a single weapon to the default weapon skill family
         /// </summary>
         /// <param name="locked">If true, weapon will need to be randomly encountered before they are selectable</param>
-        public static void AddWeaponSkill(GameObject targetPrefab, DriverWeaponDef weaponDef, bool locked = false)
+        public static void AddWeaponSkill(GameObject targetPrefab, DriverWeaponDef weaponDef, bool locked)
         {
             AddSkillToFamily(targetPrefab.GetComponent<DriverArsenal>().weaponSkillSlot.skillFamily, 
                 CreateWeaponSkillDef(weaponDef), locked ? CreateUnlockableDef(weaponDef) : null);
@@ -139,22 +139,6 @@ namespace RobDriver.Modules
             {
                 skillFamily.variants[i].unlockableDef = unlockableDefs[i];
             }
-        }
-
-        /// <summary>
-        /// Creates an unlockable def for the weapon. By default, picking up a weapon will grant this unlock.
-        /// </summary>
-        public static UnlockableDef CreateUnlockableDef(DriverWeaponDef weaponDef)
-        {
-            var unlockableDef = ScriptableObject.CreateInstance<UnlockableDef>();
-            unlockableDef.cachedName = weaponDef.nameToken;
-            unlockableDef.nameToken = weaponDef.nameToken;
-            unlockableDef.getHowToUnlockString = () => Language.GetString(weaponDef.descriptionToken);
-            unlockableDef.getUnlockedString = () => Language.GetString(weaponDef.descriptionToken);
-            unlockableDef.hidden = false;
-
-            unlockableDefs.Add(unlockableDef);
-            return unlockableDef;
         }
 
         #endregion
@@ -210,10 +194,10 @@ namespace RobDriver.Modules
             return CreateSkillDef(info);
         }
 
-        internal static SkillDef CreateWeaponSkillDef(string skillName, string skillNameToken, string skillDescriptionToken, Sprite skillIcon)
+        internal static SkillDef CreateWeaponSkillDef(string skillNameToken, string skillDescriptionToken, Sprite skillIcon)
         {
             return CreateSkillDef(new SkillDefInfo(
-                skillName: skillName,
+                skillName: skillNameToken,
                 skillNameToken: skillNameToken,
                 skillDescriptionToken: skillDescriptionToken,
                 skillIcon: skillIcon,
@@ -226,10 +210,29 @@ namespace RobDriver.Modules
 
         internal static SkillDef CreateWeaponSkillDef(DriverWeaponDef weaponDef)
         {
-            return CreateWeaponSkillDef(weaponDef.name, weaponDef.nameToken, weaponDef.descriptionToken, 
-                Sprite.Create(weaponDef.icon as Texture2D, new Rect(0, 0, weaponDef.icon.width, weaponDef.icon.height), new Vector2(0.5f, 0.5f)));
+            return CreateWeaponSkillDef(weaponDef.nameToken, weaponDef.descriptionToken, Sprite.Create(weaponDef.icon
+                as Texture2D, new Rect(0, 0, weaponDef.icon.width, weaponDef.icon.height), new Vector2(0.5f, 0.5f)));
 
         }
+
+        /// <summary>
+        /// Creates an unlockable def for the weapon. By default, picking up a weapon will grant this unlock.
+        /// </summary>
+        internal static UnlockableDef CreateUnlockableDef(DriverWeaponDef weaponDef)
+        {
+            var unlockableDef = ScriptableObject.CreateInstance<UnlockableDef>();
+            unlockableDef.cachedName = weaponDef.nameToken;
+            unlockableDef.nameToken = weaponDef.nameToken;
+            unlockableDef.getHowToUnlockString = () => Language.GetString(weaponDef.descriptionToken);
+            unlockableDef.getUnlockedString = () => Language.GetString(weaponDef.descriptionToken);
+            unlockableDef.hidden = false;
+            unlockableDef.achievementIcon = Sprite.Create(weaponDef.icon as Texture2D,
+                new Rect(0, 0, weaponDef.icon.width, weaponDef.icon.height), new Vector2(0.5f, 0.5f));
+
+            unlockableDefs.Add(unlockableDef);
+            return unlockableDef;
+        }
+
         #endregion skilldefs
     }
 }

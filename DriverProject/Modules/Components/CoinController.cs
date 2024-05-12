@@ -66,7 +66,6 @@ namespace RobDriver.Modules.Components
 
         private void FixedUpdate()
         {
-            this.graceTimer -= Time.fixedDeltaTime;
             base.transform.Rotate(this.rotationSpeed * Time.fixedDeltaTime);
             if(startCoolStopwatch)
             {

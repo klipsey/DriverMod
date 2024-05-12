@@ -2777,14 +2777,12 @@ namespace RobDriver.Modules.Survivors
         {
             orig(self, unlockableDef, destUnlockableStrip);
 
-            if (DriverWeaponCatalog.weaponDefs.Select(def => def.nameToken).Contains(unlockableDef.nameToken))
+            if (DriverWeaponCatalog.weaponDefs.Any(def => def.nameToken == unlockableDef.nameToken))
             {
-                var weaponDef = DriverWeaponCatalog.weaponDefs.FirstOrDefault(x => x.nameToken == unlockableDef.nameToken);
-                if (weaponDef != null)
+                if (unlockableDef.achievementIcon?.texture is Texture icon)
                 {
-                    destUnlockableStrip.transform.Find("IconImage").GetComponent<RawImage>().texture = weaponDef.icon;
+                    destUnlockableStrip.transform.Find("IconImage").GetComponent<RawImage>().texture = icon;
                 }
-
                 destUnlockableStrip.GetComponent<TooltipProvider>().overrideTitleText = Language.GetString("ROB_DRIVER_BODY_WEAPON_UNLOCKABLE_NAME");
                 destUnlockableStrip.GetComponent<TooltipProvider>().overrideBodyText = Language.GetString("ROB_DRIVER_BODY_WEAPON_UNLOCKABLE_DESC"); ;
             }
