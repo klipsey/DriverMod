@@ -7,6 +7,8 @@ using RobDriver.Modules;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Utilities;
+using System.Diagnostics;
+using static UnityEngine.AddressableAssets.ResourceLocators.ContentCatalogData;
 
 namespace RobDriver.Modules
 {
@@ -195,12 +197,20 @@ namespace RobDriver.Modules
 
         public static DriverBulletDef GetRandomBulletFromTier(DriverWeaponTier tier)
         {
-            var validBullets = bulletDefs.Where(bullet => bullet.tier == tier);
+            var validBullets = new List<DriverBulletDef>();
 
-            if (!validBullets.Any()) return Default;
+            foreach (var bulletDef in bulletDefs)
+            {
+                if (bulletDef.tier == tier)
+                {
+                    validBullets.Add(bulletDef);
+                }
+            }
+
+            if (validBullets.Count == 0) return Default;
 
             int rnd = UnityEngine.Random.Range(0, validBullets.Count());
-            return validBullets.ElementAt(rnd);
+            return validBullets[rnd];
         }
     }
 }

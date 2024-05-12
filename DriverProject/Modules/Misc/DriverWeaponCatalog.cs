@@ -107,29 +107,42 @@ namespace RobDriver
 
         public static DriverWeaponDef GetRandomWeapon()
         {
-            var validWeapons = weaponDefs.Where(def => Config.GetWeaponConfigEnabled(def) && def.shotCount > 0);
+            List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();
 
-            if (!validWeapons.Any()) return Pistol; // pistol failsafe
+            for (int i = 0; i < weaponDefs.Length; i++)
+            {
+                if (Modules.Config.GetWeaponConfigEnabled(weaponDefs[i]) && weaponDefs[i].shotCount > 0) validWeapons.Add(weaponDefs[i]);
+            }
 
-            return validWeapons.ElementAt(UnityEngine.Random.Range(0, validWeapons.Count()));
+            if (validWeapons.Count <= 0) return Pistol; // pistol failsafe
+
+            return validWeapons[UnityEngine.Random.Range(0, validWeapons.Count)];
         }
 
         public static DriverWeaponDef GetRandomWeaponFromTier(DriverWeaponTier tier)
         {
-            var validWeapons = weaponDefs.Where(def =>
+            List<DriverWeaponDef> validWeapons = new List<DriverWeaponDef>();
+
+            for (int i = 0; i < weaponDefs.Length; i++)
             {
-                if (!Config.GetWeaponConfigEnabled(def) || def.shotCount == 0) return false;
-
-                if (tier == DriverWeaponTier.Legendary && Config.uniqueDropsAreLegendary.Value)
+                if (weaponDefs[i])
                 {
-                    return def.tier >= DriverWeaponTier.Legendary;
+                    if (Config.uniqueDropsAreLegendary.Value && tier == DriverWeaponTier.Legendary)
+                    {
+                        if (weaponDefs[i].tier >= tier && Modules.Config.GetWeaponConfigEnabled(weaponDefs[i])) 
+                            validWeapons.Add(weaponDefs[i]);
+                    }
+                    else
+                    {
+                        if (weaponDefs[i].tier == tier && Modules.Config.GetWeaponConfigEnabled(weaponDefs[i])) 
+                            validWeapons.Add(weaponDefs[i]);
+                    }
                 }
-                return def.tier == tier;
-            });
+            }
 
-            if (!validWeapons.Any()) return Pistol; // pistol failsafe if you disabled rocket launcher like a fucking retard or something
+            if (validWeapons.Count <= 0) return Pistol; // pistol failsafe if you disabled rocket launcher like a fucking retard or something
 
-            return validWeapons.ElementAt(UnityEngine.Random.Range(0, validWeapons.Count()));
+            return validWeapons[UnityEngine.Random.Range(0, validWeapons.Count)];
         }
     }
 }

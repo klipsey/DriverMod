@@ -132,10 +132,13 @@ namespace RobDriver.Modules.Components
             {
                 List<CoinController> coins = new List<CoinController>();
                 hurtBox.healthComponent.GetComponents(coins);
-                foreach (CoinController coin in coins.Where(coin => coin.canRicochet && prio < CoinController.RicochetPriority.Coin))
+                foreach (var coin in coins)
                 {
-                    target = hurtBox;
-                    prio = CoinController.RicochetPriority.Coin;
+                    if (coin.canRicochet && prio < CoinController.RicochetPriority.Coin)
+                    {
+                        target = hurtBox;
+                        prio = CoinController.RicochetPriority.Coin;
+                    }
                 }
 
                 CharacterBody body = hurtBox.healthComponent.body;
