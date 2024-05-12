@@ -23,8 +23,7 @@ namespace RobDriver.Modules.Components
         public NetworkSoundEventDef ricochetSound;
 
         public bool canRicochet = true;
-        private float graceTimer = 0.4f;
-        private float coolStopwatchScale = 0.001f;
+        private float coolStopwatchScale = 0.01f;
         private bool startCoolStopwatch = false;
         public float ricochetMultiplier = 2f;
         private Vector3 rotationSpeed = new Vector3(2000f, 0f, 0f);
@@ -74,7 +73,6 @@ namespace RobDriver.Modules.Components
                 this.coolStopwatchScale -= Time.fixedDeltaTime;
                 if (damageInfo.attacker && this.coolStopwatchScale <= 0f)
                 {
-                    this.startCoolStopwatch = false;
                     this.canRicochet = false;
                     TeamComponent teamComponent = damageInfo.attacker.GetComponent<TeamComponent>();
                     float co = damageInfo.damage / teamComponent.body.damage;

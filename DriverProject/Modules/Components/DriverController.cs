@@ -1,9 +1,11 @@
-﻿using R2API;
+﻿using HG;
+using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RobDriver.Modules.Survivors;
 using RoR2;
 using RoR2.Skills;
+using RoR2.Stats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -753,10 +755,11 @@ namespace RobDriver.Modules.Components
         {
             if (this.weaponDef.nameToken != this.defaultWeaponDef.nameToken && this.characterBody)
             {
-                NetworkUser networkUser = Util.LookUpBodyNetworkUser(this.characterBody);
-                if (networkUser && networkUser.localUser != null)
+                var statSheet = PlayerStatsComponent.FindBodyStatsComponent(this.characterBody);
+                var unlockable = UnlockableCatalog.GetUnlockableDef(this.weaponDef.nameToken);
+                if (unlockable && statSheet)
                 {
-                    networkUser.localUser.userProfile.AddUnlockToken(this.weaponDef.nameToken);
+                    statSheet.currentStats.AddUnlockable(unlockable);
                 }
             }
         }

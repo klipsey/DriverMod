@@ -75,7 +75,7 @@ namespace RobDriver.Modules.Weapons
             });
             DriverWeaponCatalog.AddWeapon(weaponDef);
             DriverWeaponCatalog.AddWeaponDrop(uniqueDropBodyName, weaponDef);
-            Skills.AddWeaponSkill(Driver.characterPrefab, weaponDef);
+            Skills.AddWeaponSkill(Driver.characterPrefab, weaponDef, locked: addToPool);
         }
     }
 }

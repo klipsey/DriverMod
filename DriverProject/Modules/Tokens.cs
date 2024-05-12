@@ -288,6 +288,9 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, land the killing blow on a boss with a Sniper Rifle.");
+
+            LanguageAPI.Add(prefix + "WEAPON_UNLOCKABLE_NAME", "Weapon Unlocked");
+            LanguageAPI.Add(prefix + "WEAPON_UNLOCKABLE_DESC", "This weapon can now be selected at any time from Driver's Arsenal");
             #endregion
 
 

@@ -16,6 +16,7 @@ using System;
 using MaterialHud;
 using TMPro;
 using RobDriver.Modules.Misc;
+using UnityEngine.UI;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -2768,6 +2769,25 @@ namespace RobDriver.Modules.Survivors
             On.EntityStates.AI.BaseAIState.AimInDirection += BaseAIState_AimInDirection;
 
             On.RoR2.UI.LoadoutPanelController.Rebuild += LoadoutPanelController_Rebuild;// the most useless hook ever.
+            On.RoR2.UI.GameEndReportPanelController.AssignUnlockToStrip += GameEndReportPanelController_AssignUnlockToStrip;
+        }
+
+        private static void GameEndReportPanelController_AssignUnlockToStrip(On.RoR2.UI.GameEndReportPanelController.orig_AssignUnlockToStrip orig, 
+            GameEndReportPanelController self, UnlockableDef unlockableDef, GameObject destUnlockableStrip)
+        {
+            orig(self, unlockableDef, destUnlockableStrip);
+
+            if (DriverWeaponCatalog.weaponDefs.Select(def => def.nameToken).Contains(unlockableDef.nameToken))
+            {
+                var weaponDef = DriverWeaponCatalog.weaponDefs.FirstOrDefault(x => x.nameToken == unlockableDef.nameToken);
+                if (weaponDef != null)
+                {
+                    destUnlockableStrip.transform.Find("IconImage").GetComponent<RawImage>().texture = weaponDef.icon;
+                }
+
+                destUnlockableStrip.GetComponent<TooltipProvider>().overrideTitleText = Language.GetString("ROB_DRIVER_BODY_WEAPON_UNLOCKABLE_NAME");
+                destUnlockableStrip.GetComponent<TooltipProvider>().overrideBodyText = Language.GetString("ROB_DRIVER_BODY_WEAPON_UNLOCKABLE_DESC"); ;
+            }
         }
 
         private static void LoadoutPanelController_Rebuild(On.RoR2.UI.LoadoutPanelController.orig_Rebuild orig, LoadoutPanelController self)
@@ -2777,15 +2797,14 @@ namespace RobDriver.Modules.Survivors
             // this is beyond stupid lmfao who let this monkey code
             if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("RobDriverBody"))
             {
-                int j = 0;
-                foreach (LanguageTextMeshController i in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>())
+                // i made it worse, youre welcome
+                string newToken = "Passive";
+                foreach (var label in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>().Where(label => label && label.token == "LOADOUT_SKILL_MISC"))
                 {
-                    // ?XD
-                    if (i && i.token == "LOADOUT_SKILL_MISC")
+                    if (newToken != null)
                     {
-                        if (j <= 0) i.token = "Passive";
-                        else i.token = "Arsenal";
-                        j++;
+                        label.token = newToken;
+                        newToken = newToken == "Passive" ? "Arsenal" : null;
                     }
                 }
             }
