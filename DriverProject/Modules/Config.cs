@@ -101,7 +101,7 @@ namespace RobDriver.Modules
 
             enableRecoil = Config.BindAndOptions("02 - Gameplay", "Enable Recoil", true, "Set to false to disable recoil from shooting guns.");
 
-            uniqueDropsAreLegendary = Config.BindAndOptions("02 - Gameplay", "Unique Drop Are Legendary", false, "Unique weapon drops from survivors are now in the legendary pool");
+            uniqueDropsAreLegendary = Config.BindAndOptions("02 - Gameplay", "Unique Drops Are Legendary", false, "Unique weapon drops from survivors are now in the legendary pool.");
             #endregion
 
             #region Pickups

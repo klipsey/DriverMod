@@ -57,7 +57,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
             LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
-            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"Enemies have a chance to drop <style=cIsHealth>bullets</style>. These give your <style=cIsHealth>pistol</style> <style=cIsDamage>powerful attacks</style> for a limited time!.");
+            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"Enemies have a chance to drop <style=cIsHealth>bullets</style>. These give your <style=cIsHealth>weapon</style> <style=cIsDamage>powerful attacks</style> for a limited time!");
 
             LanguageAPI.Add(prefix + "PASSIVE4_NAME", "Godsling");
             LanguageAPI.Add(prefix + "PASSIVE4_DESCRIPTION", $"I <style=cIsHealth>drive</style>.");
@@ -290,7 +290,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, land the killing blow on a boss with a Sniper Rifle.");
 
             LanguageAPI.Add(prefix + "WEAPON_UNLOCKABLE_NAME", "Weapon Unlocked");
-            LanguageAPI.Add(prefix + "WEAPON_UNLOCKABLE_DESC", "This weapon can now be selected at any time from Driver's Arsenal");
+            LanguageAPI.Add(prefix + "WEAPON_UNLOCKABLE_DESC", "This weapon can now be selected at any time from Driver's Arsenal.");
             #endregion
 
 
