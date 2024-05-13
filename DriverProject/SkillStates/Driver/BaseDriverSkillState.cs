@@ -21,8 +21,8 @@ namespace RobDriver.SkillStates.Driver
 
         public override void OnEnter()
         {
-            RefreshState();
             base.OnEnter();
+            RefreshState();
 
             if (this.hideGun) this.iDrive.weaponRenderer.gameObject.SetActive(false);
             if (this.prop != string.Empty) this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(true);

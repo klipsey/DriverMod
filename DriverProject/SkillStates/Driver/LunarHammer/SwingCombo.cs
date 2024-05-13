@@ -96,8 +96,8 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 
         protected override void PlayAttackAnimation()
         {
-            if (this.swingIndex == 1) base.PlayAnimation("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration);
-            else base.PlayAnimation("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration);
+            if (this.swingIndex == 1) base.PlayCrossfade("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration, 0.1f);
+            else base.PlayCrossfade("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration, 0.1f);
         }
 
         protected override void SetNextState()

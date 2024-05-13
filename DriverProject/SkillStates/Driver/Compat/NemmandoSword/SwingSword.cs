@@ -106,8 +106,8 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoSword
 
         protected override void PlayAttackAnimation()
         {
-            if (this.swingIndex == 1) base.PlayAnimation("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration);
-            else base.PlayAnimation("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration);
+            if (this.swingIndex == 1) base.PlayCrossfade("Gesture, Override", "HammerSwing2", "Swing.playbackRate", this.duration, 0.05f);
+            else base.PlayCrossfade("Gesture, Override", "HammerSwing1", "Swing.playbackRate", this.duration, 0.05f);
         }
 
         protected override void SetNextState()
