@@ -1,10 +1,8 @@
 ﻿using EntityStates;
-using R2API;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver.Bazooka
 {
@@ -67,12 +65,6 @@ namespace RobDriver.SkillStates.Driver.Bazooka
 
                     Ray aimRay = base.GetAimRay();
 
-                    var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
-                    projectileDamage.damageType = iDrive.DamageType;
-
-                    var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    moddedDamage.Add(iDrive.ModdedDamageType);
-
                     if (this.characterBody.inventory && this.characterBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile) > 0)
                     {
                         float damageMult = DriverPlugin.GetICBMDamageMult(this.characterBody);
@@ -85,20 +77,43 @@ namespace RobDriver.SkillStates.Driver.Bazooka
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction),
-                                this.gameObject, damageMult * this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
-                            
+                            ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                            {
+                                projectilePrefab = this.projectilePrefab,
+                                position = aimRay2.origin,
+                                rotation = Util.QuaternionSafeLookRotation(aimRay2.direction),
+                                owner = this.gameObject,
+                                damage = damageMult * this.damageStat * this.damageCoefficient,
+                                force = 1200f,
+                                crit = isCrit,
+                                damageColorIndex = DamageColorIndex.Default,
+                                target = null,
+                                speedOverride = this.speed,
+                                useSpeedOverride = true,
+                                damageTypeOverride = iDrive.DamageType
+                            });
+
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction),
-                            this.gameObject, this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                        {
+                            projectilePrefab = this.projectilePrefab,
+                            position = aimRay.origin,
+                            rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
+                            owner = this.gameObject,
+                            damage = this.damageStat * this.damageCoefficient,
+                            force = 1200f,
+                            crit = isCrit,
+                            damageColorIndex = DamageColorIndex.Default,
+                            target = null,
+                            speedOverride = this.speed,
+                            useSpeedOverride = true,
+                            damageTypeOverride = iDrive.DamageType
+                        });
                     }
-
-                    projectileDamage.damageType = DamageType.Generic;
-                    moddedDamage.Remove(iDrive.ModdedDamageType);
                 }
             }
         }

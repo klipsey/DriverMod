@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Utilities;
 using System.Diagnostics;
 using static UnityEngine.AddressableAssets.ResourceLocators.ContentCatalogData;
+using UnityEngine.Networking;
 
 namespace RobDriver.Modules
 {

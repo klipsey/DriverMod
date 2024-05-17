@@ -176,8 +176,6 @@ namespace RobDriver.SkillStates.Driver.Compat
                             crit = base.RollCrit()
                         }.Fire();
 
-                        var dmgType = Projectiles.punchShockwave.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                        dmgType.Add(this.iDrive.ModdedDamageType);
                         // shockwave
                         ProjectileManager.instance.FireProjectile(new FireProjectileInfo
                         {
@@ -186,9 +184,9 @@ namespace RobDriver.SkillStates.Driver.Compat
                             crit = this.RollCrit(),
                             damage = 10f * this.damageStat,
                             owner = this.gameObject,
-                            projectilePrefab = Modules.Projectiles.punchShockwave
+                            projectilePrefab = Modules.Projectiles.punchShockwave,
+                            damageTypeOverride = iDrive.DamageType
                         });
-                        dmgType.Remove(this.iDrive.ModdedDamageType);
 
                         this.outer.SetNextState(new PunchRecoil());
                     }

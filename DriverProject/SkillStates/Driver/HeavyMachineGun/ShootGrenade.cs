@@ -1,10 +1,8 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
-using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
-using R2API;
 
 namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 {
@@ -60,12 +58,6 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
                 {
                     Ray aimRay = this.GetAimRay();
 
-                    var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
-                    projectileDamage.damageType = iDrive.DamageType;
-
-                    var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    moddedDamage.Add(iDrive.ModdedDamageType);
-
                     // copied from moff's rocket
                     // the fact that this item literally has to be hardcoded into character skillstates makes me so fucking angry you have no idea
                     if (this.characterBody.inventory && this.characterBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile) > 0)
@@ -80,20 +72,43 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction),
-                                this.gameObject, damageMult * this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 80f);
-                            
+                            ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                            {
+                                projectilePrefab = this.projectilePrefab,
+                                position = aimRay2.origin,
+                                rotation = Util.QuaternionSafeLookRotation(aimRay2.direction),
+                                owner = this.gameObject,
+                                damage = damageMult * this.damageStat * ShootGrenade.damageCoefficient,
+                                force = 1200f,
+                                crit = this.isCrit,
+                                damageColorIndex = DamageColorIndex.Default,
+                                target = null,
+                                speedOverride = 80f,
+                                useSpeedOverride = true,
+                                damageTypeOverride = iDrive.DamageType
+                            });
+
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction),
-                            this.gameObject, this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 80f);
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                        {
+                            projectilePrefab = this.projectilePrefab,
+                            position = aimRay.origin,
+                            rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
+                            owner = this.gameObject,
+                            damage = this.damageStat * ShootGrenade.damageCoefficient,
+                            force = 1200f,
+                            crit = this.isCrit,
+                            damageColorIndex = DamageColorIndex.Default,
+                            target = null,
+                            speedOverride = 80f,
+                            useSpeedOverride = true,
+                            damageTypeOverride = iDrive.DamageType
+                        });
                     }
-
-                    projectileDamage.damageType = DamageType.Generic;
-                    moddedDamage.Remove(iDrive.ModdedDamageType);
                 }
             }
         }

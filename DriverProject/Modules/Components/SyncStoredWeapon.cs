@@ -45,8 +45,10 @@ namespace RobDriver.Modules.Components
                 DriverBulletDef bulletDef = DriverBulletCatalog.GetBulletDefFromIndex(this.bulletIndex);
 
                 // yes, this is a dumb way to do it
-                iDrive.PickUpWeaponDrop(weaponDef, bulletDef, this.ammo * 0.01f, false, false /*isNewAmmo*/);
-                iDrive.PickUpWeaponDrop(weaponDef, bulletDef, this.ammo * 0.01f, false, true /*isNewAmmo*/);
+                float ammoVal = this.ammo;
+                if (ammoVal != -1) ammoVal *= 0.01f;
+                iDrive.PickUpWeaponDrop(weaponDef, bulletDef, ammoVal, false, false /*isNewAmmo*/);
+                iDrive.PickUpWeaponDrop(weaponDef, bulletDef, ammoVal, false, true /*isNewAmmo*/);
             }
         }
 

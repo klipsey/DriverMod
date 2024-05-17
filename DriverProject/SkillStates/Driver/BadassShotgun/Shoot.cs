@@ -99,7 +99,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
                         muzzleName = muzzleString,
                         smartCollision = true,
                         procChainMask = default,
-                        procCoefficient = procCoefficient,
+                        procCoefficient = Shoot.procCoefficient,
                         radius = thiccness,
                         sniper = false,
                         stopperMask = LayerIndex.CommonMasks.bullet,
@@ -112,6 +112,7 @@ namespace RobDriver.SkillStates.Driver.BadassShotgun
                         HitEffectNormal = false,
                     };
                     bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
+
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
                     bulletAttack.bulletCount = 1;

@@ -95,7 +95,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                         muzzleName = muzzleString,
                         smartCollision = true,
                         procChainMask = default,
-                        procCoefficient = procCoefficient,
+                        procCoefficient = Shoot.procCoefficient,
                         radius = thiccness,
                         sniper = false,
                         stopperMask = LayerIndex.CommonMasks.bullet,

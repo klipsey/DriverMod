@@ -2998,7 +2998,7 @@ namespace RobDriver.Modules.Survivors
                         else weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
 
                         GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
-                        var weaponComponent = weaponPickup.GetComponentInChildren<WeaponPickup>();
+                        var weaponComponent = weaponPickup.GetComponent<SyncPickup>();
 
                         // add passive specific stuff
                         weaponComponent.isNewAmmoType = Util.CheckRoll(Config.godslingDropRateSplit.Value);

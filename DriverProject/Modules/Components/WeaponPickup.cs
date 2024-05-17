@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using RoR2;
 using UnityEngine.Networking;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
 
 namespace RobDriver.Modules.Components
 {
@@ -14,13 +12,25 @@ namespace RobDriver.Modules.Components
         public TeamFilter teamFilter;
 
         public DriverWeaponDef weaponDef;
-        public DriverBulletDef bulletDef;
+        private DriverBulletDef bulletDef;
+        private bool cutAmmo;
+        private bool isNewAmmoType;
 
         public GameObject pickupEffect;
+        public GameObject ammoPickup;
 
-        public bool cutAmmo = false;
-        public bool isNewAmmoType = false;
-        private bool alive = true;
+        public bool alive { get; private set; } = false;
+
+        public void UpdateWeaponPickup(DriverBulletDef bulletDef, bool cutAmmo, bool isNewAmmoType)
+        {
+            // make sure this is called before handling the collider logic
+            alive = true;
+            this.bulletDef = bulletDef;
+            this.cutAmmo = cutAmmo;
+            this.isNewAmmoType = isNewAmmoType;
+
+            UpdateVisuals();
+        }
 
         private void Awake()
         {
@@ -43,6 +53,10 @@ namespace RobDriver.Modules.Components
                         blinker.blinkingRootObject.SetActive(false);
                         Destroy(blinker);
                     }
+                    else
+                    {
+                        SetTextComponent(this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), this.weaponDef.nameToken, this.weaponDef.tier);
+                    }
                 }
             }
 
@@ -61,15 +75,10 @@ namespace RobDriver.Modules.Components
             this.Invoke("Fuck", 59.5f);
         }
 
-        private void Start()
-        {
-            this.SetWeapon(this.weaponDef, this.bulletDef, this.cutAmmo, this.isNewAmmoType);
-        }
-
         private void OnTriggerStay(Collider collider)
         {
             // can this run on every client? i don't know but let's find out
-            if (NetworkServer.active && this.alive/* && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex*/)
+            if (NetworkServer.active && this.alive && this.bulletDef/* && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex*/)
             {
                 // well it can but it's not a fix.
                 DriverController iDrive = collider.GetComponent<DriverController>();
@@ -87,110 +96,78 @@ namespace RobDriver.Modules.Components
             }
         }
 
-        public void SetWeapon(DriverWeaponDef newWeapon, DriverBulletDef newBullet, bool cutAmmo, bool isNewAmmoType)
+        private void UpdateVisuals()
         {
-            this.weaponDef = newWeapon;
-            this.bulletDef = newBullet;
-            this.cutAmmo = cutAmmo;
-            this.isNewAmmoType = isNewAmmoType;
+            // non - driver player, ignore all
+            var blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
+            if (!blinker) return;
 
-            SwapToAmmoVisuals();
-        }
-
-        private void SwapToAmmoVisuals()
-        {
             // swap to ammo visuals
             foreach (LocalUser i in LocalUserManager.readOnlyLocalUsersList)
             {
-                if (i.cachedBody.hasEffectiveAuthority)
+                if (i?.cachedBody && i.cachedBody.hasEffectiveAuthority)
                 {
-                    if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && i.cachedBody.TryGetComponent<DriverController>(out var iDrive))
+                    if (i.cachedBody.baseNameToken == Modules.Survivors.Driver.bodyNameToken && i.cachedBody.TryGetComponent<DriverController>(out var iDrive) && iDrive)
                     {
                         if (iDrive.passive.isPistolOnly || iDrive.passive.isBullets || (iDrive.passive.isRyan && this.isNewAmmoType))
                         {
-                            var blinker = this.transform.parent.GetComponentInChildren<BeginRapidlyActivatingAndDeactivating>();
-                            if (blinker)
+                            if (!ammoPickup)
                             {
                                 foreach (MeshRenderer h in blinker.blinkingRootObject.GetComponentsInChildren<MeshRenderer>())
                                 {
                                     h.enabled = false;
                                 }
 
-                                GameObject ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
+                                ammoPickup = GameObject.Instantiate(Modules.Assets.ammoPickupModel, blinker.blinkingRootObject.transform);
                                 ammoPickup.transform.localPosition = Vector3.zero;
                                 ammoPickup.transform.localRotation = Quaternion.identity;
-                                DoTextStuff(ammoPickup.transform, true);
                             }
+                            if (!this.bulletDef) SetTextComponent(ammoPickup.transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), "Bullets", DriverWeaponTier.Uncommon);
+                            else SetTextComponent(ammoPickup.transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), this.bulletDef.nameToken, this.bulletDef.tier);
                         }
-                        else
-                        {
-                            DoTextStuff(this.transform.parent, false);
-                        }
+                        else SetTextComponent(this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), this.weaponDef.nameToken, this.weaponDef.tier);
                     }
                     break;
                 }
             }
         }
 
-        private void DoTextStuff(Transform transform, bool isAmmo)
+        private void SetTextComponent(RoR2.UI.LanguageTextMeshController textComponent, string nameToken, DriverWeaponTier tier)
         {
-            RoR2.UI.LanguageTextMeshController textComponent = transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
             if (textComponent)
             {
-                if (!this.weaponDef)
-                {
-                    // band-aid i don't have the time to keep fighting with this code rn
-                    textComponent.token = "Weapon";
-                    return;
-                }
-                if(isAmmo && !this.bulletDef)
-                {
-                    textComponent.token = "Bullets";
-                    return;
-                }
-
-                if (isAmmo) textComponent.token = this.bulletDef.nameToken;
-                else textComponent.token = this.weaponDef.nameToken;
-
-                //Because all guns are "uncommon" we have to do this for ammo
-                Color commonColor = Modules.Helpers.whiteItemColor;
-                Color uncommonColor = Modules.Helpers.greenItemColor;
-                if (isAmmo)
-                {
-                    commonColor = Modules.Helpers.greenItemColor;
-                    uncommonColor = Modules.Helpers.whiteItemColor;
-                }
+                textComponent.token = nameToken;
 
                 if (this.cutAmmo)
                 {
                     textComponent.textMeshPro.color = Modules.Helpers.badColor;
+                    return;
                 }
-                else
+
+                switch (tier)
                 {
-                    switch (this.weaponDef.tier)
-                    {
-                        case DriverWeaponTier.Common:
-                            textComponent.textMeshPro.color = commonColor;
-                            break;
-                        case DriverWeaponTier.Uncommon:
-                            textComponent.textMeshPro.color = uncommonColor;
-                            break;
-                        case DriverWeaponTier.Legendary:
-                            textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
-                            break;
-                        case DriverWeaponTier.Unique:
-                            textComponent.textMeshPro.color = Modules.Helpers.yellowItemColor;
-                            break;
-                        case DriverWeaponTier.Lunar:
-                            textComponent.textMeshPro.color = Modules.Helpers.lunarItemColor;
-                            break;
-                        case DriverWeaponTier.Void:
-                            textComponent.textMeshPro.color = Modules.Helpers.voidItemColor;
-                            break;
-                    }
+                    case DriverWeaponTier.Common:
+                        textComponent.textMeshPro.color = Modules.Helpers.whiteItemColor;
+                        break;
+                    case DriverWeaponTier.Uncommon:
+                        textComponent.textMeshPro.color = Modules.Helpers.greenItemColor;
+                        break;
+                    case DriverWeaponTier.Legendary:
+                        textComponent.textMeshPro.color = Modules.Helpers.redItemColor;
+                        break;
+                    case DriverWeaponTier.Unique:
+                        textComponent.textMeshPro.color = Modules.Helpers.yellowItemColor;
+                        break;
+                    case DriverWeaponTier.Lunar:
+                        textComponent.textMeshPro.color = Modules.Helpers.lunarItemColor;
+                        break;
+                    case DriverWeaponTier.Void:
+                        textComponent.textMeshPro.color = Modules.Helpers.voidItemColor;
+                        break;
                 }
             }
         }
+
         private void Fuck()
         {
             if (this.alive)

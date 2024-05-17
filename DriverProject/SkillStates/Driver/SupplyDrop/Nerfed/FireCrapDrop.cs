@@ -1,8 +1,7 @@
-﻿using LostInTransit.DamageTypes;
-using RobDriver.Modules;
+﻿using RobDriver.Modules;
+using RobDriver.Modules.Components;
 using RoR2;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver.SupplyDrop.Nerfed
@@ -30,10 +29,9 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop.Nerfed
 
                 GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(_weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 
-                var weaponComponent = weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>();
-                weaponComponent.cutAmmo = true;
+                var weaponComponent = weaponPickup.GetComponent<SyncPickup>();
                 weaponComponent.bulletDef = _bulletDef;
-                weaponComponent.isNewAmmoType = false;
+                weaponComponent.cutAmmo = true;
 
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;

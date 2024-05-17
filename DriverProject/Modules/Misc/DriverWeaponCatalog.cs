@@ -1,10 +1,12 @@
 ﻿using EntityStates;
+using EntityStates.Executioner;
 using RobDriver.Modules;
 using RobDriver.Modules.Survivors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RobDriver
 {
@@ -102,7 +104,7 @@ namespace RobDriver
 
         public static DriverWeaponDef GetWeaponFromIndex(int index)
         {
-            return weaponDefs[index];
+            return weaponDefs.ElementAtOrDefault(index) ?? Pistol;
         }
 
         public static DriverWeaponDef GetRandomWeapon()

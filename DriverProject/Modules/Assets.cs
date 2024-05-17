@@ -1498,6 +1498,8 @@ namespace RobDriver.Modules
             newPickup.transform.Find("Visuals").Find("Particle System").Find("Particle System").gameObject.SetActive(false);
             newPickup.GetComponentInChildren<Light>().color = Modules.Survivors.Driver.characterColor;
 
+            newPickup.AddComponent<SyncPickup>();
+
             // i seriously hate this but it works
             return newPickup;
         }

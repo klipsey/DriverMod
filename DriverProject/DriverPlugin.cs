@@ -77,8 +77,6 @@ namespace RobDriver
             new Modules.Survivors.Driver().CreateCharacter();
 
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeapon>();
-            //NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeaponPickup>();
-            // kill me
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncOverlay>();
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncStoredWeapon>();
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncDecapitation>();

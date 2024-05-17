@@ -1,10 +1,8 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
-using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
-using R2API;
 
 namespace RobDriver.SkillStates.Driver.ArtiGauntlet
 {
@@ -60,19 +58,21 @@ namespace RobDriver.SkillStates.Driver.ArtiGauntlet
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
-
-                    var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
-                    var dmgTypeOld = projectileDamage.damageType;
-                    projectileDamage.damageType |= iDrive.DamageType;
-
-                    var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    moddedDamage.Add(iDrive.ModdedDamageType);
-
-                    ProjectileManager.instance.FireProjectile(this.projectilePrefab, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), 
-                        this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
-
-                    projectileDamage.damageType = dmgTypeOld;
-                    moddedDamage.Remove(iDrive.ModdedDamageType);
+                    ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                    {
+                        projectilePrefab = this.projectilePrefab,
+                        position = aimRay.origin,
+                        rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
+                        owner = this.gameObject,
+                        damage = this.damageStat * this._damageCoefficient,
+                        force = 1200f,
+                        crit = this.isCrit,
+                        damageColorIndex = DamageColorIndex.Default,
+                        target = null,
+                        speedOverride = 120f,
+                        useSpeedOverride = true,
+                        damageTypeOverride = iDrive.DamageType
+                    });
                 }
             }
         }
