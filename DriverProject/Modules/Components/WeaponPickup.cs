@@ -122,8 +122,18 @@ namespace RobDriver.Modules.Components
                                 ammoPickup.transform.localPosition = Vector3.zero;
                                 ammoPickup.transform.localRotation = Quaternion.identity;
                             }
-                            if (!this.bulletDef) SetTextComponent(ammoPickup.transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), "Bullets", DriverWeaponTier.Uncommon);
-                            else SetTextComponent(ammoPickup.transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), this.bulletDef.nameToken, this.bulletDef.tier);
+
+                            var ammoText = ammoPickup.transform.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>();
+                            if (this.bulletDef)
+                            {
+                                SetTextComponent(ammoText, this.bulletDef.nameToken, this.bulletDef.tier);
+                                ammoText.textMeshPro.outlineColor = this.bulletDef.trailColor;
+                                ammoText.textMeshPro.outlineWidth *= 0.5f;
+                            }
+                            else
+                            {
+                                SetTextComponent(ammoText, "Bullets", DriverWeaponTier.Uncommon);
+                            }
                         }
                         else SetTextComponent(this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), this.weaponDef.nameToken, this.weaponDef.tier);
                     }

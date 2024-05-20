@@ -2,6 +2,7 @@
 using RoR2.Projectile;
 using RoR2;
 using UnityEngine;
+using EntityStates;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -51,5 +52,11 @@ namespace RobDriver.SkillStates.Driver
             return aimRay;
         }
 
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            if (base.fixedAge < this.duration * 0.5) return InterruptPriority.Pain;
+            return InterruptPriority.Skill;
+        }
     }
 }

@@ -127,17 +127,18 @@ namespace RobDriver
 
             for (int i = 0; i < weaponDefs.Length; i++)
             {
-                if (weaponDefs[i])
+                var weaponDef = weaponDefs[i];
+                if (weaponDef)
                 {
                     if (Config.uniqueDropsAreLegendary.Value && tier == DriverWeaponTier.Legendary)
                     {
-                        if (weaponDefs[i].tier >= tier && Modules.Config.GetWeaponConfigEnabled(weaponDefs[i])) 
-                            validWeapons.Add(weaponDefs[i]);
+                        if (weaponDef.tier >= tier && Modules.Config.GetWeaponConfigEnabled(weaponDef)) 
+                            validWeapons.Add(weaponDef);
                     }
                     else
                     {
-                        if (weaponDefs[i].tier == tier && Modules.Config.GetWeaponConfigEnabled(weaponDefs[i])) 
-                            validWeapons.Add(weaponDefs[i]);
+                        if (weaponDef.tier == tier && Modules.Config.GetWeaponConfigEnabled(weaponDef)) 
+                            validWeapons.Add(weaponDef);
                     }
                 }
             }

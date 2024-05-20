@@ -304,18 +304,37 @@ namespace RobDriver.Modules
 
                     float missileDamage = Util.OnHitProcDamage(damageInfo.damage, attackerBody.damage, 1.5f + 1.5f * missileCount) * DriverPlugin.GetICBMDamageMult(attackerBody);
 
-                    for (int i = 0; i < (icbmCount == 0 ? 1 : 3); i++)
+                    ProcChainMask procChainMask = damageInfo.procChainMask;
+                    procChainMask.AddProc(ProcType.Missile);
+
+                    var initialDirection = Vector3.up + UnityEngine.Random.insideUnitSphere * 0.1f;
+
+                    FireProjectileInfo fireProjectileInfo = new FireProjectileInfo
                     {
-                        MissileUtils.FireMissile(
-                            attackerBody.corePosition,
-                            attackerBody,
-                            damageInfo.procChainMask,
-                            victim,
-                            missileDamage,
-                            damageInfo.crit,
-                            Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/MissileProjectile.prefab").WaitForCompletion(),
-                            DamageColorIndex.Item,
-                            true /*addMissileProc*/);
+                        projectilePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/MissileProjectile.prefab").WaitForCompletion(),
+                        position = attackerBody.corePosition,
+                        rotation = Util.QuaternionSafeLookRotation(initialDirection),
+                        procChainMask = procChainMask,
+                        target = victim,
+                        owner = attackerBody.gameObject,
+                        damage = missileDamage,
+                        crit = damageInfo.crit,
+                        force = 200f,
+                        damageColorIndex = DamageColorIndex.Item
+                    };
+                    ProjectileManager.instance.FireProjectile(fireProjectileInfo);
+
+                    if (icbmCount > 0)
+                    {
+                        var axis = attackerBody.transform.position;
+
+                        FireProjectileInfo fireProjectileInfo2 = fireProjectileInfo;
+                        fireProjectileInfo2.rotation = Util.QuaternionSafeLookRotation(Quaternion.AngleAxis(45f, axis) * initialDirection);
+                        ProjectileManager.instance.FireProjectile(fireProjectileInfo2);
+
+                        FireProjectileInfo fireProjectileInfo3 = fireProjectileInfo;
+                        fireProjectileInfo3.rotation = Util.QuaternionSafeLookRotation(Quaternion.AngleAxis(-45f, axis) * initialDirection);
+                        ProjectileManager.instance.FireProjectile(fireProjectileInfo3);
                     }
                 } // end atg
 

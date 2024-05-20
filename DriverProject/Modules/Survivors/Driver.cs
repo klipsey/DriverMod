@@ -12,11 +12,11 @@ using System.Linq;
 using RobDriver.Modules.Components;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
-using System;
 using MaterialHud;
 using TMPro;
 using RobDriver.Modules.Misc;
 using UnityEngine.UI;
+using System;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -146,8 +146,6 @@ namespace RobDriver.Modules.Survivors
         internal static int baseSkinCount;
 
         internal static string bodyNameToken;
-
-        internal static Dictionary<string, int> renderInfoDict;
 
         internal void CreateCharacter()
         {
@@ -289,7 +287,7 @@ namespace RobDriver.Modules.Survivors
                 new CustomRendererInfo
                 {
                     childName = "KnifeModel",
-                    material = Modules.Assets.knifeMat
+                    material = Config.enableRevengence.Value ? Assets.nemKatanaMat : Assets.knifeMat
                 },
                 new CustomRendererInfo
                 {
@@ -342,8 +340,6 @@ namespace RobDriver.Modules.Survivors
                     material = Modules.Assets.nemKatanaMat
                 } };
 
-            // store (childName,arrayIndex) for other classes to access
-            renderInfoDict = customRendererInfo.ToDictionary(info => info.childName, info => Array.IndexOf(customRendererInfo, info));
             Modules.Prefabs.SetupCharacterModel(newPrefab, customRendererInfo, bodyRendererIndex);
 
             // hide the extra stuff
@@ -2370,22 +2366,21 @@ namespace RobDriver.Modules.Survivors
         internal static void LateSkinSetup()
         {
             GameObject model = characterPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
-            Renderer[] renderers = characterPrefab.GetComponentsInChildren<Renderer>(true);
-
             ModelSkinController skinController = model.GetComponent<ModelSkinController>();
 
-            foreach (SkinDef skinDef in skinController.skins)
+            foreach (var skinDef in skinController.skins)
             {
-                var weaponReskins = new List<DriverWeaponSkinDef>();
+                var weaponReskins = new Dictionary<ushort, DriverWeaponSkinDef>();
                 for (int i = 0; i < skinDef.meshReplacements.Length; i++)
                 {
                     var meshReplacement = skinDef.meshReplacements[i];
-                    if (!string.IsNullOrEmpty(meshReplacement.renderer?.name) && 
-                        model.transform.Find(meshReplacement.renderer.name))
+                    var rendererName = meshReplacement.renderer?.name;
+                    if (!string.IsNullOrEmpty(rendererName) && model.transform.Find(rendererName))
                     {
-                        foreach (var weaponDef in DriverWeaponCatalog.weaponDefs.Where(weapon => weapon.mesh?.name == meshReplacement.renderer.name))
+                        var weaponDef = DriverWeaponCatalog.weaponDefs.FirstOrDefault(weapon => weapon.mesh?.name == rendererName);
+                        if (weaponDef != null)
                         {
-                            weaponReskins.Add(DriverWeaponSkinDef.CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDef.DriverWeaponSkinDefInfo
+                            weaponReskins.Add(weaponDef.index, DriverWeaponSkinDef.CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDef.DriverWeaponSkinDefInfo
                             {
                                 nameToken = skinDef.name + weaponDef.nameToken,
                                 mainSkinName = skinDef.name,
@@ -2396,7 +2391,7 @@ namespace RobDriver.Modules.Survivors
                         }
                     }
                 }
-                DriverWeaponSkinCatalog.AddSkin(skinDef.name, weaponReskins.ToArray());
+                if (weaponReskins.Any()) DriverWeaponSkinCatalog.AddSkin(skinDef.skinIndex, weaponReskins);
             }
         }
 
@@ -2984,7 +2979,7 @@ namespace RobDriver.Modules.Survivors
 
                     if (droppedWeapon)
                     {
-                        Driver.instance.pityMultiplier = 1f;
+                        Driver.instance.pityMultiplier = 0.8f;
 
                         Vector3 position = damageReport.victim.transform ? damageReport.victim.transform.position : Vector3.zero;
 
@@ -3001,10 +2996,12 @@ namespace RobDriver.Modules.Survivors
                         var weaponComponent = weaponPickup.GetComponent<SyncPickup>();
 
                         // add passive specific stuff
-                        weaponComponent.isNewAmmoType = Util.CheckRoll(Config.godslingDropRateSplit.Value);
+                        // give the poor godsling players the ultra rare weapons, nobody likes getting bullets from michael
+                        weaponComponent.isNewAmmoType = (uniqueDrop && uniqueDrop.dropChance >= 100) || Util.CheckRoll(Config.godslingDropRateSplit.Value);
 
                         // non-legendary gets rerolled
-                        weaponComponent.bulletDef = DriverBulletCatalog.GetRandomBulletFromTier(isBoss ? DriverWeaponTier.Legendary : DriverWeaponTier.Uncommon);
+                        weaponComponent.bulletDef = isBoss ? DriverBulletCatalog.GetRandomBulletFromTier(DriverWeaponTier.Legendary) : 
+                            DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Uncommon);
 
                         if (weaponPickup.TryGetComponent<TeamFilter>(out var teamFilter) && teamFilter)
                             teamFilter.teamIndex = damageReport.attackerTeamIndex;

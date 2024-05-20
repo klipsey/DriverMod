@@ -118,6 +118,7 @@ namespace RobDriver
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
             On.RoR2.UI.MainMenu.MainMenuController.Start += MainMenuController_Start;
             // uncomment this if network testing
+            // just download nuxlar's MultiplayerModTesting ffs, youre just gonna forget to comment it out again
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
         }
 

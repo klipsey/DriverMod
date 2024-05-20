@@ -2,7 +2,6 @@
 using EntityStates;
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -12,12 +11,14 @@ namespace RobDriver.SkillStates.Driver
 
         private GameObject swingEffectInstance;
         private bool wasActive;
+        private MeshRenderer backWeaponModel;
         public override void OnEnter()
         {
-            if (this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.activeSelf) 
+            base.RefreshState();
+            if (this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.TryGetComponent(out backWeaponModel) && !this.backWeaponModel.forceRenderingOff) 
             {
-                this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.SetActive(false);
-                this.wasActive = true;
+                //this.backWeaponModel.forceRenderingOff = true;
+                //this.wasActive = true;
             }
             this.hitboxName = "Knife";
 
@@ -108,9 +109,9 @@ namespace RobDriver.SkillStates.Driver
 
         public override void OnExit()
         {
-            if (this.wasActive == true)
+            if (this.wasActive && this.backWeaponModel)
             {
-                this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.SetActive(true);
+                //this.backWeaponModel.forceRenderingOff = false;
             }
             base.OnExit();
         }

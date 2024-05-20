@@ -28,20 +28,12 @@ namespace RobDriver.SkillStates.Driver.Skateboard
             }
 
             Util.PlaySound("sfx_driver_foley_syringe", this.gameObject);
-            base.PlayCrossfade("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration, 0.2f / this.attackSpeedStat);
+            base.PlayCrossfade("FullBody, Override", "StartSkate", "Slide.playbackRate", this.duration, 0.05f);
 
             this.SmallHop(this.characterMotor, 10f);
 
 
-            if (this.iDrive)
-            {
-                if (this.iDrive.weaponEffectInstance) Destroy(this.iDrive.weaponEffectInstance);
-                this.iDrive.weaponEffectInstance = GameObject.Instantiate(Modules.Assets.backWeaponEffect);
-                this.iDrive.weaponEffectInstance.GetComponent<Modules.Components.BackWeaponComponent>().Init(this.cachedWeaponDef);
-                this.iDrive.weaponEffectInstance.transform.parent = this.FindModelChild("BackWeapon");
-                this.iDrive.weaponEffectInstance.transform.localRotation = Quaternion.identity;
-                this.iDrive.weaponEffectInstance.transform.localPosition = Vector3.zero;
-            }
+            if (this.iDrive) this.iDrive.EnableBackWeaponModel();
         }
 
         public override void FixedUpdate()

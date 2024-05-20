@@ -24,7 +24,7 @@ namespace RobDriver.SkillStates.Driver
             base.OnEnter();
             RefreshState();
 
-            if (this.hideGun) this.iDrive.weaponRenderer.gameObject.SetActive(false);
+            if (this.hideGun) this.GetModelChildLocator().FindChild("PistolModel").gameObject.SetActive(false);
             if (this.prop != string.Empty) this.GetModelChildLocator().FindChild(this.prop).gameObject.SetActive(true);
         }
 

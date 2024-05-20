@@ -1,20 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using RoR2;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RobDriver.Modules.Misc
 {
     internal static class DriverWeaponSkinCatalog
     {
-        internal static Dictionary<string, DriverWeaponSkinDef[]> driverSkinDefs { get; private set; } = new Dictionary<string, DriverWeaponSkinDef[]>();
+        internal static Dictionary<SkinIndex, Dictionary<ushort, DriverWeaponSkinDef>> driverSkinDefs { get; private set; } = new Dictionary<SkinIndex, Dictionary<ushort, DriverWeaponSkinDef>>();
 
-        internal static void AddSkin(string name, DriverWeaponSkinDef[] skinDef)
+        internal static void AddSkin(SkinIndex index, Dictionary<ushort, DriverWeaponSkinDef> skinDef)
         {
-            driverSkinDefs.Add(name, skinDef);
+            driverSkinDefs.Add(index, skinDef);
         }
 
-        internal static DriverWeaponSkinDef[] GetSkin(int index)
+        internal static Dictionary<ushort, DriverWeaponSkinDef> GetWeaponSkinCatalog(ModelSkinController skinController)
         {
-            return driverSkinDefs.Values.ElementAtOrDefault(index);
+            if (skinController?.skins == null || skinController.skins.Length == 0) return null;
+
+            var skinDef = skinController.skins.ElementAtOrDefault(skinController.currentSkinIndex);
+            if (skinDef != null && driverSkinDefs.TryGetValue(skinDef.skinIndex, out var weaponSkinCatalog))
+            {
+                return weaponSkinCatalog;
+            }
+            return null;
         }
     }
 }

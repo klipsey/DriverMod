@@ -25,11 +25,6 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             if (base.isAuthority)
             {
                 Ray aimRay = base.GetAimRay();
-                var projectileDamage = this.projectilePrefab.GetComponent<ProjectileDamage>();
-                projectileDamage.damageType = iDrive.DamageType;
-
-                var moddedDamage = this.projectilePrefab.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                moddedDamage.Add(iDrive.ModdedDamageType);
 
                 FireProjectileInfo fireProjectileInfo = new FireProjectileInfo
                 {
@@ -44,13 +39,11 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
                     useFuseOverride = false,
                     useSpeedOverride = false,
                     target = null,
-                    projectilePrefab = this.projectilePrefab
+                    projectilePrefab = this.projectilePrefab,
+                    damageTypeOverride = iDrive.DamageType
                 };
 
                 ProjectileManager.instance.FireProjectile(fireProjectileInfo);
-
-                projectileDamage.damageType = DamageType.Generic;
-                moddedDamage.Remove(iDrive.ModdedDamageType);
             }
 
             base.PlayAnimation("LeftArm, Override", "FireShard", "Shard.playbackRate", this.duration * 5f);
