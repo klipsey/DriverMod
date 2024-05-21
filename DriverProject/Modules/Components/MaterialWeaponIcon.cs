@@ -25,6 +25,7 @@ namespace RobDriver.Modules.Components
         {
             this.ammoBackground.SetActive(false);
             this.ammoText.enabled = true;
+            this.ammoText.gameObject.SetActive(true);
             this.cooldownRing.enabled = true;
             this.mask.enabled = true;
             this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
@@ -64,6 +65,8 @@ namespace RobDriver.Modules.Components
             if (this.iDrive.HasSpecialBullets && this.iDrive.weaponTimer > 0)
             {
                 this.ammoText.text = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.currentBulletDef.trailColor)}>" + this.iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
+                this.ammoText.enabled = true;
+                this.ammoText.gameObject.SetActive(true);
                 this.ammoBackground.SetActive(true);
                 this.cooldownRing.color = this.iDrive.currentBulletDef.trailColor;
             }

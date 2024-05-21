@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using RoR2;
 using UnityEngine.Networking;
+using RoR2.UI;
 
 namespace RobDriver.Modules.Components
 {
@@ -34,6 +35,9 @@ namespace RobDriver.Modules.Components
 
         private void Awake()
         {
+            // default text
+            SetTextComponent(this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), this.weaponDef.nameToken, this.weaponDef.tier);
+
             // disable visuals for non driver
             if (!Modules.Config.sharedPickupVisuals.Value)
             {
@@ -78,7 +82,7 @@ namespace RobDriver.Modules.Components
         private void OnTriggerStay(Collider collider)
         {
             // can this run on every client? i don't know but let's find out
-            if (NetworkServer.active && this.alive && this.bulletDef/* && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex*/)
+            if (NetworkServer.active && this.alive/* && TeamComponent.GetObjectTeam(collider.gameObject) == this.teamFilter.teamIndex*/)
             {
                 // well it can but it's not a fix.
                 DriverController iDrive = collider.GetComponent<DriverController>();
@@ -128,14 +132,14 @@ namespace RobDriver.Modules.Components
                             {
                                 SetTextComponent(ammoText, this.bulletDef.nameToken, this.bulletDef.tier);
                                 ammoText.textMeshPro.outlineColor = this.bulletDef.trailColor;
-                                ammoText.textMeshPro.outlineWidth *= 0.5f;
+                                ammoText.textMeshPro.outlineWidth *= 0.75f;
                             }
                             else
                             {
+                                // this should never happen, but juuuust in case
                                 SetTextComponent(ammoText, "Bullets", DriverWeaponTier.Uncommon);
                             }
                         }
-                        else SetTextComponent(this.transform.parent.GetComponentInChildren<RoR2.UI.LanguageTextMeshController>(), this.weaponDef.nameToken, this.weaponDef.tier);
                     }
                     break;
                 }
