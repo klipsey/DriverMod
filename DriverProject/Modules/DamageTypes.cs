@@ -443,7 +443,7 @@ namespace RobDriver.Modules
                         origin = damageInfo.position,
                         damageValue = damage,
                         isCrit = damageInfo.crit,
-                        totalStrikes = 2 + 3 * itemCount,
+                        totalStrikes = 3 + 2 * itemCount,
                         teamIndex = attackerTeamIndex,
                         attacker = damageInfo.attacker,
                         procChainMask = procChainMask,
