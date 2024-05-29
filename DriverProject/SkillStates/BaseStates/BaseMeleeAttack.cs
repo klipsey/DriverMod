@@ -1,10 +1,12 @@
 ﻿using EntityStates;
 using LostInTransit.DamageTypes;
 using R2API;
+using RobDriver.Modules.Components;
 using RoR2;
 using RoR2.Audio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -17,7 +19,6 @@ namespace RobDriver.SkillStates.BaseStates
         protected string hitboxName = "Sword";
 
         protected DamageType damageType = DamageType.Generic;
-        protected List<DamageAPI.ModdedDamageType> moddedDamageTypeHolder = new List<DamageAPI.ModdedDamageType>();
         protected float damageCoefficient = 3.5f;
         protected float procCoefficient = 1f;
         protected float pushForce = 300f;
@@ -41,16 +42,18 @@ namespace RobDriver.SkillStates.BaseStates
         private float earlyExitTime;
         public float duration;
         private bool hasFired;
-        private float hitPauseTimer;
+        protected float hitPauseTimer;
         protected OverlapAttack attack;
-        private bool inHitPause;
+        protected bool inHitPause;
         private bool hasHopped;
         protected float stopwatch;
         protected Animator animator;
-        private BaseState.HitStopCachedState hitStopCachedState;
-        private Vector3 storedVelocity;
+        protected BaseState.HitStopCachedState hitStopCachedState;
+        protected Vector3 storedVelocity;
 
         protected List<HurtBox> hitResults = new List<HurtBox>();
+
+        protected bool ammoConsumed = false;
 
         public override void OnEnter()
         {
@@ -80,24 +83,21 @@ namespace RobDriver.SkillStates.BaseStates
                 hitBoxGroup = Array.Find<HitBoxGroup>(modelTransform.GetComponents<HitBoxGroup>(), (HitBoxGroup element) => element.groupName == this.hitboxName);
             }
 
-            this.attack = new OverlapAttack();
-            this.attack.damageType = this.damageType;
-            foreach(DamageAPI.ModdedDamageType i in moddedDamageTypeHolder)
+            this.attack = new OverlapAttack
             {
-                this.attack.AddModdedDamageType(i);
-            }
-            moddedDamageTypeHolder.Clear();
-            this.attack.attacker = base.gameObject;
-            this.attack.inflictor = base.gameObject;
-            this.attack.teamIndex = base.GetTeam();
-            this.attack.damage = this.damageCoefficient * this.damageStat;
-            this.attack.procCoefficient = this.procCoefficient;
-            this.attack.hitEffectPrefab = this.hitEffectPrefab;
-            this.attack.forceVector = this.bonusForce;
-            this.attack.pushAwayForce = this.pushForce;
-            this.attack.hitBoxGroup = hitBoxGroup;
-            this.attack.isCrit = base.RollCrit();
-            this.attack.impactSound = this.impactSound;
+                damageType = this.damageType,
+                attacker = base.gameObject,
+                inflictor = base.gameObject,
+                teamIndex = base.GetTeam(),
+                damage = this.damageCoefficient * this.damageStat,
+                procCoefficient = this.procCoefficient,
+                hitEffectPrefab = this.hitEffectPrefab,
+                forceVector = this.bonusForce,
+                pushAwayForce = this.pushForce,
+                hitBoxGroup = hitBoxGroup,
+                isCrit = base.RollCrit(),
+                impactSound = this.impactSound
+            };
         }
 
         protected virtual void FireShuriken()
@@ -108,7 +108,7 @@ namespace RobDriver.SkillStates.BaseStates
 
         protected virtual void PlayAttackAnimation()
         {
-            base.PlayCrossfade("Gesture, Override", "Slash" + (1 + swingIndex), "Knife.playbackRate", this.duration, 0.05f);
+            base.PlayCrossfade("Gesture, Override", "Slash" + (1 + swingIndex), "Slash.playbackRate", this.duration, 0.05f);
         }
 
         public override void OnExit()
@@ -146,12 +146,28 @@ namespace RobDriver.SkillStates.BaseStates
             {
                 this.TriggerHitStop();
             }
+            if (base.isAuthority)
+            {
+                foreach (CoinController coin in CoinController.OverlapAttackGetCoins(attack).Where(c => c.canRicochet))
+                {
+                    coin.CmdRicochetBullet(attack.attacker,
+                        attack.inflictor, 
+                        attack.isCrit, 
+                        attack.damage, 
+                        attack.procChainMask.mask,
+                        attack.forceVector, 
+                        attack.forceVector == null, 
+                        (byte)attack.damageColorIndex, 
+                        (uint)attack.damageType);
+                }
+            }
+
         }
 
         protected virtual void TriggerHitStop()
         {
             this.storedVelocity = base.characterMotor.velocity;
-            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Knife.playbackRate");
+            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Slash.playbackRate");
             this.hitPauseTimer = this.hitStopDuration / this.attackSpeedStat;
             this.inHitPause = true;
         }
@@ -211,18 +227,16 @@ namespace RobDriver.SkillStates.BaseStates
             else
             {
                 if (base.characterMotor) base.characterMotor.velocity = Vector3.zero;
-                if (this.animator) this.animator.SetFloat("Knife.playbackRate", 0f);
+                if (this.animator)
+                {
+                    this.animator.SetFloat("Slash.playbackRate", 0f);
+                    this.animator.SetFloat("Slash.playbackRate", 0f);
+                }
             }
 
             if (this.stopwatch >= (this.duration * this.attackStartTime) && this.stopwatch <= (this.duration * this.attackEndTime))
             {
                 this.FireAttack();
-            }
-
-            if (base.fixedAge >= this.duration && base.isAuthority)
-            {
-                this.outer.SetNextStateToMain();
-                return;
             }
 
             if (base.fixedAge >= (this.duration * this.earlyExitTime) && base.isAuthority)
@@ -233,6 +247,12 @@ namespace RobDriver.SkillStates.BaseStates
                     this.SetNextState();
                     return;
                 }
+            }
+
+            if (base.fixedAge >= this.duration && base.isAuthority)
+            {
+                this.outer.SetNextStateToMain();
+                return;
             }
         }
 
@@ -245,7 +265,7 @@ namespace RobDriver.SkillStates.BaseStates
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Pain;
+            return InterruptPriority.Skill;
         }
 
         public override void OnSerialize(NetworkWriter writer)

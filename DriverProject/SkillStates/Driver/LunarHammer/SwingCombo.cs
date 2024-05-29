@@ -1,20 +1,22 @@
 ﻿using UnityEngine;
-using EntityStates;
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine.AddressableAssets;
 using RoR2;
-
+using R2API;
 namespace RobDriver.SkillStates.Driver.LunarHammer
 {
     public class SwingCombo : BaseMeleeAttack
     {
         public static float _damageCoefficient = 32.1f;
 
+        private GameObject swingEffectInstance;
+
         public override void OnEnter()
         {
+            RefreshState();
             this.hitboxName = "Hammer";
 
-            this.damageCoefficient = SwingCombo._damageCoefficient;
+            this.damageCoefficient = _damageCoefficient;
             this.pushForce = 1000f;
             this.baseDuration = 1.8f;
             this.baseEarlyExitTime = 0.5f;
@@ -27,25 +29,38 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_driver_swing_hammer";
+
             this.swingEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion();
             this.hitSoundString = "";
             this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoaderLightning.prefab").WaitForCompletion();
             this.impactSound = Modules.Assets.hammerImpactSoundDef.index;
 
-            this.damageType = DamageType.Stun1s | iDrive.bulletDamageType;
-            this.moddedDamageTypeHolder.Add(iDrive.moddedBulletType);
-
+            this.damageType = DamageType.Stun1s | this.iDrive.DamageType;
             if (this.swingIndex == 0) this.muzzleString = "SwingCenter";
-            else this.muzzleString = "SwingCenter2";
+            else this.muzzleString = this.muzzleString ="SwingCenter2";
 
             base.OnEnter();
+
+            this.attack.AddModdedDamageType(iDrive.ModdedDamageType);
+        }
+
+        protected override void FireAttack()
+        {
+            if (base.isAuthority)
+            {
+                Vector3 direction = this.GetAimRay().direction;
+                direction.y = Mathf.Max(direction.y, direction.y * 0.5f);
+                this.FindModelChild("MeleePivot").rotation = Util.QuaternionSafeLookRotation(direction);
+            }
+
+            base.FireAttack();
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();
@@ -61,10 +76,21 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
                 Transform muzzleTransform = this.FindModelChild(this.muzzleString);
                 if (muzzleTransform)
                 {
-                    GameObject swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
-                    ScaleParticleSystemDuration fuck = swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                    this.swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
+                    ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
                     if (fuck) fuck.newDuration = fuck.initialDuration;
                 }
+            }
+        }
+
+        protected override void TriggerHitStop()
+        {
+            base.TriggerHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = 20f;
             }
         }
 
@@ -76,9 +102,7 @@ namespace RobDriver.SkillStates.Driver.LunarHammer
 
         protected override void SetNextState()
         {
-            int index = this.swingIndex;
-            if (index == 0) index = 1;
-            else index = 0;
+            int index = (this.swingIndex + 1) % 2;
 
             this.outer.SetNextState(new SwingCombo
             {

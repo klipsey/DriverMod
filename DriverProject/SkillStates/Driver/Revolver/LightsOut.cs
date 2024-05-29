@@ -33,11 +33,13 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
             base.PlayAnimation("Gesture, Override", "ShootLightsOut", "Action.playbackRate", this.duration);
 
-            if (this.iDrive) this.iDrive.weaponTimer = 0.1f;
+            if (this.iDrive && iDrive.defaultWeaponDef.nameToken != iDrive.weaponDef.nameToken) this.iDrive.weaponTimer = 0.1f;
 
             this.Fire();
 
-            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolverFire.prefab").WaitForCompletion(), CrosshairUtils.OverridePriority.Skill);
+            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody,
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolverFire.prefab").WaitForCompletion(), 
+                CrosshairUtils.OverridePriority.Skill);
         }
 
         private void Fire()
@@ -68,7 +70,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 origin = aimRay.origin,
                 damage = LightsOut.damageCoefficient * this.damageStat,
                 damageColorIndex = DamageColorIndex.Default,
-                damageType = iDrive.bulletDamageType,
+                damageType = iDrive.DamageType,
                 falloffModel = BulletAttack.FalloffModel.None,
                 maxDistance = 9999f,
                 force = 9999f,
@@ -91,7 +93,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                 hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
             };
-            bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+            bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
             bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
             {
@@ -112,7 +114,6 @@ namespace RobDriver.SkillStates.Driver.Revolver
                     hitInfo.hitHurtBox.healthComponent.gameObject.AddComponent<Modules.Components.DriverHeadshotTracker>();
                 }
             };
-
             bulletAttack.Fire();
         }
 
@@ -140,14 +141,14 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 
         public override void OnExit()
         {
             base.OnExit();
-            if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
+            this.crosshairOverrideRequest?.Dispose();
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

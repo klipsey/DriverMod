@@ -41,7 +41,7 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
             //this.PlayCrossfade("Gesture, Override", "FireShotgun", "Shoot.playbackRate", Mathf.Max(0.05f, 1.75f * duration), 0.06f);
             base.PlayAnimation("Gesture, Override", "FireShotgun", "Shoot.playbackRate", this.duration);
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
 
             this.Fire();
 
@@ -84,7 +84,7 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
                     origin = aimRay.origin,
                     damage = damage,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = iDrive.bulletDamageType,
+                    damageType = iDrive.DamageType,
                     falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                     maxDistance = bulletRange,
                     force = force,// RiotShotgun.bulletForce,
@@ -106,21 +106,24 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                     HitEffectNormal = false,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                 bulletAttack.minSpread = 0;
                 bulletAttack.maxSpread = 0;
                 bulletAttack.bulletCount = 1;
+                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
 
                 uint secondShot = (uint)Mathf.CeilToInt(bulletCount / 2f) - 1;
                 bulletAttack.minSpread = 0;
                 bulletAttack.maxSpread = spread / 1.45f;
                 bulletAttack.bulletCount = secondShot;
+                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
 
                 bulletAttack.minSpread = spread / 1.45f;
                 bulletAttack.maxSpread = spread;
                 bulletAttack.bulletCount = (uint)Mathf.FloorToInt(bulletCount / 2f);
+                //bulletAttack.modifyOutgoingDamageCallback += RicochetUtils.BulletAttackShootableDamageCallback;
                 bulletAttack.Fire();
             }
         }
@@ -138,7 +141,7 @@ namespace RobDriver.SkillStates.Driver.DualShotgun
                 }
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();

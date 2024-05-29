@@ -4,16 +4,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 using RoR2;
 using System.IO;
-using RoR2.Audio;
 using System.Collections.Generic;
-using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
 using TMPro;
 using RoR2.UI;
 using UnityEngine.UI;
 using RobDriver.Modules.Components;
 using UnityEngine.Rendering.PostProcessing;
-using Moonstorm.Starstorm2.Survivors;
 
 namespace RobDriver.Modules
 {
@@ -32,6 +29,8 @@ namespace RobDriver.Modules
 
         public static GameObject badassExplosionEffect;
         public static GameObject badassSmallExplosionEffect;
+
+        public static GameObject explosionEffect;
 
         public static GameObject jammedEffectPrefab;
         public static GameObject upgradeEffectPrefab;
@@ -65,6 +64,9 @@ namespace RobDriver.Modules
         public static GameObject ammoPickupModel;
         public static GameObject bloodExplosionEffect;
         public static GameObject bloodSpurtEffect;
+        public static GameObject coinTracer;
+        public static GameObject coinImpact;
+        public static GameObject coinOrbEffect;
 
         public static Mesh pistolMesh;
         public static Mesh goldenGunMesh;
@@ -89,6 +91,7 @@ namespace RobDriver.Modules
         public static Mesh lunarHammerMesh;
         public static Mesh nemmandoGunMesh;
         public static Mesh nemmercGunMesh;
+        public static Mesh nemKatanaMesh;
         public static Mesh golemGunMesh;
 
         public static Material pistolMat;
@@ -110,6 +113,7 @@ namespace RobDriver.Modules
         public static Material badassShotgunMat;
         public static Material nemmandoGunMat;
         public static Material nemmercGunMat;
+        public static Material nemKatanaMat;
 
         public static Material skateboardMat;
         public static Material knifeMat;
@@ -117,6 +121,8 @@ namespace RobDriver.Modules
         public static Material briefcaseGoldMat;
         public static Material briefcaseUniqueMat;
         public static Material briefcaseLunarMat;
+
+        public static Material twinkleMat;
 
         public static GameObject shotgunShell;
         public static GameObject shotgunSlug;
@@ -156,6 +162,7 @@ namespace RobDriver.Modules
         internal static Texture lunarRifleWeaponIcon;
         internal static Texture lunarHammerWeaponIcon;
         internal static Texture nemmandoGunWeaponIcon;
+        internal static Texture nemmandoSwordWeaponIcon;
         internal static Texture nemmercGunWeaponIcon;
         internal static Texture golemGunWeaponIcon;
 
@@ -176,6 +183,14 @@ namespace RobDriver.Modules
         public static GameObject nemmercTracer;
 
         public static GameObject lunarShardMuzzleFlash;
+
+        public static GameObject redSlashImpactEffect;
+        public static GameObject redSmallSlashEffect;
+        public static GameObject redMercSwing;
+        public static GameObject lunarShardMuzzleFlashRed;
+        public static GameObject redSwingEffect;
+        public static GameObject bigRedSwingEffect;
+        public static GameObject consumeOrb;
 
         internal static DriverWeaponDef pistolWeaponDef;
         internal static DriverWeaponDef goldenGunWeaponDef;
@@ -201,6 +216,7 @@ namespace RobDriver.Modules
         internal static DriverWeaponDef lunarRifleWeaponDef;
         internal static DriverWeaponDef lunarHammerWeaponDef;
         internal static DriverWeaponDef nemmandoGunWeaponDef;
+        internal static DriverWeaponDef nemmandoSwordWeaponDef;
         internal static DriverWeaponDef nemmercGunWeaponDef;
         internal static DriverWeaponDef golemGunWeaponDef;
 
@@ -209,7 +225,6 @@ namespace RobDriver.Modules
         internal static Material syringeCritOverlayMat;
         internal static Material syringeScepterOverlayMat;
         internal static Material woundOverlayMat;
-
         internal static void PopulateAssets()
         {
             if (mainAssetBundle == null)
@@ -548,6 +563,7 @@ namespace RobDriver.Modules
             lunarHammerMesh = mainAssetBundle.LoadAsset<Mesh>("meshLunarHammer");
             nemmandoGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmandoGun");
             nemmercGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemmercGun");
+            nemKatanaMesh = mainAssetBundle.LoadAsset<Mesh>("meshNemKatana");
             golemGunMesh = mainAssetBundle.LoadAsset<Mesh>("meshGolemGun");
 
             pistolMat = CreateMaterial("matPistol");
@@ -569,10 +585,10 @@ namespace RobDriver.Modules
             badassShotgunMat = CreateMaterial("matSawedOff");
             nemmandoGunMat = CreateMaterial("matNemmandoGun", 5f, Color.white, 1f);
             nemmercGunMat = CreateMaterial("matNemmercGun", 5f, Color.white, 1f);
-
+            nemKatanaMat = CreateMaterial("matNemKatana", 5f, Color.white, 1f);
             knifeMat = CreateMaterial("matKnife");
             skateboardMat = CreateMaterial("matSkateboard");
-
+            twinkleMat = Addressables.LoadAssetAsync<Material>("RoR2/Base/Firework/matFireworkSparkle.mat").WaitForCompletion(); ;
             shotgunShell = mainAssetBundle.LoadAsset<GameObject>("ShotgunShell");
             shotgunShell.GetComponentInChildren<MeshRenderer>().material = CreateMaterial("matShotgunShell");
             shotgunShell.AddComponent<Modules.Components.ShellController>();
@@ -752,7 +768,7 @@ namespace RobDriver.Modules
                 CreateMaterial("matCrate2")
             };
 
-             GameObject textShit4 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
+            GameObject textShit4 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
             MonoBehaviour.Destroy(textShit4.GetComponent<EffectComponent>());
             textShit4.transform.parent = pickupModel4.transform;
             textShit4.transform.localPosition = Vector4.zero;
@@ -847,6 +863,18 @@ namespace RobDriver.Modules
             shake.radius = 60f;
             shake.scaleShakeRadiusWithLocalScale = false;
             shake.amplitudeTimeDecay = true;
+
+            explosionEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/OmniExplosionVFX.prefab").WaitForCompletion().InstantiateClone("StupidFuckExplosion", true);
+            explosionEffect.AddComponent<NetworkIdentity>();
+
+            GameObject nadeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXCommandoGrenade.prefab").WaitForCompletion();
+            GameObject radiusIndicator = GameObject.Instantiate(nadeEffect.transform.Find("Nova Sphere").gameObject);
+            radiusIndicator.transform.parent = explosionEffect.transform;
+            radiusIndicator.transform.localPosition = Vector3.zero;
+            radiusIndicator.transform.localScale = Vector3.one;
+            radiusIndicator.transform.localRotation = Quaternion.identity;
+
+            Assets.AddNewEffectDef(explosionEffect, "sfx_driver_explosion");
 
             GameObject obj = new GameObject();
             defaultMuzzleTrail = obj.InstantiateClone("PassiveMuzzleTrail", false);
@@ -992,6 +1020,44 @@ namespace RobDriver.Modules
             //InitWeaponDefs();
             // kinda jank kinda not impactful enough to care about changing
 
+            redSlashImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("RedSwordImpact", false);
+            redSlashImpactEffect.GetComponent<OmniEffect>().enabled = false;
+
+            Material hitsparkMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat").WaitForCompletion());
+            hitsparkMat.SetColor("_TintColor", Color.red);
+
+            redSlashImpactEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = hitsparkMat;
+
+            redSlashImpactEffect.transform.GetChild(2).localScale = Vector3.one * 1.5f;
+            redSlashImpactEffect.transform.GetChild(2).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterFireCorrupted.mat").WaitForCompletion();
+
+            Material slashMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniRadialSlash1Merc.mat").WaitForCompletion());
+            slashMat.SetColor("_TintColor", Color.red);
+
+            redSlashImpactEffect.transform.GetChild(5).gameObject.GetComponent<ParticleSystemRenderer>().material = slashMat;
+
+            redSlashImpactEffect.transform.GetChild(4).localScale = Vector3.one * 3f;
+            redSlashImpactEffect.transform.GetChild(4).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDust.mat").WaitForCompletion();
+
+            redSlashImpactEffect.transform.GetChild(6).GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat").WaitForCompletion();
+            redSlashImpactEffect.transform.GetChild(6).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark2Void.mat").WaitForCompletion();
+
+            redSlashImpactEffect.transform.GetChild(1).localScale = Vector3.one * 1.5f;
+
+            redSlashImpactEffect.transform.GetChild(1).gameObject.SetActive(true);
+            redSlashImpactEffect.transform.GetChild(2).gameObject.SetActive(true);
+            redSlashImpactEffect.transform.GetChild(3).gameObject.SetActive(true);
+            redSlashImpactEffect.transform.GetChild(4).gameObject.SetActive(true);
+            redSlashImpactEffect.transform.GetChild(5).gameObject.SetActive(true);
+            redSlashImpactEffect.transform.GetChild(6).gameObject.SetActive(true);
+            redSlashImpactEffect.transform.GetChild(6).GetChild(0).gameObject.SetActive(true);
+
+            redSlashImpactEffect.transform.GetChild(6).transform.localScale = new Vector3(1f, 1f, 3f);
+
+            redSlashImpactEffect.transform.localScale = Vector3.one * 1.5f;
+
+            AddNewEffectDef(redSlashImpactEffect);
+
             lunarShardMuzzleFlash = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Brother/MuzzleflashLunarShard.prefab").WaitForCompletion().InstantiateClone("DriverMuzzleflashLunarShard", false);
             lunarShardMuzzleFlash.transform.GetChild(0).transform.localScale = Vector3.one * 0.35f;
             lunarShardMuzzleFlash.transform.GetChild(1).transform.localScale = Vector3.one * 0.35f;
@@ -999,6 +1065,37 @@ namespace RobDriver.Modules
 
             AddNewEffectDef(lunarShardMuzzleFlash);
 
+            lunarShardMuzzleFlashRed = lunarShardMuzzleFlash.InstantiateClone("DriverMuzzleFlashLunarShardRed", false);
+            var main = lunarShardMuzzleFlashRed.transform.GetChild(0).GetComponent<ParticleSystem>().main;
+            main.startColor = Color.red;
+            var shit = lunarShardMuzzleFlashRed.transform.GetChild(1).GetComponent<ParticleSystem>().colorOverLifetime;
+            shit.enabled = false;
+            lunarShardMuzzleFlashRed.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.black);
+            lunarShardMuzzleFlashRed.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.red);
+
+            AddNewEffectDef(lunarShardMuzzleFlashRed);
+
+            redMercSwing = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RedBigSwordSwing", false);
+            redMercSwing.transform.GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
+            var sex = redMercSwing.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
+            sex.startLifetimeMultiplier = 0.6f;
+            redMercSwing.transform.GetChild(0).localScale = Vector3.one * 2f;
+            Object.Destroy(redMercSwing.GetComponent<EffectComponent>());
+
+            redSwingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RavagerSwordSwing");
+            redSwingEffect.transform.GetChild(0).gameObject.SetActive(false);
+            redSwingEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
+
+            bigRedSwingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RavagerBigSwordSwing");
+            bigRedSwingEffect.transform.GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
+            sex = bigRedSwingEffect.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
+            sex.startLifetimeMultiplier = 0.6f;
+            bigRedSwingEffect.transform.GetChild(0).localScale = Vector3.one * 2f;
+            Object.Destroy(bigRedSwingEffect.GetComponent<EffectComponent>());
+
+            redSmallSlashEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RedSwordSwing", false);
+            redSmallSlashEffect.transform.GetChild(0).gameObject.SetActive(false);
+            redSmallSlashEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
 
             discardedWeaponEffect = mainAssetBundle.LoadAsset<GameObject>("DiscardedWeapon");
             Modules.Components.DiscardedWeaponComponent discardComponent = discardedWeaponEffect.AddComponent<Modules.Components.DiscardedWeaponComponent>();
@@ -1014,7 +1111,7 @@ namespace RobDriver.Modules
             knifeImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("DriverKnifeImpact", false);
             knifeImpactEffect.GetComponent<OmniEffect>().enabled = false;
 
-            Material hitsparkMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat").WaitForCompletion());
+            hitsparkMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat").WaitForCompletion());
             hitsparkMat.SetColor("_TintColor", Color.white);
 
             knifeImpactEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = hitsparkMat;
@@ -1022,7 +1119,7 @@ namespace RobDriver.Modules
             knifeImpactEffect.transform.GetChild(2).localScale = Vector3.one * 1.5f;
             knifeImpactEffect.transform.GetChild(2).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Huntress/matOmniRing2Huntress.mat").WaitForCompletion();
 
-            Material slashMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRadialSlash1Generic.mat").WaitForCompletion());
+            slashMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRadialSlash1Generic.mat").WaitForCompletion());
             //slashMat.SetColor("_TintColor", Color.white);
 
             knifeImpactEffect.transform.GetChild(5).gameObject.GetComponent<ParticleSystemRenderer>().material = slashMat;
@@ -1049,7 +1146,7 @@ namespace RobDriver.Modules
 
             AddNewEffectDef(knifeImpactEffect);
 
-            damageBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverDamageBuffEffect2", true);
+            damageBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverDamageBuffEffect2", false);
 
             damageBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
             damageBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
@@ -1065,7 +1162,7 @@ namespace RobDriver.Modules
 
             AddNewEffectDef(damageBuffEffectPrefab2);
 
-            attackSpeedBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverAttackSpeedBuffEffect2", true);
+            attackSpeedBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverAttackSpeedBuffEffect2", false);
 
             attackSpeedBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
             attackSpeedBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
@@ -1080,7 +1177,7 @@ namespace RobDriver.Modules
             }
             AddNewEffectDef(attackSpeedBuffEffectPrefab2);
 
-            critBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverCritBuffEffect2", true);
+            critBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverCritBuffEffect2", false);
 
             critBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
             critBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
@@ -1095,7 +1192,7 @@ namespace RobDriver.Modules
             }
             AddNewEffectDef(critBuffEffectPrefab2);
 
-            scepterSyringeBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverScepterSyringeBuffEffect2", true);
+            scepterSyringeBuffEffectPrefab2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/LevelUpEffectEnemy.prefab").WaitForCompletion().InstantiateClone("DriverScepterSyringeBuffEffect2", false);
 
             scepterSyringeBuffEffectPrefab2.transform.Find("Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
             scepterSyringeBuffEffectPrefab2.transform.Find("Spinner").gameObject.SetActive(false);
@@ -1130,9 +1227,161 @@ namespace RobDriver.Modules
 
             bloodSpurtEffect.transform.Find("Blood").GetComponent<ParticleSystemRenderer>().material = bloodMat2;
             bloodSpurtEffect.transform.Find("Trails").GetComponent<ParticleSystemRenderer>().trailMaterial = bloodMat2;
+            
+            #region coin
 
-            ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup");
-            ConvertAllRenderersToHopooShader(ammoPickupModel);
+            coinTracer = mainAssetBundle.LoadAsset<GameObject>("CoinTracer");
+            coinTracer.AddComponent<NetworkIdentity>(); 
+
+            var effect1 = coinTracer.AddComponent<EffectComponent>();
+            effect1.parentToReferencedTransform = false;
+            effect1.positionAtReferencedTransform = false;
+            effect1.applyScale = false;
+            effect1.disregardZScale = false;
+
+            coinTracer.AddComponent<EventFunctions>();
+            var tracer = coinTracer.AddComponent<CoinTracer>();
+            tracer.startTransform = coinTracer.transform.GetChild(2).GetChild(0);
+            tracer.beamObject = coinTracer.transform.GetChild(2).GetChild(0).gameObject;
+            tracer.beamDensity = 0.2f;
+            tracer.speed = 1000f;
+            tracer.headTransform = coinTracer.transform.GetChild(1);
+            tracer.tailTransform = coinTracer.transform.GetChild(2).GetChild(0);
+            tracer.length = 20f;
+
+            var destroyOnTimer = coinTracer.AddComponent<DestroyOnTimer>();
+            destroyOnTimer.duration = 2;
+            var trailChildObject = coinTracer.transform.GetChild(2).gameObject;
+
+            var beamPoints = trailChildObject.AddComponent<BeamPointsFromTransforms>();
+            beamPoints.target = trailChildObject.GetComponent<LineRenderer>();
+            Transform[] bleh = new Transform[2];
+            bleh[0] = coinTracer.transform.GetChild(1);
+            bleh[1] = trailChildObject.transform.GetChild(0);
+            beamPoints.pointTransforms = bleh;
+            trailChildObject.GetComponent<LineRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Captain/matCaptainTracerTrail.mat").WaitForCompletion();
+            trailChildObject.GetComponent<LineRenderer>().material.SetColor("_TintColor", Color.yellow);
+            var animateShader = trailChildObject.AddComponent<AnimateShaderAlpha>();
+            var curve = new AnimationCurve(new Keyframe(0, 1), new Keyframe(0.675f, 0.8f), new Keyframe(1, 0.3f));
+            curve.preWrapMode = WrapMode.Clamp;
+            curve.postWrapMode = WrapMode.Clamp;
+            animateShader.alphaCurve = curve;
+            animateShader.timeMax = 0.5f;
+            animateShader.pauseTime = false;
+            animateShader.destroyOnEnd = true;
+            animateShader.disableOnEnd = false;
+
+            AddNewEffectDef(coinTracer);
+
+            coinImpact = mainAssetBundle.LoadAsset<GameObject>("CoinImpactHit");
+            var attr = coinImpact.AddComponent<VFXAttributes>();
+            attr.vfxPriority = VFXAttributes.VFXPriority.Low;
+            attr.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+
+            coinImpact.AddComponent<EffectComponent>();
+            coinImpact.AddComponent<DestroyOnParticleEnd>();
+
+            var eff = coinImpact.transform.Find("Streaks_Ps").GetComponent<ParticleSystemRenderer>();
+            eff.material = twinkleMat;
+            eff.material.SetColor("_TintColor", Color.yellow);
+            eff = coinImpact.transform.Find("Flash_Ps").GetComponent<ParticleSystemRenderer>();
+            eff.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarSkillReplacements/matBirdHeartRuin.mat").WaitForCompletion();
+            eff.material.SetColor("_TintColor", Color.yellow);
+            AddNewEffectDef(coinImpact);
+
+            coinOrbEffect = mainAssetBundle.LoadAsset<GameObject>("CoinOrbEffect");
+            coinOrbEffect.AddComponent<EventFunctions>();
+            var effectComp = coinOrbEffect.AddComponent<EffectComponent>();
+            effectComp.applyScale = true;
+            var orbEffect = coinOrbEffect.AddComponent<CoinOrbEffect>();
+
+            curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
+            curve.preWrapMode = WrapMode.Clamp;
+            curve.postWrapMode = WrapMode.Clamp;
+
+            orbEffect.movementCurve = curve;
+            orbEffect.faceMovement = true;
+            orbEffect.callArrivalIfTargetIsGone = true;
+            orbEffect.endEffect = coinOrbEffect;
+            orbEffect.endEffectCopiesRotation = false;
+
+            attr = coinOrbEffect.AddComponent<VFXAttributes>();
+            attr.vfxPriority = VFXAttributes.VFXPriority.Always;
+            attr.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+
+            coinOrbEffect.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Captain/matCaptainTracerTrail.mat").WaitForCompletion();
+            coinOrbEffect.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().material.SetColor("_TintColor", Color.yellow);
+
+            var pscfed = coinOrbEffect.AddComponent<ParticleSystemColorFromEffectData>();
+            pscfed.particleSystems = new ParticleSystem[1];
+            pscfed.particleSystems[0] = coinOrbEffect.transform.Find("Head").GetComponent<ParticleSystem>();
+            pscfed.effectComponent = effectComp;
+
+            var trcfed = coinOrbEffect.AddComponent<TrailRendererColorFromEffectData>();
+            trcfed.renderers = new TrailRenderer[1];
+            trcfed.renderers[0] = coinOrbEffect.transform.Find("Trail").GetComponent<TrailRenderer>();
+            trcfed.effectComponent = effectComp;
+
+            var shaderAlpha = coinOrbEffect.transform.Find("Trail").gameObject.AddComponent<AnimateShaderAlpha>();
+
+            curve = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0));
+            curve.preWrapMode = WrapMode.Clamp;
+            curve.postWrapMode = WrapMode.Clamp;
+
+            shaderAlpha.alphaCurve = curve;
+            shaderAlpha.timeMax = 0.75f;
+            shaderAlpha.pauseTime = false;
+            shaderAlpha.destroyOnEnd = true;
+            shaderAlpha.disableOnEnd = false;
+
+            var effect = coinOrbEffect.transform.Find("Head").GetComponent<ParticleSystemRenderer>();
+            effect.material = twinkleMat;
+            effect.material.SetColor("_TintColor", Color.yellow);
+
+            AddNewEffectDef(coinOrbEffect);
+
+            #endregion
+
+            ammoPickupModel = mainAssetBundle.LoadAsset<GameObject>("mdlAmmoPickup").InstantiateClone("mdlAmmoPickup", false);
+            // i hate this but i dont care enough to fix it properly
+            ammoPickupModel.transform.Find("ammoBox").localScale = new Vector3(500, 500, 500);
+
+            GameObject textShit5 = GameObject.Instantiate(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc"));
+            MonoBehaviour.Destroy(textShit5.GetComponent<EffectComponent>());
+            textShit5.transform.parent = ammoPickupModel.transform;
+            textShit5.transform.localPosition = Vector3.zero;
+            textShit5.transform.localRotation = Quaternion.identity;
+
+            ObjectScaleCurve whatTheFuckIsThis5 = textShit5.GetComponentInChildren<ObjectScaleCurve>();
+            Transform helpMe5 = whatTheFuckIsThis5.transform;
+            MonoBehaviour.DestroyImmediate(whatTheFuckIsThis5);
+            helpMe5.transform.localScale = Vector3.one * 1.25f;
+
+            textShit5.GetComponent<DestroyOnTimer>().enabled = false;
+
+            // ravager orb succ
+            CreateOrb();
+        }
+
+        private static void CreateOrb()
+        {
+            consumeOrb = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/InfusionOrbEffect"), "RavagerConsumeOrbEffect", true);
+            if (!consumeOrb.GetComponent<NetworkIdentity>()) consumeOrb.AddComponent<NetworkIdentity>();
+
+            TrailRenderer trail = consumeOrb.transform.Find("TrailParent").Find("Trail").GetComponent<TrailRenderer>();
+            trail.widthMultiplier = 0.35f;
+            trail.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/moon2/matBloodSiphon.mat").WaitForCompletion();
+
+            consumeOrb.transform.Find("VFX").Find("Core").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matBloodHumanLarge.mat").WaitForCompletion();
+            consumeOrb.transform.Find("VFX").localScale = Vector3.one * 0.5f;
+
+            consumeOrb.transform.Find("VFX").Find("Core").localScale = Vector3.one * 4.5f;
+
+            consumeOrb.transform.Find("VFX").Find("PulseGlow").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
+
+            //consumeOrb.GetComponent<OrbEffect>().endEffect = Modules.Assets.slowStartPickupEffect;
+
+            Modules.Assets.AddNewEffectDef(consumeOrb);
         }
 
         private static GameObject CreateTracer(string originalTracerName, string newTracerName)
@@ -1244,9 +1493,12 @@ namespace RobDriver.Modules
 
             MonoBehaviour.Destroy(ammoPickupComponent);
             MonoBehaviour.Destroy(newPickup.GetComponentInChildren<RoR2.GravitatePickup>());
+            if (Config.enableMagneticPickups.Value) newPickup.AddComponent<MagneticPickup>();
 
             newPickup.transform.Find("Visuals").Find("Particle System").Find("Particle System").gameObject.SetActive(false);
             newPickup.GetComponentInChildren<Light>().color = Modules.Survivors.Driver.characterColor;
+
+            newPickup.AddComponent<SyncPickup>();
 
             // i seriously hate this but it works
             return newPickup;

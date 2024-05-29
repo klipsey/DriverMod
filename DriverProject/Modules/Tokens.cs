@@ -25,7 +25,10 @@ namespace RobDriver.Modules
             lore += "Against the grain of dystopic claims\n";
             lore += "Not the thoughts your actions entertain\n";
             lore += "And you have proved to be\n\n\n";
-            lore += "A real human being and a real hero";
+            lore += "A real human being and a real hero\n\n";
+            lore += "\"So, what do you do?\"\n\n";
+            lore += "\"I drive.\"";
+            
 
             LanguageAPI.Add(prefix + "NAME", "Driver");
             LanguageAPI.Add(prefix + "DESCRIPTION", desc);
@@ -54,7 +57,7 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Your trusty <style=cIsHealth>pistol</style> is all you need.");
 
             LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Leadfoot");
-            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"My words are my <style=cIsHealth>bullets</style>.");
+            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"Enemies have a chance to drop <style=cIsHealth>bullets</style>. These give your <style=cIsHealth>weapon</style> <style=cIsDamage>powerful attacks</style> for a limited time!");
 
             LanguageAPI.Add(prefix + "PASSIVE4_NAME", "Godsling");
             LanguageAPI.Add(prefix + "PASSIVE4_DESCRIPTION", $"I <style=cIsHealth>drive</style>.");
@@ -181,10 +184,20 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SECONDARY_LUNARHAMMER_DESCRIPTION", $"<style=cIsUtility>Agile.</style> Fire a volley of <style=cIsUtility>lunar shards</style>, dealing <style=cIsDamage>" + 100f * SkillStates.Driver.LunarHammer.FireShard.damageCoefficient + "% damage</style> each.");
 
             LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_NAME", "Submission");
-            LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_DESCRIPTION", $"<style=cIsDamage>Stunning.</style> Fire repeatedly for <style=cIsDamage>" + 100f * SkillStates.Driver.LunarHammer.FireShard.damageCoefficient + "% damage</style> per shot.");
+            LanguageAPI.Add(prefix + "SECONDARY_NEMMANDO_DESCRIPTION", $"<style=cIsDamage>Stunning.</style> Fire repeatedly for <style=cIsDamage>" + 100f * SkillStates.Driver.Compat.NemmandoGun.Submission.damageCoefficient + "% damage</style> per shot.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMANDOSWORD_NAME", "Blade of Cessation");
+            LanguageAPI.Add(prefix + "PRIMARY_NEMMANDOSWORD_DESCRIPTION", $"<style=cIsDamage>Gouging</style>. <style=cIsUtility>Agile</style>. Slice enemies in front for <style=cIsDamage>160% damage</style>.");
 
             LanguageAPI.Add(prefix + "SECONDARY_NEMMERC_NAME", "Bash");
             LanguageAPI.Add(prefix + "SECONDARY_NEMMERC_DESCRIPTION", $"<style=cIsDamage>Stun</style> and <style=cIsUtility>knock back</style> nearby enemies for <style=cIsDamage>{100f * SkillStates.Driver.Shotgun.Bash.damageCoefficient}% damage</style>.");
+            
+            LanguageAPI.Add(prefix + "PRIMARY_SLASHCOMBO_NAME", "Dismantle");
+            LanguageAPI.Add(prefix + "PRIMARY_SLASHCOMBO_DESCRIPTION", $"Swing forward for <style=cIsDamage>{100f * SkillStates.Driver.Compat.SlashCombo._damageCoefficient}% damage</style>. Every 3rd hit <style=cIsUtility>stuns</style> and deals <style=cIsDamage>{100f * SkillStates.Driver.Compat.SlashCombo.finisherDamageCoefficient}% damage</style>.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_NAME", "Pummel");
+            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_DESCRIPTION", $"Lunge and <style=cIsUtility>punch</style>, dealing <style=cIsDamage>{100f * SkillStates.Driver.Compat.DashPunch.punchDamageCoefficient}% damage</style> with a <style=cIsUtility>shockwave</style> through them for the same damage.");
+
             #endregion
 
             #region Utility
@@ -230,7 +243,7 @@ namespace RobDriver.Modules
                 + Helpers.ScepterDescription("Cooldown is halved and gain an extra stock."));
 
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_NAME", "Experimental Syringe");
-            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style>, <style=cIsUtility>movement speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>.");
 
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_NAME", "Perfected Syringe");
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGE_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you <style=cIsDamage>bonus attack speed</style> and <style=cIsHealing>health regen</style> for the next <style=cIsUtility>6 seconds</style>."
@@ -242,6 +255,9 @@ namespace RobDriver.Modules
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_SCEPTER_NAME", "Perfected Syringe (Legacy)");
             LanguageAPI.Add(prefix + "SPECIAL_SYRINGELEGACY_SCEPTER_DESCRIPTION", $"Inject yourself with a <style=cIsUtility>syringe</style>, giving you a <style=cIsDamage>random offensive buff</style> for the next <style=cIsUtility>6 seconds</style>."
                 + Helpers.ScepterDescription("Applies all three buffs at once."));
+
+            LanguageAPI.Add(prefix + "SPECIAL_DRIVERCOIN_NAME", "Pay it Forward");
+            LanguageAPI.Add(prefix + "SPECIAL_DRIVERCOIN_DESCRIPTION", $"Flick out a <style=cIsUtility>coin</style> which can be shot to multiply <style=cIsDamage>damage</style>.");
             #endregion
 
             #region Achievements
@@ -267,11 +283,14 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Ryan Godsling");
             LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Ryan Godsling");
-            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Monsoon or higher without picking up any weapons.");
+            LanguageAPI.Add(prefix + "GODSLING_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, beat the game or obliterate on Monsoon or higher without picking up any weapons or bullets.");
 
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Driver: Dressed to Kill");
             LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_DESC", "As Driver, land the killing blow on a boss with a Sniper Rifle.");
+
+            LanguageAPI.Add(prefix + "WEAPON_UNLOCKABLE_NAME", "Weapon Unlocked");
+            LanguageAPI.Add(prefix + "WEAPON_UNLOCKABLE_DESC", "This weapon can now be selected at any time from Driver's Arsenal.");
             #endregion
 
 
@@ -361,6 +380,9 @@ namespace RobDriver.Modules
 
             LanguageAPI.Add("ROB_DRIVER_NEMMANDO_NAME", "Reclaimer");
             LanguageAPI.Add("ROB_DRIVER_NEMMANDO_DESC", "Nemesis Commando's gun.");
+
+            LanguageAPI.Add("ROB_DRIVER_NEMMANDOSWORD_NAME", "Murasama");
+            LanguageAPI.Add("ROB_DRIVER_NEMMANDOSWORD_DESC", "Nemesis Commando's sword.");
 
             LanguageAPI.Add("ROB_DRIVER_NEMMERC_NAME", "Carnage");
             LanguageAPI.Add("ROB_DRIVER_NEMMERC_DESC", "Nemesis Mercenary's shotgun.");

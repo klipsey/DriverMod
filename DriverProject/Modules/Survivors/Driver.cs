@@ -4,10 +4,7 @@ using RoR2;
 using RoR2.Skills;
 using System.Collections.Generic;
 using UnityEngine;
-using KinematicCharacterController;
 using RoR2.CharacterAI;
-using RoR2.Navigation;
-using RoR2.Orbs;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
 using RoR2.UI;
@@ -15,7 +12,11 @@ using System.Linq;
 using RobDriver.Modules.Components;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
+using MaterialHud;
+using TMPro;
+using RobDriver.Modules.Misc;
 using UnityEngine.UI;
+using System;
 
 namespace RobDriver.Modules.Survivors
 {
@@ -140,6 +141,9 @@ namespace RobDriver.Modules.Survivors
         internal static SkillDef scepterSyringeSkillDef;
         internal static SkillDef scepterSyringeLegacySkillDef;
         internal static SkillDef scepterKnifeSkillDef;
+        internal static SkillDef knifeSkillDef;
+
+        internal static int baseSkinCount;
 
         internal static string bodyNameToken;
 
@@ -241,7 +245,16 @@ namespace RobDriver.Modules.Survivors
 
             //newPrefab.GetComponent<CharacterDirection>().turnSpeed = 720f;
 
-            newPrefab.GetComponent<EntityStateMachine>().mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MainState));
+            foreach (EntityStateMachine i in newPrefab.GetComponents<EntityStateMachine>())
+            {
+                if (i.customName == "Body") i.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.MainState));
+            }
+
+            EntityStateMachine passiveController = newPrefab.AddComponent<EntityStateMachine>();
+            passiveController.initialStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.WallJump));
+            passiveController.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Compat.WallJump));
+            passiveController.customName = "Passive";
+            passiveController.enabled = false;
 
             // this is for the lunar shard skill..
             EntityStateMachine stateMachine = newPrefab.AddComponent<EntityStateMachine>();
@@ -255,7 +268,7 @@ namespace RobDriver.Modules.Survivors
             // schizophrenia
             newPrefab.GetComponent<CharacterDeathBehavior>().deathState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.FuckMyAss));
 
-            newPrefab.AddComponent<Modules.Components.DriverController>();
+            newPrefab.AddComponent<DriverController>();
             #endregion
 
             #region Model
@@ -265,8 +278,7 @@ namespace RobDriver.Modules.Survivors
             Material tieMat = Modules.Assets.CreateMaterial("matSuit", 1f, Color.white);
 
             bodyRendererIndex = 0;
-
-            Modules.Prefabs.SetupCharacterModel(newPrefab, new CustomRendererInfo[] {
+            var customRendererInfo = new CustomRendererInfo[] {
                 new CustomRendererInfo
                 {
                     childName = "Model",
@@ -275,7 +287,7 @@ namespace RobDriver.Modules.Survivors
                 new CustomRendererInfo
                 {
                     childName = "KnifeModel",
-                    material = Modules.Assets.knifeMat
+                    material = Config.enableRevengence.Value ? Assets.nemKatanaMat : Assets.knifeMat
                 },
                 new CustomRendererInfo
                 {
@@ -321,7 +333,14 @@ namespace RobDriver.Modules.Survivors
                 {
                     childName = "PistolModel",
                     material = Modules.Assets.pistolMat
-                } }, bodyRendererIndex);
+                },
+                new CustomRendererInfo
+                {
+                    childName = "BackWeaponModel",
+                    material = Modules.Assets.nemKatanaMat
+                } };
+
+            Modules.Prefabs.SetupCharacterModel(newPrefab, customRendererInfo, bodyRendererIndex);
 
             // hide the extra stuff
             childLocator.FindChild("KnifeModel").gameObject.SetActive(false);
@@ -332,6 +351,7 @@ namespace RobDriver.Modules.Survivors
             childLocator.FindChild("Tie").gameObject.SetActive(false);
             childLocator.FindChild("SkateboardModel").gameObject.SetActive(false);
             childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(false);
+            childLocator.FindChild("BackWeaponModel").gameObject.SetActive(false);
             #endregion
 
             CreateHitboxes(newPrefab);
@@ -497,11 +517,9 @@ namespace RobDriver.Modules.Survivors
             GameObject model = childLocator.gameObject;
 
             Transform hitboxTransform = childLocator.FindChild("HammerBaseHitbox");
-            Transform hitboxTransform2 = childLocator.FindChild("HammerHitbox");
             Modules.Prefabs.SetupHitbox(model, new Transform[]
                 {
-                    hitboxTransform,
-                    hitboxTransform2
+                    hitboxTransform
                 }, "Hammer");
 
             hitboxTransform = childLocator.FindChild("KnifeHitbox");
@@ -514,6 +532,7 @@ namespace RobDriver.Modules.Survivors
         private static void CreateSkills(GameObject prefab)
         {
             DriverPassive passive = prefab.AddComponent<DriverPassive>();
+            DriverArsenal arsenal = prefab.AddComponent<DriverArsenal>();
             Modules.Skills.CreateSkillFamilies(prefab);
 
             string prefix = DriverPlugin.developerPrefix;
@@ -524,6 +543,7 @@ namespace RobDriver.Modules.Survivors
             //skillLocator.passiveSkill.skillDescriptionToken = prefix + "_DRIVER_BODY_PASSIVE_DESCRIPTION";
             //skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
 
+            #region Misc
             Driver.pistolReloadSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_PRIMARY_RELOAD_NAME",
@@ -595,7 +615,7 @@ namespace RobDriver.Modules.Survivors
                 requiredStock = 1,
                 stockToConsume = 0,
             });
-
+            #endregion Misc
 
             #region Passive
             passive.defaultPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
@@ -696,23 +716,21 @@ namespace RobDriver.Modules.Survivors
 
             if (Modules.Config.cursed.Value)
             {
-                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                Modules.Skills.AddPassiveSkills(prefab,
                     passive.defaultPassive,
                     passive.bulletsPassive,
                     passive.godslingPassive,
-                    passive.pistolOnlyPassive,
-                });
+                    passive.pistolOnlyPassive);
 
                 Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
                 null, pistolPassiveUnlockableDef, godslingPassiveUnlockableDef, pistolPassiveUnlockableDef);
             }
             else
             {
-                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                Modules.Skills.AddPassiveSkills(prefab,
                     passive.defaultPassive,
                     passive.bulletsPassive,
-                    passive.godslingPassive
-                });
+                    passive.godslingPassive);
 
                 Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
                 null, pistolPassiveUnlockableDef, godslingPassiveUnlockableDef);
@@ -1668,7 +1686,7 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
-            SkillDef knifeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            knifeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_NAME",
                 skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_KNIFE_NAME",
@@ -1809,7 +1827,7 @@ namespace RobDriver.Modules.Survivors
                 cancelSprintingOnActivation = true,
                 rechargeStock = 0,
                 requiredStock = 1,
-                stockToConsume = 1
+                stockToConsume = 0
             });
 
             SkillDef healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
@@ -1932,21 +1950,48 @@ namespace RobDriver.Modules.Survivors
                 stockToConsume = 1
             });
 
+            SkillDef coinSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_DRIVER_BODY_SPECIAL_DRIVERCOIN_NAME",
+                skillNameToken = prefix + "_DRIVER_BODY_SPECIAL_DRIVERCOIN_NAME",
+                skillDescriptionToken = prefix + "_DRIVER_BODY_SPECIAL_DRIVERCOIN_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Coin)),
+                activationStateMachineName = "Shard",
+                baseMaxStock = 2,
+                baseRechargeInterval = 5f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = false,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
             if (Modules.Config.cursed.Value)
             {
-                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef, syringeLegacySkillDef);
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, supplyDropLegacySkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef, syringeLegacySkillDef, coinSkillDef);
                 Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef, supplyDropUnlockableDef);
             }
             else
             {
-                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef);
+                Modules.Skills.AddSpecialSkills(prefab, stunGrenadeSkillDef, supplyDropSkillDef, knifeSkillDef, /*healSkillDef,*/ syringeSkillDef, coinSkillDef);
                 Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, supplyDropUnlockableDef);
             }
             #endregion
 
             if (DriverPlugin.scepterInstalled) InitializeScepterSkills();
 
-            Modules.Assets.InitWeaponDefs();
+            Assets.InitWeaponDefs();
+
+            Skills.AddWeaponSkill(prefab, DriverWeaponCatalog.Pistol, locked: false);
+            Skills.AddWeaponSkills(prefab, DriverWeaponCatalog.weaponDefs.Skip(1), locked: true);
         }
 
         private static void InitializeScepterSkills()
@@ -1970,7 +2015,7 @@ namespace RobDriver.Modules.Survivors
 
         private static void CreateSkins(GameObject prefab)
         {
-            GameObject model = prefab.GetComponentInChildren<ModelLocator>().modelTransform.gameObject;
+            GameObject model = prefab.GetComponent<ModelLocator>().modelTransform.gameObject;
             CharacterModel characterModel = model.GetComponent<CharacterModel>();
 
             ModelSkinController skinController = model.AddComponent<ModelSkinController>();
@@ -1979,6 +2024,8 @@ namespace RobDriver.Modules.Survivors
             SkinnedMeshRenderer mainRenderer = characterModel.mainSkinnedMeshRenderer;
 
             CharacterModel.RendererInfo[] defaultRenderers = characterModel.baseRendererInfos;
+
+            Renderer[] renderers = prefab.GetComponentsInChildren<Renderer>(true);
 
             List<SkinDef> skins = new List<SkinDef>();
 
@@ -2015,7 +2062,7 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(defaultSkin);
+
             #endregion
 
             #region MasterySkin
@@ -2052,7 +2099,7 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(masterySkin);
+
             #endregion
 
             #region GrandMasterySkin
@@ -2089,18 +2136,17 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(grandMasterySkin);
             #endregion
 
             #region SpecialForcesSkin
             SkinDef specialForcesSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIALFORCES_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialForcesSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
+            {
+                Modules.Assets.CreateMaterial("matSpecialForces", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
             specialForcesSkin.meshReplacements = new SkinDef.MeshReplacement[]
             {
@@ -2124,19 +2170,17 @@ namespace RobDriver.Modules.Survivors
                     shouldActivate = false
                 }
             };
-
-            skins.Add(specialForcesSkin);
             #endregion
 
             #region GuerrillaSkin
             SkinDef guerrillaSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_GUERRILLA_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texGuerrillaSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matGuerrilla", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texGuerrillaSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
+            {
+                            Modules.Assets.CreateMaterial("matGuerrilla", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
             guerrillaSkin.meshReplacements = new SkinDef.MeshReplacement[]
             {
@@ -2161,7 +2205,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(guerrillaSkin);
             #endregion
 
             #region SuitSkin
@@ -2198,7 +2241,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            skins.Add(suitSkin);
             #endregion
 
             #region Suit2Skin
@@ -2235,7 +2277,6 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
             #endregion
 
             #region GreenSkin
@@ -2271,32 +2312,30 @@ namespace RobDriver.Modules.Survivors
                 }
             };
 
-            if (Modules.Config.cursed.Value) skins.Add(greenSkin);
             #endregion
 
             #region MinecraftSkin
-            if (Modules.Config.cursed.Value)
+
+            SkinDef minecraftSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MINECRAFT_SKIN_NAME",
+            Assets.mainAssetBundle.LoadAsset<Sprite>("texMinecraftSkin"),
+            SkinRendererInfos(defaultRenderers, new Material[]
             {
-                SkinDef minecraftSkin = Modules.Skins.CreateSkinDef(DriverPlugin.developerPrefix + "_DRIVER_BODY_MINECRAFT_SKIN_NAME",
-    Assets.mainAssetBundle.LoadAsset<Sprite>("texMinecraftSkin"),
-    SkinRendererInfos(defaultRenderers, new Material[]
-    {
-                    Modules.Assets.CreateMaterial("matMinecraftDriver", 1f, Color.white)
-    }),
-    mainRenderer,
-    model);
+                            Modules.Assets.CreateMaterial("matMinecraftDriver", 1f, Color.white)
+            }),
+            mainRenderer,
+            model);
 
-                minecraftSkin.meshReplacements = new SkinDef.MeshReplacement[]
-                {
-                new SkinDef.MeshReplacement
-                {
-                    renderer = mainRenderer,
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
-                }
-                };
+            minecraftSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+            new SkinDef.MeshReplacement
+            {
+                renderer = mainRenderer,
+                mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshMinecraftDriver")
+            }
+            };
 
-                minecraftSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
-{
+            minecraftSkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
                 new SkinDef.GameObjectActivation
                 {
                     gameObject = sluggerCloth,
@@ -2307,14 +2346,53 @@ namespace RobDriver.Modules.Survivors
                     gameObject = tie,
                     shouldActivate = false
                 }
-};
-
-
-                skins.Add(minecraftSkin);
-            }
+            };
             #endregion
 
+            skins.Add(defaultSkin);
+            skins.Add(masterySkin);
+            skins.Add(grandMasterySkin);
+            skins.Add(specialForcesSkin);
+            skins.Add(guerrillaSkin);
+            skins.Add(suitSkin);
+            if (Modules.Config.cursed.Value) skins.Add(suit2Skin);
+            if (Modules.Config.cursed.Value) skins.Add(greenSkin);
+            if (Modules.Config.cursed.Value) skins.Add(minecraftSkin);
+
             skinController.skins = skins.ToArray();
+            baseSkinCount = skinController.skins.Length;
+        }
+
+        internal static void LateSkinSetup()
+        {
+            GameObject model = characterPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
+            ModelSkinController skinController = model.GetComponent<ModelSkinController>();
+
+            foreach (var skinDef in skinController.skins)
+            {
+                var weaponReskins = new Dictionary<ushort, DriverWeaponSkinDef>();
+                for (int i = 0; i < skinDef.meshReplacements.Length; i++)
+                {
+                    var meshReplacement = skinDef.meshReplacements[i];
+                    var rendererName = meshReplacement.renderer?.name;
+                    if (!string.IsNullOrEmpty(rendererName) && model.transform.Find(rendererName))
+                    {
+                        var weaponDef = DriverWeaponCatalog.weaponDefs.FirstOrDefault(weapon => weapon.mesh?.name == rendererName);
+                        if (weaponDef != null)
+                        {
+                            weaponReskins.Add(weaponDef.index, DriverWeaponSkinDef.CreateWeaponSkinDefFromInfo(new DriverWeaponSkinDef.DriverWeaponSkinDefInfo
+                            {
+                                nameToken = skinDef.name + weaponDef.nameToken,
+                                mainSkinName = skinDef.name,
+                                weaponDefIndex = weaponDef.index,
+                                weaponSkinMesh = meshReplacement.mesh,
+                                weaponSkinMaterial = skinDef.rendererInfos[i].defaultMaterial
+                            }));
+                        }
+                    }
+                }
+                if (weaponReskins.Any()) DriverWeaponSkinCatalog.AddSkin(skinDef.skinIndex, weaponReskins);
+            }
         }
 
         private static void InitializeItemDisplays(GameObject prefab)
@@ -2328,7 +2406,8 @@ namespace RobDriver.Modules.Survivors
             }
 
             characterModel.itemDisplayRuleSet = itemDisplayRuleSet;
-            characterModel.itemDisplayRuleSet.keyAssetRuleGroups = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody").GetComponentInChildren<CharacterModel>().itemDisplayRuleSet.keyAssetRuleGroups;// itemDisplayRuleSet;
+            characterModel.itemDisplayRuleSet.keyAssetRuleGroups = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody")
+                .GetComponentInChildren<CharacterModel>().itemDisplayRuleSet.keyAssetRuleGroups;// itemDisplayRuleSet;
             itemDisplayRules = itemDisplayRuleSet.keyAssetRuleGroups.ToList();
         }
 
@@ -2344,107 +2423,107 @@ namespace RobDriver.Modules.Survivors
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayDoubleMag"),
                     limbMask = LimbFlags.None,
-childName = "GunR",
-localPos = new Vector3(0.00888F, -0.03648F, -0.20898F),
-localAngles = new Vector3(39.35415F, 348.9445F, 164.0792F),
-localScale = new Vector3(0.06F, 0.06F, 0.06F)
+                    childName = "GunR",
+                    localPos = new Vector3(0.00888F, -0.03648F, -0.20898F),
+                    localAngles = new Vector3(39.35415F, 348.9445F, 164.0792F),
+                    localScale = new Vector3(0.06F, 0.06F, 0.06F)
                 }
             });
 
             ReplaceItemDisplay(RoR2Content.Items.CritGlasses, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayGlasses"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0.0006F, 0.25054F, 0.04672F),
-localAngles = new Vector3(314.7648F, 358.1459F, 0.48047F),
-localScale = new Vector3(0.30902F, 0.09537F, 0.30934F)
+                    childName = "Head",
+                    localPos = new Vector3(0.0006F, 0.25054F, 0.04672F),
+                    localAngles = new Vector3(314.7648F, 358.1459F, 0.48047F),
+                    localScale = new Vector3(0.30902F, 0.09537F, 0.30934F)
                 }
-});
+            });
 
             if (Modules.Config.predatoryOnHead.Value)
             {
-                ReplaceItemDisplay(RoR2Content.Items.AttackSpeedOnCrit, new ItemDisplayRule[]
-{
-                new ItemDisplayRule
+                ReplaceItemDisplay(RoR2Content.Items.AttackSpeedOnCrit, new ItemDisplayRule[] 
                 {
-                    ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    followerPrefab = ItemDisplays.LoadDisplay("DisplayWolfPelt"),
-                    limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, 0.18766F, -0.11041F),
-localAngles = new Vector3(302.566F, 0F, 0F),
-localScale = new Vector3(0.47332F, 0.47332F, 0.47332F)
-                }
-});
+                    new ItemDisplayRule
+                    {
+                        ruleType = ItemDisplayRuleType.ParentedPrefab,
+                        followerPrefab = ItemDisplays.LoadDisplay("DisplayWolfPelt"),
+                        limbMask = LimbFlags.None,
+                        childName = "Head",
+                        localPos = new Vector3(0F, 0.18766F, -0.11041F),
+                        localAngles = new Vector3(302.566F, 0F, 0F),
+                        localScale = new Vector3(0.47332F, 0.47332F, 0.47332F)
+                    }
+                });
             }
             else
             {
                 ReplaceItemDisplay(RoR2Content.Items.AttackSpeedOnCrit, new ItemDisplayRule[]
-{
-                new ItemDisplayRule
                 {
-                    ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    followerPrefab = ItemDisplays.LoadDisplay("DisplayWolfPelt"),
-                    limbMask = LimbFlags.None,
-childName = "UpperArmR",
-localPos = new Vector3(-0.01092F, 0.02048F, -0.00403F),
-localAngles = new Vector3(309.4066F, 250.1116F, 175.7708F),
-localScale = new Vector3(0.363F, 0.363F, 0.363F)
-                }
-});
+                    new ItemDisplayRule
+                    {
+                        ruleType = ItemDisplayRuleType.ParentedPrefab,
+                        followerPrefab = ItemDisplays.LoadDisplay("DisplayWolfPelt"),
+                        limbMask = LimbFlags.None,
+                        childName = "UpperArmR",
+                        localPos = new Vector3(-0.01092F, 0.02048F, -0.00403F),
+                        localAngles = new Vector3(309.4066F, 250.1116F, 175.7708F),
+                        localScale = new Vector3(0.363F, 0.363F, 0.363F)
+                    }
+                });
             }
 
             ReplaceItemDisplay(DLC1Content.Items.CritGlassesVoid, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayGlassesVoid"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, 0.1555F, 0.11598F),
-localAngles = new Vector3(340.0668F, 0F, 0F),
-localScale = new Vector3(0.30387F, 0.39468F, 0.46147F)
+                    childName = "Head",
+                    localPos = new Vector3(0F, 0.1555F, 0.11598F),
+                    localAngles = new Vector3(340.0668F, 0F, 0F),
+                    localScale = new Vector3(0.30387F, 0.39468F, 0.46147F)
                 }
-});
+            });
 
             ReplaceItemDisplay(DLC1Content.Items.LunarSun, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplaySunHeadNeck"),
                     limbMask = LimbFlags.None,
-childName = "Chest",
-localPos = new Vector3(-0.02605F, 0.38179F, -0.0112F),
-localAngles = new Vector3(-0.00001F, 262.1551F, 0.00001F),
-localScale = new Vector3(1.76594F, 1.84475F, 1.84475F)
+                    childName = "Chest",
+                    localPos = new Vector3(-0.02605F, 0.38179F, -0.0112F),
+                    localAngles = new Vector3(-0.00001F, 262.1551F, 0.00001F),
+                    localScale = new Vector3(1.76594F, 1.84475F, 1.84475F)
                 },
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.LimbMask,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplaySunHead"),
                     limbMask = LimbFlags.Head,
-childName = "Head",
-localPos = new Vector3(0F, 0.10143F, -0.01147F),
-localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
+                    childName = "Head",
+                    localPos = new Vector3(0F, 0.10143F, -0.01147F),
+                    localAngles = new Vector3(0F, 0F, 0F),
+                    localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
                 },
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplaySunHead"),
                     limbMask = LimbFlags.Head,
-childName = "Head",
-localPos = new Vector3(0F, 0.10143F, -0.01147F),
-localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
+                    childName = "Head",
+                    localPos = new Vector3(0F, 0.10143F, -0.01147F),
+                    localAngles = new Vector3(0F, 0F, 0F),
+                    localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.GhostOnKill, new ItemDisplayRule[]
 {
@@ -2453,138 +2532,138 @@ localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayMask"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0.0029F, 0.15924F, 0.07032F),
-localAngles = new Vector3(355.7367F, 0.15F, 0F),
-localScale = new Vector3(0.6F, 0.6F, 0.6F)
+                    childName = "Head",
+                    localPos = new Vector3(0.0029F, 0.15924F, 0.07032F),
+                    localAngles = new Vector3(355.7367F, 0.15F, 0F),
+                    localScale = new Vector3(0.6F, 0.6F, 0.6F)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.GoldOnHit, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayBoneCrown"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, 0.15159F, -0.0146F),
-localAngles = new Vector3(8.52676F, 0F, 0F),
-localScale = new Vector3(0.90509F, 0.90509F, 0.90509F)
+                    childName = "Head",
+                    localPos = new Vector3(0F, 0.15159F, -0.0146F),
+                    localAngles = new Vector3(8.52676F, 0F, 0F),
+                    localScale = new Vector3(0.90509F, 0.90509F, 0.90509F)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.JumpBoost, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayWaxBird"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, -0.228F, -0.108F),
-localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.79857F, 0.79857F, 0.79857F)
+                    childName = "Head",
+                    localPos = new Vector3(0F, -0.228F, -0.108F),
+                    localAngles = new Vector3(0F, 0F, 0F),
+                    localScale = new Vector3(0.79857F, 0.79857F, 0.79857F)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.KillEliteFrenzy, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayBrainstalk"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, 0.12823F, 0.035F),
-localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.17982F, 0.17982F, 0.17982F)
+                    childName = "Head",
+                    localPos = new Vector3(0F, 0.12823F, 0.035F),
+                    localAngles = new Vector3(0F, 0F, 0F),
+                    localScale = new Vector3(0.17982F, 0.17982F, 0.17982F)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.LunarPrimaryReplacement, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayBirdEye"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, 0.18736F, 0.08896F),
-localAngles = new Vector3(306.9798F, 180F, 180F),
-localScale = new Vector3(0.31302F, 0.31302F, 0.31302F)
+                    childName = "Head",
+                    localPos = new Vector3(0F, 0.18736F, 0.08896F),
+                    localAngles = new Vector3(306.9798F, 180F, 180F),
+                    localScale = new Vector3(0.31302F, 0.31302F, 0.31302F)
                 }
-});
+            });
 
             ReplaceItemDisplay(DLC1Content.Items.FragileDamageBonus, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayDelicateWatch"),
                     limbMask = LimbFlags.None,
-childName = "HandL",
-localPos = new Vector3(0.001145094f, -0.01941454f, 0.001435831f),
-localAngles = new Vector3(84.24088f, 213.1651f, 131.5774f),
-localScale = new Vector3(0.5f, 0.5f, 0.5f)
+                    childName = "HandL",
+                    localPos = new Vector3(0.001145094f, -0.01941454f, 0.001435831f),
+                    localAngles = new Vector3(84.24088f, 213.1651f, 131.5774f),
+                    localScale = new Vector3(0.5f, 0.5f, 0.5f)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.BarrierOnOverHeal, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayAegis"),
                     limbMask = LimbFlags.None,
-childName = "LowerArmL",
-localPos = new Vector3(0.01781F, 0.11702F, 0.01516F),
-localAngles = new Vector3(90F, 270F, 0F),
-localScale = new Vector3(0.3F, 0.3F, 0.3F)
+                    childName = "LowerArmL",
+                    localPos = new Vector3(0.01781F, 0.11702F, 0.01516F),
+                    localAngles = new Vector3(90F, 270F, 0F),
+                    localScale = new Vector3(0.3F, 0.3F, 0.3F)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.SprintArmor, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayBuckler"),
                     limbMask = LimbFlags.None,
-childName = "LowerArmL",
-localPos = new Vector3(-0.012F, 0.171F, -0.027F),
-localAngles = new Vector3(0F, 90F, 0F),
-localScale = new Vector3(0.3F, 0.3F, 0.3F)
+                    childName = "LowerArmL",
+                    localPos = new Vector3(-0.012F, 0.171F, -0.027F),
+                    localAngles = new Vector3(0F, 90F, 0F),
+                    localScale = new Vector3(0.3F, 0.3F, 0.3F)
                 }
-});
+            });
 
             ReplaceItemDisplay(RoR2Content.Items.ArmorPlate, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayRepulsionArmorPlate"),
                     limbMask = LimbFlags.None,
-childName = "CalfR",
-localPos = new Vector3(-0.02573F, 0.22602F, 0.0361F),
-localAngles = new Vector3(90F, 180F, 0F),
-localScale = new Vector3(-0.2958F, 0.2958F, 0.29581F)
+                    childName = "CalfR",
+                    localPos = new Vector3(-0.02573F, 0.22602F, 0.0361F),
+                    localAngles = new Vector3(90F, 180F, 0F),
+                    localScale = new Vector3(-0.2958F, 0.2958F, 0.29581F)
                 }
-});
+            });
 
             ReplaceItemDisplay(DLC1Content.Items.CritDamage, new ItemDisplayRule[]
-{
+            {
                 new ItemDisplayRule
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemDisplays.LoadDisplay("DisplayLaserSight"),
                     limbMask = LimbFlags.None,
-childName = "Pistol",
-localPos = new Vector3(-0.01876F, 0.26245F, 0.11694F),
-localAngles = new Vector3(0F, 0F, 270F),
-localScale = new Vector3(0.05261F, 0.05261F, 0.05261F)
+                    childName = "Pistol",
+                    localPos = new Vector3(-0.01876F, 0.26245F, 0.11694F),
+                    localAngles = new Vector3(0F, 0F, 270F),
+                    localScale = new Vector3(0.05261F, 0.05261F, 0.05261F)
                 }
-});
+            });
 
             if (DriverPlugin.litInstalled) SetLITDisplays();
 
@@ -2601,18 +2680,18 @@ localScale = new Vector3(0.05261F, 0.05261F, 0.05261F)
                 displayRuleGroup = new DisplayRuleGroup
                 {
                     rules = new ItemDisplayRule[]
-        {
+                    {
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
                             followerPrefab = ItemDisplays.LoadDisplay("DisplayLopper"),
                             limbMask = LimbFlags.None,
-childName = "Chest",
-localPos = new Vector3(0F, 0.20282F, -0.19089F),
-localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.19059F, 0.19059F, 0.19059F)
+                            childName = "Chest",
+                            localPos = new Vector3(0F, 0.20282F, -0.19089F),
+                            localAngles = new Vector3(0F, 0F, 0F),
+                            localScale = new Vector3(0.19059F, 0.19059F, 0.19059F)
                         }
-        }
+                    }
                 }
             });
 
@@ -2622,23 +2701,23 @@ localScale = new Vector3(0.19059F, 0.19059F, 0.19059F)
                 displayRuleGroup = new DisplayRuleGroup
                 {
                     rules = new ItemDisplayRule[]
-{
+                    {
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
                             followerPrefab = ItemDisplays.LoadDisplay("DisplayBackPlate"),
                             limbMask = LimbFlags.None,
-             childName = "Chest",
-localPos = new Vector3(0F, 0.23366F, 0.01011F),
-localAngles = new Vector3(349.1311F, 0F, 0F),
-localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
+                            childName = "Chest",
+                            localPos = new Vector3(0F, 0.23366F, 0.01011F),
+                            localAngles = new Vector3(349.1311F, 0F, 0F),
+                            localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                         }
-}
+                    }
                 }
             });
         }
 
-        internal static void ReplaceItemDisplay(Object keyAsset, ItemDisplayRule[] newDisplayRules)
+        internal static void ReplaceItemDisplay(UnityEngine.Object keyAsset, ItemDisplayRule[] newDisplayRules)
         {
             ItemDisplayRuleSet.KeyAssetRuleGroup[] cock = itemDisplayRules.ToArray();
             for (int i = 0; i < cock.Length; i++)
@@ -2685,6 +2764,23 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             On.EntityStates.AI.BaseAIState.AimInDirection += BaseAIState_AimInDirection;
 
             On.RoR2.UI.LoadoutPanelController.Rebuild += LoadoutPanelController_Rebuild;// the most useless hook ever.
+            On.RoR2.UI.GameEndReportPanelController.AssignUnlockToStrip += GameEndReportPanelController_AssignUnlockToStrip;
+        }
+
+        private static void GameEndReportPanelController_AssignUnlockToStrip(On.RoR2.UI.GameEndReportPanelController.orig_AssignUnlockToStrip orig, 
+            GameEndReportPanelController self, UnlockableDef unlockableDef, GameObject destUnlockableStrip)
+        {
+            orig(self, unlockableDef, destUnlockableStrip);
+
+            if (DriverWeaponCatalog.weaponDefs.Any(def => def.nameToken == unlockableDef.nameToken))
+            {
+                if (unlockableDef.achievementIcon?.texture is Texture icon)
+                {
+                    destUnlockableStrip.transform.Find("IconImage").GetComponent<RawImage>().texture = icon;
+                }
+                destUnlockableStrip.GetComponent<TooltipProvider>().overrideTitleText = Language.GetString("ROB_DRIVER_BODY_WEAPON_UNLOCKABLE_NAME");
+                destUnlockableStrip.GetComponent<TooltipProvider>().overrideBodyText = Language.GetString("ROB_DRIVER_BODY_WEAPON_UNLOCKABLE_DESC"); ;
+            }
         }
 
         private static void LoadoutPanelController_Rebuild(On.RoR2.UI.LoadoutPanelController.orig_Rebuild orig, LoadoutPanelController self)
@@ -2694,9 +2790,15 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             // this is beyond stupid lmfao who let this monkey code
             if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("RobDriverBody"))
             {
-                foreach (LanguageTextMeshController i in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>())
+                // i made it worse, youre welcome
+                string newToken = "Passive";
+                foreach (var label in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>().Where(label => label && label.token == "LOADOUT_SKILL_MISC"))
                 {
-                    if (i && i.token == "LOADOUT_SKILL_MISC") i.token = "Passive";
+                    if (newToken != null)
+                    {
+                        label.token = newToken;
+                        newToken = newToken == "Passive" ? "Arsenal" : null;
+                    }
                 }
             }
         }
@@ -2705,20 +2807,23 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             orig(self);
 
-            // this is literally the worst thing ever
-            if (self && self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+            if (!Config.enableGodslingInMultiplayer.Value)
             {
-                self.gameObject.SetActive(false);
+                // this is literally the worst thing ever
+                if (self && !string.IsNullOrEmpty(self.hoverToken) &&
+                    self.hoverToken.Contains("Godsling") && !RoR2Application.isInSinglePlayer)
+                {
+                    self.gameObject.SetActive(false);
+                }
             }
         }
-
 
         private static void BaseAIState_AimInDirection(On.EntityStates.AI.BaseAIState.orig_AimInDirection orig, EntityStates.AI.BaseAIState self, ref BaseAI.BodyInputs dest, Vector3 aimDirection)
         {
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
             {
-                orig(self, ref dest, Random.onUnitSphere);
-                dest.desiredAimDirection = Random.onUnitSphere;
+                orig(self, ref dest, UnityEngine.Random.onUnitSphere);
+                dest.desiredAimDirection = UnityEngine.Random.onUnitSphere;
             }
             else orig(self, ref dest, aimDirection);
         }
@@ -2728,43 +2833,38 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             if (self.body && self.body.HasBuff(Modules.Buffs.dazedDebuff))
             {
                 orig(self, ref dest, aimTarget);
-                dest.desiredAimDirection = Random.onUnitSphere;
+                dest.desiredAimDirection = UnityEngine.Random.onUnitSphere;
             }
             else orig(self, ref dest, aimTarget);
         }
 
         private static void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if (damageInfo.inflictor)
+            if (damageInfo.inflictor && damageInfo.inflictor.name.Contains("RobDriverStunGrenade") && self && self.body)
             {
-                if (damageInfo.inflictor.name.Contains("RobDriverStunGrenade"))
+                self.body.AddTimedBuff(Modules.Buffs.dazedDebuff, 10f);
+            }
+
+            if (damageInfo.damageType == DamageType.ApplyMercExpose && damageInfo.attacker && damageInfo.attacker.name.Contains("RobDriverBody"))
+            {
+                damageInfo.damageType = DamageType.Stun1s;
+
+                if (self)
                 {
-                    if (self)
+                    if (self.body) self.body.AddTimedBuff(Modules.Buffs.woundDebuff, 4f);
+
+                    if (self.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
                     {
-                        if (self.body)
-                        {
-                            self.body.AddTimedBuff(Modules.Buffs.dazedDebuff, 10f);
-                        }
+                        new SyncOverlay(identity.netId, self.gameObject).Send(NetworkDestination.Clients);
                     }
                 }
             }
 
-            if (damageInfo.damageType == DamageType.ApplyMercExpose)
+            if (damageInfo.dotIndex == Buffs.gougeIndex && self && self.alive)
             {
-                if (damageInfo.attacker && damageInfo.attacker.name.Contains("RobDriverBody"))
+                if (damageInfo.attacker && damageInfo.attacker.TryGetComponent<CharacterBody>(out var attackerBody))
                 {
-                    damageInfo.damageType = DamageType.Stun1s;
-
-                    if (self)
-                    {
-                        if (self.body) self.body.AddTimedBuff(Modules.Buffs.woundDebuff, 4f);
-
-                        NetworkIdentity identity = self.gameObject.GetComponent<NetworkIdentity>();
-                        if (identity)
-                        {
-                            new SyncOverlay(identity.netId, self.gameObject).Send(NetworkDestination.Clients);
-                        }
-                    }
+                    damageInfo.crit = Util.CheckRoll(attackerBody.crit, attackerBody.master);
                 }
             }
 
@@ -2778,13 +2878,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             // this is terribly hardcoded and not future proof
             // but more performant than doing something like a getcomponent every time a bandolier drop is picked up on anyone
             // this will break if an alternate primary is added but that'll never happen with the weapon system existing
-            if (self && self.primary.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME")
+            if (self && self.primary.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME" && 
+                self.TryGetComponent<DriverController>(out var iDrive))
             {
-                Components.DriverController iDrive = self.GetComponent<Components.DriverController>();
-                if (iDrive)
-                {
-                    iDrive.ServerResetTimer();
-                }
+                iDrive.ServerResetTimer();
             }
         }
 
@@ -2792,13 +2889,10 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
         {
             orig(self);
 
-            if (self && self.primary.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME")
+            if (self && self.primary.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME" &&
+                self.TryGetComponent<DriverController>(out var iDrive))
             {
-                Components.DriverController iDrive = self.GetComponent<Components.DriverController>();
-                if (iDrive)
-                {
-                    iDrive.ServerResetTimer();
-                }
+                iDrive.ServerResetTimer();
             }
         }
 
@@ -2817,29 +2911,33 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 }
 
                 // weapon drops
-                bool bonusChance = false;
-                bool godSlingChance = false;
                 if (isDriverOnPlayerTeam)
                 {
                     // headshot first
-                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken)
+                    if (damageReport.attackerBody.baseNameToken == Driver.bodyNameToken && 
+                       (damageReport.victim.TryGetComponent<DriverHeadshotTracker>(out _) ||
+                        damageReport.damageInfo.HasModdedDamageType(DamageTypes.bloodExplosionIdentifier)))
                     {
-                        if (damageReport.victim.GetComponent<DriverHeadshotTracker>())
+                        if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
                         {
-                            NetworkIdentity identity = damageReport.victim.gameObject.GetComponent<NetworkIdentity>();
-                            if (identity)
-                            {
-                                new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
-                            }
+                            new SyncDecapitation(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
                         }
-                        //Log.debug("chance checking");
-                        if (damageReport.attackerBody.GetComponent<DriverController>().passive.isBullets) bonusChance = true;
-                        if (damageReport.attackerBody.GetComponent<DriverController>().passive.isRyan) godSlingChance = true;
+                            
+                        // rav orb yep
+                        if (damageReport.attackerBody.skillLocator.primary.skillDef.skillNameToken == DriverWeaponCatalog.RavSword.primarySkillDef.skillNameToken)
+                        {
+                            RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
+                            {
+                                origin = damageReport.victim.transform.position,
+                                target = Util.FindBodyMainHurtBox(damageReport.attackerBody)
+                            });
+                        }
                     }
 
                     // 7
                     float chance = Modules.Config.baseDropRate.Value;
-                    if (bonusChance) chance += Mathf.Clamp((DamageTypes.bulletTypes.Distinct().Count() - 30), 0, 30);
+                    if (chance <= 0) return; // drop nothing
+
                     bool fuckMyAss = chance >= 100f;
 
                     // higher chance if it's a big guy
@@ -2873,71 +2971,42 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     // stop dropping weapons when void monsters kill each other plz this is an annoying bug
                     if (damageReport.attackerTeamIndex != TeamIndex.Player) droppedWeapon = false;
 
-                    if (DriverWeaponCatalog.weaponDrops.ContainsKey(damageReport.victimBody.gameObject.name))
+                    if (DriverWeaponCatalog.weaponDrops.TryGetValue(damageReport.victimBody.gameObject.name,
+                        out var uniqueDrop) && uniqueDrop.dropChance >= 100f)
                     {
-                        DriverWeaponDef z = DriverWeaponCatalog.weaponDrops[damageReport.victimBody.gameObject.name];
-                        if (z.dropChance >= 100f) droppedWeapon = true;
+                        droppedWeapon = true;
                     }
 
                     if (droppedWeapon)
                     {
                         Driver.instance.pityMultiplier = 0.8f;
 
-                        Vector3 position = Vector3.zero;
-                        Transform transform = damageReport.victim.transform;
-                        if (transform)
-                        {
-                            position = damageReport.victim.transform.position;
-                        }
+                        Vector3 position = damageReport.victim.transform ? damageReport.victim.transform.position : Vector3.zero;
 
                         //if (Modules.Config.oldPickupModel.Value) pickupPrefab = Modules.Assets.weaponPickupOld;
 
-                        DriverWeaponTier weaponTier = DriverWeaponTier.Uncommon;
-                        if (damageReport.victimBody.isChampion) weaponTier = DriverWeaponTier.Legendary;
+                        DriverWeaponTier weaponTier = damageReport.victimBody.isChampion ? DriverWeaponTier.Legendary : DriverWeaponTier.Uncommon;
 
-                        DriverWeaponDef weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
+                        // use unique drop, otherwise roll random
+                        DriverWeaponDef weaponDef;
+                        if (uniqueDrop && Util.CheckRoll(uniqueDrop.dropChance)) weaponDef = uniqueDrop;
+                        else weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(weaponTier);
 
-                        if (DriverWeaponCatalog.weaponDrops.ContainsKey(damageReport.victimBody.gameObject.name))
-                        {
-                            DriverWeaponDef newWeapon = DriverWeaponCatalog.weaponDrops[damageReport.victimBody.gameObject.name];
-                            if (Util.CheckRoll(newWeapon.dropChance)) weaponDef = newWeapon;
-                        }
+                        GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+                        var weaponComponent = weaponPickup.GetComponent<SyncPickup>();
 
-                        if (godSlingChance)
-                        {
-                            //Log.debug("godslingchanceactivated");
-                            GameObject weaponPickup = weaponDef.pickupPrefab;
-                            float splitChance = Modules.Config.godslingDropRateSplit.Value;
-                            System.Random rnd = new System.Random();
-                            float num = rnd.Next(0, 100);
-                            if (num >= splitChance)
-                            {
-                                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
-                                //Log.debug("AMMOOOOOOO");
-                            }
-                            else
-                            {
-                                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = false;
-                            }
-                            weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponPickup, position, UnityEngine.Random.rotation);
+                        // add passive specific stuff
+                        // give the poor godsling players the ultra rare weapons, nobody likes getting bullets from michael
+                        weaponComponent.isNewAmmoType = (uniqueDrop && uniqueDrop.dropChance >= 100) || Util.CheckRoll(Config.godslingDropRateSplit.Value);
 
-                            TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
-                            if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
+                        // non-legendary gets rerolled
+                        weaponComponent.bulletDef = isBoss ? DriverBulletCatalog.GetRandomBulletFromTier(DriverWeaponTier.Legendary) : 
+                            DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Uncommon);
 
-                            NetworkServer.Spawn(weaponPickup);
-                        }
-                        else
-                        {
-                            GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(weaponDef.pickupPrefab, position, UnityEngine.Random.rotation);
+                        if (weaponPickup.TryGetComponent<TeamFilter>(out var teamFilter) && teamFilter)
+                            teamFilter.teamIndex = damageReport.attackerTeamIndex;
 
-                            TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
-                            if (teamFilter) teamFilter.teamIndex = damageReport.attackerTeamIndex;
-
-                            // surely this wont cause problems!
-                            weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = true;
-
-                            NetworkServer.Spawn(weaponPickup);
-                        }
+                        NetworkServer.Spawn(weaponPickup);
                     }
                     else
                     {
@@ -2968,7 +3037,13 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     return;
                 }
 
-                Transform skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
+                Transform skillsContainer = hud.equipmentIcons[0].gameObject.transform.parent;
+
+                // remove existing
+                if (skillsContainer.Find("WeaponSlot")) GameObject.Destroy(skillsContainer.Find("WeaponSlot").gameObject);
+
+                var oldUI = hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras").Find("AmmoTracker");
+                if (oldUI) GameObject.Destroy(oldUI.gameObject);
 
                 // no one will notice these missing
                 skillsContainer.Find("SprintCluster").gameObject.SetActive(false);
@@ -2987,7 +3062,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 weaponIconComponent.isReadyPanelObject = equipmentIconComponent.isReadyPanelObject;
                 weaponIconComponent.tooltipProvider = equipmentIconComponent.tooltipProvider;
                 weaponIconComponent.targetHUD = hud;
-
                 weaponSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(-480f, -17.1797f);
 
                 HGTextMeshProUGUI keyText = weaponSlot.transform.Find("DisplayRoot").Find("EquipmentTextBackgroundPanel").Find("EquipmentKeyText").gameObject.GetComponent<HGTextMeshProUGUI>();
@@ -3017,7 +3091,6 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 MonoBehaviour.Destroy(equipmentIconComponent);
 
-
                 // weapon pickup notification
 
                 GameObject notificationPanel = GameObject.Instantiate(hud.transform.Find("MainContainer").Find("NotificationArea").gameObject);
@@ -3034,53 +3107,72 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 _old.enabled = false;
 
-
-
                 // ammo display for alt passive
-
                 Transform healthbarContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster");
 
-                if (!hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("AmmoTracker"))
-                {
-                    GameObject ammoTracker = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
-                    ammoTracker.name = "AmmoTracker";
-                    ammoTracker.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
+                GameObject ammoTracker = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+                ammoTracker.name = "AmmoTracker";
+                ammoTracker.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
 
-                    GameObject.DestroyImmediate(ammoTracker.transform.GetChild(0).gameObject);
-                    MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<LevelText>());
-                    MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<ExpBar>());
+                GameObject.DestroyImmediate(ammoTracker.transform.GetChild(0).gameObject);
+                MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<LevelText>());
+                MonoBehaviour.Destroy(ammoTracker.GetComponentInChildren<ExpBar>());
 
-                    AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
-                    ammoTrackerComponent.targetHUD = hud;
-                    ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
+                ammoTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
+                GameObject.DestroyImmediate(ammoTracker.transform.Find("ExpBarRoot").gameObject);
 
-                    ammoTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
+                ammoTracker.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
 
-                    //ammoTracker.transform.Find("ExpBarRoot").GetChild(0).GetComponent<Image>().enabled = true;
+                rect = ammoTracker.GetComponent<RectTransform>();
+                rect.localScale = new Vector3(0.8f, 0.8f, 1f);
+                rect.anchorMin = new Vector2(0f, 0f);
+                rect.anchorMax = new Vector2(0f, 0f);
+                rect.offsetMin = new Vector2(120f, -40f);
+                rect.offsetMax = new Vector2(120f, -40f);
+                rect.pivot = new Vector2(0.5f, 0f);
+                //positional data doesnt get sent to clients? Manually making offsets works..
+                rect.anchoredPosition = new Vector2(50f, 0f);
+                rect.localPosition = new Vector3(120f, -40f, 0f);
 
-                    ammoTracker.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
+                GameObject chargeBarAmmo = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
+                chargeBarAmmo.name = "AmmoBar";
+                chargeBarAmmo.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
 
-                    rect = ammoTracker.GetComponent<RectTransform>();
-                    rect.localScale = new Vector3(0.8f, 0.8f, 1f);
-                    rect.anchorMin = new Vector2(0f, 0f);
-                    rect.anchorMax = new Vector2(0f, 0f);
-                    rect.pivot = new Vector2(0.5f, 0f);
-                    rect.anchoredPosition = new Vector2(50f, 0f);
-                    rect.localPosition = new Vector3(50f, -95f, 0f);
-                }
+                rect = chargeBarAmmo.GetComponent<RectTransform>();
+
+                rect.localScale = new Vector3(0.75f, 0.1f, 1f);
+                rect.anchorMin = new Vector2(100f, 2f);
+                rect.anchorMax = new Vector2(100f, 2f);
+                rect.pivot = new Vector2(0.5f, 0f);
+                rect.anchoredPosition = new Vector2(100f, 2f);
+                rect.localPosition = new Vector3(100f, 2f, 0f);
+                rect.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
+
+                AmmoDisplay ammoTrackerComponent = ammoTracker.AddComponent<AmmoDisplay>();
+
+                ammoTrackerComponent.targetHUD = hud;
+                ammoTrackerComponent.targetText = ammoTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
+                ammoTrackerComponent.durationDisplay = chargeBarAmmo;
+                ammoTrackerComponent.durationBar = chargeBarAmmo.transform.GetChild(1).gameObject.GetComponent<UnityEngine.UI.Image>();
+                ammoTrackerComponent.durationBarRed = chargeBarAmmo.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
+
             }
         }
 
         internal static void RiskUIHudSetup(RoR2.UI.HUD hud)
         {
-            Transform skillsContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler");
+            // Get rid of old hud, im tired of fighting this
+            GameObject weaponSlot = hud.equipmentIcons.First().transform.parent.Find("WeaponSlot")?.gameObject;
+            if (weaponSlot) GameObject.Destroy(weaponSlot);
 
-            GameObject weaponSlot = GameObject.Instantiate(skillsContainer.Find("EquipmentSlotPos1").Find("EquipIcon").gameObject, skillsContainer);
+            weaponSlot = GameObject.Instantiate(hud.equipmentIcons.First().gameObject);
             weaponSlot.name = "WeaponSlot";
+            MonoBehaviour.Destroy(weaponSlot.GetComponent<BepinConfigParentManager>());
 
             EquipmentIcon equipmentIconComponent = weaponSlot.GetComponent<EquipmentIcon>();
             Components.WeaponIcon weaponIconComponent = weaponSlot.AddComponent<Components.WeaponIcon>();
 
+            // whoever deleted the stock flash animations is a bad guy
             weaponIconComponent.iconImage = equipmentIconComponent.iconImage;
             weaponIconComponent.displayRoot = equipmentIconComponent.displayRoot;
             weaponIconComponent.flashPanelObject = equipmentIconComponent.stockFlashPanelObject;
@@ -3089,13 +3181,13 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             weaponIconComponent.tooltipProvider = equipmentIconComponent.tooltipProvider;
             weaponIconComponent.targetHUD = hud;
 
-            MaterialHud.MaterialEquipmentIcon x = weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>();
-            Components.MaterialWeaponIcon y = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
-
-            y.icon = weaponIconComponent;
-            y.onCooldown = x.onCooldown;
-            y.mask = x.mask;
-            y.stockText = x.stockText;
+            var weaponIcon = weaponSlot.AddComponent<Components.MaterialWeaponIcon>();
+            
+            weaponIcon.targetHUD = hud;
+            weaponIcon.icon = weaponIconComponent;
+            weaponIcon.mask = weaponSlot.transform.Find("DisplayRoot").Find("Mask").gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIcon.cooldownRing = weaponSlot.transform.Find("DisplayRoot").Find("Mask").Find("CooldownRing").gameObject.GetComponent<UnityEngine.UI.Image>();
+            weaponIcon.cooldownRing.fillCenter = false;
 
             RectTransform iconRect = weaponSlot.GetComponent<RectTransform>();
             iconRect.localScale = new Vector3(2f, 2f, 2f);
@@ -3106,15 +3198,24 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 iconRect.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 iconRect.anchoredPosition = new Vector2(-110f, 60f);
             }
+            // text for ammo type
+            weaponIcon.ammoBackground = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("StockTextContainer").gameObject;
+            weaponIcon.ammoBackground.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 2.5f);
+            weaponIcon.ammoBackground.GetComponent<RectTransform>().localScale = new Vector3(0.8f, -0.8f, 0.8f);
+            weaponIcon.ammoBackground.transform.SetAsFirstSibling();
 
-            HGTextMeshProUGUI keyText = weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").Find("SkillKeyText").gameObject.GetComponent<HGTextMeshProUGUI>();
-            keyText.gameObject.GetComponent<InputBindingDisplayController>().enabled = false;
-            keyText.text = "Weapon";
+            weaponIcon.ammoText = weaponIcon.ammoBackground.transform.Find("StockText").gameObject.GetComponent<TextMeshProUGUI>();
 
-            weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("StockTextContainer").gameObject.SetActive(false);
-            weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject.SetActive(false);
+            GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").Find("SkillBackgroundPanel").gameObject);
+            GameObject.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("CooldownText").gameObject);
+            weaponSlot.transform.Find("DisplayRoot").Find("BgImage").Find("IconPanel").Find("OnCooldown").gameObject.SetActive(false);
+            MonoBehaviour.Destroy(weaponIcon.cooldownRing.GetComponent<RedToColorRemapperIndividual>());
+            MonoBehaviour.Destroy(weaponSlot.transform.Find("DisplayRoot").Find("BottomContainer").gameObject.GetComponent<HideFromBepinConfig>());
+            MonoBehaviour.Destroy(weaponSlot.GetComponent<MaterialHud.MaterialEquipmentIcon>());
+            MonoBehaviour.Destroy(equipmentIconComponent);
 
             // duration bar
+            /**
             GameObject chargeBar = GameObject.Instantiate(Assets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
             chargeBar.transform.SetParent(weaponSlot.transform.Find("DisplayRoot"));
 
@@ -3131,11 +3232,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             weaponIconComponent.durationDisplay = chargeBar;
             weaponIconComponent.durationBar = chargeBar.transform.GetChild(1).gameObject.GetComponent<UnityEngine.UI.Image>();
             weaponIconComponent.durationBarRed = chargeBar.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
-
-            MonoBehaviour.Destroy(equipmentIconComponent);
-            MonoBehaviour.Destroy(x);
-
-
+            **/
             // weapon pickup notification
 
             GameObject notificationPanel = GameObject.Instantiate(hud.transform.Find("MainContainer").Find("NotificationArea").gameObject);
@@ -3196,12 +3293,12 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                 self.StartAimMode(self.duration + 0.5f);
 
                 EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosion.prefab").WaitForCompletion(),
-        new EffectData
-        {
-            origin = self.FindModelChild("HandL").position,
-            rotation = Quaternion.identity,
-            scale = 0.5f
-        }, false);
+                    new EffectData
+                    {
+                        origin = self.FindModelChild("HandL").position,
+                        rotation = Quaternion.identity,
+                        scale = 0.5f
+                    }, false);
             }
         }
     }

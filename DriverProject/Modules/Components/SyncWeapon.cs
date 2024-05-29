@@ -9,28 +9,31 @@ namespace RobDriver.Modules.Components
     internal class SyncWeapon : INetMessage
     {
         private NetworkInstanceId netId;
-        private ushort weapon;
+        private ushort weaponIndex;
+        private ushort bulletIndex;
         private bool cutAmmo;
-        private bool isAmmoBox;
+        private bool isNewAmmoType;
 
         public SyncWeapon()
         {
         }
 
-        public SyncWeapon(NetworkInstanceId netId, ushort augh, bool ough, bool isAmmoBox)
+        public SyncWeapon(NetworkInstanceId netId, ushort augh, ushort ough, bool cutAmmo, bool isNewAmmoType)
         {
             this.netId = netId;
-            this.weapon = augh;
-            this.cutAmmo = ough;
-            this.isAmmoBox = isAmmoBox;
+            this.weaponIndex = augh;
+            this.bulletIndex = ough;
+            this.cutAmmo = cutAmmo;
+            this.isNewAmmoType = isNewAmmoType;
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.netId = reader.ReadNetworkId();
-            this.weapon = reader.ReadUInt16();
+            this.weaponIndex = reader.ReadUInt16();
+            this.bulletIndex = reader.ReadUInt16();
             this.cutAmmo = reader.ReadBoolean();
-            this.isAmmoBox = reader.ReadBoolean();
+            this.isNewAmmoType = reader.ReadBoolean();
         }
 
         public void OnReceived()
@@ -39,20 +42,19 @@ namespace RobDriver.Modules.Components
             if (!bodyObject) return;
 
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
-            DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(this.weapon);
+            DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(this.weaponIndex);
+            DriverBulletDef bulletDef = DriverBulletCatalog.GetBulletDefFromIndex(this.bulletIndex);
 
-            float ammo = -1f;
-            if (this.cutAmmo) ammo = weaponDef.shotCount * 0.5f;
-
-            if (iDrive) iDrive.PickUpWeapon(weaponDef, ammo, this.isAmmoBox);
+            if (iDrive) iDrive.PickUpWeaponDrop(weaponDef, bulletDef, -1, this.cutAmmo, this.isNewAmmoType);
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(this.netId);
-            writer.Write(this.weapon);
+            writer.Write(this.weaponIndex);
+            writer.Write(this.bulletIndex);
             writer.Write(this.cutAmmo);
-            writer.Write(this.isAmmoBox);
+            writer.Write(this.isNewAmmoType);
         }
     }
 }

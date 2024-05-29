@@ -29,6 +29,7 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.UseSyringeLegacy));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SwingKnifeScepter));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.UseSyringeScepter));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Coin));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.ArmCannon.Shoot));
 
@@ -108,6 +109,17 @@ namespace RobDriver.Modules
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SMG.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SMG.PhaseRound));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.SMG.SuppressiveFire));
+
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.NemmandoSword.SwingSword));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.ChargeSlash));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.DashPunch));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.PunchRecoil));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.SlashCombo));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.ThrowSlash));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.WallJumpBig));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.WallJumpSmall));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.ChargeJump));
+            entityStates.Add(typeof(RobDriver.SkillStates.Driver.Compat.WallJump));
 
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.Shoot));
             entityStates.Add(typeof(RobDriver.SkillStates.Driver.Revolver.AimLightsOut));

@@ -36,7 +36,9 @@ namespace RobDriver.SkillStates.Driver.Revolver
 
             base.PlayAnimation("Gesture, Override", "AimLightsOut", "Action.playbackRate", this.duration);
 
-            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolver.prefab").WaitForCompletion(), CrosshairUtils.OverridePriority.Skill);
+            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, 
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2CrosshairPrepRevolver.prefab").WaitForCompletion(), 
+                CrosshairUtils.OverridePriority.Skill);
 
             this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
             {
@@ -50,6 +52,13 @@ namespace RobDriver.SkillStates.Driver.Revolver
             base.FixedUpdate();
             base.StartAimMode(0.5f);
             this.animator.SetFloat("aimY", this.inputBank.aimDirection.y);
+
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                this.outer.SetNextStateToMain();
+                return;
+            }
 
             if (base.fixedAge >= (0.9f * this.duration))
             {
@@ -85,7 +94,7 @@ namespace RobDriver.SkillStates.Driver.Revolver
                 EntityState.Destroy(this.effectInstance);
             }
             this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
-            if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
+            this.crosshairOverrideRequest?.Dispose();
             if (this.overlayController != null)
             {
                 HudOverlayManager.RemoveOverlay(this.overlayController);

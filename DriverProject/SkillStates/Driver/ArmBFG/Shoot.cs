@@ -1,7 +1,6 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
-using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
 using R2API;
@@ -22,6 +21,9 @@ namespace RobDriver.SkillStates.Driver.ArmBFG
         private bool isCrit;
         protected string muzzleString;
 
+        protected virtual float _damageCoefficient => Shoot.damageCoefficient;
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.plasmaCannonProjectilePrefab;
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -39,15 +41,7 @@ namespace RobDriver.SkillStates.Driver.ArmBFG
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
-        }
-
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Shoot.damageCoefficient;
-            }
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void Fire()
@@ -65,12 +59,22 @@ namespace RobDriver.SkillStates.Driver.ArmBFG
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
-                    GameObject modify = Modules.Projectiles.plasmaCannonProjectilePrefab;
-                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                    if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                    ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+
+                    ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                    {
+                        projectilePrefab = this.projectilePrefab,
+                        position = aimRay.origin,
+                        rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
+                        owner = this.gameObject,
+                        damage = this.damageStat * this._damageCoefficient,
+                        force = 1200f,
+                        crit = this.isCrit,
+                        damageColorIndex = DamageColorIndex.Default,
+                        target = null,
+                        speedOverride = 120f,
+                        useSpeedOverride = true,
+                        damageTypeOverride = iDrive.DamageType
+                    });
                 }
             }
         }
@@ -84,7 +88,7 @@ namespace RobDriver.SkillStates.Driver.ArmBFG
                 this.Fire();
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();
@@ -93,7 +97,7 @@ namespace RobDriver.SkillStates.Driver.ArmBFG
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

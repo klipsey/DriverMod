@@ -1,5 +1,4 @@
 ﻿using EntityStates;
-using RobDriver.Modules;
 using RoR2;
 using R2API;
 using UnityEngine;
@@ -12,8 +11,6 @@ namespace RobDriver.SkillStates.Driver
         public static float damageCoefficient = 2.2f;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.7f;
-        public static float baseCritDuration = 0.9f;
-        public static float baseCritDuration2 = 1.4f;
         public static float force = 200f;
         public static float recoil = 2f;
         public static float range = 2000f;
@@ -31,13 +28,12 @@ namespace RobDriver.SkillStates.Driver
         private uint spinPlayID;
         private bool oldShoot;
 
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Shoot.damageCoefficient;
-            }
-        }
+        protected virtual float _damageCoefficient => Shoot.damageCoefficient;
+        protected virtual GameObject tracerPrefab => this.isCrit ? Shoot.critTracerEffectPrefab : Shoot.tracerEffectPrefab;
+        public virtual string shootSoundString => this.isCrit ? "sfx_driver_pistol_shoot_critical" : "sfx_driver_pistol_shoot";
+        public virtual BulletAttack.FalloffModel falloff => BulletAttack.FalloffModel.DefaultBullet;
+        protected virtual float baseCritDuration => 0.9f;
+        protected virtual float baseCritDuration2 => 1.4f;
 
         public override void OnEnter()
         {
@@ -57,7 +53,7 @@ namespace RobDriver.SkillStates.Driver
             {
                 if (this.oldShoot)
                 {
-                    this.duration = Shoot.baseCritDuration / this.attackSpeedStat;
+                    this.duration = this.baseCritDuration / this.attackSpeedStat;
                     this.fireTime = 0.5f * this.duration;
                     this.fireTime2 = 0.55f * this.duration;
 
@@ -72,7 +68,7 @@ namespace RobDriver.SkillStates.Driver
                 }
                 else
                 {
-                    this.duration = Shoot.baseCritDuration2 / this.attackSpeedStat;
+                    this.duration = this.baseCritDuration2 / this.attackSpeedStat;
                     this.fireTime = 0f * this.duration;
                     this.fireTime2 = 0.05f * this.duration;
 
@@ -90,9 +86,7 @@ namespace RobDriver.SkillStates.Driver
                 this.PlayAnimation("Gesture, Override", "Shoot", "Shoot.playbackRate", this.duration * 1.5f);
             }
 
-            if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
-
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, true);
         }
 
         public override void OnExit()
@@ -103,33 +97,9 @@ namespace RobDriver.SkillStates.Driver
             if (this.effectInstance) EntityState.Destroy(this.effectInstance);
         }
 
-        public virtual string shootSoundString
-        {
-            get
-            {
-                if (this.isCrit) return "sfx_driver_pistol_shoot_critical";
-                return "sfx_driver_pistol_shoot";
-            }
-        }
-
-        public virtual BulletAttack.FalloffModel falloff
-        {
-            get
-            {
-                return BulletAttack.FalloffModel.DefaultBullet;
-            }
-        }
-
         private void Fire()
         {
-            if (this.iDrive.passive.isBullets|| this.iDrive.passive.isRyan)
-            {
-                GameObject modify = EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab;
-                var col = modify.transform.GetChild(1).GetComponent<ParticleSystem>().main;
-                col.startColor = Buffs.bulletDefs[iDrive.currentBulletIndex].buffColor;
-                EffectManager.SimpleMuzzleFlash(modify, this.gameObject, this.muzzleString, false);
-            }
-            else EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
+            EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, this.gameObject, this.muzzleString, false);
 
 
             Util.PlaySound(this.shootSoundString, this.gameObject);
@@ -139,14 +109,14 @@ namespace RobDriver.SkillStates.Driver
                 Ray aimRay = base.GetAimRay();
                 base.AddRecoil2(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
 
-                BulletAttack attack = new BulletAttack
+                BulletAttack bulletAttack = new BulletAttack
                 {
                     bulletCount = 1,
                     aimVector = aimRay.direction,
                     origin = aimRay.origin,
                     damage = this._damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = iDrive.bulletDamageType,
+                    damageType = iDrive.DamageType,
                     falloffModel = this.falloff,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -169,27 +139,18 @@ namespace RobDriver.SkillStates.Driver
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                attack.AddModdedDamageType(iDrive.moddedBulletType);
-                attack.Fire();
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
+                bulletAttack.Fire();
             }
 
             base.characterBody.AddSpreadBloom(1.25f);
-        }
-
-        protected virtual GameObject tracerPrefab
-        {
-            get
-            {
-                if (this.isCrit) return Shoot.critTracerEffectPrefab;
-                else return Shoot.tracerEffectPrefab;
-            }
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();
@@ -238,16 +199,17 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
 
+            // pyrite gun made me do this
+            if (this.iDrive.weaponTimer <= 0f && this.iDrive.maxWeaponTimer > 0 &&
+                this.GetMinimumInterruptPriority() == InterruptPriority.Any && base.isAuthority)
+            {
+                this.outer.SetNextState(new ReloadPistol());
+                return;
+            }
+
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
-                {
-                    this.outer.SetNextState(new WaitForReload());
-                    return;
-                }
-
-                this.outer.SetNextStateToMain();
-                return;
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

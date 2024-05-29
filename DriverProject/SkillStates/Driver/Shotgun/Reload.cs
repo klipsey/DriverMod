@@ -18,7 +18,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
         {
             base.FixedUpdate();
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();
@@ -27,6 +27,7 @@ namespace RobDriver.SkillStates.Driver.Shotgun
 
             if (base.fixedAge >= this.duration)
             {
+                if (this.iDrive.weaponDef.nameToken == this.iDrive.defaultWeaponDef.nameToken && !this.iDrive.HasSpecialBullets) iDrive.FinishReload();
                 this.outer.SetNextStateToMain();
             }
         }

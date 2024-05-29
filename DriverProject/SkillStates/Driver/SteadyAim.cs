@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using RoR2;
 using EntityStates;
+using RobDriver.Modules;
 using static RoR2.CameraTargetParams;
 using UnityEngine.Networking;
 using RoR2.HudOverlay;
@@ -108,7 +109,8 @@ namespace RobDriver.SkillStates.Driver
                     childLocatorEntry = "ScopeContainer"
                 });
 
-                this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 1f);
+                if(!Config.defaultPistolAnims.Value) this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 1f);
+                else this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 0f);
             }
             else this.animator.SetLayerWeight(this.animator.GetLayerIndex("AltPistol, Override"), 0f);
 
@@ -160,7 +162,7 @@ namespace RobDriver.SkillStates.Driver
 
             this.UpdateLightEffect();
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 this.cancelling = true;
                 this.outer.SetNextStateToMain();
@@ -192,56 +194,50 @@ namespace RobDriver.SkillStates.Driver
                 }
             }
                 
-            if (this.iDrive.weaponTimer <= 0f && (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+            if (this.iDrive.weaponTimer <= 0f && this.iDrive.maxWeaponTimer > 0)
             {
-                if (this.shotCooldown <= 0f)
+                if (this.shotCooldown <= 0f && this.inputBank.skill1.down && base.isAuthority)
                 {
-                    if (this.inputBank.skill1.down && base.isAuthority)
+                    this.outer.SetNextState(new ReloadPistol
                     {
-                        this.outer.SetNextState(new ReloadPistol
-                        {
-                            animString = "SteadyAimReload",
-                            camParamsOverrideHandle = this.camParamsOverrideHandle,
-                            aiming = true
-                        });
-                        this.reloading = true;
-                        /*this.shotCooldown = 2.4f / this.attackSpeedStat;
-                        this.reloading = true;
-                        base.PlayCrossfade("Gesture, Override", "SteadyAimReload", "Action.playbackRate", this.shotCooldown, 0.1f);
-                        Util.PlaySound("sfx_driver_reload_01", this.gameObject);*/
-                    }
+                        animString = "SteadyAimReload",
+                        camParamsOverrideHandle = this.camParamsOverrideHandle,
+                        aiming = true
+                    });
+                    this.reloading = true;
+                    /*this.shotCooldown = 2.4f / this.attackSpeedStat;
+                    this.reloading = true;
+                    base.PlayCrossfade("Gesture, Override", "SteadyAimReload", "Action.playbackRate", this.shotCooldown, 0.1f);
+                    Util.PlaySound("sfx_driver_reload_01", this.gameObject);*/
                 }
             }
-            else
+            else if (shotCooldown <= 0f && base.isAuthority)
             {
-                if (this.shotCooldown <= 0f && base.isAuthority)
+                if (this.autoFocus)
                 {
-                    if (this.autoFocus)
+                    if (this.inputBank.skill1.down)
                     {
-                        if (this.inputBank.skill1.down)
+                        if (this.skillLocator.secondary.stock > 0)
                         {
-                            if (this.skillLocator.secondary.stock > 0)
-                            {
-                                if (this.isCharged)
-                                {
-                                    this.isCrit = this.RollCrit();
-                                    this.Fire();
-                                }
-                            }
-                            else
+                            if (this.isCharged)
                             {
                                 this.isCrit = this.RollCrit();
                                 this.Fire();
                             }
                         }
-                    }
-                    else
-                    {
-                        if (this.inputBank.skill1.down)
+                        else
                         {
                             this.isCrit = this.RollCrit();
                             this.Fire();
                         }
+                    }
+                }
+                else
+                {
+                    if (this.inputBank.skill1.down)
+                    {
+                        this.isCrit = this.RollCrit();
+                        this.Fire();
                     }
                 }
             }
@@ -270,12 +266,7 @@ namespace RobDriver.SkillStates.Driver
                     }
                 }
 
-                if (this.iDrive.passive.isPistolOnly && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
-                {
-                    this.outer.SetNextState(new WaitForReload());
-                    return;
-                }
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
 
             if (this.iDrive)
@@ -318,9 +309,7 @@ namespace RobDriver.SkillStates.Driver
 
         public virtual void Fire()
         {
-            if (this.iDrive.passive.isPistolOnly) this.iDrive.ConsumeAmmo(1f, false);
-
-            if ((this.iDrive.passive.isBullets || this.iDrive.passive.isRyan) && this.characterBody.HasBuff(Modules.Buffs.bulletDefs[this.iDrive.currentBulletIndex])) this.iDrive.ConsumeAmmo(1f, false);
+            if (this.iDrive.maxWeaponTimer > 0) this.iDrive.ConsumeAmmo(1f, false);
 
             if (this.shurikenComponent) shurikenComponent.OnSkillActivated(base.skillLocator.primary);
 
@@ -382,7 +371,7 @@ namespace RobDriver.SkillStates.Driver
                         origin = aimRay.origin,
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = iDrive.bulletDamageType,
+                        damageType = iDrive.DamageType,
                         falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
@@ -405,7 +394,7 @@ namespace RobDriver.SkillStates.Driver
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                     };
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                     bulletAttack.Fire();
                 }
                 else
@@ -417,7 +406,7 @@ namespace RobDriver.SkillStates.Driver
                         origin = aimRay.origin,
                         damage = dmg * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = iDrive.bulletDamageType,
+                        damageType = iDrive.DamageType,
                         falloffModel = falloffModel,
                         maxDistance = Shoot.range,
                         force = Shoot.force,
@@ -440,16 +429,17 @@ namespace RobDriver.SkillStates.Driver
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                     };
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
-                    if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+                    if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
                     {
                         bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                         {
                             if (BulletAttack.IsSniperTargetHit(hitInfo))
                             {
                                 if (this.iDrive.passive.isPistolOnly) damageInfo.damage *= 2f;
-                                else damageInfo.damage *= 1.5f;
+                                else if (this.iDrive.passive.isBullets) damageInfo.damage *= 1.5f;
+                                else damageInfo.damage *= 1.25f;
                                 damageInfo.damageColorIndex = DamageColorIndex.Sniper;
 
                                 if (wasCharged)
@@ -468,7 +458,6 @@ namespace RobDriver.SkillStates.Driver
                             }
                         };
                     }
-
                     bulletAttack.Fire();
                 }
             }
@@ -508,7 +497,7 @@ namespace RobDriver.SkillStates.Driver
                     origin = aimRay.origin,
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = iDrive.bulletDamageType,
+                    damageType = iDrive.DamageType,
                     falloffModel = falloffModel,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -531,15 +520,16 @@ namespace RobDriver.SkillStates.Driver
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
-                if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan))
+                if (this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
                 {
                     bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                     {
                         if (BulletAttack.IsSniperTargetHit(hitInfo))
                         {
-                            damageInfo.damage *= 2f;
+                            if (this.iDrive.passive.isPistolOnly) damageInfo.damage *= 2f;
+                            else damageInfo.damage *= 1.25f;
                             damageInfo.damageColorIndex = DamageColorIndex.Sniper;
 
                             if (this.lastCharge)
@@ -558,7 +548,6 @@ namespace RobDriver.SkillStates.Driver
                         }
                     };
                 }
-
                 bulletAttack.Fire();
             }
         }

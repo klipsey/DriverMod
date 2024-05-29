@@ -1,13 +1,11 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
 using R2API.Utils;
 using RoR2;
 using System.Security;
 using System.Security.Permissions;
-using UnityEngine;
 using R2API.Networking;
-using RobDriver.Modules.Components;
 using RobDriver.Modules.Survivors;
+using System.Collections.Generic;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -22,6 +20,7 @@ namespace RobDriver
     [BepInDependency("com.RiskySleeps.ClassicItemsReturns", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("bubbet.riskui", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.rob.Ravager", BepInDependency.DependencyFlags.SoftDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(MODUID, MODNAME, MODVERSION)]
     [R2APISubmoduleDependency(new string[]
@@ -54,6 +53,7 @@ namespace RobDriver
         public static bool riskUIInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("bubbet.riskui");
         public static bool extendedLoadoutInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.KingEnderBrine.ExtendedLoadout");
         public static bool greenAlienHeadInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Borbo.GreenAlienHead");
+        public static bool ravagerInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rob.Ravager");
 
         private void Awake()
         {
@@ -67,6 +67,7 @@ namespace RobDriver
             Modules.CameraParams.InitializeParams();
             Modules.States.RegisterStates();
             Modules.DamageTypes.Init();
+            Modules.DriverBulletCatalog.Init();
             Modules.Buffs.RegisterBuffs();
             Modules.Projectiles.RegisterProjectiles();
             Modules.Tokens.AddTokens();
@@ -76,8 +77,6 @@ namespace RobDriver
             new Modules.Survivors.Driver().CreateCharacter();
 
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeapon>();
-            //NetworkingAPI.RegisterMessageType<Modules.Components.SyncWeaponPickup>();
-            // kill me
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncOverlay>();
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncStoredWeapon>();
             NetworkingAPI.RegisterMessageType<Modules.Components.SyncDecapitation>();
@@ -89,6 +88,7 @@ namespace RobDriver
             RoR2.ContentManagement.ContentManager.onContentPacksAssigned += LateSetup;
 
             CreateWeapons();
+
         }
 
         private void LateSetup(global::HG.ReadOnlyArray<RoR2.ContentManagement.ReadOnlyContentPack> obj)
@@ -107,6 +107,8 @@ namespace RobDriver
             new Modules.Weapons.CommandoSMG().Init();
             new Modules.Weapons.Revolver().Init();
             new Modules.Weapons.SMG().Init();
+            new Modules.Weapons.RavSword().Init();
+            new Modules.Weapons.NemSword().Init();
         }
 
         private void Hook()
@@ -114,9 +116,17 @@ namespace RobDriver
             if (Modules.Config.dynamicCrosshairUniversal.Value) On.RoR2.UI.CrosshairController.Awake += CrosshairController_Awake;
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
-
+            On.RoR2.UI.MainMenu.MainMenuController.Start += MainMenuController_Start;
             // uncomment this if network testing
+            // just download nuxlar's MultiplayerModTesting ffs, youre just gonna forget to comment it out again
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
+        }
+
+        private void MainMenuController_Start(On.RoR2.UI.MainMenu.MainMenuController.orig_Start orig, RoR2.UI.MainMenu.MainMenuController self)
+        {
+            orig(self);
+            Driver.LateSkinSetup();
+            On.RoR2.UI.MainMenu.MainMenuController.Start -= MainMenuController_Start;
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)

@@ -1,6 +1,7 @@
-﻿using RoR2;
+﻿using RobDriver.Modules;
+using RobDriver.Modules.Components;
+using RoR2;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver.SupplyDrop.Nerfed
@@ -11,14 +12,26 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop.Nerfed
         {
             if (NetworkServer.active)
             {
-                DriverWeaponDef _weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(DriverWeaponTier.Uncommon);
+                DriverWeaponDef _weaponDef;
+                DriverBulletDef _bulletDef;
 
-                if (Modules.Config.randomSupplyDrop.Value) _weaponDef = DriverWeaponCatalog.GetRandomWeapon();
+                if (Modules.Config.randomSupplyDrop.Value)
+                {
+                    _weaponDef = DriverWeaponCatalog.GetRandomWeapon();
+                    _bulletDef = DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Legendary);
+
+                }
+                else
+                {
+                    _weaponDef = DriverWeaponCatalog.GetRandomWeaponFromTier(DriverWeaponTier.Uncommon);
+                    _bulletDef = DriverBulletCatalog.GetWeightedRandomBullet(DriverWeaponTier.Uncommon);
+                }
 
                 GameObject weaponPickup = UnityEngine.Object.Instantiate<GameObject>(_weaponDef.pickupPrefab, this.dropPosition, UnityEngine.Random.rotation);
 
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().cutAmmo = true;
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = iDrive.passive.isBullets;
+                var weaponComponent = weaponPickup.GetComponent<SyncPickup>();
+                weaponComponent.bulletDef = _bulletDef;
+                weaponComponent.cutAmmo = true;
 
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;

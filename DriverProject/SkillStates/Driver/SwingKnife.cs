@@ -2,7 +2,6 @@
 using EntityStates;
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -11,9 +10,16 @@ namespace RobDriver.SkillStates.Driver
         protected override string prop => "KnifeModel";
 
         private GameObject swingEffectInstance;
-
+        private bool wasActive;
+        private MeshRenderer backWeaponModel;
         public override void OnEnter()
         {
+            base.RefreshState();
+            if (this.GetModelChildLocator().FindChild("BackWeaponModel").gameObject.TryGetComponent(out backWeaponModel) && !this.backWeaponModel.forceRenderingOff) 
+            {
+                //this.backWeaponModel.forceRenderingOff = true;
+                //this.wasActive = true;
+            }
             this.hitboxName = "Knife";
 
             this.damageCoefficient = 4.7f;
@@ -29,9 +35,9 @@ namespace RobDriver.SkillStates.Driver
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_driver_swing_knife";
-            this.swingEffectPrefab = Modules.Assets.knifeSwingEffect;
+            this.swingEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? Modules.Assets.redSmallSlashEffect : Modules.Assets.knifeSwingEffect;
             this.hitSoundString = "";
-            this.hitEffectPrefab = Modules.Assets.knifeImpactEffect;
+            this.hitEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? Modules.Assets.redSlashImpactEffect : Modules.Assets.knifeImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
             this.damageType = DamageType.ApplyMercExpose;
@@ -94,13 +100,21 @@ namespace RobDriver.SkillStates.Driver
 
         protected override void PlayAttackAnimation()
         {
-            base.PlayCrossfade("Gesture, Override", "SwingKnife", "Knife.playbackRate", this.duration, 0.1f);
+            base.PlayCrossfade("Gesture, Override", "SwingKnife", "Slash.playbackRate", this.duration, 0.1f);
         }
 
         protected override void SetNextState()
         {
         }
 
+        public override void OnExit()
+        {
+            if (this.wasActive && this.backWeaponModel)
+            {
+                //this.backWeaponModel.forceRenderingOff = false;
+            }
+            base.OnExit();
+        }
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             if (this.stopwatch >= (0.5f * this.duration)) return InterruptPriority.Any;

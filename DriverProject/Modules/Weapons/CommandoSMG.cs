@@ -23,20 +23,20 @@ namespace RobDriver.Modules.Weapons
         public override bool addToPool => false;
         public override string uniqueDropBodyName => "Commando";
 
-        public override SkillDef primarySkillDef => Modules.Skills.CreatePrimarySkillDef(
-new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SMG.Shoot)),
-"Weapon",
-"ROB_DRIVER_BODY_PRIMARY_BFG_NAME",
-"ROB_DRIVER_BODY_PRIMARY_BFG_DESCRIPTION",
-Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
-false);
+        public override SkillDef primarySkillDef => Skills.CreatePrimarySkillDef(
+            new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SMG.Shoot)),
+            "Weapon",
+            "ROB_DRIVER_BODY_PRIMARY_BFG_NAME",
+            "ROB_DRIVER_BODY_PRIMARY_BFG_DESCRIPTION",
+            Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texRocketLauncherIcon"),
+            false);
 
-        public override SkillDef secondarySkillDef => Modules.Skills.CreateSkillDef(new SkillDefInfo
+        public override SkillDef secondarySkillDef => Skills.CreateSkillDef(new SkillDefInfo
         {
-            skillName = "ROB_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
-            skillNameToken = "ROB_DRIVER_BODY_SECONDARY_SHOTGUN_NAME",
-            skillDescriptionToken = "ROB_DRIVER_BODY_SECONDARY_SHOTGUN_DESCRIPTION",
-            skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texShotgunSecondaryIcon"),
+            skillName = "ROB_DRIVER_BODY_SECONDARY_NEMMANDO_NAME",
+            skillNameToken = "ROB_DRIVER_BODY_SECONDARY_NEMMANDO_NAME",
+            skillDescriptionToken = "ROB_DRIVER_BODY_SECONDARY_NEMMANDO_DESCRIPTION",
+            skillIcon = Assets.mainAssetBundle.LoadAsset<Sprite>("texNemmandoSecondaryIcon"),
             activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.SMG.SuppressiveFire)),
             activationStateMachineName = "Weapon",
             baseMaxStock = 1,

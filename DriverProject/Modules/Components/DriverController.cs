@@ -1,12 +1,14 @@
-﻿using R2API;
+﻿using HarmonyLib;
+using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
+using RobDriver.Modules.Misc;
 using RobDriver.Modules.Survivors;
 using RoR2;
 using RoR2.Skills;
+using RoR2.Stats;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -15,45 +17,46 @@ using UnityEngine.SceneManagement;
 
 namespace RobDriver.Modules.Components
 {
-    public class DriverController : MonoBehaviour
+    public class DriverController : MonoBehaviour 
     {
-        public ushort syncedWeapon;
-        public NetworkInstanceId netId;
+        public DriverWeaponDef weaponDef { get; private set; }
+        public DriverBulletDef currentBulletDef { get; private set; }
+        public DriverWeaponDef defaultWeaponDef { get; private set; }
 
-        public DriverWeaponDef weaponDef;
+        public bool HasSpecialBullets => this.currentBulletDef.index != DriverBulletCatalog.Default.index;
+        public DamageType DamageType => this.currentBulletDef.bulletType;
+        public DamageAPI.ModdedDamageType ModdedDamageType => this.currentBulletDef.moddedBulletType;
+        public float ammo => this.weaponTimer;
 
         public float chargeValue;
-        
         //private bool timerStarted;
         private float jamTimer;
         //private EntityStateMachine weaponStateMachine;
         private CharacterBody characterBody;
+        private ModelSkinController skinController;
         private ChildLocator childLocator;
         private CharacterModel characterModel;
         private Animator animator;
         private SkillLocator skillLocator;
+        private DriverArsenal arsenal;
 
-        public int maxShellCount = 12;
-        public int basePistolAmmo = 14;
-        public int currentBulletIndex;
+        private readonly int maxShellCount = 12;
+        private readonly int basePistolAmmo = 26;
         private int currentShell;
         private int currentSlug;
         private GameObject[] shellObjects;
         private GameObject[] slugObjects;
 
-        public Action<DriverController> onWeaponUpdate;
+        public Action onConsumeAmmo;
+        public Action onWeaponUpdate;
 
         public float maxWeaponTimer;
         public float weaponTimer;
-        public DamageType bulletDamageType = DamageType.Generic;
-        public DamageAPI.ModdedDamageType moddedBulletType = DamageTypes.Generic;
         public DriverPassive passive;
         private float comboDecay = 1f;
-        private DriverWeaponDef pistolWeaponDef;
-        private SkinnedMeshRenderer weaponRenderer;
-
-        public float upForce = 9f;
-        public float backForce = 2.4f;
+        public SkinnedMeshRenderer weaponRenderer;
+        public readonly float upForce = 9f;
+        public readonly float backForce = 2.4f;
 
         // ooooAAAAAUGHHHHHGAHEM,67TKM
         private SkillDef[] primarySkillOverrides;
@@ -61,30 +64,42 @@ namespace RobDriver.Modules.Components
 
         public GameObject crosshairPrefab;
 
-        private int availableSupplyDrops;
         private int lysateCellCount = 0;
 
-        private DriverWeaponDef defaultWeaponDef;
-
         private GameObject muzzleTrail;
+        public GameObject weaponEffectInstance;
 
         public ParticleSystem machineGunVFX;
 
         private bool hasPickedUpHammer;
+        public bool pickedUpRavSword;
         private GameObject hammerEffectInstance;
         private GameObject hammerEffectInstance2;
 
+        private Dictionary<ushort, DriverWeaponSkinDef> weaponSkinCatalog;
         private DriverWeaponDef lastWeaponDef;
         private WeaponNotificationQueue notificationQueue;
         private bool needReload = false;
 
-        public float ammo
+        // rav compat
+        public bool isWallClinging;
+        public bool clingReady;
+        public float featherTimer;
+
+        private DriverWeaponTracker weaponTracker
         {
             get
             {
-                return this.weaponTimer;
+                if (this.characterBody && this.characterBody.master)
+                {
+                    DriverWeaponTracker i = this.characterBody.master.GetComponent<DriverWeaponTracker>();
+                    if (!i) i = this.characterBody.master.gameObject.AddComponent<DriverWeaponTracker>();
+                    return i;
+                }
+                return null;
             }
         }
+
 
         private void Awake()
         {
@@ -95,30 +110,36 @@ namespace RobDriver.Modules.Components
             }*/
             // probably won't be used but who knows
 
+            this.arsenal = this.GetComponent<DriverArsenal>();
             this.passive = this.GetComponent<DriverPassive>();
             this.characterBody = this.GetComponent<CharacterBody>();
-            ModelLocator modelLocator = this.GetComponent<ModelLocator>();
-            this.childLocator = modelLocator.modelBaseTransform.GetComponentInChildren<ChildLocator>();
-            this.animator = modelLocator.modelBaseTransform.GetComponentInChildren<Animator>();
-            this.characterModel = modelLocator.modelBaseTransform.GetComponentInChildren<CharacterModel>();
             this.skillLocator = this.GetComponent<SkillLocator>();
-            this.machineGunVFX = this.childLocator.FindChild("MachineGunVFX").gameObject.GetComponent<ParticleSystem>();
+
+            // model shenanigans
+            ModelLocator modelLocator = this.GetComponent<ModelLocator>();
+            this.childLocator = modelLocator.modelTransform.GetComponentInChildren<ChildLocator>();
+            this.animator = modelLocator.modelTransform.GetComponentInChildren<Animator>();
+            this.characterModel = modelLocator.modelTransform.GetComponentInChildren<CharacterModel>();
+            this.skinController = modelLocator.modelTransform.gameObject.GetComponent<ModelSkinController>();
 
             // really gotta cache this instead of calling a getcomponent on every single weapon pickup
-            this.weaponRenderer = this.childLocator.FindChild("PistolModel").GetComponent<SkinnedMeshRenderer>();
+            this.weaponRenderer = this.childLocator.FindChild("PistolModel").gameObject.GetComponent<SkinnedMeshRenderer>();
+            this.machineGunVFX = this.childLocator.FindChild("MachineGunVFX").gameObject.GetComponent<ParticleSystem>();
 
             this.GetSkillOverrides();
 
-            this.pistolWeaponDef = DriverWeaponCatalog.GetWeaponFromIndex(Modules.Config.defaultWeaponIndex.Value);
-            this.defaultWeaponDef = this.pistolWeaponDef;
-            this.PickUpWeapon(this.defaultWeaponDef);
+            this.currentBulletDef = DriverBulletCatalog.Default;
+            this.defaultWeaponDef = DriverWeaponCatalog.Pistol;
+            this.lastWeaponDef = defaultWeaponDef;
 
-            this.availableSupplyDrops = 1;
+            PickUpWeapon(defaultWeaponDef);
+
+            this.skillLocator.special.AddOneStock();
 
             this.CreateHammerEffect();
 
-            this.Invoke("SetInventoryHook", 0.5f);
-            this.Invoke("CheckForUpgrade", 2.5f);
+            this.Invoke(nameof(SetInventoryHook), 0.5f);
+            this.Invoke(nameof(CheckForUpgrade), 2.5f);
         }
 
         private void GetSkillOverrides()
@@ -143,20 +164,43 @@ namespace RobDriver.Modules.Components
         private void Start()
         {
             this.InitShells();
-
-            if (this.passive.isPistolOnly)
-            {
-                this.maxWeaponTimer = 26f;
-                this.weaponTimer = 26f;
-            }
-
-            if (this.passive.isBullets || this.passive.isRyan) SetBulletAmmo();
+            this.SetBulletAmmo();
         }
 
         private void SetInventoryHook()
         {
+            this.weaponSkinCatalog = DriverWeaponSkinCatalog.GetWeaponSkinCatalog(this.skinController);
+
+            // modelskinswapper compat
+            // i hate this as much as you do.
+            this.weaponRenderer.enabled = true;
+            this.childLocator.FindChild("PistolModel").gameObject.SetActive(true);
+            this.childLocator.FindChild("BackWeaponModel").gameObject.SetActive(true);
+            this.childLocator.FindChild("SkateboardModel").gameObject.SetActive(false);
+
+            // enable all the renderers...
+            this.childLocator.FindChild("KnifeModel").gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+            this.childLocator.FindChild("ButtonModel").gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+            this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshRenderer>().enabled = true;
+            this.childLocator.FindChild("SkateboardBackModel").gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+            this.childLocator.FindChild("SkateboardModel").gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+
             // swag
-            if (this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef) this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
+            if (this.skillLocator.utility.skillDef.skillNameToken == Driver.skateboardSkillDef.skillNameToken)
+            {
+                this.childLocator.FindChild("SkateboardBackModel").gameObject.SetActive(true);
+            }
+
+            // more swag
+            // Do you have cool config -> are you currently ramboing it -> if not nvm go away cool shit
+            if (Config.enableRevengence.Value && skillLocator.special.skillDef.skillNameToken == Driver.knifeSkillDef.skillNameToken)
+            {
+                this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshRenderer>().forceRenderingOff = false;
+            }
+            else
+            {
+                this.childLocator.FindChild("BackWeaponModel").gameObject.GetComponent<MeshRenderer>().forceRenderingOff = true;
+            }
 
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
@@ -164,8 +208,11 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onInventoryChanged += this.Inventory_onInventoryChanged;
             }
 
-            this.CheckForLysateCell();
+            this.defaultWeaponDef = arsenal.DefaultWeapon;
 
+            PickUpWeapon(defaultWeaponDef);
+
+            // upgrade shit
             this.CheckForNeedler();
 
             this.CheckForStoredWeapon();
@@ -175,53 +222,18 @@ namespace RobDriver.Modules.Components
         {
             if (NetworkServer.active)
             {
-                if (this.characterBody && this.characterBody.master)
+                DriverWeaponTracker weaponTracker = this.weaponTracker;
+                if (weaponTracker?.isStoringWeapon == true)
                 {
-                    DriverWeaponTracker weaponTracker = this._weaponTracker;
-                    if (weaponTracker.isStoringWeapon)
-                    {
-                        DriverWeaponTracker.StoredWeapon storedWeapon = weaponTracker.RetrieveWeapon();
-                        this.ServerGetStoredWeapon(storedWeapon.weaponDef, storedWeapon.ammo, this);
-                    }
+                    DriverWeaponTracker.StoredWeapon storedWeapon = weaponTracker.RetrieveWeapon();
+                    this.ServerGetStoredWeapon(storedWeapon.weaponDef, storedWeapon.bulletDef, storedWeapon.ammo);
                 }
             }
         }
 
         private void StoreWeapon()
         {
-            if (this.characterBody && this.characterBody.master)
-            {
-                DriverWeaponTracker weaponTracker = this._weaponTracker;
-                weaponTracker.StoreWeapon(this.weaponDef, this.ammo);
-            }
-        }
-
-        private DriverWeaponTracker _weaponTracker
-        {
-            get
-            {
-                if (this.characterBody && this.characterBody.master)
-                {
-                    DriverWeaponTracker i = this.characterBody.master.GetComponent<DriverWeaponTracker>();
-                    if (!i) i = this.characterBody.master.gameObject.AddComponent<DriverWeaponTracker>();
-                    return i;
-                }
-                return null;
-            }
-        }
-
-        private void CheckForLysateCell()
-        {
-            if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
-            {
-                int count = this.characterBody.master.inventory.GetItemCount(DLC1Content.Items.EquipmentMagazineVoid);
-                if (count > this.lysateCellCount)
-                {
-                    int diff = count - this.lysateCellCount;
-                    this.availableSupplyDrops += diff;
-                    this.lysateCellCount = count;
-                }
-            }
+            this.weaponTracker?.StoreWeapon(this.weaponDef, this.currentBulletDef, this.weaponTimer);
         }
 
         private void CheckForNeedler()
@@ -230,11 +242,12 @@ namespace RobDriver.Modules.Components
 
             if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
             {
-                DriverWeaponDef desiredWeapon = this.pistolWeaponDef;
+                DriverWeaponDef desiredWeapon = this.defaultWeaponDef;
 
-                if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0)
+                if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.TitanGoldDuringTP) > 0 &&
+                    this.defaultWeaponDef.nameToken == DriverWeaponCatalog.Pistol.nameToken)
                 {
-                    if (this.defaultWeaponDef == DriverWeaponCatalog.Pistol || this.defaultWeaponDef == DriverWeaponCatalog.PyriteGun) desiredWeapon = DriverWeaponCatalog.PyriteGun;
+                    desiredWeapon = DriverWeaponCatalog.PyriteGun;
                 }
 
                 if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0)
@@ -242,10 +255,14 @@ namespace RobDriver.Modules.Components
                     desiredWeapon = DriverWeaponCatalog.Needler;
                 }
 
-                if (this.maxWeaponTimer <= 0f && desiredWeapon != this.defaultWeaponDef)
+                // give new weapon if you arent holding a stored weapon
+                if (DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef) && this.defaultWeaponDef.nameToken != desiredWeapon.nameToken)
                 {
+                    // set new default
                     this.defaultWeaponDef = desiredWeapon;
-                    this.PickUpWeapon(this.defaultWeaponDef);
+                    // pick up now if you're already on the default
+                    // otherwise, it gets picked up once youre out of ammo
+                    if (this.weaponDef.nameToken == this.defaultWeaponDef.nameToken) this.PickUpWeapon(desiredWeapon);
                 }
             }
         }
@@ -253,7 +270,6 @@ namespace RobDriver.Modules.Components
         private void Inventory_onInventoryChanged()
         {
             this.CheckForNeedler();
-            this.CheckForLysateCell();
         }
 
         private void CheckForUpgrade()
@@ -283,10 +299,10 @@ namespace RobDriver.Modules.Components
 
         private bool TryUpgradeWeapon(DriverWeaponDef newWeaponDef)
         {
-            if (this.passive && this.passive.isDefault) return false;
+            if (newWeaponDef.nameToken == defaultWeaponDef.nameToken) return true;
+            if (!DriverWeaponCatalog.IsWeaponPistol(defaultWeaponDef)) return false;
             if (this.characterBody && this.characterBody.inventory && this.characterBody.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement) > 0) return false;
 
-            this.pistolWeaponDef = newWeaponDef;
             this.defaultWeaponDef = newWeaponDef;
 
             return true;
@@ -295,10 +311,9 @@ namespace RobDriver.Modules.Components
         private void UpgradeToLunar()
         {
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.LunarPistol);
-
             if (!success) return;
-            this.PickUpWeapon(this.defaultWeaponDef);
 
+            this.PickUpWeapon(this.defaultWeaponDef);
             this.TryPickupNotification(true);
 
             EffectData effectData = new EffectData
@@ -320,10 +335,9 @@ namespace RobDriver.Modules.Components
         private void UpgradeToVoid()
         {
             bool success = this.TryUpgradeWeapon(DriverWeaponCatalog.VoidPistol);
-
             if (!success) return;
-            this.PickUpWeapon(this.defaultWeaponDef);
 
+            this.PickUpWeapon(this.defaultWeaponDef);
             this.TryPickupNotification(true);
 
             EffectData effectData = new EffectData
@@ -344,46 +358,46 @@ namespace RobDriver.Modules.Components
 
         private void Inventory_onItemAddedClient(ItemIndex itemIndex)
         {
-            if (DriverPlugin.litInstalled) // funny compat :-)
+            if (itemIndex == DLC1Content.Items.EquipmentMagazineVoid.itemIndex)
             {
-                if (this.IsItemGoldenGun(itemIndex))
-                {
-                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, false, this);
-                }
+                this.skillLocator.special.AddOneStock();
+            }
+            // quit resetting my shit
+            if (this.passive.isBullets || this.passive.isPistolOnly) return;
+
+            if (DriverPlugin.litInstalled && this.IsItemGoldenGun(itemIndex)) // funny compat :-)
+            {
+                this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun);
             }
 
-            if (DriverPlugin.classicItemsInstalled) // not funny anymore
+            if (DriverPlugin.classicItemsInstalled && this.IsItemGoldenGun2(itemIndex)) // not funny anymore
             {
-                if (this.IsItemGoldenGun2(itemIndex))
-                {
-                    this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun, false, this);
-                }
+                this.ServerPickUpWeapon(DriverWeaponCatalog.GoldenGun);
             }
 
             if (itemIndex == RoR2Content.Items.Behemoth.itemIndex)
             {
-                this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth, false, this);
+                this.ServerPickUpWeapon(DriverWeaponCatalog.Behemoth);
             }
         }
 
         private bool IsItemGoldenGun(ItemIndex itemIndex)
         {
-            // golden gun disabled- forgot to account for that whoops
-            if (LostInTransit.LITContent.Items.GoldenGun == null) return false;
+            var goldenGun = LostInTransit.LITContent.Items.GoldenGun;
 
-            if (itemIndex == LostInTransit.LITContent.Items.GoldenGun.itemIndex) return true;
-            return false;
+            if (goldenGun is null) return false;
+            return goldenGun.itemIndex == itemIndex;
         }
 
+        // electric boogaloo
         private bool IsItemGoldenGun2(ItemIndex itemIndex)
         {
-            // golden gun disabled- forgot to account for that whoops
-            if (ClassicItemsReturns.Items.GoldenGun.Instance == null) return false;
-            if (ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef == null) return false;
+            var goldenGun = ClassicItemsReturns.Items.GoldenGun.Instance;
 
-            if (itemIndex == ClassicItemsReturns.Items.GoldenGun.Instance.ItemDef.itemIndex) return true;
-            return false;
+            if (goldenGun?.ItemDef is null) return false;
+            return goldenGun.ItemDef.itemIndex == itemIndex;
         }
+
         private void CreateHammerEffect()
         {
             #region clone mithrix effect
@@ -436,83 +450,32 @@ namespace RobDriver.Modules.Components
 
             if (scaleWithAttackSpeed) this.weaponTimer -= multiplier / this.characterBody.attackSpeed;
             else this.weaponTimer -= multiplier;
-        }
 
-        public void StartTimer(float amount = 1f, bool scaleWithAttackSpeed = true)
-        {
-            //this.timerStarted = true;
-
-            this.ConsumeAmmo(amount, scaleWithAttackSpeed);
-        }
-
-        private void SetBulletAmmo(float ammo = -1)
-        {
-            float shotCount;
-            if (!DriverWeaponCatalog.IsWeaponPistol(weaponDef))
-            {
-                shotCount = this.weaponDef.shotCount;
-
-                if (Modules.Config.GetWeaponConfig(this.weaponDef)) shotCount = Modules.Config.GetWeaponConfigShotCount(this.weaponDef);
-            }
-            else
-            {
-                shotCount = basePistolAmmo;
-                if (this.characterBody.attackSpeed > 1) shotCount += Mathf.Round((this.characterBody.attackSpeed - 1) * 5);
-            }
-
-            if (Modules.Config.backupMagExtendDuration.Value)
-            {
-                if (this.characterBody && this.characterBody.inventory)
-                {
-                    shotCount += (0.5f * this.characterBody.inventory.GetItemCount(RoR2Content.Items.SecondarySkillMagazine));
-                }
-            }
-
-            // nerf supply drop the quick and lazy way
-            this.weaponTimer = ammo == -1 ? shotCount : shotCount * 0.5f;
-            this.maxWeaponTimer = shotCount;
+            // notify Hud
+            this.onConsumeAmmo?.Invoke();
         }
 
         private void FixedUpdate()
         {
-            //if (this.timerStarted) this.weaponTimer -= Time.fixedDeltaTime;
             this.jamTimer = Mathf.Clamp(this.jamTimer - (2f * Time.fixedDeltaTime), 0f, Mathf.Infinity);
 
             if (this.weaponTimer <= 0f && this.maxWeaponTimer > 0f)
             {
-                if (this.passive.isPistolOnly)
+                if (this.passive.isBullets || this.passive.isRyan)
                 {
-                    if (!this.needReload)
+                    if (this.HasSpecialBullets)
                     {
-                        this.needReload = true;
-                        this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+                        currentBulletDef = DriverBulletCatalog.Default;
+                        if (muzzleTrail) GameObject.Destroy(muzzleTrail.gameObject);
                     }
                 }
-                else if(this.passive.isBullets || this.passive.isRyan)
-                {
-                    if (NetworkServer.active)
-                    {
-                        if (this.characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
-                        {
-                            this.characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
-                            UnityEngine.Object.Destroy(muzzleTrail.gameObject);
-                            this.muzzleTrail = null;
-                        }
-                    }
-                    this.bulletDamageType = DamageType.Generic;
-                    this.moddedBulletType = DamageTypes.Generic;
 
-                    if (DriverWeaponCatalog.IsWeaponPistol(weaponDef))
+                if (weaponDef.nameToken == defaultWeaponDef.nameToken && weaponDef.animationSet != DriverWeaponDef.AnimationSet.BigMelee)
+                {
+                    if (!needReload)
                     {
-                        if (!needReload)
-                        {
-                            this.needReload = true;
-                            this.skillLocator.primary.SetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-                        }
-                    }
-                    else
-                    {
-                        this.ReturnToDefaultWeapon();
+                        this.needReload = true;
+                        this.skillLocator.primary.SetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
                     }
                 }
                 else
@@ -520,66 +483,63 @@ namespace RobDriver.Modules.Components
                     this.ReturnToDefaultWeapon();
                 }
             }
-            this.CheckSupplyDrop();
-        }
 
-        private void CheckSupplyDrop()
-        {
-            if (this.skillLocator)
+            if (pickedUpRavSword)
             {
-                if (this.skillLocator.special.baseSkill.skillNameToken == DriverPlugin.developerPrefix + "_DRIVER_BODY_SPECIAL_SUPPLY_DROP_LEGACY_NAME")
-                {
-                    if (this.characterBody && this.characterBody.master && this.characterBody.master.inventory)
-                    {
-                        if (this.characterBody.master.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) > 0)
-                        {
-                            return;
-                        }
-                    }
+                this.featherTimer -= Time.fixedDeltaTime;
 
-                    this.skillLocator.special.stock = this.availableSupplyDrops;
+                if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount)
+                {
+                    this.clingReady = true;
                 }
             }
         }
 
-        public void ConsumeSupplyDrop()
+        public void RefreshCling()
         {
-            this.availableSupplyDrops--;
+            if (this.characterBody.characterMotor.jumpCount > 0) this.characterBody.characterMotor.jumpCount--;
         }
 
         public void ServerResetTimer()
         {
             // just pick up the same weapon again cuz i don't feel like writing even more netcode to sync this
-            this.ServerPickUpWeapon(this.weaponDef, false, this);
+            this.ServerPickUpWeapon(this.weaponDef);
         }
 
-        public void ServerGetStoredWeapon(DriverWeaponDef newWeapon, float ammo, DriverController driverController)
+        /// <summary>
+        /// Dont call this, gets stored weapon from DriverWeaponController
+        /// </summary>
+        public void ServerGetStoredWeapon(DriverWeaponDef newWeapon, DriverBulletDef newBullet, float ammo)
+        {
+            NetworkIdentity identity = this.gameObject.GetComponent<NetworkIdentity>();
+            if (!identity) return;
+
+            new SyncStoredWeapon(identity.netId, newWeapon.index, newBullet.index, ammo).Send(NetworkDestination.Clients);
+        }
+
+        /// <summary>
+        /// Server telling you to pick up a new weapon
+        /// </summary>
+        public void ServerPickUpWeapon(DriverWeaponDef newWeapon)
+        {
+            ServerPickUpWeapon(this, newWeapon, this.currentBulletDef, false, false);
+        }
+
+        /// <summary>
+        /// Uhhh network shit idk, dont call this, it just works
+        /// </summary>
+        public void ServerPickUpWeapon(DriverController driverController, DriverWeaponDef newWeapon, DriverBulletDef newBullet, bool cutAmmo, bool isNewAmmoType)
         {
             NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
             if (!identity) return;
 
-            new SyncStoredWeapon(identity.netId, newWeapon.index, ammo).Send(NetworkDestination.Clients);
-        }
-
-        public void ServerPickUpWeapon(DriverWeaponDef newWeapon, bool cutAmmo, DriverController driverController, bool isAmmoBox = false)
-        {
-            NetworkIdentity identity = driverController.gameObject.GetComponent<NetworkIdentity>();
-            if (!identity) return;
-
-            new SyncWeapon(identity.netId, newWeapon.index, cutAmmo, isAmmoBox).Send(NetworkDestination.Clients);
+            new SyncWeapon(identity.netId, newWeapon.index, newBullet.index, cutAmmo, isNewAmmoType).Send(NetworkDestination.Clients);
         }
 
         private void ReturnToDefaultWeapon()
         {
             this.DiscardWeapon();
-            if (this.hasPickedUpHammer)
-            {
-                this.PickUpWeapon(DriverWeaponCatalog.LunarHammer);
-            }
-            else
-            {
-                this.PickUpWeapon(this.defaultWeaponDef);
-            }
+            this.PickUpWeapon(this.defaultWeaponDef);
         }
 
         private void DiscardWeapon()
@@ -590,105 +550,182 @@ namespace RobDriver.Modules.Components
             newEffect.transform.rotation = this.characterBody.modelLocator.modelTransform.rotation;
             newEffect.transform.position = this.childLocator.FindChild("Pistol").position + (Vector3.up * 0.5f);
         }
-        
+
         public void FinishReload()
         {
-            if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
+            if (needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             needReload = false;
 
-            if(this.passive.isPistolOnly)
-            {
-                this.weaponTimer = 26f;
-                this.maxWeaponTimer = 26f;
-            }
+            SetBulletAmmo();
 
-            if (this.passive.isBullets || this.passive.isRyan)
-            {
-                SetBulletAmmo();
-            }
+            // notify hud
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
         }
 
-        public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool isAmmoBox = false)
+        /// <summary>
+        /// Decides what to do for dropped weapons with each passive
+        /// </summary>
+        public void PickUpWeaponDrop(DriverWeaponDef newWeapon, DriverBulletDef newBullet, float ammo, bool cutAmmo, bool isNewAmmoType)
         {
             if (this.passive.isPistolOnly)
             {
                 this.FinishReload();
-                return;
             }
-
-            // ignore newWeapon, just reset ammo
-            if (this.passive.isBullets)
+            else if (this.passive.isBullets)
+            {
+                LoadNewBullets(newBullet, ammo, cutAmmo);
+            }
+            else if (this.passive.isRyan)
             {
                 // change ammo type
-                if (isAmmoBox) LoadNewBullets(ammo);
-                // picked up bandolier or resetting rounds, keep ammo type
-                else SetBulletAmmo();
-                return;
-            }
-
-            // hope this works!
-            if (this.passive.isRyan && isAmmoBox)
-            {
-                LoadNewBullets(ammo);
-                return;
-            }
-
-            //this.timerStarted = false;
-            this.weaponDef = newWeapon;
-
-            if (newWeapon == DriverWeaponCatalog.LunarHammer) this.hasPickedUpHammer = true; // hardcoding the mithrix hammer as default once picked up. fuck it
-
-            this.EquipWeapon(ammo);
-
-            this.TryCallout();
-
-            this.TryPickupNotification();
-
-            if (this.onWeaponUpdate == null) return;
-            this.onWeaponUpdate(this);
-        }
-
-        private void LoadNewBullets(float ammo = -1)
-        {
-            if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, RobDriver.Modules.Survivors.Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Upgrade);
-            needReload = false;
-
-            if (muzzleTrail)
-            {
-                UnityEngine.Object.Destroy(muzzleTrail);
-                muzzleTrail = null;
-            }
-
-            if(NetworkServer.active)
-            {
-                if (characterBody.HasBuff(Buffs.bulletDefs[currentBulletIndex]))
+                if (isNewAmmoType) LoadNewBullets(newBullet, ammo, cutAmmo);
+                // picked up new weapon
+                else
                 {
-                    characterBody.RemoveBuff(Buffs.bulletDefs[currentBulletIndex]);
+                    // keep the current ammo fraction
+                    if (this.HasSpecialBullets && ammo == -1 && weaponDef.nameToken != newWeapon.nameToken)
+                    {
+                        // get rid of remaining ammo if you only have a few shots left
+                        var ammoPercent = weaponTimer / maxWeaponTimer;
+                        if (ammoPercent < 0.2f)
+                        {
+                            currentBulletDef = DriverBulletCatalog.Default;
+                            if (muzzleTrail) GameObject.Destroy(muzzleTrail.gameObject);
+                        }
+                        else
+                        {
+                            // keep current ammo fraction
+                            ammo = ammoPercent * newWeapon.shotCount;
+                        }
+                    }
+                    PickUpWeapon(newWeapon, ammo, cutAmmo);
                 }
             }
-             
-            System.Random rnd = new System.Random();
-            currentBulletIndex = rnd.Next(Buffs.bulletDefs.Count);
-
-            bulletDamageType = DamageTypes.bulletTypes[currentBulletIndex].bulletType;
-            moddedBulletType = DamageTypes.bulletTypes[currentBulletIndex].moddedBulletType;
-
-            SetBulletAmmo(ammo);
-
-            if (NetworkServer.active)
+            else
             {
-                this.characterBody.AddBuff(Buffs.bulletDefs[currentBulletIndex]);
+                PickUpWeapon(newWeapon, ammo, cutAmmo);
+            }
+        }
+
+
+        /// <summary>
+        /// Changes weapon, does not change ammo type
+        /// </summary>
+        public void PickUpWeapon(DriverWeaponDef newWeapon, float ammo = -1f, bool cutAmmo = false)
+        {
+            this.weaponDef = newWeapon;
+
+            if (newWeapon.nameToken == DriverWeaponCatalog.LunarHammer.nameToken)
+            {
+                this.hasPickedUpHammer = true; // keeping this for now
+                this.defaultWeaponDef = DriverWeaponCatalog.LunarHammer;
+            }
+            
+            if (newWeapon.nameToken == DriverWeaponCatalog.RavSword.nameToken && !this.pickedUpRavSword)
+            {
+                this.gameObject.GetComponents<EntityStateMachine>().First(state => state.customName == "Passive").enabled = true;
+                this.pickedUpRavSword = true;
+            }
+            else if (pickedUpRavSword) // swapped to new weapon, no more wall/air cling
+            {
+                this.gameObject.GetComponents<EntityStateMachine>().First(state => state.customName == "Passive").enabled = false;
+                this.pickedUpRavSword = false;
             }
 
-            Transform muzzleTransform;
-            if (DriverWeaponCatalog.IsWeaponPistol(weaponDef)) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
-            else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
+            this.EquipWeapon();
+            this.SetBulletAmmo(ammo, cutAmmo);
 
-            muzzleTrail = Assets.defaultMuzzleTrail;
-            muzzleTrail.GetComponent<TrailRenderer>().startColor = Buffs.bulletDefs[currentBulletIndex].buffColor;
-            muzzleTrail = UnityEngine.Object.Instantiate(muzzleTrail, muzzleTransform);
+            this.TryCallout();
+            this.TryPickupNotification();
+            this.TryUnlock();
 
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
         }
+
+        /// <summary>
+        /// Changes ammo type, does not change weapon
+        /// </summary>
+        public void LoadNewBullets(DriverBulletDef newBullet, float ammo, bool cutAmmo)
+        {
+            if (this.needReload) this.skillLocator.primary.UnsetSkillOverride(this, Driver.pistolReloadSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            needReload = false;
+
+            currentBulletDef = newBullet;
+
+            SetBulletAmmo(ammo, cutAmmo);
+
+            // notify hud
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
+        }
+
+        /// <summary>
+        /// Resets ammo for current weapon
+        /// </summary>
+        private void SetBulletAmmo(float ammo = -1, bool cutAmmo = false)
+        {
+            if (muzzleTrail) UnityEngine.Object.Destroy(muzzleTrail.gameObject);
+            if (this.HasSpecialBullets)
+            {
+                Transform muzzleTransform;
+                if (weaponDef.animationSet == DriverWeaponDef.AnimationSet.Default) muzzleTransform = this.childLocator.FindChild("PistolMuzzle");
+                else muzzleTransform = this.childLocator.FindChild("ShotgunMuzzle");
+
+                muzzleTrail = GameObject.Instantiate(Assets.defaultMuzzleTrail, muzzleTransform);
+                var color = currentBulletDef.trailColor.RGBMultiplied(0.5f).AlphaMultiplied(0.5f);
+                muzzleTrail.GetComponent<TrailRenderer>().startColor = color;
+                muzzleTrail.GetComponent<TrailRenderer>().endColor = color;
+            }
+
+            float shotCount;
+            // set ammo for non-pistols
+            if (!DriverWeaponCatalog.IsWeaponPistol(weaponDef))
+            {
+                shotCount = this.weaponDef.shotCount;
+
+                if (Modules.Config.GetWeaponConfig(this.weaponDef)) shotCount = Modules.Config.GetWeaponConfigShotCount(this.weaponDef);
+            }
+            // set ammo for pistols
+            else if (this.HasSpecialBullets)
+            {
+                shotCount = basePistolAmmo;
+            }
+            // finite ammo
+            else if (this.passive.isPistolOnly)
+            {
+                this.weaponTimer = 26f;
+                this.maxWeaponTimer = 26f;
+                return;
+            }
+            // infinite ammo
+            else
+            {
+                this.weaponTimer = 0f;
+                this.maxWeaponTimer = 0f;
+                return;
+            }
+
+            if (Modules.Config.backupMagExtendDuration.Value)
+            {
+                if (this.characterBody && this.characterBody.inventory)
+                {
+                    shotCount += (0.5f * this.characterBody.inventory.GetItemCount(RoR2Content.Items.SecondarySkillMagazine));
+                }
+            }
+
+            // supply drop
+            if (cutAmmo) weaponTimer = shotCount * 0.5f;
+            // persisted ammo count
+            else weaponTimer = ammo == -1 ? shotCount : ammo;
+            this.maxWeaponTimer = shotCount;
+
+            //notify hud
+            this.onWeaponUpdate?.Invoke();
+            this.onConsumeAmmo?.Invoke();
+        }
+
         private void TryPickupNotification(bool force = false)
         {
             if (!Modules.Config.enablePickupNotifications.Value) return;
@@ -709,9 +746,9 @@ namespace RobDriver.Modules.Components
                     return;
                 }
 
-                if (this.weaponDef != this.lastWeaponDef)
+                if (this.weaponDef.nameToken != this.lastWeaponDef.nameToken)
                 {
-                    if (this.weaponDef != this.defaultWeaponDef && this.weaponDef != this.pistolWeaponDef)
+                    if (this.weaponDef.nameToken != this.defaultWeaponDef.nameToken && this.weaponDef.nameToken != DriverWeaponCatalog.Pistol.nameToken)
                     {
                         WeaponNotificationQueue.PushWeaponNotification(this.characterBody.master, this.weaponDef.index);
                     }
@@ -731,7 +768,25 @@ namespace RobDriver.Modules.Components
             }
         }
 
-        private void EquipWeapon(float ammo = -1f)
+        private void TryUnlock()
+        {
+            if (this.weaponDef.nameToken != this.defaultWeaponDef.nameToken && this.characterBody)
+            {
+                var statSheet = PlayerStatsComponent.FindBodyStatsComponent(this.characterBody);
+                var unlockable = UnlockableCatalog.GetUnlockableDef(this.weaponDef.nameToken);
+                if (unlockable && statSheet)
+                {
+                    var master = statSheet.playerCharacterMasterController;
+                    if (master && master.networkUser && master.networkUser.localUser?.userProfile != null && 
+                        !master.networkUser.localUser.userProfile.HasUnlockable(unlockable))
+                    {
+                        statSheet.currentStats.AddUnlockable(unlockable);
+                    }
+                }
+            }
+        }
+
+        public void EquipWeapon()
         {
             // unset all the overrides....
             for (int i = 0; i < this.primarySkillOverrides.Length; i++)
@@ -755,60 +810,39 @@ namespace RobDriver.Modules.Components
             if (this.weaponDef.primarySkillDef) this.skillLocator.primary.SetSkillOverride(this.skillLocator.primary, this.weaponDef.primarySkillDef, GenericSkill.SkillOverridePriority.Contextual);
             if (this.weaponDef.secondarySkillDef) this.skillLocator.secondary.SetSkillOverride(this.skillLocator.secondary, this.weaponDef.secondarySkillDef, GenericSkill.SkillOverridePriority.Contextual);
 
-            // model swap
-            if (this.weaponDef.mesh)
+            // weapon reskin
+            Mesh mesh;
+            if (this.weaponSkinCatalog != null && this.weaponSkinCatalog.TryGetValue(this.weaponDef.index, out var skinOverride))
             {
-                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
-                this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = this.weaponDef.material;
+                mesh = skinOverride.weaponSkinMesh;
+                this.weaponRenderer.material = skinOverride.weaponSkinMaterial;
+                if (this.characterModel.baseRendererInfos.Length > 10)
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = skinOverride.weaponSkinMaterial;
+            }
+            else
+            {
+                mesh = this.weaponDef.mesh;
+                this.weaponRenderer.material = this.weaponDef.material;
+                if (this.characterModel.baseRendererInfos.Length > 10)
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
+            }
+            
+            // model swap
+            if (mesh != null)
+            {
+                this.weaponRenderer.sharedMesh = mesh;
             }
             else
             {
                 if (this.weaponDef.animationSet == DriverWeaponDef.AnimationSet.TwoHanded)
                 {
                     this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Behemoth.mesh;
-                    this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = DriverWeaponCatalog.Behemoth.material;
                 }
                 else
                 {
                     this.weaponRenderer.sharedMesh = DriverWeaponCatalog.Pistol.mesh;
-                    this.characterModel.baseRendererInfos[this.characterModel.baseRendererInfos.Length - 1].defaultMaterial = DriverWeaponCatalog.Pistol.material;
                 }
             }
-
-            // pistol ammo scales off attack speed, let SetBulletAmmo handle it
-            // what a mess
-            if (this.passive.isBullets || (this.passive.isRyan && DriverWeaponCatalog.IsWeaponPistol(weaponDef)))
-            {
-                SetBulletAmmo();
-            }
-            else
-            {   
-                // timer for default passive
-                float duration = this.weaponDef.shotCount;
-
-                if (Modules.Config.GetWeaponConfig(this.weaponDef)) duration = Modules.Config.GetWeaponConfigShotCount(this.weaponDef);
-
-                if (Modules.Config.backupMagExtendDuration.Value)
-                {
-                    if (this.characterBody && this.characterBody.inventory)
-                    {
-                        duration += (0.5f * this.characterBody.inventory.GetItemCount(RoR2Content.Items.SecondarySkillMagazine));
-                    }
-                }
-
-                // infinite ammo
-                if (DriverWeaponCatalog.IsWeaponPistol(weaponDef) || this.weaponDef.shotCount == 0) duration = 0f;
-
-                // static pistol ammo
-                if (this.passive.isPistolOnly) duration = 26f;
-
-                // set max timer to weaponDef.shotCount
-                this.maxWeaponTimer = duration;
-                this.weaponTimer = duration;
-            }
-
-            // cut ammo
-            if (ammo != -1f) this.weaponTimer = ammo;
 
             // crosshair
             this.crosshairPrefab = this.weaponDef.crosshairPrefab;
@@ -829,9 +863,9 @@ namespace RobDriver.Modules.Components
             }
 
             // extra shit
-            if (this.hammerEffectInstance && this.hammerEffectInstance2)
+            if (this.hammerEffectInstance && this.hammerEffectInstance2) // so it doesnt screw up custom skins. Compat for effects later maybe
             {
-                if (this.weaponDef == DriverWeaponCatalog.LunarHammer)
+                if (this.weaponDef.nameToken == DriverWeaponCatalog.LunarHammer.nameToken)
                 {
                     this.hammerEffectInstance.SetActive(true);
                     this.hammerEffectInstance2.SetActive(false); // this one needs to be remade from scratch ig
@@ -841,6 +875,33 @@ namespace RobDriver.Modules.Components
                     this.hammerEffectInstance.SetActive(false);
                     this.hammerEffectInstance2.SetActive(false);
                 }
+            }
+        }
+
+        public void EnableBackWeaponModel()
+        {
+            if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
+            this.weaponEffectInstance = GameObject.Instantiate(Assets.backWeaponEffect);
+            this.weaponEffectInstance.transform.parent = this.childLocator.FindChild("BackWeaponModel");
+            this.weaponEffectInstance.transform.localRotation = Quaternion.identity;
+            this.weaponEffectInstance.GetComponent<BackWeaponComponent>().Init(this.weaponDef);
+        }
+
+        public void SetToNemmandoGun(bool set)
+        {
+            if (set)
+            {
+                this.weaponRenderer.sharedMesh = Assets.nemmandoGunMesh;
+                this.weaponRenderer.material = Assets.nemmandoGunMat;
+                if (this.characterModel.baseRendererInfos.Length > 10)
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = Assets.nemmandoGunMat;
+            }
+            else
+            {
+                this.weaponRenderer.sharedMesh = this.weaponDef.mesh;
+                this.weaponRenderer.material = this.weaponDef.material;
+                if (this.characterModel.baseRendererInfos.Length > 10)
+                    this.characterModel.baseRendererInfos[10].defaultMaterial = this.weaponDef.material;
             }
         }
 
@@ -952,6 +1013,9 @@ namespace RobDriver.Modules.Components
 
         private void OnDestroy()
         {
+            if (this.weaponEffectInstance) Destroy(this.weaponEffectInstance);
+            if (this.muzzleTrail) Destroy(this.muzzleTrail);
+
             if (this.shellObjects != null && this.shellObjects.Length > 0)
             {
                 for (int i = 0; i < this.shellObjects.Length; i++)
@@ -959,7 +1023,6 @@ namespace RobDriver.Modules.Components
                     if (this.shellObjects[i]) Destroy(this.shellObjects[i]);
                 }
             }
-
             if (this.slugObjects != null && this.slugObjects.Length > 0)
             {
                 for (int i = 0; i < this.slugObjects.Length; i++)
@@ -973,7 +1036,7 @@ namespace RobDriver.Modules.Components
                 this.characterBody.master.inventory.onItemAddedClient -= this.Inventory_onItemAddedClient;
                 this.characterBody.master.inventory.onInventoryChanged -= this.Inventory_onInventoryChanged;
             }
-
+            
             if (NetworkServer.active)
             {
                 this.StoreWeapon();

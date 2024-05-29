@@ -12,7 +12,6 @@ namespace RobDriver.Modules.Components
 		public DriverController iDrive;
 
 		public GameObject displayRoot;
-		public PlayerCharacterMasterController playerCharacterMasterController;
 		public RawImage iconImage;
 
 		public GameObject flashPanelObject;
@@ -23,64 +22,44 @@ namespace RobDriver.Modules.Components
 		public Image durationBar;
 		public Image durationBarRed;
 
-		private void Update()
-        {
-			// REWRITE THIS ASAP
-			if (!this.iDrive)
-            {
-				if (!this.playerCharacterMasterController)
-                {
-					this.playerCharacterMasterController = (this.targetHUD.targetMaster ? this.targetHUD.targetMaster.GetComponent<PlayerCharacterMasterController>() : null);
-				}
+		public void Start()
+		{
+            this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
+			if (this.durationDisplay) this.durationDisplay.SetActive(false);
+			if (this.iDrive) this.iDrive.onWeaponUpdate += SetDisplay;
+        }
 
-				if (this.playerCharacterMasterController && this.playerCharacterMasterController.master.hasBody)
+        public void OnDestroy()
+        {
+            if (this.iDrive) this.iDrive.onWeaponUpdate -= SetDisplay;
+        }
+
+        private void Update()
+        {
+			if (!this.iDrive || this.iDrive.passive.isPistolOnly || !this.durationDisplay) return;
+
+            if (this.iDrive.maxWeaponTimer > 0f)
+            {
+                this.durationDisplay.SetActive(true);
+
+                float fill = Util.Remap(this.iDrive.weaponTimer, 0f, this.iDrive.maxWeaponTimer, 0f, 1f);
+
+                if (this.durationBarRed)
                 {
-					DriverController fuckYou = this.playerCharacterMasterController.master.GetBody().GetComponent<DriverController>();
-					if (fuckYou) this.SetTarget(fuckYou);
+                    if (fill >= 1f) this.durationBarRed.fillAmount = 1f;
+                    this.durationBarRed.fillAmount = Mathf.Lerp(this.durationBarRed.fillAmount, fill, Time.deltaTime * 2f);
                 }
+
+                this.durationBar.fillAmount = fill;
+				this.durationBar.color = this.iDrive.currentBulletDef.trailColor;
             }
-			else
+            else
             {
-				this.UpdateDisplay();
+                this.durationDisplay.SetActive(false);
             }
         }
 
-		public void SetTarget(DriverController driver)
-        {
-			this.iDrive = driver;
-			this.iDrive.onWeaponUpdate += this.SetDisplay;
-			this.SetDisplay(this.iDrive);
-        }
-
-		private void UpdateDisplay()
-        {
-			if ((this.iDrive.passive.isPistolOnly || this.iDrive.passive.isBullets))
-            {
-				this.durationDisplay.SetActive(false);
-				return;
-            }
-
-			if (this.iDrive.maxWeaponTimer > 0f)
-            {
-				this.durationDisplay.SetActive(true);
-
-				float fill = Util.Remap(this.iDrive.weaponTimer, 0f, this.iDrive.maxWeaponTimer, 0f, 1f);
-
-				if (this.durationBarRed)
-				{
-					if (fill >= 1f) this.durationBarRed.fillAmount = 1f;
-					this.durationBarRed.fillAmount = Mathf.Lerp(this.durationBarRed.fillAmount, fill, Time.deltaTime * 2f);
-				}
-
-				this.durationBar.fillAmount = fill;
-            }
-			else
-            {
-				this.durationDisplay.SetActive(false);
-            }
-        }
-
-		private void SetDisplay(DriverController z)
+        private void SetDisplay()
 		{
 			if (!this.iDrive) return;
 
@@ -93,7 +72,7 @@ namespace RobDriver.Modules.Components
 			{
 				this.iconImage.texture = this.iDrive.weaponDef.icon;
 				this.iconImage.color = Color.white;
-				this.iconImage.enabled = true;
+                this.iconImage.enabled = true;
 			}
             if (this.tooltipProvider)
 			{

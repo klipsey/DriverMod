@@ -4,6 +4,7 @@ using EntityStates;
 using RobDriver.Modules;
 using RobDriver.SkillStates.Emote;
 using BepInEx.Configuration;
+using RobDriver.Modules.Components;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -11,11 +12,13 @@ namespace RobDriver.SkillStates.Driver
     {
 		private Animator animator;
 		public LocalUser localUser;
+		private DriverController iDrive;
 
 		public override void OnEnter()
         {
             base.OnEnter();
-			this.animator = this.modelAnimator;
+            if (!iDrive) iDrive = this.GetComponent<DriverController>();
+            this.animator = this.modelAnimator;
 			this.FindLocalUser();
         }
 
@@ -33,7 +36,6 @@ namespace RobDriver.SkillStates.Driver
 				if (this.isGrounded) this.animator.SetFloat("airBlend", 0f);
 				else this.animator.SetFloat("airBlend", 1f);
             }
-
 			//emotes
 			if (base.isAuthority && base.characterMotor.isGrounded)
 			{
@@ -100,6 +102,7 @@ namespace RobDriver.SkillStates.Driver
 
 					if (base.characterMotor.jumpCount >= base.characterBody.baseJumpCount)
 					{
+						this.iDrive.featherTimer = 0.1f;
 						hopooFeather = true;
 						horizontalBonus = 1.5f;
 						verticalBonus = 1.5f;

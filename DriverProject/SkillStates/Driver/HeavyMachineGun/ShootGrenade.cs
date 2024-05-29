@@ -1,10 +1,8 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
-using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
-using R2API;
 
 namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 {
@@ -21,6 +19,8 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
         protected bool hasFired;
         private bool isCrit;
         protected string muzzleString;
+
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.hmgGrenadeProjectilePrefab;
 
         public override void OnEnter()
         {
@@ -39,7 +39,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void Fire()
@@ -67,34 +67,47 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
                         Vector3 rhs = Vector3.Cross(Vector3.up, aimRay.direction);
                         Vector3 axis = Vector3.Cross(aimRay.direction, rhs);
 
-                        float currentSpread = 0f;
-                        float angle = 0f;
-                        float num2 = 0f;
-                        num2 = UnityEngine.Random.Range(1f + currentSpread, 1f + currentSpread) * 3f;   //Bandit is x2
-                        angle = num2 / 2f;  //3 - 1 rockets
-
-                        Vector3 direction = Quaternion.AngleAxis(-num2 * 0.5f, axis) * aimRay.direction;
-                        Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+                        Vector3 direction = Quaternion.AngleAxis(-1.5f, axis) * aimRay.direction;
+                        Quaternion rotation = Quaternion.AngleAxis(1.5f, axis);
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            GameObject modify = Modules.Projectiles.hmgGrenadeProjectilePrefab;
-                            modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                            if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                            ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 80f);
-                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                            ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                            {
+                                projectilePrefab = this.projectilePrefab,
+                                position = aimRay2.origin,
+                                rotation = Util.QuaternionSafeLookRotation(aimRay2.direction),
+                                owner = this.gameObject,
+                                damage = damageMult * this.damageStat * ShootGrenade.damageCoefficient,
+                                force = 1200f,
+                                crit = this.isCrit,
+                                damageColorIndex = DamageColorIndex.Default,
+                                target = null,
+                                speedOverride = 80f,
+                                useSpeedOverride = true,
+                                damageTypeOverride = iDrive.DamageType
+                            });
+
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        GameObject modify = Modules.Projectiles.hmgGrenadeProjectilePrefab;
-                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                        if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                        ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * ShootGrenade.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 80f);
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                        {
+                            projectilePrefab = this.projectilePrefab,
+                            position = aimRay.origin,
+                            rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
+                            owner = this.gameObject,
+                            damage = this.damageStat * ShootGrenade.damageCoefficient,
+                            force = 1200f,
+                            crit = this.isCrit,
+                            damageColorIndex = DamageColorIndex.Default,
+                            target = null,
+                            speedOverride = 80f,
+                            useSpeedOverride = true,
+                            damageTypeOverride = iDrive.DamageType
+                        });
                     }
                 }
             }
@@ -109,7 +122,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
                 this.Fire();
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();
@@ -118,7 +131,7 @@ namespace RobDriver.SkillStates.Driver.HeavyMachineGun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

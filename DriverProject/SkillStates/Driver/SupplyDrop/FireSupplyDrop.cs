@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using RoR2;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
 using EntityStates;
+using RobDriver.Modules;
+using RobDriver.Modules.Components;
 
 namespace RobDriver.SkillStates.Driver.SupplyDrop
 {
@@ -22,8 +24,6 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
         {
             base.OnEnter();
             this.duration = this.baseDuration / this.attackSpeedStat;
-
-            this.skillLocator.special.DeductStock(1);
 
             this.PlayAnim();
         }
@@ -54,7 +54,7 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 if (!this.hasFired)
                 {
                     this.hasFired = true;
-                    this.iDrive.ConsumeSupplyDrop();
+                    this.skillLocator.special.DeductStock(1);
                     this.Fire();
                 }
             }
@@ -82,8 +82,8 @@ namespace RobDriver.SkillStates.Driver.SupplyDrop
                 TeamFilter teamFilter = weaponPickup.GetComponent<TeamFilter>();
                 if (teamFilter) teamFilter.teamIndex = this.teamComponent.teamIndex;
 
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().cutAmmo = true;
-                weaponPickup.GetComponentInChildren<Modules.Components.WeaponPickup>().isAmmoBox = iDrive.passive.isBullets;
+                var weaponComponent = weaponPickup.GetComponent<SyncPickup>();
+                weaponComponent.bulletDef = DriverBulletCatalog.GetRandomBulletFromTier(DriverWeaponTier.Legendary);
 
                 NetworkServer.Spawn(weaponPickup);
             }

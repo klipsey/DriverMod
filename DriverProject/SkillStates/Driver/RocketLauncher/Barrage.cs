@@ -1,10 +1,8 @@
 ﻿using RoR2;
 using UnityEngine;
 using EntityStates;
-using RobDriver.Modules.Components;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
-using R2API;
 
 namespace RobDriver.SkillStates.Driver.RocketLauncher
 {
@@ -15,37 +13,11 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
         public float baseShotDuration = 0.05f;
         public static float recoil = 11f;
 
-        protected virtual int baseRocketCount
-        {
-            get
-            {
-                return 7;
-            }
-        }
-
-        protected virtual float maxSpread
-        {
-            get
-            {
-                return 0f;
-            }
-        }
-
-        protected virtual GameObject projectilePrefab
-        {
-            get
-            {
-                return Modules.Projectiles.missileProjectilePrefab;
-            }
-        }
-
-        protected virtual float ammoMod
-        {
-            get
-            {
-                return 1.5f;
-            }
-        }
+        protected virtual int baseRocketCount => 7;
+        protected virtual float maxSpread => 0f;
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.missileProjectilePrefab;
+        protected virtual float ammoMod => 1.5f;
+        protected virtual float _damageCoefficient => Barrage.damageCoefficient;
 
         private int remainingShots;
         private float shotTimer;
@@ -65,17 +37,9 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
             this.Fire();
         }
 
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Barrage.damageCoefficient;
-            }
-        }
-
         public virtual void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer(this.ammoMod * (2f / this.baseRocketCount));
+            if (this.iDrive) this.iDrive.ConsumeAmmo(this.ammoMod * (2f / this.baseRocketCount));
 
             base.PlayAnimation("Gesture, Override", "FireBazooka", "Shoot.playbackRate", 1.4f);
             base.PlayAnimation("AimPitch", "Shoot");
@@ -93,6 +57,8 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                 Ray aimRay = this.GetAimRay();
                 aimRay.direction = Util.ApplySpread(aimRay.direction, 0f, this.maxSpread, 1f, 1f, 0f, 0f);
 
+                var isCrit = base.RollCrit();
+
                 // copied from moff's rocket
                 // the fact that this item literally has to be hardcoded into character skillstates makes me so fucking angry you have no idea
                 if (this.characterBody.inventory && this.characterBody.inventory.GetItemCount(DLC1Content.Items.MoreMissile) > 0)
@@ -102,34 +68,47 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                     Vector3 rhs = Vector3.Cross(Vector3.up, aimRay.direction);
                     Vector3 axis = Vector3.Cross(aimRay.direction, rhs);
 
-                    float currentSpread = 0f;
-                    float angle = 0f;
-                    float num2 = 0f;
-                    num2 = UnityEngine.Random.Range(1f + currentSpread, 1f + currentSpread) * 3f;   //Bandit is x2
-                    angle = num2 / 2f;  //3 - 1 rockets
-
-                    Vector3 direction = Quaternion.AngleAxis(-num2 * 0.5f, axis) * aimRay.direction;
-                    Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+                    Vector3 direction = Quaternion.AngleAxis(-1.5f, axis) * aimRay.direction;
+                    Quaternion rotation = Quaternion.AngleAxis(1.5f, axis);
                     Ray aimRay2 = new Ray(aimRay.origin, direction);
                     for (int i = 0; i < 3; i++)
                     {
-                        GameObject modify = this.projectilePrefab;
-                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                        if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                        ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                        {
+                            projectilePrefab = this.projectilePrefab,
+                            position = aimRay2.origin,
+                            rotation = Util.QuaternionSafeLookRotation(aimRay2.direction),
+                            owner = this.gameObject,
+                            damage = damageMult * this.damageStat * this._damageCoefficient,
+                            force = 1200f,
+                            crit = isCrit,
+                            damageColorIndex = DamageColorIndex.Default,
+                            target = null,
+                            speedOverride = 120f,
+                            useSpeedOverride = true,
+                            damageTypeOverride = iDrive.DamageType
+                        });
+                        
                         aimRay2.direction = rotation * aimRay2.direction;
                     }
                 }
                 else
                 {
-                    GameObject modify = this.projectilePrefab;
-                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                    if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                    ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * Barrage.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, 120f);
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                    ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                    {
+                        projectilePrefab = this.projectilePrefab,
+                        position = aimRay.origin,
+                        rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
+                        owner = this.gameObject,
+                        damage = this.damageStat * this._damageCoefficient,
+                        force = 1200f,
+                        crit = isCrit,
+                        damageColorIndex = DamageColorIndex.Default,
+                        target = null,
+                        speedOverride = 120f,
+                        useSpeedOverride = true,
+                        damageTypeOverride = iDrive.DamageType
+                    });
                 }
             }
         }
@@ -156,7 +135,7 @@ namespace RobDriver.SkillStates.Driver.RocketLauncher
                 }
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();

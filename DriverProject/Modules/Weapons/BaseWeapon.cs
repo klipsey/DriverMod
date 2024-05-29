@@ -1,6 +1,10 @@
-﻿using R2API;
+﻿using EntityStates;
+using R2API;
+using RobDriver.Modules.Survivors;
 using RoR2.Skills;
 using System;
+using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 
 namespace RobDriver.Modules.Weapons
@@ -26,7 +30,6 @@ namespace RobDriver.Modules.Weapons
         public abstract GameObject crosshairPrefab { get; }
         public abstract DriverWeaponTier tier { get; }
         public abstract int shotCount { get; }
-
         public abstract DriverWeaponDef.BuffType buffType { get; }
         public abstract SkillDef primarySkillDef { get; }
         public abstract SkillDef secondarySkillDef { get; }
@@ -50,7 +53,7 @@ namespace RobDriver.Modules.Weapons
         protected void CreateWeapon()
         {
             Texture icon = null;
-            if (iconName != "") icon = Modules.Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
+            if (!string.IsNullOrEmpty(iconName)) icon = Assets.mainAssetBundle.LoadAsset<Texture>(iconName);
 
             weaponDef = DriverWeaponDef.CreateWeaponDefFromInfo(new DriverWeaponDefInfo
             {
@@ -70,12 +73,9 @@ namespace RobDriver.Modules.Weapons
                 dropChance = dropChance,
                 buffType = buffType
             });
-            /*if (addToPool) */DriverWeaponCatalog.AddWeapon(weaponDef);
-
-            if (uniqueDropBodyName != "")
-            {
-                DriverWeaponCatalog.AddWeaponDrop(uniqueDropBodyName, weaponDef);
-            }
+            DriverWeaponCatalog.AddWeapon(weaponDef);
+            DriverWeaponCatalog.AddWeaponDrop(uniqueDropBodyName, weaponDef);
+            Skills.AddWeaponSkill(Driver.characterPrefab, weaponDef, locked: true);
         }
     }
 }

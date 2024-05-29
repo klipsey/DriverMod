@@ -1,10 +1,8 @@
 ﻿using EntityStates;
-using R2API;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
 
 namespace RobDriver.SkillStates.Driver.Bazooka
 {
@@ -26,6 +24,8 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         private float recoil;
         private bool hasFired;
 
+        protected virtual GameObject projectilePrefab => Modules.Projectiles.bazookaProjectilePrefab;
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -36,7 +36,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
             this.recoil = Util.Remap(this.charge, 0f, 1f, Fire.minRecoil, Fire.maxRecoil);
             this.hasFired = false;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
 
             if (this.charge >= 0.8f) base.PlayAnimation("Gesture, Override", "FireBazooka", "Shoot.playbackRate", 2.5f * this.duration);
             else base.PlayAnimation("Gesture, Override", "FireTwohand", "Shoot.playbackRate", 2.5f * this.duration);
@@ -72,34 +72,47 @@ namespace RobDriver.SkillStates.Driver.Bazooka
                         Vector3 rhs = Vector3.Cross(Vector3.up, aimRay.direction);
                         Vector3 axis = Vector3.Cross(aimRay.direction, rhs);
 
-                        float currentSpread = 0f;
-                        float angle = 0f;
-                        float num2 = 0f;
-                        num2 = UnityEngine.Random.Range(1f + currentSpread, 1f + currentSpread) * 3f;   //Bandit is x2
-                        angle = num2 / 2f;  //3 - 1 rockets
-
-                        Vector3 direction = Quaternion.AngleAxis(-num2 * 0.5f, axis) * aimRay.direction;
-                        Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+                        Vector3 direction = Quaternion.AngleAxis(-1.5f, axis) * aimRay.direction;
+                        Quaternion rotation = Quaternion.AngleAxis(1.5f, axis);
                         Ray aimRay2 = new Ray(aimRay.origin, direction);
                         for (int i = 0; i < 3; i++)
                         {
-                            GameObject modify = Modules.Projectiles.bazookaProjectilePrefab;
-                            modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                            if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                            ProjectileManager.instance.FireProjectile(modify, aimRay2.origin, Util.QuaternionSafeLookRotation(aimRay2.direction), this.gameObject, damageMult * this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
-                            modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                            ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                            {
+                                projectilePrefab = this.projectilePrefab,
+                                position = aimRay2.origin,
+                                rotation = Util.QuaternionSafeLookRotation(aimRay2.direction),
+                                owner = this.gameObject,
+                                damage = damageMult * this.damageStat * this.damageCoefficient,
+                                force = 1200f,
+                                crit = isCrit,
+                                damageColorIndex = DamageColorIndex.Default,
+                                target = null,
+                                speedOverride = this.speed,
+                                useSpeedOverride = true,
+                                damageTypeOverride = iDrive.DamageType
+                            });
+
                             aimRay2.direction = rotation * aimRay2.direction;
                         }
                     }
                     else
                     {
-                        GameObject modify = Modules.Projectiles.bazookaProjectilePrefab;
-                        modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                        if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                        ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this.damageCoefficient, 1200f, this.RollCrit(), DamageColorIndex.Default, null, this.speed);
-                        modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                        {
+                            projectilePrefab = this.projectilePrefab,
+                            position = aimRay.origin,
+                            rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
+                            owner = this.gameObject,
+                            damage = this.damageStat * this.damageCoefficient,
+                            force = 1200f,
+                            crit = isCrit,
+                            damageColorIndex = DamageColorIndex.Default,
+                            target = null,
+                            speedOverride = this.speed,
+                            useSpeedOverride = true,
+                            damageTypeOverride = iDrive.DamageType
+                        });
                     }
                 }
             }
@@ -116,7 +129,7 @@ namespace RobDriver.SkillStates.Driver.Bazooka
         {
             base.FixedUpdate();
 
-            if (base.fixedAge >= (0.5f * this.duration) && this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (base.fixedAge >= (0.5f * this.duration) && this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();

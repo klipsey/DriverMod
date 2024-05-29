@@ -5,26 +5,19 @@
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            if (!base.isAuthority) return;
 
-            if (base.fixedAge >= 2f && base.isAuthority)
+            if (this.iDrive.weaponTimer == this.iDrive.maxWeaponTimer ||
+                this.iDrive.weaponDef.nameToken != this.iDrive.defaultWeaponDef.nameToken ||
+                this.iDrive.HasSpecialBullets)
             {
-                if (this.iDrive.weaponTimer == this.iDrive.maxWeaponTimer || this.iDrive.passive.isBullets || this.iDrive.passive.isRyan)
-                {
-                    this.outer.SetNextStateToMain();
-                    return;
-                }
+                this.outer.SetNextStateToMain();
+                return;
+            }
 
-                if (this.iDrive.weaponTimer <= 0f)
-                {
-                    this.outer.SetNextState(new ReloadPistol());
-                }
-                else
-                {
-                    this.outer.SetNextState(new ReloadPistol
-                    {
-                        interruptPriority = EntityStates.InterruptPriority.Any
-                    });
-                }
+            if (base.fixedAge >= 1f)
+            {
+                this.outer.SetNextState(new ReloadPistol());
             }
         }
     }

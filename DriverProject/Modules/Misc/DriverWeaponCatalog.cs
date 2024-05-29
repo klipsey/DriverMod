@@ -1,6 +1,12 @@
-﻿using System;
+﻿using EntityStates;
+using EntityStates.Executioner;
+using RobDriver.Modules;
+using RobDriver.Modules.Survivors;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RobDriver
 {
@@ -25,6 +31,7 @@ namespace RobDriver
         internal static DriverWeaponDef LunarHammer;
         internal static DriverWeaponDef NemmandoGun;
         internal static DriverWeaponDef NemmercGun;
+        internal static DriverWeaponDef RavSword;
 
         public static void AddWeapon(DriverWeaponDef weaponDef)
         {
@@ -67,28 +74,37 @@ namespace RobDriver
 
             // add config
             Modules.Config.InitWeaponConfig(weaponDef);
+
             Debug.Log("Added " + weaponDef.nameToken + " to catalog with index: " + weaponDef.index);
         }
 
         public static void AddWeaponDrop(string bodyName, DriverWeaponDef weaponDef, bool autoComplete = true)
         {
+            if (string.IsNullOrWhiteSpace(bodyName)) return;
+
             if (autoComplete)
             {
                 if (!bodyName.Contains("Body")) bodyName += "Body";
                 if (!bodyName.Contains("(Clone)")) bodyName += "(Clone)";
             }
-
+            if (weaponDrops.ContainsKey(bodyName)) return;
             weaponDrops.Add(bodyName, weaponDef);
         }
 
         public static bool IsWeaponPistol(DriverWeaponDef weaponDef)
         {
-            return weaponDef == Pistol || weaponDef == LunarPistol || weaponDef == VoidPistol;
+            // These are all the pistol options that are forced upgrades with steadyaim
+            // beetle shield doesnt count since it's dropped instead of reloaded
+            return weaponDef.nameToken == Pistol.nameToken ||
+                weaponDef.nameToken == LunarPistol.nameToken ||
+                weaponDef.nameToken == VoidPistol.nameToken ||
+                weaponDef.nameToken == Needler.nameToken ||
+                weaponDef.nameToken == PyriteGun.nameToken;
         }
 
         public static DriverWeaponDef GetWeaponFromIndex(int index)
         {
-            return weaponDefs[index];
+            return weaponDefs.ElementAtOrDefault(index) ?? Pistol;
         }
 
         public static DriverWeaponDef GetRandomWeapon()
@@ -100,11 +116,9 @@ namespace RobDriver
                 if (Modules.Config.GetWeaponConfigEnabled(weaponDefs[i]) && weaponDefs[i].shotCount > 0) validWeapons.Add(weaponDefs[i]);
             }
 
-            DriverWeaponDef[] _validWeapons = validWeapons.ToArray();
+            if (validWeapons.Count <= 0) return Pistol; // pistol failsafe
 
-            if (_validWeapons.Length <= 0) return weaponDefs[0]; // pistol failsafe
-
-            return _validWeapons[UnityEngine.Random.Range(0, _validWeapons.Length)];
+            return validWeapons[UnityEngine.Random.Range(0, validWeapons.Count)];
         }
 
         public static DriverWeaponDef GetRandomWeaponFromTier(DriverWeaponTier tier)
@@ -113,17 +127,25 @@ namespace RobDriver
 
             for (int i = 0; i < weaponDefs.Length; i++)
             {
-                if (weaponDefs[i] && weaponDefs[i].tier == tier)
+                var weaponDef = weaponDefs[i];
+                if (weaponDef)
                 {
-                    if (Modules.Config.GetWeaponConfigEnabled(weaponDefs[i])) validWeapons.Add(weaponDefs[i]);
+                    if (Config.uniqueDropsAreLegendary.Value && tier == DriverWeaponTier.Legendary)
+                    {
+                        if (weaponDef.tier >= tier && Modules.Config.GetWeaponConfigEnabled(weaponDef)) 
+                            validWeapons.Add(weaponDef);
+                    }
+                    else
+                    {
+                        if (weaponDef.tier == tier && Modules.Config.GetWeaponConfigEnabled(weaponDef)) 
+                            validWeapons.Add(weaponDef);
+                    }
                 }
             }
 
-            DriverWeaponDef[] _validWeapons = validWeapons.ToArray();
+            if (validWeapons.Count <= 0) return Pistol; // pistol failsafe if you disabled rocket launcher like a fucking retard or something
 
-            if (_validWeapons.Length <= 0) return weaponDefs[0]; // pistol failsafe if you disabled rocket launcher like a fucking retard or something
-
-            return _validWeapons[UnityEngine.Random.Range(0, _validWeapons.Length)];
+            return validWeapons[UnityEngine.Random.Range(0, validWeapons.Count)];
         }
     }
 }

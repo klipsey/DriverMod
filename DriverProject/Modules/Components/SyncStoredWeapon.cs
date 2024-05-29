@@ -9,24 +9,27 @@ namespace RobDriver.Modules.Components
     internal class SyncStoredWeapon : INetMessage
     {
         private NetworkInstanceId netId;
-        private ushort weapon;
+        private ushort weaponIndex;
+        private ushort bulletIndex;
         private long ammo;
 
         public SyncStoredWeapon()
         {
         }
 
-        public SyncStoredWeapon(NetworkInstanceId netId, ushort augh, float ammo)
+        public SyncStoredWeapon(NetworkInstanceId netId, ushort augh, ushort ough, float ammo)
         {
             this.netId = netId;
-            this.weapon = augh;
+            this.weaponIndex = augh;
+            this.bulletIndex = ough;
             this.ammo = Mathf.CeilToInt(ammo * 100f);
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.netId = reader.ReadNetworkId();
-            this.weapon = reader.ReadUInt16();
+            this.weaponIndex = reader.ReadUInt16();
+            this.bulletIndex = reader.ReadUInt16();
             this.ammo = reader.ReadInt64();
         }
 
@@ -38,14 +41,22 @@ namespace RobDriver.Modules.Components
             DriverController iDrive = bodyObject.GetComponent<DriverController>();
             if (iDrive)
             {
-                iDrive.PickUpWeapon(DriverWeaponCatalog.GetWeaponFromIndex(this.weapon), this.ammo * 0.01f);
+                DriverWeaponDef weaponDef = DriverWeaponCatalog.GetWeaponFromIndex(this.weaponIndex);
+                DriverBulletDef bulletDef = DriverBulletCatalog.GetBulletDefFromIndex(this.bulletIndex);
+
+                // yes, this is a dumb way to do it
+                float ammoVal = this.ammo;
+                if (ammoVal != -1) ammoVal *= 0.01f;
+                iDrive.PickUpWeaponDrop(weaponDef, bulletDef, ammoVal, false, false /*isNewAmmo*/);
+                iDrive.PickUpWeaponDrop(weaponDef, bulletDef, ammoVal, false, true /*isNewAmmo*/);
             }
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(this.netId);
-            writer.Write(this.weapon);
+            writer.Write(this.weaponIndex);
+            writer.Write(this.bulletIndex);
             writer.Write(this.ammo);
         }
     }

@@ -18,29 +18,10 @@ namespace RobDriver.SkillStates.Driver.SMG
 
         private bool finishing;
 
-        protected virtual int baseShotCount
-        {
-            get
-            {
-                return 7;
-            }
-        }
-
-        protected virtual float maxSpread
-        {
-            get
-            {
-                return 0f;
-            }
-        }
-
-        protected virtual GameObject tracerPrefab
-        {
-            get
-            {
-                return Modules.Assets.shotgunTracer;
-            }
-        }
+        protected virtual int baseShotCount => 7;
+        protected virtual float maxSpread => 0f;
+        protected virtual GameObject tracerPrefab => Modules.Assets.shotgunTracer;
+        protected virtual float _damageCoefficient => SuppressiveFire.damageCoefficient;
 
         private int remainingShots;
         private float shotTimer;
@@ -62,17 +43,9 @@ namespace RobDriver.SkillStates.Driver.SMG
             this.Fire();
         }
 
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return SuppressiveFire.damageCoefficient;
-            }
-        }
-
         public virtual void Fire()
         {
-            if (this.iDrive) this.iDrive.StartTimer(3f / this.baseShotCount);
+            if (this.iDrive) this.iDrive.ConsumeAmmo(3f / this.baseShotCount);
 
             base.PlayAnimation("Gesture, Override", "ShootSubmission", "Shoot.playbackRate", 1.4f / this.attackSpeedStat);
 
@@ -101,7 +74,7 @@ namespace RobDriver.SkillStates.Driver.SMG
                     origin = aimRay.origin,
                     damage = damage,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Stun1s | iDrive.bulletDamageType,
+                    damageType = DamageType.Stun1s | iDrive.DamageType,
                     falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                     maxDistance = 1000f,
                     force = force,// RiotShotgun.bulletForce,
@@ -123,7 +96,7 @@ namespace RobDriver.SkillStates.Driver.SMG
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                     HitEffectNormal = false,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                 bulletAttack.Fire();
 
                 //this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
@@ -176,7 +149,7 @@ namespace RobDriver.SkillStates.Driver.SMG
                 }
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();

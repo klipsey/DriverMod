@@ -51,7 +51,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             this.characterBody._defaultCrosshairPrefab = Modules.Assets.pistolAimCrosshairPrefab;
             this.autoFocus = Modules.Config.autoFocus.Value;
 
-            //
             this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
             {
                 prefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerScopeLightOverlay.prefab").WaitForCompletion(),
@@ -73,7 +72,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             base.characterBody.SetAimTimer(0.2f);
             this.attackSpeedStat = this.characterBody.attackSpeed;
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 this.cancelling = true;
                 this.outer.SetNextStateToMain();
@@ -177,7 +176,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
             this.chargeTimer = 0f;
 
-            if (this.iDrive) this.iDrive.StartTimer(1f + value);
+            if (this.iDrive) this.iDrive.ConsumeAmmo(1f + value);
 
             if (base.isAuthority)
             {
@@ -202,7 +201,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     origin = aimRay.origin,
                     damage = dmg * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Stun1s | iDrive.bulletDamageType,
+                    damageType = DamageType.Stun1s | iDrive.DamageType,
                     falloffModel = BulletAttack.FalloffModel.None,
                     maxDistance = 2000f,
                     force = 1000f,
@@ -225,7 +224,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                 bulletAttack.modifyOutgoingDamageCallback = delegate (BulletAttack _bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo)
                 {
                     if (BulletAttack.IsSniperTargetHit(hitInfo))
@@ -244,7 +243,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         Util.PlaySound("sfx_driver_headshot", base.gameObject);
                     }
                 };
-
                 bulletAttack.Fire();
             }
         }

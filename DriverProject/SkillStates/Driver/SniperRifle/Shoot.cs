@@ -40,7 +40,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void FireBullet()
@@ -74,13 +74,13 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     float radius = 1f;
 
                     LayerMask stopperMask = LayerIndex.CommonMasks.bullet;
-                    DamageType damageType = iDrive.bulletDamageType;
+                    DamageType damageType = iDrive.DamageType;
                     if (this.aiming)
                     {
                         maxSpread = 0f;
                         minSpread = 0f;
                         stopperMask = LayerIndex.world.mask;
-                        damageType = DamageType.Stun1s | iDrive.bulletDamageType;
+                        damageType = DamageType.Stun1s | iDrive.DamageType;
                         tracer = Modules.Assets.sniperTracer;
                         radius = 0.25f;
                     }
@@ -117,7 +117,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                         bulletCount = 1
                     };
 
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
                     if (this.aiming)
                     {
@@ -140,7 +140,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                             }
                         };
                     }
-
                     bulletAttack.Fire();
 
                     this.characterMotor.ApplyForce(aimRay.direction * -this.selfForce);
@@ -157,7 +156,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                 this.FireBullet();
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();
@@ -166,7 +165,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

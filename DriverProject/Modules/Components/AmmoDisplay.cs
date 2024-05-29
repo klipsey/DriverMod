@@ -1,62 +1,98 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using RoR2;
 using RoR2.UI;
-using UnityEngine.Networking;
 
 namespace RobDriver.Modules.Components
 {
     public class AmmoDisplay : MonoBehaviour
     {
         public HUD targetHUD;
+        public DriverController iDrive;
+
         public LanguageTextMeshController targetText;
+        public GameObject durationDisplay;
+        public Image durationBar;
+        public Image durationBarRed;
 
-        private DriverController iDrive;
-        private DriverPassive passive;
-
-        private void FixedUpdate()
+        private void Start()
         {
-            if (this.targetHUD)
+            this.iDrive = this.targetHUD?.targetBodyObject?.GetComponent<DriverController>();
+            if (this.iDrive && !this.iDrive.passive.isDefault) this.iDrive.onConsumeAmmo += SetDisplay;
+
+            this.targetText.token = string.Empty;
+            this.durationDisplay.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (this.iDrive) this.iDrive.onConsumeAmmo -= SetDisplay;
+
+            // why wont it just die
+            this.targetText.token = string.Empty;
+            this.durationDisplay.SetActive(false);
+            GameObject.Destroy(this.durationDisplay);
+        }
+
+        private void Update()
+        {
+            if (this.iDrive && this.iDrive.maxWeaponTimer > 0f)
             {
-                if (this.targetHUD.targetBodyObject)
+                float fill = Util.Remap(this.iDrive.weaponTimer, 0f, this.iDrive.maxWeaponTimer, 0f, 1f);
+
+                if (this.durationBarRed)
                 {
-                    if (!this.iDrive) this.iDrive = this.targetHUD.targetBodyObject.GetComponent<DriverController>();
-                    if (!this.passive) this.passive = this.targetHUD.targetBodyObject.GetComponent<DriverPassive>();
+                    if (fill >= 1f) this.durationBarRed.fillAmount = 1f;
+                    this.durationBarRed.fillAmount = Mathf.Lerp(this.durationBarRed.fillAmount, fill, Time.deltaTime * 2f);
                 }
+
+                this.durationBar.fillAmount = fill;
             }
+        }
 
-            if (this.targetText)
+        private void SetDisplay()
+        {
+            if (this.targetText && this.iDrive)
             {
-                if (this.iDrive && this.passive)
+                if (this.iDrive.maxWeaponTimer <= 0f)
                 {
-                    if (this.iDrive.maxWeaponTimer <= 0f)
-                    {
-                        this.targetText.token = "";
-                        return;
-                    }
+                    this.targetText.token = string.Empty;
+                    this.durationDisplay.SetActive(false);
+                    return;
+                }
 
+                // pistol only, text and no bar
+                if (this.iDrive.passive.isPistolOnly)
+                {
                     if (this.iDrive.weaponTimer <= 0f)
                     {
                         this.targetText.token = "<color=#C80000>0 / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() + Helpers.colorSuffix;
+                        return;
                     }
-                    else
+                    this.targetText.token = Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString();
+                    return;
+                }
+                
+                // ammo passives, bar and text
+                if (this.iDrive.HasSpecialBullets)
+                {
+                    if (this.iDrive.weaponTimer <= 0)
                     {
-                        if (this.passive.isBullets || this.passive.isRyan)
-                        {
-                            if(NetworkServer.active)
-                            {
-                                if (this.iDrive.gameObject.GetComponent<CharacterBody>().HasBuff(Buffs.bulletDefs[this.iDrive.currentBulletIndex]))
-                                {
-                                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(Buffs.bulletDefs[this.iDrive.currentBulletIndex].buffColor)}>" + Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString() + " - " + Buffs.bulletDefs[this.iDrive.currentBulletIndex].name + Helpers.colorSuffix;
-                                }
-                                else this.targetText.token = "";
-                            }
-                        }
-                        else this.targetText.token = Mathf.CeilToInt(this.iDrive.weaponTimer).ToString() + " / " + Mathf.CeilToInt(this.iDrive.maxWeaponTimer).ToString();
+                        this.targetText.token = string.Empty;
+                        return;
                     }
+                    this.durationDisplay.SetActive(true);
+
+                    this.durationBar.color = this.iDrive.currentBulletDef.trailColor;
+                    this.targetText.token = $"<color=#{ColorUtility.ToHtmlStringRGBA(this.iDrive.currentBulletDef.trailColor)}>" + this.iDrive.currentBulletDef.nameToken + Helpers.colorSuffix;
+                }
+                else if (this.iDrive.weaponTimer == this.iDrive.maxWeaponTimer)
+                {
+                    this.durationDisplay.SetActive(false);
                 }
                 else
                 {
-                    this.targetText.token = "";
+                    this.durationDisplay.SetActive(false);
                 }
             }
         }

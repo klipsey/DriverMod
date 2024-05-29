@@ -45,7 +45,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void FireBullet()
@@ -85,7 +85,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                         origin = aimRay.origin,
                         damage = damage,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = iDrive.bulletDamageType,
+                        damageType = iDrive.DamageType,
                         falloffModel = BulletAttack.FalloffModel.None,
                         maxDistance = bulletRange,
                         force = force,
@@ -95,10 +95,10 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                         muzzleName = muzzleString,
                         smartCollision = true,
                         procChainMask = default,
-                        procCoefficient = procCoefficient,
+                        procCoefficient = Shoot.procCoefficient,
                         radius = thiccness,
                         sniper = false,
-                        stopperMask = LayerIndex.world.collisionMask,
+                        stopperMask = LayerIndex.CommonMasks.bullet,
                         weapon = null,
                         tracerEffectPrefab = tracer,
                         spreadPitchScale = 1f,
@@ -107,7 +107,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                         HitEffectNormal = false,
                     };
-                    bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                    bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
 
                     bulletAttack.minSpread = 0;
                     bulletAttack.maxSpread = 0;
@@ -139,7 +139,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
                 this.FireBullet();
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();
@@ -148,7 +148,7 @@ namespace RobDriver.SkillStates.Driver.RiotShotgun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

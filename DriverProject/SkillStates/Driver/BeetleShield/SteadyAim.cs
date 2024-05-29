@@ -34,12 +34,5 @@ namespace RobDriver.SkillStates.Driver.BeetleShield
             if (wasCrit) base.PlayAnimation("Gesture, Override", "ShieldSteadyAimFireCritical", "Action.playbackRate", speed);
             else base.PlayAnimation("Gesture, Override", "ShieldSteadyAimFire", "Action.playbackRate", speed);
         }
-
-        public override void Fire()
-        {
-            if (this.iDrive) this.iDrive.StartTimer();
-
-            base.Fire();
-        }
     }
 }

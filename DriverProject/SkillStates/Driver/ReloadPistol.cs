@@ -8,9 +8,8 @@ namespace RobDriver.SkillStates.Driver
 {
     public class ReloadPistol : BaseDriverSkillState
     {
-        public float baseDuration = 2.4f;
+        public float baseDuration = 1.2f;
         public string animString = "ReloadPistol";
-        public InterruptPriority interruptPriority = InterruptPriority.PrioritySkill;
         public CameraParamsOverrideHandle camParamsOverrideHandle;
         public bool aiming;
 
@@ -38,8 +37,9 @@ namespace RobDriver.SkillStates.Driver
             if (base.fixedAge <= this.duration && this.camParamsOverrideHandle.isValid) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
             if (this.camParamsOverrideHandle.isValid && !this.aiming) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
             if (NetworkServer.active && this.aiming) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
-            //AHHHHH
-            if (this.inputBank.skill3.down && this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef) base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
+
+            if (this.inputBank.skill3.down && this.skillLocator.utility.skillDef == Modules.Survivors.Driver.skateboardSkillDef)
+                base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.1f);
         }
 
         public override void FixedUpdate()
@@ -65,10 +65,14 @@ namespace RobDriver.SkillStates.Driver
                 base.PlayCrossfade("Gesture, Override", "BufferEmpty", 0.25f);
             }
 
-            if (base.isAuthority && base.fixedAge >= this.duration)
+            // early exit to sync with sound queues
+            if (base.fixedAge >= 0.75f * this.duration && this.iDrive.weaponTimer != this.iDrive.maxWeaponTimer)
             {
                 this.iDrive.FinishReload();
+            }
 
+            if (base.isAuthority && base.fixedAge >= this.duration)
+            {
                 if (this.aiming)
                 {
                     this.outer.SetNextState(new SteadyAim
@@ -85,7 +89,8 @@ namespace RobDriver.SkillStates.Driver
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return this.interruptPriority;
+            if (iDrive.weaponTimer > 0) return InterruptPriority.Any;
+            return InterruptPriority.PrioritySkill;
         }
     }
 }

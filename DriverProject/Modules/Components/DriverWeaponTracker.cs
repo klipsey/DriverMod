@@ -7,18 +7,21 @@ namespace RobDriver.Modules.Components
         public struct StoredWeapon
         {
             public DriverWeaponDef weaponDef;
+            public DriverBulletDef bulletDef;
             public float ammo;
         };
 
         public bool isStoringWeapon;
 
-        public DriverWeaponDef storedWeapon;
+        public DriverWeaponDef storedWeaponDef;
+        public DriverBulletDef storedBulletDef;
         public float storedAmmo;
 
-        public void StoreWeapon(DriverWeaponDef weaponDef, float ammo)
+        public void StoreWeapon(DriverWeaponDef weaponDef, DriverBulletDef bulletDef, float ammo)
         {
             this.isStoringWeapon = true;
-            this.storedWeapon = weaponDef;
+            this.storedWeaponDef = weaponDef;
+            this.storedBulletDef = bulletDef;
             this.storedAmmo = ammo;
         }
 
@@ -27,7 +30,8 @@ namespace RobDriver.Modules.Components
             this.isStoringWeapon = false;
             return new StoredWeapon
             {
-                weaponDef = this.storedWeapon,
+                weaponDef = this.storedWeaponDef,
+                bulletDef = this.storedBulletDef,
                 ammo = this.storedAmmo
             };
         }

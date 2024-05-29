@@ -28,7 +28,7 @@ namespace RobDriver.SkillStates.Driver
         {
             base.FixedUpdate();
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", "BufferEmpty");
                 this.outer.SetNextStateToMain();
@@ -37,7 +37,7 @@ namespace RobDriver.SkillStates.Driver
 
             if (base.fixedAge >= this.duration)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 

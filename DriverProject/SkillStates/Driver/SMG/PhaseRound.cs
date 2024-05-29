@@ -21,6 +21,7 @@ namespace RobDriver.SkillStates.Driver.SMG
         protected bool hasFired;
         private bool isCrit;
         protected string muzzleString;
+        protected virtual float _damageCoefficient => Shoot.damageCoefficient;
 
         public override void OnEnter()
         {
@@ -39,15 +40,7 @@ namespace RobDriver.SkillStates.Driver.SMG
 
             this.fireDuration = 0;
 
-            if (this.iDrive) this.iDrive.StartTimer();
-        }
-
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Shoot.damageCoefficient;
-            }
+            if (this.iDrive) this.iDrive.ConsumeAmmo();
         }
 
         public virtual void Fire()
@@ -65,12 +58,8 @@ namespace RobDriver.SkillStates.Driver.SMG
                 if (base.isAuthority)
                 {
                     Ray aimRay = this.GetAimRay();
-                    GameObject modify = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/FMJRamping.prefab").WaitForCompletion();
-                    modify.GetComponent<ProjectileDamage>().damageType = iDrive.bulletDamageType;
-                    if (!modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>()) modify.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Add(iDrive.moddedBulletType);
-                    ProjectileManager.instance.FireProjectile(modify, aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
-                    modify.GetComponent<DamageAPI.ModdedDamageTypeHolderComponent>().Remove(iDrive.moddedBulletType);
+                    ProjectileManager.instance.FireProjectile(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/FMJRamping.prefab").WaitForCompletion(), 
+                        aimRay.origin, Util.QuaternionSafeLookRotation(aimRay.direction), this.gameObject, this.damageStat * this._damageCoefficient, 1200f, this.isCrit, DamageColorIndex.Default, null, 120f);
                 }
             }
         }
@@ -84,7 +73,7 @@ namespace RobDriver.SkillStates.Driver.SMG
                 this.Fire();
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();

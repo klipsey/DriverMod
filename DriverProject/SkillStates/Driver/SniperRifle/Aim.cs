@@ -28,7 +28,6 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
 
             this.characterBody.hideCrosshair = true;
 
-            //
             this.overlayController = HudOverlayManager.AddOverlay(this.gameObject, new OverlayCreationParams
             {
                 prefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerScopeLightOverlay.prefab").WaitForCompletion(),
@@ -43,7 +42,7 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
             this.characterBody.isSprinting = false;
             base.characterBody.SetAimTimer(0.2f);
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 this.cancelling = true;
                 this.outer.SetNextStateToMain();
@@ -57,11 +56,18 @@ namespace RobDriver.SkillStates.Driver.SniperRifle
                     PrimarySkillShurikenBehavior shurikenComponent = this.GetComponent<PrimarySkillShurikenBehavior>();
                     if (shurikenComponent) shurikenComponent.OnSkillActivated(this.skillLocator.primary);
 
-                    this.outer.SetNextState(new Shoot
+                    if (this.iDrive.weaponTimer <= 0)
                     {
-                        aiming = true
-                    });
-
+                        cancelling = true;
+                        this.outer.SetNextState(new ReloadPistol());
+                    }
+                    else
+                    {
+                        this.outer.SetNextState(new Shoot
+                        {
+                            aiming = true
+                        });
+                    }
                     return;
                 }
             }

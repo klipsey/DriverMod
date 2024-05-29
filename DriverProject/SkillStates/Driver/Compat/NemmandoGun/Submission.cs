@@ -18,29 +18,13 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
         private bool finishing;
 
-        protected virtual int baseShotCount
-        {
-            get
-            {
-                return 7;
-            }
-        }
+        protected override string prop => "";
+        protected override bool hideGun => false;
 
-        protected virtual float maxSpread
-        {
-            get
-            {
-                return 6f;
-            }
-        }
-
-        protected virtual GameObject tracerPrefab
-        {
-            get
-            {
-                return Modules.Assets.nemmandoTracer;
-            }
-        }
+        protected virtual int baseShotCount => 7;
+        protected virtual float maxSpread => 6f;
+        protected virtual GameObject tracerPrefab => Modules.Assets.nemmandoTracer;
+        protected virtual float _damageCoefficient => Submission.damageCoefficient;
 
         private int remainingShots;
         private float shotTimer;
@@ -52,6 +36,8 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
         public override void OnEnter()
         {
             base.OnEnter();
+            this.iDrive.SetToNemmandoGun(true);
+
             this.characterBody.SetAimTimer(5f);
             this.muzzleString = "PistolMuzzle";
             this.shotDuration = this.baseShotDuration / this.attackSpeedStat;
@@ -59,20 +45,12 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
             this.shotTimer = this.shotDuration;
             this.remainingShots--;
+            if (this.iDrive.HasSpecialBullets) this.iDrive.ConsumeAmmo(remainingShots, true);
             this.Fire();
-        }
-
-        protected virtual float _damageCoefficient
-        {
-            get
-            {
-                return Submission.damageCoefficient;
-            }
         }
 
         public virtual void Fire()
         {
-            //if (this.iDrive) this.iDrive.StartTimer(3f / this.baseShotCount);
 
             base.PlayAnimation("Gesture, Override", "ShootSubmission", "Shoot.playbackRate", 1.4f / this.attackSpeedStat);
 
@@ -101,7 +79,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
                     origin = aimRay.origin,
                     damage = damage,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = DamageType.Stun1s | iDrive.bulletDamageType,
+                    damageType = DamageType.Stun1s | iDrive.DamageType,
                     falloffModel = BulletAttack.FalloffModel.DefaultBullet,
                     maxDistance = 150f,
                     force = force,// RiotShotgun.bulletForce,
@@ -123,7 +101,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab,
                     HitEffectNormal = false,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                 bulletAttack.minSpread = 0;
                 bulletAttack.maxSpread = 0;
                 bulletAttack.bulletCount = 1;
@@ -190,7 +168,7 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
                 }
             }
 
-            if (this.iDrive && this.iDrive.weaponDef != this.cachedWeaponDef)
+            if (this.iDrive && this.iDrive.weaponDef.nameToken != this.cachedWeaponDef.nameToken)
             {
                 base.PlayAnimation("Gesture, Override", this.iDrive.weaponDef.equipAnimationString);
                 this.outer.SetNextStateToMain();
@@ -210,6 +188,8 @@ namespace RobDriver.SkillStates.Driver.Compat.NemmandoGun
 
         public override void OnExit()
         {
+            this.iDrive.SetToNemmandoGun(false);
+
             base.OnExit();
 
             if (this.spinEffectInstance)

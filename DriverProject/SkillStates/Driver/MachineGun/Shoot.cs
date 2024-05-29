@@ -46,7 +46,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
             if (this.iDrive)
             {
-                this.iDrive.StartTimer();
+                this.iDrive.ConsumeAmmo();
                 this.iDrive.machineGunVFX.Play();
             }
         }
@@ -80,7 +80,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                     origin = aimRay.origin,
                     damage = Shoot.damageCoefficient * this.damageStat,
                     damageColorIndex = DamageColorIndex.Default,
-                    damageType = iDrive.bulletDamageType,
+                    damageType = iDrive.DamageType,
                     falloffModel = BulletAttack.FalloffModel.None,
                     maxDistance = Shoot.range,
                     force = Shoot.force,
@@ -103,7 +103,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
                 };
-                bulletAttack.AddModdedDamageType(iDrive.moddedBulletType);
+                bulletAttack.AddModdedDamageType(iDrive.ModdedDamageType);
                 bulletAttack.Fire();
             }
 
@@ -134,8 +134,7 @@ namespace RobDriver.SkillStates.Driver.MachineGun
 
             if (base.fixedAge >= this.duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
-                return;
+                this.outer.SetNextState(new WaitForReload());
             }
         }
 
