@@ -531,6 +531,7 @@ namespace RobDriver.Modules.Survivors
 
         private static void CreateSkills(GameObject prefab)
         {
+            bool hasArsenal = Modules.Config.enableArsenal.Value;
             DriverPassive passive = prefab.AddComponent<DriverPassive>();
             DriverArsenal arsenal = prefab.AddComponent<DriverArsenal>();
             Modules.Skills.CreateSkillFamilies(prefab);
@@ -1990,8 +1991,11 @@ namespace RobDriver.Modules.Survivors
 
             Assets.InitWeaponDefs();
 
-            Skills.AddWeaponSkill(prefab, DriverWeaponCatalog.Pistol, locked: false);
-            Skills.AddWeaponSkills(prefab, DriverWeaponCatalog.weaponDefs.Skip(1), locked: true);
+            if (hasArsenal)
+            {
+                Skills.AddWeaponSkill(prefab, DriverWeaponCatalog.Pistol, locked: false);
+                Skills.AddWeaponSkills(prefab, DriverWeaponCatalog.weaponDefs.Skip(1), locked: true);
+            }
         }
 
         private static void InitializeScepterSkills()

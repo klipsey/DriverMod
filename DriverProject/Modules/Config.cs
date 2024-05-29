@@ -13,6 +13,7 @@ namespace RobDriver.Modules
     {
         public static ConfigFile myConfig;
 
+        public static ConfigEntry<bool> enableArsenal;
         public static ConfigEntry<bool> adaptiveFocus;
         public static ConfigEntry<bool> autoFocus;
         public static ConfigEntry<bool> sharedPickupVisuals;
@@ -77,11 +78,12 @@ namespace RobDriver.Modules
             
             weaponCallouts = Config.BindAndOptions("01 - General", "Weapon Pickup Callouts", false, "If set to true, Driver will call out the weapons he picks up. (Client-side)");
 
-            enableGodslingInMultiplayer = Config.BindAndOptions("01 - General", "Godsling Enabled In Multiplayer", true, "If set to true, the Godlsling passive will be enabled for multiplayer.", true);
+            enableGodslingInMultiplayer = Config.BindAndOptions("01 - General", "Godsling Enabled In Multiplayer", true, "If set to true, the Godsling passive will be enabled for multiplayer.", true);
 
             #endregion
 
             #region Gameplay
+            enableArsenal = Config.BindAndOptions("02 - Gameplay", "Enable Arsenal Passive", true, "If set to false, Driver will no longer be able to choose a default weapon and will only use the Pistol.", true);
 
             adaptiveFocus = Config.BindAndOptions("02 - Gameplay", "Adaptive Focus", true, "If set to true, Focus will always charge up before firing a shot once your attack speed reaches a certain amount. (Client-side)");
             
@@ -131,9 +133,9 @@ namespace RobDriver.Modules
 
             defaultPistolAnims = Config.BindAndOptions("04 - Visuals", "Default Pistol Animations", false, "If set to true, return pistol passive scope animations back to the default.");
             
-            enabledRedVfxForKnife = Config.BindAndOptions("04 - Visuals", "Red Slashing VFX", false, "If set to true, knife has red vfx.");
+            enabledRedVfxForKnife = Config.BindAndOptions("04 - Visuals", "Red Slashing VFX", false, "If set to true, knife has red VFX.");
 
-            enableRevengence = Config.BindAndOptions("04 - Visuals", "Revengence", false, "Some weapons are turned into murasama.", true);
+            enableRevengence = Config.BindAndOptions("04 - Visuals", "Revengence", false, "Some weapons are turned into Murasama.", true);
             #endregion
 
             #region Emotes

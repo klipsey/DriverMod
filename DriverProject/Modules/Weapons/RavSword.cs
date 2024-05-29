@@ -8,7 +8,7 @@ namespace RobDriver.Modules.Weapons
     public class RavSword : BaseWeapon<RavSword>
     {
         public override string weaponNameToken => "RAV_SWORD";
-        public override string weaponName => "Ravager's Sword";
+        public override string weaponName => "Fury";
         public override string weaponDesc => "Jump and Slash your way through enemies.";
         public override string iconName => "texSpinSlashIcon";
         public override GameObject crosshairPrefab => Modules.Assets.needlerCrosshairPrefab;

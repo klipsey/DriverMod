@@ -5,7 +5,6 @@ using System.Security;
 using System.Security.Permissions;
 using R2API.Networking;
 using RobDriver.Modules.Survivors;
-using System.Collections.Generic;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -39,7 +38,7 @@ namespace RobDriver
     {
         public const string MODUID = "com.rob.Driver";
         public const string MODNAME = "Driver";
-        public const string MODVERSION = "1.6.4";
+        public const string MODVERSION = "1.7.0";
 
         public const string developerPrefix = "ROB";
 

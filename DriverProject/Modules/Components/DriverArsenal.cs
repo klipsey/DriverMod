@@ -1,6 +1,4 @@
 ﻿using RoR2;
-using RoR2.Skills;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -16,6 +14,7 @@ namespace RobDriver.Modules.Components
         {
             get
             {
+                if (!this.weaponSkillSlot) return DriverWeaponCatalog.Pistol;
                 // what the fuck was i smoking, this is hideous
                 if (this.weaponSkillSlot?.skillDef is null) this.weaponDef = DriverWeaponCatalog.Pistol;
                 else if (this.weaponDef is null) this.weaponDef = DriverWeaponCatalog.weaponDefs.FirstOrDefault(def =>

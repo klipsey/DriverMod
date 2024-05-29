@@ -148,6 +148,24 @@ ___
 
 ## Changelog
 
+`1.7.0`
+This update is entirely .score and tsuyoikenko's work, all the credit goes to them, all I'm doing is releasing it
+- Added passive: Arsenal - any weapon can be selected as your default in the loadout after you obtain it once. Can be disabled in config if you care about balance
+- Added special: Pay it Forward - it's the ultrakill coin and it has no icon yet
+- Leadfoot now actually says what it does
+- Godsling passive reenabled for multiplayer, with config to disable if you care about balance
+- Godsling functionality smoothed out to work entirely as you might expect
+- Experimental Syringe now gives decaying movement speed
+- Added aerial strafe animations
+- Setting weapon drop rate to 0 now properly makes weapons never drop
+- Added compatibility for Ravager's sword
+- Added Revengeance mode in config
+- Weapon pickups now gravitate to you when you're nearby and have no current weapon - configurable
+- Config fully restructured
+- ModelSwapperSkins support added
+- Misc UI improvements for both base UI and RiskUI
+- Bugfixes, bugfixes wayyyyy too many bugfixes to list, check the GitHub repo if you're actually curious just how much was fixed - the mod should be mostly bug-free now, huge thanks to .score and tsuyoikenko for being so thorough with this
+
 `1.6.4`
 - Actually implemented the previous bugfixes
 - Added unique animations for aiming with any of the pistol focused passives

@@ -684,7 +684,7 @@ PrefabInstance:
     - target: {fileID: 2748294272616509264, guid: 098bd72b0cf39164781401a9cfa8e131,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 2748294272616509264, guid: 098bd72b0cf39164781401a9cfa8e131,
         type: 3}
@@ -756,7 +756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4388947112716342, guid: e1b08032bec16ba4eb1ae23cbd572664, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4388947112716342, guid: e1b08032bec16ba4eb1ae23cbd572664, type: 3}
       propertyPath: m_LocalPosition.x
@@ -941,6 +941,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: mdlAmmoPickup
+      objectReference: {fileID: 0}
+    - target: {fileID: 1745257721414761218, guid: e28d1108eb2a7d24fb2b889d391ad712,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e28d1108eb2a7d24fb2b889d391ad712, type: 3}
@@ -1329,7 +1334,7 @@ PrefabInstance:
     - target: {fileID: 2247996762885709132, guid: db9eed741ce0f014daa6f0489c2cddce,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2247996762885709132, guid: db9eed741ce0f014daa6f0489c2cddce,
         type: 3}
@@ -2503,7 +2508,7 @@ PrefabInstance:
     - target: {fileID: 2748294272616509264, guid: f3731df8c326d8d46b486d3e692644ed,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2748294272616509264, guid: f3731df8c326d8d46b486d3e692644ed,
         type: 3}
@@ -2867,7 +2872,7 @@ PrefabInstance:
     - target: {fileID: 8459397378828364154, guid: 9cfd335956d1d7645bbd51dca01613fc,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8855172417085579575, guid: 9cfd335956d1d7645bbd51dca01613fc,
         type: 3}
@@ -11327,7 +11332,7 @@ PrefabInstance:
     - target: {fileID: 8378045787646639016, guid: d00af8aecb1e01641b75c6f84705eac2,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8378045787646639016, guid: d00af8aecb1e01641b75c6f84705eac2,
         type: 3}
@@ -13350,7 +13355,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!144 &7911662900833821001
 CharacterJoint:

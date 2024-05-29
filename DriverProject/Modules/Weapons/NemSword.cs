@@ -8,7 +8,7 @@ namespace RobDriver.Modules.Weapons
     public class NemSword : BaseWeapon<NemSword>
     {
         public override string weaponNameToken => "NEM_SWORD";
-        public override string weaponName => "NemmandoSword";
+        public override string weaponName => "HF Murasama";
         public override string weaponDesc => "The only thing I know.";
         public override string iconName => "texNemCommandoPrimary";
         public override GameObject crosshairPrefab => Modules.Assets.needlerCrosshairPrefab;
