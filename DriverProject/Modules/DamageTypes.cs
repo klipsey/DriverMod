@@ -32,6 +32,7 @@ namespace RobDriver.Modules
         public static DamageAPI.ModdedDamageType MysteryShot;
         public static DamageAPI.ModdedDamageType Hemorrhage;
         public static DamageAPI.ModdedDamageType Gouge;
+        public static DamageAPI.ModdedDamageType DriverGouge;
 
         public static DamageAPI.ModdedDamageType bloodExplosionIdentifier;
 

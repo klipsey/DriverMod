@@ -2849,7 +2849,7 @@ namespace RobDriver.Modules.Survivors
                 self.body.AddTimedBuff(Modules.Buffs.dazedDebuff, 10f);
             }
 
-            if (damageInfo.damageType == DamageType.ApplyMercExpose && damageInfo.attacker && damageInfo.attacker.name.Contains("RobDriverBody"))
+            if (damageInfo.attacker && damageInfo.HasModdedDamageType(DamageTypes.DriverGouge))
             {
                 damageInfo.damageType = DamageType.Stun1s;
 

@@ -2,6 +2,7 @@
 using EntityStates;
 using RobDriver.SkillStates.BaseStates;
 using UnityEngine;
+using R2API;
 
 namespace RobDriver.SkillStates.Driver
 {
@@ -40,12 +41,13 @@ namespace RobDriver.SkillStates.Driver
             this.hitEffectPrefab = RobDriver.Modules.Config.enabledRedVfxForKnife.Value ? Modules.Assets.redSlashImpactEffect : Modules.Assets.knifeImpactEffect;
             this.impactSound = Modules.Assets.knifeImpactSoundDef.index;
 
-            this.damageType = DamageType.ApplyMercExpose;
+            this.damageType = DamageType.Generic;
 
             this.muzzleString = "KnifeSwingMuzzle";
 
             base.OnEnter();
 
+            this.attack.AddModdedDamageType(Modules.DamageTypes.DriverGouge);
             Util.PlaySound("sfx_driver_foley_knife", this.gameObject);
         }
 
